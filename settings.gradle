@@ -1,0 +1,3 @@
+rootProject.name = 'hfm-health-checks'
+include 'boggs'
+

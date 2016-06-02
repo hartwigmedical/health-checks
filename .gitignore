@@ -10,3 +10,17 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Gradle
+.gradle
+
+# Build artefacts
+boggs/build
+build/
+
+# IntelliJ IDEA
+.idea/
+
+#Mac OS
+.DS_Store
+boggs/.DS_Store
