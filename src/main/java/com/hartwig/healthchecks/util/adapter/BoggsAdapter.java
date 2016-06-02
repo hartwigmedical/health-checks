@@ -9,8 +9,6 @@ import java.io.IOException;
 
 public class BoggsAdapter implements HealthCheckAdapter {
 
-  private HealthCheckExecutor boggs;
-
   public void runCheck(String runDirectory) throws IOException {
     PatientExtractor extractor = new PatientExtractor(new SambambaFlagStatParser());
     PatientData patient = extractor.extractFromRunDirectory(runDirectory);
