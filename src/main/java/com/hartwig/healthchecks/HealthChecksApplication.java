@@ -1,35 +1,45 @@
 package com.hartwig.healthchecks;
 
-import com.hartwig.healthchecks.boggs.PatientData;
-import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
-import com.hartwig.healthchecks.boggs.healthcheck.HealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.MappingHealthChecker;
-import com.hartwig.healthchecks.boggs.io.PatientExtractor;
-import org.apache.commons.cli.*;
-import org.jetbrains.annotations.NotNull;
-
+import com.hartwig.healthchecks.util.HealthChecksFlyweight;
+import com.hartwig.healthchecks.util.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.util.exception.NotFoundException;
 import java.io.IOException;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HealthChecksApplication {
 
+  private static Logger LOGGER = LoggerFactory.getLogger(HealthChecksApplication.class);
+
   private static final String RUN_DIRECTORY = "rundir";
+  private static final String CHECK_TYPE = "checktype";
 
   public static void main(String[] args) throws ParseException, IOException {
+    LOGGER.info("Testing");
     Options options = createOptions();
     CommandLine cmd = createCommandLine(args, options);
 
     String runDirectory = cmd.getOptionValue(RUN_DIRECTORY);
+    String checkType = cmd.getOptionValue(CHECK_TYPE);
 
-    if (runDirectory == null) {
+    if (runDirectory == null || checkType == null) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("Health-Checks", options);
     } else {
-      PatientExtractor extractor = new PatientExtractor(new SambambaFlagStatParser());
-      PatientData patient = extractor.extractFromRunDirectory(runDirectory);
-
-      HealthChecker checker = new MappingHealthChecker();
-
-      checker.isHealthy(patient);
+      HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
+      try {
+        HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
+        healthCheckAdapter.runCheck(runDirectory);
+      } catch (NotFoundException e) {
+        LOGGER.error(e.getMessage());
+      }
     }
   }
 
@@ -44,6 +54,7 @@ public class HealthChecksApplication {
   private static Options createOptions() {
     Options options = new Options();
     options.addOption(RUN_DIRECTORY, true, "The path containing the data for a single run");
+    options.addOption(CHECK_TYPE, true, "The type of check to b executed for a single run");
     return options;
   }
 }

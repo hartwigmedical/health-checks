@@ -4,13 +4,13 @@ import com.hartwig.healthchecks.boggs.PatientData;
 import com.hartwig.healthchecks.boggs.SampleData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MappingHealthChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(MappingHealthChecker.class);
 
     private static final double MIN_MAPPED_PERCENTAGE = 0.992;
     private static final double MIN_PROPERLY_PAIRED_PERCENTAGE = 0.99;
