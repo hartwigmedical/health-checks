@@ -7,5 +7,5 @@ This repository consists of a set of utilities that perform health checks agains
 After cloning the repository, one can run the Health-Checks application in the following way:
 
 ```
-./gradlew build run -Pargs="-rundir <directory>"
+./gradlew build run -Pargs="-rundir <directory> -checktype boggs"
 ```
