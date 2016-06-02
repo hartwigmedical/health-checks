@@ -22,7 +22,7 @@ public class HealthChecksApplication {
 
     if (runDirectory == null) {
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("boggs", options);
+      formatter.printHelp("Health-Checks", options);
     } else {
       PatientExtractor extractor = new PatientExtractor(new SambambaFlagStatParser());
       PatientData patient = extractor.extractFromRunDirectory(runDirectory);
