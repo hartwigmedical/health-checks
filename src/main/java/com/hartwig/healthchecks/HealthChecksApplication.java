@@ -1,9 +1,7 @@
 package com.hartwig.healthchecks;
 
-import com.hartwig.healthchecks.util.HealthChecksFlyweight;
-import com.hartwig.healthchecks.util.adapter.HealthCheckAdapter;
-import com.hartwig.healthchecks.util.exception.NotFoundException;
 import java.io.IOException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -13,6 +11,10 @@ import org.apache.commons.cli.ParseException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.exception.NotFoundException;
+import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 
 public class HealthChecksApplication {
 

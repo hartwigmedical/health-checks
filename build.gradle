@@ -25,6 +25,7 @@ allprojects {
 }
 
 dependencies {
+    compile project(":common")
     compile project(":boggs")
 }
 

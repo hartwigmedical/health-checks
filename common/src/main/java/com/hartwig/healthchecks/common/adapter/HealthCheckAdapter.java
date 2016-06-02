@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.util.adapter;
+package com.hartwig.healthchecks.common.adapter;
 
 import java.io.IOException;
 
