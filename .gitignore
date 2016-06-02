@@ -25,6 +25,12 @@ build/
 # IntelliJ IDEA
 .idea/
 
+# Eclipse artifacts, including WTP generated manifests
+.classpath
+.project
+/bin/
+.settings/
+
 #Mac OS
 .DS_Store
 boggs/.DS_Store
