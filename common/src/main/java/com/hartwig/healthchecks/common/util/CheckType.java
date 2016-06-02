@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.util;
+package com.hartwig.healthchecks.common.util;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +10,7 @@ public enum CheckType {
 
   private String [] fileName;
 
-  private CheckType(String [] fineName) {
+  private CheckType(String [] fileName) {
     this.fileName = fileName;
   }
 

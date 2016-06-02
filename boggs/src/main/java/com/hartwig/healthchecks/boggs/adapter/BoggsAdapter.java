@@ -1,0 +1,22 @@
+package com.hartwig.healthchecks.boggs.adapter;
+
+import java.io.IOException;
+
+import com.hartwig.healthchecks.boggs.PatientData;
+import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
+import com.hartwig.healthchecks.boggs.healthcheck.HealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.MappingHealthChecker;
+import com.hartwig.healthchecks.boggs.io.PatientExtractor;
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+
+public class BoggsAdapter implements HealthCheckAdapter {
+
+	public void runCheck(String runDirectory) throws IOException {
+		PatientExtractor extractor = new PatientExtractor(new SambambaFlagStatParser());
+		PatientData patient = extractor.extractFromRunDirectory(runDirectory);
+
+		HealthChecker checker = new MappingHealthChecker();
+
+		checker.isHealthy(patient);
+	}
+}
