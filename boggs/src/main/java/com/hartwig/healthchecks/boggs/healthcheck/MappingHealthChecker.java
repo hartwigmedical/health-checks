@@ -10,12 +10,16 @@ import org.slf4j.LoggerFactory;
 
 public class MappingHealthChecker implements HealthChecker {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(MappingHealthChecker.class);
-
     private static final double MIN_MAPPED_PERCENTAGE = 0.992;
     private static final double MIN_PROPERLY_PAIRED_PERCENTAGE = 0.99;
     private static final double MAX_SINGLETONS = 0.005;
     private static final double MAX_MATE_MAPPED_TO_DIFFERENT_CHR = 0.0001;
+    private static Logger LOGGER = LoggerFactory.getLogger(MappingHealthChecker.class);
+
+    @NotNull
+    private static String toPercentage(double percentage) {
+        return (Math.round(percentage * 10000L) / 100D) + "%";
+    }
 
     public boolean isHealthy(@NotNull PatientData patient) {
         checkSample(patient.refSample());
@@ -66,10 +70,5 @@ public class MappingHealthChecker implements HealthChecker {
                         toPercentage(mateMappedToDifferentChrPercentage));
             }
         }
-    }
-
-    @NotNull
-    private static String toPercentage(double percentage){
-        return (Math.round(percentage * 10000L) / 100D) + "%";
     }
 }

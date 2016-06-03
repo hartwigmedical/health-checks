@@ -1,8 +1,9 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
 
 public interface FlagStatParser {
 

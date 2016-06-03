@@ -17,8 +17,8 @@ public class FlagStats {
     private final long mateMappedToDifferentChrMapQ5;
 
     FlagStats(long total, long secondary, long supplementary, long duplicates, long mapped, long pairedInSequencing,
-                     long read1, long read2, long properlyPaired, long itselfAndMateMapped, long singletons,
-                     long mateMappedToDifferentChr, long mateMappedToDifferentChrMapQ5) {
+              long read1, long read2, long properlyPaired, long itselfAndMateMapped, long singletons,
+              long mateMappedToDifferentChr, long mateMappedToDifferentChrMapQ5) {
         this.total = total;
         this.secondary = secondary;
         this.supplementary = supplementary;

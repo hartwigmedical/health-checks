@@ -98,7 +98,7 @@ class FlagStatsBuilder {
 
     @NotNull
     public FlagStats build() {
-        return new FlagStats(total, secondary, supplementary, duplicates, mapped, pairedInSequencing ,read1, read2,
+        return new FlagStats(total, secondary, supplementary, duplicates, mapped, pairedInSequencing, read1, read2,
                 properlyPaired, itselfAndMateMapped, singletons, mateMappedToDifferentChr, mateMappedToDifferentChrMapQ5);
     }
 }

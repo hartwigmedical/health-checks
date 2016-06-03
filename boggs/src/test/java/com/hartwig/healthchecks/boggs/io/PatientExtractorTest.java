@@ -4,12 +4,13 @@ import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.PatientData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import mockit.Mocked;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -28,7 +29,7 @@ public class PatientExtractorTest {
         assertNotNull(patient);
     }
 
-     class DummyFlagstatParser implements FlagStatParser {
+    class DummyFlagstatParser implements FlagStatParser {
 
         @NotNull
         public FlagStatData parse(@NotNull File file) throws IOException {

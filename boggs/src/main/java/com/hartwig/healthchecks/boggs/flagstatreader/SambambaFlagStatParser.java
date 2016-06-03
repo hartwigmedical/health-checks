@@ -14,7 +14,7 @@ public class SambambaFlagStatParser implements FlagStatParser {
 
     @NotNull
     public FlagStatData parse(@NotNull File file) throws IOException {
-        BufferedReader fileReader  = new BufferedReader(new FileReader(file));
+        BufferedReader fileReader = new BufferedReader(new FileReader(file));
         FlagStatsBuilder qcPassedReadsBuilder = new FlagStatsBuilder();
         FlagStatsBuilder qcFailedReadsBuilder = new FlagStatsBuilder();
 
