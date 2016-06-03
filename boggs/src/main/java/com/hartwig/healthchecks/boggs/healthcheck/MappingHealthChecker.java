@@ -37,15 +37,11 @@ public class MappingHealthChecker implements HealthChecker {
 	}
 
 	@Override
-	public boolean isHealthy() {
+	public boolean isHealthy() throws IOException {
 		PatientData patientData;
-		try {
-			patientData = dataExtractor.extractFromRunDirectory(runDirectory);
-			checkSample(patientData.refSample());
-			checkSample(patientData.tumorSample());
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage());
-		}
+		patientData = dataExtractor.extractFromRunDirectory(runDirectory);
+		checkSample(patientData.refSample());
+		checkSample(patientData.tumorSample());
 		return true;
 	}
 

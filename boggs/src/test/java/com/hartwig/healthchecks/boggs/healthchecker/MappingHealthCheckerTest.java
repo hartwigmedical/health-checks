@@ -48,6 +48,10 @@ public class MappingHealthCheckerTest {
 			fail();
 		}
 
-		assertTrue(checker.isHealthy());
+		try {
+			assertTrue(checker.isHealthy());
+		} catch (IOException e) {
+			fail();
+		}
 	}
 }

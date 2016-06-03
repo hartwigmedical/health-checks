@@ -1,7 +1,6 @@
 package com.hartwig.healthchecks.boggs.healthchecker;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,11 +18,12 @@ import mockit.Mocked;
 
 public class PrestastHealthCheckerTest {
 
+	private static final String DUMMY_RUN_DIR = "DummyRunDir";
 	@Mocked
 	PrestatsExtractor dataExtractor;
 
 	@Test
-	public void verifyPrestatsHealthChecker() {
+	public void verifyPrestatsHealthChecker() throws IOException {
 		PrestatsData testData = new PrestatsData();
 		testData.setName("DummyName");
 		List<String> errors = new ArrayList<>();
@@ -32,19 +32,26 @@ public class PrestastHealthCheckerTest {
 		List<PrestatsData> prestatsDatasErrors = new ArrayList<>();
 
 		prestatsDatasErrors.add(testData);
-		HealthChecker checker = new PrestastHealthChecker("DummyRunDir", dataExtractor);
+		HealthChecker checker = new PrestastHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 
-		try {
-			new Expectations() {
-				{
-					dataExtractor.extractFromRunDirectory("DummyRunDir");
-					returns(prestatsDatasErrors);
-				}
-			};
-		} catch (IOException e1) {
-			fail();
-		}
-
+		new Expectations() {
+			{
+				dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+				returns(prestatsDatasErrors);
+			}
+		};
 		assertFalse(checker.isHealthy());
+	}
+
+	@Test(expected = IOException.class)
+	public void verifyPrestatsHealthCheckerIOException() throws IOException {
+		HealthChecker checker = new PrestastHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+		new Expectations() {
+			{
+				dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+				result = new IOException();
+			}
+		};
+		checker.isHealthy();
 	}
 }
