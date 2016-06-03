@@ -21,6 +21,40 @@ public class HealthChecksApplication {
     private static final String CHECK_TYPE = "checktype";
     private static final String ALL_CHECKS = "all";
 
+    private String runDirectory;
+    private String checkType;
+
+    public HealthChecksApplication(String runDirectory, String checkType) {
+        this.runDirectory = runDirectory;
+        this.checkType = checkType;
+    }
+
+    public void processHealthChecks() {
+        if (checkType.equals(ALL_CHECKS)) {
+            executeAllcheck(runDirectory);
+        } else {
+            HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
+            try {
+                HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
+                healthCheckAdapter.runCheck(runDirectory);
+            } catch (NotFoundException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+    }
+
+    protected void executeAllcheck(@NotNull String runDirectory)  {
+        HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
+        Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
+
+        Observable<HealthCheckAdapter> adapterObservable = Observable.from(adapters)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.newThread());
+
+        adapterObservable
+                .forEach(healthCheckAdapter ->  healthCheckAdapter.runCheck(runDirectory), error -> error.printStackTrace());
+    }
+
     public static void main(String[] args) throws ParseException, IOException {
         Options options = createOptions();
         CommandLine cmd = createCommandLine(args, options);
@@ -31,31 +65,10 @@ public class HealthChecksApplication {
         if (runDirectory == null || checkType == null) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Health-Checks", options);
-        } else {
-            if (checkType.equals(ALL_CHECKS)) {
-                executeAllcheck(runDirectory);
-            } else {
-                HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
-                try {
-                    HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
-                    healthCheckAdapter.runCheck(runDirectory);
-                } catch (NotFoundException e) {
-                    LOGGER.error(e.getMessage());
-                }
-            }
         }
-    }
 
-    private static void executeAllcheck(String runDirectory)  {
-        HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
-        Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
-
-        Observable<HealthCheckAdapter> adapterObservable = Observable.from(adapters)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.newThread());
-
-        adapterObservable
-                    .forEach(healthCheckAdapter ->  healthCheckAdapter.runCheck(runDirectory), error -> error.printStackTrace());
+        HealthChecksApplication healthChecksApplication = new HealthChecksApplication(runDirectory, checkType);
+        healthChecksApplication.processHealthChecks();
     }
 
     @NotNull
