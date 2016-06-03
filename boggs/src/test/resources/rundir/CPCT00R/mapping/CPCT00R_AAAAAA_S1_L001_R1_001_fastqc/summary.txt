@@ -1,0 +1,12 @@
+PASS	Basic Statistics	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+PASS	Per base sequence quality	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+FAIL	Per tile sequence quality	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+PASS	Per sequence quality scores	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+PASS	Per base sequence content	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+FAIL	Per sequence GC content	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+PASS	Per base N content	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+PASS	Sequence Length Distribution	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+PASS	Sequence Duplication Levels	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+PASS	Overrepresented sequences	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+PASS	Adapter Content	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
+WARN	Kmer Content	CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz
