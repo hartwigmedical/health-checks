@@ -48,7 +48,7 @@ public class HealthChecksApplication {
         Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
 
         Observable<HealthCheckAdapter> adapterObservable = Observable.from(adapters)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.computation())
                 .observeOn(Schedulers.newThread());
 
         adapterObservable
