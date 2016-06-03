@@ -1,31 +1,22 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
-import com.hartwig.healthchecks.boggs.PatientData;
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
-import com.hartwig.healthchecks.boggs.healthcheck.HealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.MappingHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.io.PatientExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 
 public class BoggsAdapter implements HealthCheckAdapter {
 
-    private static Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);
-
-    public boolean runCheck(String runDirectory) {
-        try {
-            PatientExtractor extractor = new PatientExtractor(new SambambaFlagStatParser());
-            PatientData patient = extractor.extractFromRunDirectory(runDirectory);
-
-            HealthChecker checker = new MappingHealthChecker();
-
-            return checker.isHealthy(patient);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-        }
-        return false;
-    }
+	public boolean runCheck(String runDirectory) {
+		PatientExtractor dataExtractor = new PatientExtractor(new SambambaFlagStatParser());
+		HealthChecker checker = new MappingHealthChecker(runDirectory,dataExtractor);
+		
+		PrestatsExtractor prestatsExtractor = new PrestatsExtractor();
+		HealthChecker prestastHealthChecker = new PrestastHealthChecker(runDirectory,prestatsExtractor);
+		
+		return checker.isHealthy() && prestastHealthChecker.isHealthy();
+	}
 }

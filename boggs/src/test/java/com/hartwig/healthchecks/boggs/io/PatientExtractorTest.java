@@ -22,7 +22,6 @@ public class PatientExtractorTest {
     @Test
     public void canProcessRunDirectoryStructure() throws IOException {
         URL runDirURL = Resources.getResource("rundir");
-
         PatientExtractor extractor = new PatientExtractor(new DummyFlagstatParser());
         PatientData patient = extractor.extractFromRunDirectory(runDirURL.getPath());
 
