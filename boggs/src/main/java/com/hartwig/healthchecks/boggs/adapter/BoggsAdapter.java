@@ -6,17 +6,26 @@ import com.hartwig.healthchecks.boggs.healthcheck.HealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.MappingHealthChecker;
 import com.hartwig.healthchecks.boggs.io.PatientExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
 public class BoggsAdapter implements HealthCheckAdapter {
 
-    public void runCheck(String runDirectory) throws IOException {
-        PatientExtractor extractor = new PatientExtractor(new SambambaFlagStatParser());
-        PatientData patient = extractor.extractFromRunDirectory(runDirectory);
+    private static Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);
 
-        HealthChecker checker = new MappingHealthChecker();
+    public boolean runCheck(String runDirectory) {
+        try {
+            PatientExtractor extractor = new PatientExtractor(new SambambaFlagStatParser());
+            PatientData patient = extractor.extractFromRunDirectory(runDirectory);
 
-        checker.isHealthy(patient);
+            HealthChecker checker = new MappingHealthChecker();
+
+            return checker.isHealthy(patient);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return false;
     }
 }

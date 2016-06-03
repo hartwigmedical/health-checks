@@ -4,17 +4,18 @@ import com.hartwig.healthchecks.boggs.PatientData;
 import com.hartwig.healthchecks.boggs.SampleData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MappingHealthChecker implements HealthChecker {
+
+    private static Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
 
     private static final double MIN_MAPPED_PERCENTAGE = 0.992;
     private static final double MIN_PROPERLY_PAIRED_PERCENTAGE = 0.99;
     private static final double MAX_SINGLETONS = 0.005;
     private static final double MAX_MATE_MAPPED_TO_DIFFERENT_CHR = 0.0001;
-    private static Logger LOGGER = LoggerFactory.getLogger(MappingHealthChecker.class);
 
     @NotNull
     private static String toPercentage(double percentage) {

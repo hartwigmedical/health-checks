@@ -6,9 +6,7 @@ import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.util.CheckType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 public class HealthChecksFlyweight {
@@ -33,5 +31,9 @@ public class HealthChecksFlyweight {
             throw new NotFoundException(String.format("Invalid CheckType informed %s", type));
         }
         return flyweight.get(checkType.get());
+    }
+
+    public Collection<HealthCheckAdapter> getAllAdapters() {
+        return flyweight.values();
     }
 }
