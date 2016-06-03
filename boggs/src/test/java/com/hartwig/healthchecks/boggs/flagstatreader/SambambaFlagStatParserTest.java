@@ -1,10 +1,11 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
 import com.google.common.io.Resources;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 

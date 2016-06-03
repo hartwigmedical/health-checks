@@ -28,6 +28,33 @@ public class PatientExtractor {
     }
 
     @NotNull
+    private static FilenameFilter refSampleFilter() {
+        return new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.startsWith(SAMPLE_PREFIX) && name.endsWith(REF_SAMPLE_SUFFIX);
+            }
+        };
+    }
+
+    @NotNull
+    private static FilenameFilter tumorSampleFilter() {
+        return new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.startsWith(SAMPLE_PREFIX) && name.endsWith(TUMOR_SAMPLE_SUFFIX);
+            }
+        };
+    }
+
+    @NotNull
+    private static FilenameFilter flagstatFilter() {
+        return new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(FLAGSTAT_SUFFIX);
+            }
+        };
+    }
+
+    @NotNull
     public PatientData extractFromRunDirectory(@NotNull String runDirectory) throws IOException {
         File directory = new File(runDirectory);
 
@@ -62,8 +89,7 @@ public class PatientExtractor {
                 markdupFlagstats = parsedFlagstatData;
             } else if (name.contains("sorted")) {
                 sortedMappingFlagstats.add(parsedFlagstatData);
-            }
-            else {
+            } else {
                 rawMappingFlagstats.add(parsedFlagstatData);
             }
         }
@@ -73,32 +99,5 @@ public class PatientExtractor {
 
         return new SampleData(externalID, rawMappingFlagstats,
                 sortedMappingFlagstats, markdupFlagstats, realignedFlagstats);
-    }
-
-    @NotNull
-    private static FilenameFilter refSampleFilter() {
-        return new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.startsWith(SAMPLE_PREFIX) && name.endsWith(REF_SAMPLE_SUFFIX);
-            }
-        };
-    }
-
-    @NotNull
-    private static FilenameFilter tumorSampleFilter() {
-        return new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.startsWith(SAMPLE_PREFIX) && name.endsWith(TUMOR_SAMPLE_SUFFIX);
-            }
-        };
-    }
-
-    @NotNull
-    private static FilenameFilter flagstatFilter() {
-        return new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.endsWith(FLAGSTAT_SUFFIX);
-            }
-        };
     }
 }

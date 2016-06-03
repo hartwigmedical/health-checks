@@ -6,24 +6,24 @@ import java.util.Optional;
 
 public enum CheckType {
 
-  BOGGS(new String[]{"summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat"}) ;
+    BOGGS(new String[]{"summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat"});
 
-  private String [] fileName;
+    private String[] fileName;
 
-  private CheckType(String [] fileName) {
-    this.fileName = fileName;
-  }
+    private CheckType(String[] fileName) {
+        this.fileName = fileName;
+    }
 
-  public String [] getFileName() {
-    return fileName;
-  }
+    public static Optional<CheckType> getByType(String type) {
+        List<CheckType> types = Arrays.asList(CheckType.values());
+        Optional<CheckType> returnType = types.stream()
+                .filter(t -> t.toString().equalsIgnoreCase(type))
+                .findFirst();
 
-  public static Optional<CheckType> getByType(String type) {
-    List<CheckType> types = Arrays.asList(CheckType.values());
-    Optional<CheckType> returnType = types.stream()
-        .filter(t -> t.toString().equalsIgnoreCase(type))
-        .findFirst();
+        return returnType;
+    }
 
-    return returnType;
-  }
+    public String[] getFileName() {
+        return fileName;
+    }
 }

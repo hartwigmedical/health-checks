@@ -14,6 +14,14 @@ import static org.junit.Assert.assertTrue;
 
 public class MappingHealthCheckerTest {
 
+    @NotNull
+    private static SampleData dummyData() {
+        FlagStatData testData = FlagStatTestFactory.createTestData();
+        return new SampleData("DUMMY", Lists.newArrayList(testData),
+                Lists.newArrayList(testData), testData, testData);
+
+    }
+
     @Test
     public void verifyMappingHealthChecker() {
         HealthChecker checker = new MappingHealthChecker();
@@ -21,13 +29,5 @@ public class MappingHealthCheckerTest {
         PatientData patient = new PatientData(dummyData(), dummyData());
 
         assertTrue(checker.isHealthy(patient));
-    }
-
-    @NotNull
-    private static SampleData dummyData() {
-        FlagStatData testData = FlagStatTestFactory.createTestData();
-        return new SampleData("DUMMY", Lists.newArrayList(testData),
-                Lists.newArrayList(testData), testData, testData);
-
     }
 }

@@ -34,3 +34,7 @@ build/
 #Mac OS
 .DS_Store
 boggs/.DS_Store
+
+# Logs
+boggs/logs/
+logs/

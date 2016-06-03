@@ -9,30 +9,30 @@ import org.junit.Test;
 
 public class HealthChecksFlyweightTest {
 
-  @Test
-  public void getAdapterSuccess() {
-    HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
+    @Test
+    public void getAdapterSuccess() {
+        HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
 
-    Assert.assertNotNull(healthChecksFlyweight);
+        Assert.assertNotNull(healthChecksFlyweight);
 
-    try {
-      HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter("boggs");
+        try {
+            HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter("boggs");
 
-      Assert.assertTrue(boggsAdapter instanceof BoggsAdapter);
-    } catch (NotFoundException e) {
-      Assert.fail();
+            Assert.assertTrue(boggsAdapter instanceof BoggsAdapter);
+        } catch (NotFoundException e) {
+            Assert.fail();
+        }
     }
-  }
 
-  @Test(expected = NotFoundException.class)
-  public void getAdapterFailure() throws NotFoundException {
-    HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
+    @Test(expected = NotFoundException.class)
+    public void getAdapterFailure() throws NotFoundException {
+        HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
 
-    Assert.assertNotNull(healthChecksFlyweight);
+        Assert.assertNotNull(healthChecksFlyweight);
 
-    new Expectations() {{
-      healthChecksFlyweight.getAdapter("bugs");
-      result = new NotFoundException("Expected error.");
-    }};
-  }
+        new Expectations() {{
+            healthChecksFlyweight.getAdapter("bugs");
+            result = new NotFoundException("Expected error.");
+        }};
+    }
 }
