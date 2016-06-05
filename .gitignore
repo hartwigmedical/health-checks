@@ -38,3 +38,7 @@ boggs/.DS_Store
 # Logs
 boggs/logs/
 logs/
+
+_builds/
+_steps/
+_projects/
