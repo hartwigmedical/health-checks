@@ -1,5 +1,7 @@
 # Health Checks
 
+[![wercker status](https://app.wercker.com/status/a51d71fbe59d634461b37ab989d6f594/m "wercker status")](https://app.wercker.com/project/bykey/a51d71fbe59d634461b37ab989d6f594)
+
 This repository consists of a set of utilities that perform health checks against genomics data.
 
 # Running the Heath-Checks application
