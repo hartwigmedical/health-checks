@@ -1,0 +1,17 @@
+# docker box definition
+box: nhelsherif/jdk-gradle
+
+# defining the build pipeline
+build:
+  steps:
+    - script:
+        name: show base information
+        code: |
+            echo $JAVA_HOME
+            java -version
+            javac -version
+            gradle -v
+    - script:
+        name: Gradle Build
+        code: |
+            gradle clean build
