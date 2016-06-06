@@ -1,20 +1,18 @@
 package com.hartwig.healthchecks.boggs.healthchecker;
 
-import static org.junit.Assert.assertFalse;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsData;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
+import mockit.Expectations;
+import mockit.Mocked;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsData;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
-
-import mockit.Expectations;
-import mockit.Mocked;
+import static org.junit.Assert.assertFalse;
 
 public class PrestastHealthCheckerTest {
 
@@ -24,11 +22,7 @@ public class PrestastHealthCheckerTest {
 
 	@Test
 	public void verifyPrestatsHealthChecker() throws IOException {
-		PrestatsData testData = new PrestatsData();
-		testData.setName("DummyName");
-		List<String> errors = new ArrayList<>();
-		errors.add("DummyErr");
-		testData.setPrestatsErrors(errors);
+		PrestatsData testData = new PrestatsData("DummyErr", "DummyName");
 		List<PrestatsData> prestatsDatasErrors = new ArrayList<>();
 
 		prestatsDatasErrors.add(testData);

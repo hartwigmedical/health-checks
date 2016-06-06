@@ -16,6 +16,7 @@ import java.io.IOException;
 
 @ResourceWrapper(type = CheckType.BOGGS)
 public class BoggsAdapter implements HealthCheckAdapter {
+
 	private static Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);
 
 	private static final String IO_ERROR_MSG = "Got IO Exception with message: %s";
@@ -24,6 +25,7 @@ public class BoggsAdapter implements HealthCheckAdapter {
 		try {
 			PatientExtractor dataExtractor = new PatientExtractor(new SambambaFlagStatParser());
 			HealthChecker checker = new MappingHealthChecker(runDirectory, dataExtractor);
+
 			PrestatsExtractor prestatsExtractor = new PrestatsExtractor();
 			HealthChecker prestastHealthChecker = new PrestastHealthChecker(runDirectory, prestatsExtractor);
 			return checker.isHealthy() && prestastHealthChecker.isHealthy();

@@ -1,22 +1,36 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestast;
 
-import java.util.List;
-
 public class PrestatsData {
 
-	String name ;
-	List<String> prestatsErrors;
-	public String getName() {
-		return name;
+	private String check ;
+	private String file;
+
+	public PrestatsData(String check, String file) {
+		this.check = check;
+		this.file = file;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public String getCheck() {
+		return check;
 	}
-	public List<String> getPrestatsErrors() {
-		return prestatsErrors;
+
+	public void setCheck(String check) {
+		this.check = check;
 	}
-	public void setPrestatsErrors(List<String> prestatsErrors) {
-		this.prestatsErrors = prestatsErrors;
+
+	public String getFile() {
+		return file;
 	}
-	
+
+	public void setFile(String file) {
+		this.file = file;
+	}
+
+	@Override
+	public String toString() {
+		return "PrestatsData{" +
+				"check='" + check + '\'' +
+				", file='" + file + '\'' +
+				'}';
+	}
 }
