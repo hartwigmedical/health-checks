@@ -2,7 +2,6 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
-import com.hartwig.healthchecks.boggs.io.PatientExtractor;
 import com.hartwig.healthchecks.boggs.model.PatientData;
 import com.hartwig.healthchecks.boggs.model.SampleData;
 import com.hartwig.healthchecks.common.checks.HealthChecker;

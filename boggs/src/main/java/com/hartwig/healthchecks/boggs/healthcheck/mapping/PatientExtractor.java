@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.io;
+package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.boggs.model.PatientData;

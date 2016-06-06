@@ -4,7 +4,7 @@ import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
-import com.hartwig.healthchecks.boggs.io.PatientExtractor;
+import com.hartwig.healthchecks.boggs.healthcheck.mapping.PatientExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;

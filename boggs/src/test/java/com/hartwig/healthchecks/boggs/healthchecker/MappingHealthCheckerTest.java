@@ -13,7 +13,7 @@ import com.hartwig.healthchecks.boggs.model.SampleData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatTestFactory;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
-import com.hartwig.healthchecks.boggs.io.PatientExtractor;
+import com.hartwig.healthchecks.boggs.healthcheck.mapping.PatientExtractor;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 
 import mockit.Expectations;
