@@ -1,7 +1,7 @@
 package com.hartwig.healthchecks.boggs.io;
 
 import com.google.common.io.Resources;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsData;
+import com.hartwig.healthchecks.boggs.model.PrestatsData;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import org.junit.Test;
 

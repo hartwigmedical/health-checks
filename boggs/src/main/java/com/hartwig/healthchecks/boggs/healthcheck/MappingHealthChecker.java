@@ -6,8 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.boggs.PatientData;
-import com.hartwig.healthchecks.boggs.SampleData;
+import com.hartwig.healthchecks.boggs.model.PatientData;
+import com.hartwig.healthchecks.boggs.model.SampleData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.boggs.io.PatientExtractor;

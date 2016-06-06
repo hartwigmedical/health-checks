@@ -1,7 +1,7 @@
 package com.hartwig.healthchecks.boggs.healthchecker;
 
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsData;
+import com.hartwig.healthchecks.boggs.model.PrestatsData;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import mockit.Expectations;

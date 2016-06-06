@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
-import com.hartwig.healthchecks.boggs.PatientData;
-import com.hartwig.healthchecks.boggs.SampleData;
+import com.hartwig.healthchecks.boggs.model.PatientData;
+import com.hartwig.healthchecks.boggs.model.SampleData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatTestFactory;
 import com.hartwig.healthchecks.boggs.healthcheck.MappingHealthChecker;

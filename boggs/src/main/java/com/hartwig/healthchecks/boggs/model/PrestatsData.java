@@ -1,29 +1,27 @@
-package com.hartwig.healthchecks.boggs.healthcheck.prestast;
+package com.hartwig.healthchecks.boggs.model;
+
+import org.jetbrains.annotations.NotNull;
 
 public class PrestatsData {
 
-	private String check ;
+    @NotNull
+	private String check;
+    @NotNull
 	private String file;
 
-	public PrestatsData(String check, String file) {
+	public PrestatsData(@NotNull String check, @NotNull String file) {
 		this.check = check;
 		this.file = file;
 	}
 
+    @NotNull
 	public String getCheck() {
 		return check;
 	}
 
-	public void setCheck(String check) {
-		this.check = check;
-	}
-
+    @NotNull
 	public String getFile() {
 		return file;
-	}
-
-	public void setFile(String file) {
-		this.file = file;
 	}
 
 	@Override

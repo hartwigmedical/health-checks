@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs;
+package com.hartwig.healthchecks.boggs.model;
 
 import org.jetbrains.annotations.NotNull;
 

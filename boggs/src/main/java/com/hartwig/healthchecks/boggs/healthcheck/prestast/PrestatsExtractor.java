@@ -1,5 +1,6 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestast;
 
+import com.hartwig.healthchecks.boggs.model.PrestatsData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
