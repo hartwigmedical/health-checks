@@ -1,17 +1,16 @@
-package com.hartwig.healthchecks.boggs.healthcheck;
+package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
-import java.io.IOException;
-
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
+import com.hartwig.healthchecks.boggs.io.PatientExtractor;
+import com.hartwig.healthchecks.boggs.model.PatientData;
+import com.hartwig.healthchecks.boggs.model.SampleData;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.boggs.model.PatientData;
-import com.hartwig.healthchecks.boggs.model.SampleData;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
-import com.hartwig.healthchecks.boggs.io.PatientExtractor;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
+import java.io.IOException;
 
 public class MappingHealthChecker implements HealthChecker {
 
