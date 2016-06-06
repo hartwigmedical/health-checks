@@ -1,10 +1,5 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.boggs.healthcheck.MappingHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
@@ -12,7 +7,14 @@ import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.io.PatientExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
+import com.hartwig.healthchecks.common.util.CheckType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+
+@ResourceWrapper(type = CheckType.BOGGS)
 public class BoggsAdapter implements HealthCheckAdapter {
 	private static Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);
 
