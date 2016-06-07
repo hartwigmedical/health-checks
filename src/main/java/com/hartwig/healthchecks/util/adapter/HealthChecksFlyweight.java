@@ -3,7 +3,7 @@ package com.hartwig.healthchecks.util.adapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.util.CheckCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ public class HealthChecksFlyweight {
 
     private static Logger LOGGER = LogManager.getLogger(HealthChecksFlyweight.class);
 
-    private static Map<CheckType, HealthCheckAdapter> flyweight = new HashMap<>();
+    private static Map<CheckCategory, HealthCheckAdapter> flyweight = new HashMap<>();
     private static HealthChecksFlyweight instance = new HealthChecksFlyweight();
 
     private static Reflections base = new Reflections("com.hartwig.healthchecks.boggs.adapter");
@@ -29,9 +29,9 @@ public class HealthChecksFlyweight {
                     try {
                         HealthCheckAdapter adapterInstance = adapter.newInstance();
                         ResourceWrapper resourceWrapper = adapter.getAnnotation(ResourceWrapper.class);
-                        CheckType checkType = resourceWrapper.type();
+                        CheckCategory checkCategory = resourceWrapper.type();
 
-                        flyweight.put(checkType, adapterInstance);
+                        flyweight.put(checkCategory, adapterInstance);
                     } catch (InstantiationException | IllegalAccessException e) {
                         LOGGER.error(String.format("Error occurred when instantiating adapter. Error -> %s", e.getMessage()));
                     }
@@ -46,9 +46,9 @@ public class HealthChecksFlyweight {
     }
 
     public HealthCheckAdapter getAdapter(@NotNull String type) throws NotFoundException {
-        Optional<CheckType> checkType = CheckType.getByType(type);
+        Optional<CheckCategory> checkType = CheckCategory.getByCategory(type);
         if (!checkType.isPresent()) {
-            throw new NotFoundException(String.format("Invalid CheckType informed %s", type));
+            throw new NotFoundException(String.format("Invalid CheckCategory informed %s", type));
         }
         return flyweight.get(checkType.get());
     }

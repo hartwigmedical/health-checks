@@ -2,6 +2,7 @@ package com.hartwig.healthchecks;
 
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
+import com.hartwig.healthchecks.common.util.Report;
 import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
@@ -15,44 +16,16 @@ import java.util.Collection;
 
 public class HealthChecksApplication {
 
-    private static Logger LOGGER = LogManager.getLogger(HealthChecksApplication.class);
-
     private static final String RUN_DIRECTORY = "rundir";
     private static final String CHECK_TYPE = "checktype";
     private static final String ALL_CHECKS = "all";
-
+    private static Logger LOGGER = LogManager.getLogger(HealthChecksApplication.class);
     private String runDirectory;
     private String checkType;
 
     public HealthChecksApplication(String runDirectory, String checkType) {
         this.runDirectory = runDirectory;
         this.checkType = checkType;
-    }
-
-    public void processHealthChecks() {
-        if (checkType.equals(ALL_CHECKS)) {
-            executeAllcheck(runDirectory);
-        } else {
-            HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
-            try {
-                HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
-                healthCheckAdapter.runCheck(runDirectory);
-            } catch (NotFoundException e) {
-                LOGGER.error(e.getMessage());
-            }
-        }
-    }
-
-    protected void executeAllcheck(@NotNull String runDirectory)  {
-        HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
-        Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
-
-        Observable<HealthCheckAdapter> adapterObservable = Observable.from(adapters)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(Schedulers.newThread());
-
-        adapterObservable
-                .forEach(healthCheckAdapter ->  healthCheckAdapter.runCheck(runDirectory), error -> error.printStackTrace());
     }
 
     public static void main(String[] args) throws ParseException, IOException {
@@ -84,5 +57,36 @@ public class HealthChecksApplication {
         options.addOption(RUN_DIRECTORY, true, "The path containing the data for a single run");
         options.addOption(CHECK_TYPE, true, "The type of check to b executed for a single run");
         return options;
+    }
+
+    public void processHealthChecks() {
+        if (checkType.equals(ALL_CHECKS)) {
+            executeAllcheck(runDirectory);
+        } else {
+            HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
+            try {
+                HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
+                healthCheckAdapter.runCheck(runDirectory);
+            } catch (NotFoundException e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+        Report.getInstance().generateReport();
+    }
+
+    protected void executeAllcheck(@NotNull String runDirectory) {
+        HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
+        Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
+
+        Observable.from(adapters)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        (h) -> h.runCheck(runDirectory),
+                        (t) -> t.printStackTrace(),
+                        () -> {
+                            Report.getInstance().generateReport();
+                        }
+                );
+
     }
 }

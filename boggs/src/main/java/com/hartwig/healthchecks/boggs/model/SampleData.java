@@ -1,11 +1,13 @@
 package com.hartwig.healthchecks.boggs.model;
 
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
+import com.hartwig.healthchecks.common.util.BaseConfig;
+import com.hartwig.healthchecks.common.util.CheckType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class SampleData {
+public class SampleData extends BaseConfig {
 
     @NotNull
     private final String sampleID = "IRRELEVANT"; // KODU: Eventually should contain sample barcode (FR12345678)
@@ -20,9 +22,11 @@ public class SampleData {
     @NotNull
     private final FlagStatData realignFlagstats;
 
-    public SampleData(@NotNull String externalID, @NotNull List<FlagStatData> rawMappingFlagstats,
+    public SampleData(@NotNull CheckType type, @NotNull String externalID, @NotNull List<FlagStatData> rawMappingFlagstats,
                       @NotNull List<FlagStatData> sortedMappingFlagstats, @NotNull FlagStatData markdupFlagstats,
                       @NotNull FlagStatData realignFlagstats) {
+        super(type);
+
         this.externalID = externalID;
         this.rawMappingFlagstats = rawMappingFlagstats;
         this.sortedMappingFlagstats = sortedMappingFlagstats;
@@ -31,42 +35,42 @@ public class SampleData {
     }
 
     @NotNull
-    public String sampleID() {
+    public String getSampleId() {
         return sampleID;
     }
 
     @NotNull
-    public String externalID() {
+    public String getExternalId() {
         return externalID;
     }
 
     @NotNull
-    public List<FlagStatData> rawMappingFlagstats() {
+    public List<FlagStatData> getRawMappingFlagstats() {
         return rawMappingFlagstats;
     }
 
     @NotNull
-    public List<FlagStatData> sortedMappingFlagstats() {
+    public List<FlagStatData> getSortedMappingFlagstats() {
         return sortedMappingFlagstats;
     }
 
     @NotNull
-    public FlagStatData markdupFlagstat() {
+    public FlagStatData getMarkdupFlagstat() {
         return markdupFlagstats;
     }
 
     @NotNull
-    public FlagStatData realignFlagstat() {
+    public FlagStatData getRealignFlagstat() {
         return realignFlagstats;
     }
 
     @Override
     public String toString() {
         return "SampleData{" +
-                "sampleID='" + sampleID + '\'' +
-                ", externalID='" + externalID + '\'' +
-                ", rawMappingFlagstats=" + rawMappingFlagstats +
-                ", sortedMappingFlagstats=" + sortedMappingFlagstats +
+                "getSampleId='" + sampleID + '\'' +
+                ", getExternalId='" + externalID + '\'' +
+                ", getRawMappingFlagstats=" + rawMappingFlagstats +
+                ", getSortedMappingFlagstats=" + sortedMappingFlagstats +
                 ", markdupFlagstats=" + markdupFlagstats +
                 ", realignFlagstats=" + realignFlagstats +
                 '}';

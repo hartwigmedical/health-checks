@@ -8,13 +8,13 @@ import com.hartwig.healthchecks.boggs.healthcheck.mapping.PatientExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.util.CheckCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-@ResourceWrapper(type = CheckType.BOGGS)
+@ResourceWrapper(type = CheckCategory.BOGGS)
 public class BoggsAdapter implements HealthCheckAdapter {
 
 	private static Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);

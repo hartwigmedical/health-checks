@@ -1,10 +1,11 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import com.google.common.collect.Lists;
-import com.hartwig.healthchecks.boggs.model.PatientData;
-import com.hartwig.healthchecks.boggs.model.SampleData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
+import com.hartwig.healthchecks.boggs.model.PatientData;
+import com.hartwig.healthchecks.boggs.model.SampleData;
+import com.hartwig.healthchecks.common.util.CheckType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public class PatientExtractor {
         SampleData refSample = extractSample(directory, refSampleFilter());
         SampleData tumorSample = extractSample(directory, tumorSampleFilter());
 
-        return new PatientData(refSample, tumorSample);
+        return new PatientData(CheckType.MAPPING, refSample, tumorSample);
     }
 
     @NotNull
@@ -71,7 +72,7 @@ public class PatientExtractor {
         assert markdupFlagstats != null;
         assert realignedFlagstats != null;
 
-        return new SampleData(externalID, rawMappingFlagstats,
+        return new SampleData(CheckType.MAPPING, externalID, rawMappingFlagstats,
                 sortedMappingFlagstats, markdupFlagstats, realignedFlagstats);
     }
 

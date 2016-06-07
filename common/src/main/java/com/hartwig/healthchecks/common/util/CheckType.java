@@ -6,12 +6,10 @@ import java.util.Optional;
 
 public enum CheckType {
 
-    BOGGS(new String[]{"summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat"});
+    MAPPING,
+    PRESTATS;
 
-    private String[] fileName;
-
-    private CheckType(String[] fileName) {
-        this.fileName = fileName;
+    private CheckType() {
     }
 
     public static Optional<CheckType> getByType(String type) {
@@ -21,9 +19,5 @@ public enum CheckType {
                 .findFirst();
 
         return returnType;
-    }
-
-    public String[] getFileName() {
-        return fileName;
     }
 }
