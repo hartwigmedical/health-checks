@@ -1,17 +1,16 @@
-package com.hartwig.healthchecks.boggs.healthcheck;
+package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
-import java.io.IOException;
-
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
+import com.hartwig.healthchecks.boggs.model.PatientData;
+import com.hartwig.healthchecks.boggs.model.SampleData;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.util.Report;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.boggs.PatientData;
-import com.hartwig.healthchecks.boggs.SampleData;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
-import com.hartwig.healthchecks.boggs.io.PatientExtractor;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
+import java.io.IOException;
 
 public class MappingHealthChecker implements HealthChecker {
 
@@ -40,15 +39,19 @@ public class MappingHealthChecker implements HealthChecker {
 	public boolean isHealthy() throws IOException {
 		PatientData patientData;
 		patientData = dataExtractor.extractFromRunDirectory(runDirectory);
-		checkSample(patientData.refSample());
-		checkSample(patientData.tumorSample());
+		checkSample(patientData.getRefSample());
+		checkSample(patientData.getTumorSample());
+
+		Report report = Report.getInstance();
+		report.addReportData(patientData);
+
 		return true;
 	}
 
 	private void checkSample(@NotNull SampleData sample) {
-		LOGGER.info("Checking mapping health for " + sample.externalID());
+		LOGGER.info("Checking mapping health for " + sample.getExternalId());
 
-		for (FlagStatData flagstatData : sample.rawMappingFlagstats()) {
+		for (FlagStatData flagstatData : sample.getRawMappingFlagstats()) {
 			LOGGER.info(" Verifying " + flagstatData.path());
 			FlagStats passed = flagstatData.qcPassedReads();
 			double mappedPercentage = passed.mapped() / (double) passed.total();

@@ -1,7 +1,8 @@
 package com.hartwig.healthchecks.boggs.io;
 
 import com.google.common.io.Resources;
-import com.hartwig.healthchecks.boggs.PatientData;
+import com.hartwig.healthchecks.boggs.healthcheck.mapping.PatientExtractor;
+import com.hartwig.healthchecks.boggs.model.PatientData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import mockit.Mocked;

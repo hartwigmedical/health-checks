@@ -5,17 +5,17 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-public class CheckTypeTest {
+public class CheckCategoryTest {
 
     @Test
     public void getByTypeSuccess() throws Exception {
-        Optional<CheckType> checkType = CheckType.getByType("boggs");
-        Assert.assertTrue(checkType.get() == CheckType.BOGGS);
+        Optional<CheckCategory> checkType = CheckCategory.getByCategory("boggs");
+        Assert.assertTrue(checkType.get() == CheckCategory.BOGGS);
     }
 
     @Test
     public void getByTypeFailures() throws Exception {
-        Optional<CheckType> checkType = CheckType.getByType("bugs");
+        Optional<CheckCategory> checkType = CheckCategory.getByCategory("bugs");
         Assert.assertFalse(checkType.isPresent());
     }
 }

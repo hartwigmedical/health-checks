@@ -1,19 +1,22 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
-import java.io.IOException;
-
+import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
+import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
+import com.hartwig.healthchecks.boggs.healthcheck.mapping.PatientExtractor;
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
+import com.hartwig.healthchecks.common.util.CheckCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
-import com.hartwig.healthchecks.boggs.healthcheck.MappingHealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
-import com.hartwig.healthchecks.boggs.io.PatientExtractor;
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
+import java.io.IOException;
 
+@ResourceWrapper(type = CheckCategory.BOGGS)
 public class BoggsAdapter implements HealthCheckAdapter {
+
 	private static Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);
 
 	private static final String IO_ERROR_MSG = "Got IO Exception with message: %s";
@@ -22,6 +25,7 @@ public class BoggsAdapter implements HealthCheckAdapter {
 		try {
 			PatientExtractor dataExtractor = new PatientExtractor(new SambambaFlagStatParser());
 			HealthChecker checker = new MappingHealthChecker(runDirectory, dataExtractor);
+
 			PrestatsExtractor prestatsExtractor = new PrestatsExtractor();
 			HealthChecker prestastHealthChecker = new PrestastHealthChecker(runDirectory, prestatsExtractor);
 			return checker.isHealthy() && prestastHealthChecker.isHealthy();
