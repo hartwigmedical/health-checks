@@ -1,18 +1,18 @@
-package com.hartwig.healthchecks.common.util;
+package com.hartwig.healthchecks.common.report;
 
 import com.google.gson.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.hartwig.healthchecks.common.util.BaseConfig;
+import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Report {
-
-    private static Logger LOGGER = LogManager.getLogger(Report.class);
+public class JsonReport extends Report {
 
     private static final String REPORT_NAME = "health-checks_%s.json";
 
@@ -21,22 +21,24 @@ public class Report {
             .disableHtmlEscaping()
             .create();
 
-    private static Report instance = new Report();
+    private static JsonReport instance = new JsonReport();
 
     private Map<CheckType, BaseConfig> healthChecks = new ConcurrentHashMap<>();
 
-    private Report() {
+    private JsonReport() {
     }
 
-    public static Report getInstance() {
+    public static JsonReport getInstance() {
         return instance;
     }
 
+    @Override
     public void addReportData(BaseConfig reportData) {
         healthChecks.putIfAbsent(reportData.getCheckType(), reportData);
     }
 
-    public void generateReport() {
+    @Override
+    public Optional<String> generateReport() {
         JsonArray reportArray = new JsonArray();
 
         healthChecks.forEach((k, v) -> {
@@ -50,8 +52,8 @@ public class Report {
 
         PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
 
-        String reportLocation = propertiesUtil.getProperty("report.dir");
-        String fileName = String.format("%s/%s", reportLocation, String.format(REPORT_NAME, System.currentTimeMillis()));
+        String reportDir = propertiesUtil.getProperty("report.dir");
+        String fileName = String.format("%s/%s", reportDir, String.format(REPORT_NAME, System.currentTimeMillis()));
 
         try (FileWriter fileWriter = new FileWriter(new File(fileName))) {
             JsonObject reportJson = new JsonObject();
@@ -60,6 +62,10 @@ public class Report {
             fileWriter.flush();
         } catch (IOException e) {
             LOGGER.error(String.format("Error occurred whilst generating reports. Error -> %s", e.getMessage()));
+
+            return Optional.empty();
         }
+
+        return Optional.of(fileName);
     }
 }
