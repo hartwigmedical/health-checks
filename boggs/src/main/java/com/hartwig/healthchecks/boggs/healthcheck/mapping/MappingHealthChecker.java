@@ -5,7 +5,8 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.boggs.model.PatientData;
 import com.hartwig.healthchecks.boggs.model.SampleData;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.util.Report;
+import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.common.report.Report;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +43,7 @@ public class MappingHealthChecker implements HealthChecker {
 		checkSample(patientData.getRefSample());
 		checkSample(patientData.getTumorSample());
 
-		Report report = Report.getInstance();
+		Report report = JsonReport.getInstance();
 		report.addReportData(patientData);
 
 		return true;

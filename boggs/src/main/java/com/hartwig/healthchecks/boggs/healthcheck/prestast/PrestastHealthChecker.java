@@ -2,7 +2,8 @@ package com.hartwig.healthchecks.boggs.healthcheck.prestast;
 
 import com.hartwig.healthchecks.boggs.model.PrestatsData;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.util.Report;
+import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.common.report.Report;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +30,7 @@ public class PrestastHealthChecker implements HealthChecker {
 			LOGGER.info(String.format(FOUND_FAILS_MSG, k, v));
 		});
 
-		Report report = Report.getInstance();
+		Report report = JsonReport.getInstance();
 		report.addReportData(prestatsErrors);
 
 		return true;

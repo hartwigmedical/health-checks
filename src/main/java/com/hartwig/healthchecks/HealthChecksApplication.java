@@ -2,7 +2,7 @@ package com.hartwig.healthchecks;
 
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
-import com.hartwig.healthchecks.common.util.Report;
+import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
@@ -71,7 +71,7 @@ public class HealthChecksApplication {
                 LOGGER.error(e.getMessage());
             }
         }
-        Report.getInstance().generateReport();
+        JsonReport.getInstance().generateReport();
     }
 
     protected void executeAllcheck(@NotNull String runDirectory) {
@@ -84,7 +84,7 @@ public class HealthChecksApplication {
                         (h) -> h.runCheck(runDirectory),
                         (t) -> t.printStackTrace(),
                         () -> {
-                            Report.getInstance().generateReport();
+                            JsonReport.getInstance().generateReport();
                         }
                 );
 
