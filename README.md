@@ -34,3 +34,9 @@ sbpltk1zffh04:health-checks wrodrigues$ cat boggs/logs/healthchecks-trace.log
 [INFO ] 2016-06-03 10:23:27.127 [Test worker] MappingHealthChecker -   OK: Acceptable singleton percentage: 0.0%
 [INFO ] 2016-06-03 10:23:27.127 [Test worker] MappingHealthChecker -   OK: Acceptable mate mapped to different chr percentage: 0.0%
 ```
+
+# Reports
+
+The current version of the Health Checks generates a JSON file with information about the executed checks. The reports are genrated under ```/tmp``` directory with the prefixed name ```health-checks_[timestamp]```.
+
+The location of the reports can be changed via the ```config.properties``` file located under the **resources** directory of the **common** module.
