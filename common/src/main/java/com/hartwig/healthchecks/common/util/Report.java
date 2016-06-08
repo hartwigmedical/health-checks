@@ -7,14 +7,14 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Report {
 
     private static Logger LOGGER = LogManager.getLogger(Report.class);
 
-    private static final String DEFAULT_LOCATION = "/Users/wrodrigues/health-checks_%s.json";
+    private static final String REPORT_NAME = "health-checks_%s.json";
 
     private static final Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -22,8 +22,8 @@ public class Report {
             .create();
 
     private static Report instance = new Report();
-    JsonParser jsonParser = new JsonParser();
-    private Map<CheckType, BaseConfig> healthChecks = new HashMap<>();
+
+    private Map<CheckType, BaseConfig> healthChecks = new ConcurrentHashMap<>();
 
     private Report() {
     }
@@ -48,7 +48,10 @@ public class Report {
             reportArray.add(element);
         });
 
-        String fileName = String.format(DEFAULT_LOCATION, System.currentTimeMillis());
+        PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
+
+        String reportLocation = propertiesUtil.getProperty("report.dir");
+        String fileName = String.format("%s/%s", reportLocation, String.format(REPORT_NAME, System.currentTimeMillis()));
 
         try (FileWriter fileWriter = new FileWriter(new File(fileName))) {
             JsonObject reportJson = new JsonObject();
