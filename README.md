@@ -47,10 +47,103 @@ The location of the reports can be changed via the ```config.properties``` file 
 {
 	"health_checks": [{
 		"PRESTATS": {
-			"summary": {
-				"CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz": ["Per tile sequence quality", "Per sequence GC content"],
-				"CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz": ["Per sequence GC content"]
-			},
+			"summary": [{
+				"check_name": "Basic Statistics",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Per base sequence quality",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Per tile sequence quality",
+				"status": "FAIL",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Per sequence quality scores",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Per base sequence content",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Per sequence GC content",
+				"status": "FAIL",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Per base N content",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Sequence Length Distribution",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Sequence Duplication Levels",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Overrepresented sequences",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Adapter Content",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Kmer Content",
+				"status": "WARN",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Basic Statistics",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Per base sequence quality",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Per tile sequence quality",
+				"status": "WARN",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Per sequence quality scores",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Per base sequence content",
+				"status": "WARN",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Per sequence GC content",
+				"status": "FAIL",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Per base N content",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Sequence Length Distribution",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Sequence Duplication Levels",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Overrepresented sequences",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Adapter Content",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Kmer Content",
+				"status": "PASS",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}],
 			"check_type": "PRESTATS"
 		}
 	}, {
