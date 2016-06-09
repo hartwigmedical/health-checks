@@ -10,6 +10,7 @@ import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -23,9 +24,9 @@ public class PrestastHealthCheckerTest {
 	PrestatsExtractor dataExtractor;
 
 	@Test
-	public void verifyPrestatsHealthChecker() throws IOException {
+	public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
 		PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
-		testData.addData("DummyFile","DummyData");
+		testData.addData("DummyFile", "DummyData");
 
 		HealthChecker checker = new PrestastHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 
@@ -36,12 +37,12 @@ public class PrestastHealthCheckerTest {
 			}
 		};
 		BaseReport report = checker.runCheck();
-		assertEquals("Report with wrong type" ,CheckType.PRESTATS, report.getCheckType() );
-		assertEquals("Report got wrong size of error" ,1, ((PrestatsReport)report).getSummary().size());
+		assertEquals("Report with wrong type", CheckType.PRESTATS, report.getCheckType());
+		assertEquals("Report got wrong size of error", 1, ((PrestatsReport) report).getSummary().size());
 	}
 
 	@Test(expected = IOException.class)
-	public void verifyPrestatsHealthCheckerIOException() throws IOException {
+	public void verifyPrestatsHealthCheckerIOException() throws IOException, EmptyFileException {
 		HealthChecker checker = new PrestastHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 		new Expectations() {
 			{

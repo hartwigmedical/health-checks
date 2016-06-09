@@ -13,6 +13,7 @@ import com.hartwig.healthchecks.boggs.model.data.SampleData;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -40,17 +41,17 @@ public class MappingHealthChecker implements HealthChecker {
 	}
 
 	@Override
-	public BaseReport runCheck() throws IOException {
+	public BaseReport runCheck() throws IOException, EmptyFileException {
 		PatientData patientData = dataExtractor.extractFromRunDirectory(runDirectory);
 		MappingDataReport refDataReport = checkSample(patientData.getRefSample());
-		MappingDataReport tumorDataReport= checkSample(patientData.getTumorSample());
-		MappingReport mappingReport = new MappingReport( CheckType.MAPPING , refDataReport, tumorDataReport);
+		MappingDataReport tumorDataReport = checkSample(patientData.getTumorSample());
+		MappingReport mappingReport = new MappingReport(CheckType.MAPPING, refDataReport, tumorDataReport);
 		return mappingReport;
 	}
 
 	private MappingDataReport checkSample(@NotNull SampleData sample) {
 		LOGGER.info("Checking mapping health for " + sample.getExternalId());
-		MappingDataReport dataReport= new MappingDataReport(sample.getExternalId());
+		MappingDataReport dataReport = new MappingDataReport(sample.getExternalId());
 
 		for (FlagStatData flagstatData : sample.getRawMappingFlagstats()) {
 			LOGGER.info(" Verifying " + flagstatData.path());

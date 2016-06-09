@@ -19,6 +19,7 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.model.data.PatientData;
 import com.hartwig.healthchecks.boggs.model.data.SampleData;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class PatientExtractor {
 	private static Logger LOGGER = LogManager.getLogger(PatientExtractor.class);
@@ -40,7 +41,8 @@ public class PatientExtractor {
 	}
 
 	@NotNull
-	public PatientData extractFromRunDirectory(@NotNull String runDirectory) throws IOException {
+	public PatientData extractFromRunDirectory(@NotNull String runDirectory)
+			throws IOException, EmptyFileException {
 		SampleData refSample = extractSample(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
 		SampleData tumorSample = extractSample(runDirectory, SAMPLE_PREFIX, TUMOR_SAMPLE_SUFFIX);
 		return new PatientData(refSample, tumorSample);
@@ -48,7 +50,7 @@ public class PatientExtractor {
 
 	@NotNull
 	private SampleData extractSample(@NotNull String runDirectory, @NotNull String startsWith, @NotNull String endsWith)
-			throws IOException {
+			throws IOException, EmptyFileException {
 
 		Optional<Path> sampleFile = Files.walk(new File(runDirectory).toPath()).filter(
 				p -> p.getFileName().toString().startsWith(startsWith) && p.getFileName().toString().endsWith(endsWith))
@@ -71,14 +73,15 @@ public class PatientExtractor {
 				realignedFlagstats);
 	}
 
-	private FlagStatData parseFile(Path sampleFile, String filePartName) throws IOException {
+	private FlagStatData parseFile(Path sampleFile, String filePartName)
+			throws IOException, EmptyFileException {
 		Optional<Path> filePath = Files.walk(new File(sampleFile + File.separator + MAPPING + File.separator).toPath())
 				.filter(p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
 						&& p.getFileName().toString().contains(filePartName))
 				.findFirst();
 		assert filePath.isPresent();
 
-		return flagstatParser.parse(new File(filePath.get().toString()));
+		return flagstatParser.parse(filePath.get().toString());
 	}
 
 	private List<FlagStatData> parseSortedFiles(Path sampleFile, String filePartName) throws IOException {
@@ -89,7 +92,10 @@ public class PatientExtractor {
 		return filesPaths.stream().map(path -> {
 			FlagStatData parsedFlagstatData = null;
 			try {
-				parsedFlagstatData = flagstatParser.parse(new File(path.toString()));
+				parsedFlagstatData = flagstatParser.parse(path.toString());
+			} catch (EmptyFileException e) {
+				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
+						e.getMessage()));
 			} catch (IOException e) {
 				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
 						e.getMessage()));
@@ -107,7 +113,10 @@ public class PatientExtractor {
 		return filesPaths.stream().map(path -> {
 			FlagStatData parsedFlagstatData = null;
 			try {
-				parsedFlagstatData = flagstatParser.parse(new File(path.toString()));
+				parsedFlagstatData = flagstatParser.parse(path.toString());
+			} catch (EmptyFileException e) {
+				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
+						e.getMessage()));
 			} catch (IOException e) {
 				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
 						e.getMessage()));

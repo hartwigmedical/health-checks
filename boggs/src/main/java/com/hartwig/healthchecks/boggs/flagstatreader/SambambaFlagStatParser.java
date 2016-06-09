@@ -1,103 +1,46 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class SambambaFlagStatParser implements FlagStatParser {
+	private static final String FLAGSTATS_FILE_EMPTY_ERROR = "flagstats file empty path -> %s";
+	private static final String SEPERATOR_REGEX = " ";
 
-    public SambambaFlagStatParser() {
-    }
+	@NotNull
+	public FlagStatData parse(@NotNull String filePath) throws IOException, EmptyFileException {
+		List<Long> passed = new ArrayList<>();
+		List<Long> failed = new ArrayList<>();
 
-    @NotNull
-    public FlagStatData parse(@NotNull File file) throws IOException {
-        BufferedReader fileReader = new BufferedReader(new FileReader(file));
-        FlagStatsBuilder qcPassedReadsBuilder = new FlagStatsBuilder();
-        FlagStatsBuilder qcFailedReadsBuilder = new FlagStatsBuilder();
+		Files.lines(Paths.get(filePath)).map(line -> {
+			Long qcPassed = Long.parseLong(line.split(SEPERATOR_REGEX)[0]);
+			Long qcFailed = Long.parseLong(line.split(SEPERATOR_REGEX)[2]);
+			return new Long[] { qcPassed, qcFailed };
+		}).forEach(line -> {
+			passed.add(line[0]);
+			failed.add(line[1]);
+		});
 
-        int lineNr = 0;
-        String line;
-        while ((line = fileReader.readLine()) != null) {
-            lineNr++;
-            // KODU: Assume format <qcPassedNr> + <qcFailedNr> <description sentence>
-            String[] parts = line.split(" ");
-            long qcPassed = Long.parseLong(parts[0]);
-            long qcFailed = Long.parseLong(parts[2]);
+		if (failed.isEmpty() || passed.isEmpty()) {
+			throw new EmptyFileException(String.format(FLAGSTATS_FILE_EMPTY_ERROR, filePath));
+		}
 
-            switch (lineNr) {
-                case 1: {
-                    qcPassedReadsBuilder.setTotal(qcPassed);
-                    qcFailedReadsBuilder.setTotal(qcFailed);
-                    break;
-                }
-                case 2: {
-                    qcPassedReadsBuilder.setSecondary(qcPassed);
-                    qcFailedReadsBuilder.setSecondary(qcFailed);
-                    break;
-                }
-                case 3: {
-                    qcPassedReadsBuilder.setSupplementary(qcPassed);
-                    qcFailedReadsBuilder.setSupplementary(qcFailed);
-                    break;
-                }
-                case 4: {
-                    qcPassedReadsBuilder.setDuplicates(qcPassed);
-                    qcFailedReadsBuilder.setDuplicates(qcFailed);
-                    break;
-                }
-                case 5: {
-                    qcPassedReadsBuilder.setMapped(qcPassed);
-                    qcFailedReadsBuilder.setMapped(qcFailed);
-                    break;
-                }
-                case 6: {
-                    qcPassedReadsBuilder.setPairedInSequencing(qcPassed);
-                    qcFailedReadsBuilder.setPairedInSequencing(qcFailed);
-                    break;
-                }
-                case 7: {
-                    qcPassedReadsBuilder.setRead1(qcPassed);
-                    qcFailedReadsBuilder.setRead1(qcFailed);
-                    break;
-                }
-                case 8: {
-                    qcPassedReadsBuilder.setRead2(qcPassed);
-                    qcFailedReadsBuilder.setRead2(qcFailed);
-                    break;
-                }
-                case 9: {
-                    qcPassedReadsBuilder.setProperlyPaired(qcPassed);
-                    qcFailedReadsBuilder.setProperlyPaired(qcFailed);
-                    break;
-                }
-                case 10: {
-                    qcPassedReadsBuilder.setItselfAndMateMapped(qcPassed);
-                    qcFailedReadsBuilder.setItselfAndMateMapped(qcFailed);
-                    break;
-                }
-                case 11: {
-                    qcPassedReadsBuilder.setSingletons(qcPassed);
-                    qcFailedReadsBuilder.setSingletons(qcFailed);
-                    break;
-                }
-                case 12: {
-                    qcPassedReadsBuilder.setMateMappedToDifferentChr(qcPassed);
-                    qcFailedReadsBuilder.setMateMappedToDifferentChr(qcFailed);
-                    break;
-                }
-                case 13: {
-                    qcPassedReadsBuilder.setMateMappedToDifferentChrMapQ5(qcPassed);
-                    qcFailedReadsBuilder.setMateMappedToDifferentChrMapQ5(qcFailed);
-                    break;
-                }
-            }
-        }
+		FlagStats passedFlagStats = buildFlagStatsData(passed.stream().toArray(Long[]::new));
+		FlagStats failedFlagStats = buildFlagStatsData(failed.stream().toArray(Long[]::new));
+		return new FlagStatData(filePath, passedFlagStats, failedFlagStats);
+	}
 
-        fileReader.close();
-
-        return new FlagStatData(file.getPath(), qcPassedReadsBuilder.build(), qcFailedReadsBuilder.build());
-    }
+	private FlagStats buildFlagStatsData(Long[] data) {
+		return new FlagStatsBuilder().setTotal(data[0]).setSecondary(data[1]).setSupplementary(data[2])
+				.setDuplicates(data[3]).setMapped(data[4]).setPairedInSequencing(data[5]).setRead1(data[6])
+				.setRead2(data[7]).setProperlyPaired(data[8]).setItselfAndMateMapped(data[9]).setSingletons(data[10])
+				.setMateMappedToDifferentChr(data[11]).setMateMappedToDifferentChrMapQ5(data[12]).build();
+	}
 }
