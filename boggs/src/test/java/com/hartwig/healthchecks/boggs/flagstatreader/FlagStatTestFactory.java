@@ -10,9 +10,9 @@ public final class FlagStatTestFactory {
     @NotNull
     public static FlagStatData createTestData() {
         FlagStatsBuilder builder = new FlagStatsBuilder();
-        builder.setMapped(10);
-        builder.setTotal(26);
-        builder.setSingletons(15);
+        builder.setMapped(10d);
+        builder.setTotal(26d);
+        builder.setSingletons(15d);
         return new FlagStatData("AnyPath", builder.build(), builder.build());
     }
 }

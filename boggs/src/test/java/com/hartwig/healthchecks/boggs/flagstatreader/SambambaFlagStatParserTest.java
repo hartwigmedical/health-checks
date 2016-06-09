@@ -1,14 +1,13 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
-import static org.junit.Assert.assertEquals;
+import com.google.common.io.Resources;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
 
-import org.junit.Test;
-
-import com.google.common.io.Resources;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import static org.junit.Assert.assertEquals;
 
 public class SambambaFlagStatParserTest {
 
@@ -20,33 +19,33 @@ public class SambambaFlagStatParserTest {
 		FlagStatParser parser = new SambambaFlagStatParser();
 		FlagStatData flagStatData = parser.parse(exampleFlagStatFile);
 
-		assertEquals(0, flagStatData.qcPassedReads().total());
-		assertEquals(1, flagStatData.qcPassedReads().secondary());
-		assertEquals(2, flagStatData.qcPassedReads().supplementary());
-		assertEquals(3, flagStatData.qcPassedReads().duplicates());
-		assertEquals(4, flagStatData.qcPassedReads().mapped());
-		assertEquals(5, flagStatData.qcPassedReads().pairedInSequencing());
-		assertEquals(6, flagStatData.qcPassedReads().read1());
-		assertEquals(7, flagStatData.qcPassedReads().read2());
-		assertEquals(8, flagStatData.qcPassedReads().properlyPaired());
-		assertEquals(9, flagStatData.qcPassedReads().itselfAndMateMapped());
-		assertEquals(10, flagStatData.qcPassedReads().singletons());
-		assertEquals(11, flagStatData.qcPassedReads().mateMappedToDifferentChr());
-		assertEquals(12, flagStatData.qcPassedReads().mateMappedToDifferentChrMapQ5());
+		assertEquals(Double.valueOf(0), flagStatData.qcPassedReads().total());
+		assertEquals(Double.valueOf(1), flagStatData.qcPassedReads().secondary());
+		assertEquals(Double.valueOf(2), flagStatData.qcPassedReads().supplementary());
+		assertEquals(Double.valueOf(3), flagStatData.qcPassedReads().duplicates());
+		assertEquals(Double.valueOf(4), flagStatData.qcPassedReads().mapped());
+		assertEquals(Double.valueOf(5), flagStatData.qcPassedReads().pairedInSequencing());
+		assertEquals(Double.valueOf(6), flagStatData.qcPassedReads().read1());
+		assertEquals(Double.valueOf(7), flagStatData.qcPassedReads().read2());
+		assertEquals(Double.valueOf(8), flagStatData.qcPassedReads().properlyPaired());
+		assertEquals(Double.valueOf(9), flagStatData.qcPassedReads().itselfAndMateMapped());
+		assertEquals(Double.valueOf(10), flagStatData.qcPassedReads().singletons());
+		assertEquals(Double.valueOf(11), flagStatData.qcPassedReads().mateMappedToDifferentChr());
+		assertEquals(Double.valueOf(12), flagStatData.qcPassedReads().mateMappedToDifferentChrMapQ5());
 
-		assertEquals(20, flagStatData.qcFailedReads().total());
-		assertEquals(21, flagStatData.qcFailedReads().secondary());
-		assertEquals(22, flagStatData.qcFailedReads().supplementary());
-		assertEquals(23, flagStatData.qcFailedReads().duplicates());
-		assertEquals(24, flagStatData.qcFailedReads().mapped());
-		assertEquals(25, flagStatData.qcFailedReads().pairedInSequencing());
-		assertEquals(26, flagStatData.qcFailedReads().read1());
-		assertEquals(27, flagStatData.qcFailedReads().read2());
-		assertEquals(28, flagStatData.qcFailedReads().properlyPaired());
-		assertEquals(29, flagStatData.qcFailedReads().itselfAndMateMapped());
-		assertEquals(30, flagStatData.qcFailedReads().singletons());
-		assertEquals(31, flagStatData.qcFailedReads().mateMappedToDifferentChr());
-		assertEquals(32, flagStatData.qcFailedReads().mateMappedToDifferentChrMapQ5());
+		assertEquals(Double.valueOf(20), flagStatData.qcFailedReads().total());
+		assertEquals(Double.valueOf(21), flagStatData.qcFailedReads().secondary());
+		assertEquals(Double.valueOf(22), flagStatData.qcFailedReads().supplementary());
+		assertEquals(Double.valueOf(23), flagStatData.qcFailedReads().duplicates());
+		assertEquals(Double.valueOf(24), flagStatData.qcFailedReads().mapped());
+		assertEquals(Double.valueOf(25), flagStatData.qcFailedReads().pairedInSequencing());
+		assertEquals(Double.valueOf(26), flagStatData.qcFailedReads().read1());
+		assertEquals(Double.valueOf(27), flagStatData.qcFailedReads().read2());
+		assertEquals(Double.valueOf(28), flagStatData.qcFailedReads().properlyPaired());
+		assertEquals(Double.valueOf(29), flagStatData.qcFailedReads().itselfAndMateMapped());
+		assertEquals(Double.valueOf(30), flagStatData.qcFailedReads().singletons());
+		assertEquals(Double.valueOf(31), flagStatData.qcFailedReads().mateMappedToDifferentChr());
+		assertEquals(Double.valueOf(32), flagStatData.qcFailedReads().mateMappedToDifferentChrMapQ5());
 	}
 
 	@Test(expected = EmptyFileException.class)

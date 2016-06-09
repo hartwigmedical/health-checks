@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public class MappingDataReport {
 
 	@NotNull
-	private final String externalID;
+	private final String externalId;
 
 	@NotNull
 	private String mappedPercentage;
@@ -16,8 +16,8 @@ public class MappingDataReport {
 	@NotNull
 	private String mateMappedToDifferentChrPercentage;
 
-	public MappingDataReport(String externalID) {
-		this.externalID = externalID;
+	public MappingDataReport(String externalId) {
+		this.externalId = externalId;
 	}
 
 	
@@ -41,8 +41,8 @@ public class MappingDataReport {
 	}
 
 
-	public String getExternalID() {
-		return externalID;
+	public String getExternalId() {
+		return externalId;
 	}
 
 	public String getMappedPercentage() {
@@ -63,7 +63,7 @@ public class MappingDataReport {
 
 	@Override
 	public String toString() {
-		return "MappingReport [externalID=" + externalID + ", mappedPercentage=" + mappedPercentage
+		return "MappingReport [externalId=" + externalId + ", mappedPercentage=" + mappedPercentage
 				+ ", properlyPairedPercentage=" + properlyPairedPercentage + ", singletonPercentage="
 				+ singletonPercentage + ", mateMappedToDifferentChrPercentage=" + mateMappedToDifferentChrPercentage
 				+ "]";

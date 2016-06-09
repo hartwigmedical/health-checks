@@ -1,11 +1,5 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.boggs.model.data.PatientData;
@@ -16,6 +10,11 @@ import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class MappingHealthChecker implements HealthChecker {
 
@@ -46,6 +45,7 @@ public class MappingHealthChecker implements HealthChecker {
 		MappingDataReport refDataReport = checkSample(patientData.getRefSample());
 		MappingDataReport tumorDataReport = checkSample(patientData.getTumorSample());
 		MappingReport mappingReport = new MappingReport(CheckType.MAPPING, refDataReport, tumorDataReport);
+
 		return mappingReport;
 	}
 
@@ -56,10 +56,11 @@ public class MappingHealthChecker implements HealthChecker {
 		for (FlagStatData flagstatData : sample.getRawMappingFlagstats()) {
 			LOGGER.info(" Verifying " + flagstatData.path());
 			FlagStats passed = flagstatData.qcPassedReads();
-			double mappedPercentage = passed.mapped() / (double) passed.total();
-			double properlyPairedPercentage = passed.properlyPaired() / (double) passed.total();
-			double singletonPercentage = passed.singletons() / (double) passed.total();
-			double mateMappedToDifferentChrPercentage = passed.mateMappedToDifferentChr() / (double) passed.total();
+
+			Double mappedPercentage = passed.mapped() / passed.total();
+            Double properlyPairedPercentage = passed.properlyPaired() / passed.total();
+            Double singletonPercentage = passed.singletons() / passed.total();
+            Double mateMappedToDifferentChrPercentage = passed.mateMappedToDifferentChr() / passed.total();
 
 			dataReport.setMappedPercentage(toPercentage(mappedPercentage));
 			dataReport.setProperlyPairedPercentage(toPercentage(properlyPairedPercentage));
