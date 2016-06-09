@@ -16,6 +16,7 @@ import com.hartwig.healthchecks.boggs.model.data.PatientData;
 import com.hartwig.healthchecks.boggs.model.data.SampleData;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -35,7 +36,7 @@ public class MappingHealthCheckerTest {
 	}
 
 	@Test
-	public void verifyMappingHealthChecker() throws IOException {
+	public void verifyMappingHealthChecker() throws IOException, EmptyFileException {
 		PatientData patient = new PatientData(dummyData(), dummyData());
 
 		HealthChecker checker = new MappingHealthChecker("DummyRunDir", dataExtractor);

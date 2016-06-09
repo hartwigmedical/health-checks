@@ -12,6 +12,7 @@ import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -24,19 +25,23 @@ public class BoggsAdapter implements HealthCheckAdapter {
 	private static Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);
 
 	private static final String IO_ERROR_MSG = "Got IO Exception with message: %s";
+	private static final String EMPTY_FILE_ERROR_MSG = "Got Empty File Exception with message: %s";
+
 	private Report report = JsonReport.getInstance();
 
 	public void runCheck(String runDirectory) {
 		try {
 			PatientExtractor dataExtractor = new PatientExtractor(new SambambaFlagStatParser());
 			HealthChecker checker = new MappingHealthChecker(runDirectory, dataExtractor);
-			BaseReport mapping=  checker.runCheck() ;
+			BaseReport mapping = checker.runCheck();
 			report.addReportData(mapping);
 
 			PrestatsExtractor prestatsExtractor = new PrestatsExtractor();
 			HealthChecker prestastHealthChecker = new PrestastHealthChecker(runDirectory, prestatsExtractor);
-			BaseReport prestatsErrors= prestastHealthChecker.runCheck();
+			BaseReport prestatsErrors = prestastHealthChecker.runCheck();
 			report.addReportData(prestatsErrors);
+		} catch (EmptyFileException e) {
+			LOGGER.error(String.format(EMPTY_FILE_ERROR_MSG, e.getMessage()));
 		} catch (IOException e) {
 			LOGGER.error(String.format(IO_ERROR_MSG, e.getMessage()));
 		}
