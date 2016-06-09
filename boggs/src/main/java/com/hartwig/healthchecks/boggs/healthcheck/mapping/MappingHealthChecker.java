@@ -1,17 +1,20 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
-import com.hartwig.healthchecks.boggs.model.PatientData;
-import com.hartwig.healthchecks.boggs.model.SampleData;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.report.JsonReport;
-import com.hartwig.healthchecks.common.report.Report;
+import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
+import com.hartwig.healthchecks.boggs.model.data.PatientData;
+import com.hartwig.healthchecks.boggs.model.data.SampleData;
+import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
+import com.hartwig.healthchecks.boggs.model.report.MappingReport;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
 
 public class MappingHealthChecker implements HealthChecker {
 
@@ -37,20 +40,17 @@ public class MappingHealthChecker implements HealthChecker {
 	}
 
 	@Override
-	public boolean isHealthy() throws IOException {
-		PatientData patientData;
-		patientData = dataExtractor.extractFromRunDirectory(runDirectory);
-		checkSample(patientData.getRefSample());
-		checkSample(patientData.getTumorSample());
-
-		Report report = JsonReport.getInstance();
-		report.addReportData(patientData);
-
-		return true;
+	public BaseReport runCheck() throws IOException {
+		PatientData patientData = dataExtractor.extractFromRunDirectory(runDirectory);
+		MappingDataReport refDataReport = checkSample(patientData.getRefSample());
+		MappingDataReport tumorDataReport= checkSample(patientData.getTumorSample());
+		MappingReport mappingReport = new MappingReport( CheckType.MAPPING , refDataReport, tumorDataReport);
+		return mappingReport;
 	}
 
-	private void checkSample(@NotNull SampleData sample) {
+	private MappingDataReport checkSample(@NotNull SampleData sample) {
 		LOGGER.info("Checking mapping health for " + sample.getExternalId());
+		MappingDataReport dataReport= new MappingDataReport(sample.getExternalId());
 
 		for (FlagStatData flagstatData : sample.getRawMappingFlagstats()) {
 			LOGGER.info(" Verifying " + flagstatData.path());
@@ -59,6 +59,11 @@ public class MappingHealthChecker implements HealthChecker {
 			double properlyPairedPercentage = passed.properlyPaired() / (double) passed.total();
 			double singletonPercentage = passed.singletons() / (double) passed.total();
 			double mateMappedToDifferentChrPercentage = passed.mateMappedToDifferentChr() / (double) passed.total();
+
+			dataReport.setMappedPercentage(toPercentage(mappedPercentage));
+			dataReport.setProperlyPairedPercentage(toPercentage(properlyPairedPercentage));
+			dataReport.setSingletonPercentage(toPercentage(singletonPercentage));
+			dataReport.setMateMappedToDifferentChrPercentage(toPercentage(mateMappedToDifferentChrPercentage));
 
 			if (mappedPercentage < MIN_MAPPED_PERCENTAGE) {
 				LOGGER.info("  WARN: Low mapped percentage: " + toPercentage(mappedPercentage));
@@ -86,5 +91,6 @@ public class MappingHealthChecker implements HealthChecker {
 						+ toPercentage(mateMappedToDifferentChrPercentage));
 			}
 		}
+		return dataReport;
 	}
 }

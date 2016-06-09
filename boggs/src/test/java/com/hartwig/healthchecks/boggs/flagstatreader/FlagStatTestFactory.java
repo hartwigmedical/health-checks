@@ -12,6 +12,7 @@ public final class FlagStatTestFactory {
         FlagStatsBuilder builder = new FlagStatsBuilder();
         builder.setMapped(10);
         builder.setTotal(26);
+        builder.setSingletons(15);
         return new FlagStatData("AnyPath", builder.build(), builder.build());
     }
 }

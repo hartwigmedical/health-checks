@@ -18,10 +18,10 @@ public class ReportTest {
 
     @Test
     public void generateReport() {
-        BaseConfig baseConfig1 = new BaseConfig(CheckType.MAPPING);
+        BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
         report.addReportData(baseConfig1);
 
-        BaseConfig baseConfig2 = new BaseConfig(CheckType.PRESTATS);
+        BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
         Optional<String> location = report.generateReport();
@@ -32,7 +32,7 @@ public class ReportTest {
 
     @Test
     public void generateReportException() {
-        BaseConfig baseConfig1 = new BaseConfig(CheckType.MAPPING);
+        BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
         jsonReport.addReportData(baseConfig1);
 
         new Expectations() {

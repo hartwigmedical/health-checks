@@ -2,11 +2,11 @@ package com.hartwig.healthchecks.common.util;
 
 import java.io.Serializable;
 
-public class BaseConfig implements Serializable {
+public class BaseReport implements Serializable {
 
     private CheckType checkType;
 
-    public BaseConfig(CheckType checkType) {
+    public BaseReport(CheckType checkType) {
         this.checkType = checkType;
     }
 
@@ -26,7 +26,7 @@ public class BaseConfig implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BaseConfig that = (BaseConfig) o;
+        BaseReport that = (BaseReport) o;
 
         return checkType == that.checkType;
 

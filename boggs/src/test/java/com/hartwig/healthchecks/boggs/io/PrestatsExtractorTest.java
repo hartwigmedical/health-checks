@@ -2,7 +2,8 @@ package com.hartwig.healthchecks.boggs.io;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
-import com.hartwig.healthchecks.boggs.model.PrestatsData;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class PrestatsExtractorTest {
 	public void canProcessRunDirectoryStructure() throws IOException {
 		URL runDirURL = Resources.getResource("rundir");
 		PrestatsExtractor extractor = new PrestatsExtractor();
-		PrestatsData prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
+		PrestatsReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
 
 		assertNotNull("We should get some fails", prestatsData);
 		assertEquals("Number of files that has failed is not correct", 2,  prestatsData.getSummary().size());

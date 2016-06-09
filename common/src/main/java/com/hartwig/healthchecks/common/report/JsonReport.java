@@ -1,7 +1,7 @@
 package com.hartwig.healthchecks.common.report;
 
 import com.google.gson.*;
-import com.hartwig.healthchecks.common.util.BaseConfig;
+import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
@@ -23,7 +23,7 @@ public class JsonReport extends Report {
 
     private static JsonReport instance = new JsonReport();
 
-    private Map<CheckType, BaseConfig> healthChecks = new ConcurrentHashMap<>();
+    private Map<CheckType, BaseReport> healthChecks = new ConcurrentHashMap<>();
 
     private JsonReport() {
     }
@@ -33,7 +33,7 @@ public class JsonReport extends Report {
     }
 
     @Override
-    public void addReportData(BaseConfig reportData) {
+    public void addReportData(BaseReport reportData) {
         healthChecks.putIfAbsent(reportData.getCheckType(), reportData);
     }
 

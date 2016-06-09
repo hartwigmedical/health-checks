@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestast;
 
-import com.hartwig.healthchecks.boggs.model.PrestatsData;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,13 +25,13 @@ public class PrestatsExtractor {
 	private static final String FAIL_ERROR = "FAIL";
 	private static String DATA_FILE_NAME = "summary.txt";
 
-	public PrestatsData extractFromRunDirectory(String runDirectory) throws IOException {
+	public PrestatsReport extractFromRunDirectory(String runDirectory) throws IOException {
 		List<Path> summaryFiles = Files.walk(new File(runDirectory).toPath())
 				.filter(p -> p.getFileName().toString().startsWith(DATA_FILE_NAME))
 				.sorted()
 				.collect(toCollection(ArrayList<Path>::new));
 
-		PrestatsData prestatsData = new PrestatsData(CheckType.PRESTATS);
+		PrestatsReport prestatsData = new PrestatsReport(CheckType.PRESTATS);
 
 		summaryFiles.stream()
 				.map(path -> {
