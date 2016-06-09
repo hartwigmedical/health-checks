@@ -2,23 +2,23 @@ package com.hartwig.healthchecks.boggs.flagstatreader;
 
 public class FlagStats {
 
-    private final long total;
-    private final long secondary;
-    private final long supplementary;
-    private final long duplicates;
-    private final long mapped;
-    private final long pairedInSequencing;
-    private final long read1;
-    private final long read2;
-    private final long properlyPaired;
-    private final long itselfAndMateMapped;
-    private final long singletons;
-    private final long mateMappedToDifferentChr;
-    private final long mateMappedToDifferentChrMapQ5;
+    private final Double total;
+    private final Double secondary;
+    private final Double supplementary;
+    private final Double duplicates;
+    private final Double mapped;
+    private final Double pairedInSequencing;
+    private final Double read1;
+    private final Double read2;
+    private final Double properlyPaired;
+    private final Double itselfAndMateMapped;
+    private final Double singletons;
+    private final Double mateMappedToDifferentChr;
+    private final Double mateMappedToDifferentChrMapQ5;
 
-    FlagStats(long total, long secondary, long supplementary, long duplicates, long mapped, long pairedInSequencing,
-              long read1, long read2, long properlyPaired, long itselfAndMateMapped, long singletons,
-              long mateMappedToDifferentChr, long mateMappedToDifferentChrMapQ5) {
+    FlagStats(Double total, Double secondary, Double supplementary, Double duplicates, Double mapped, Double pairedInSequencing,
+              Double read1, Double read2, Double properlyPaired, Double itselfAndMateMapped, Double singletons,
+              Double mateMappedToDifferentChr, Double mateMappedToDifferentChrMapQ5) {
         this.total = total;
         this.secondary = secondary;
         this.supplementary = supplementary;
@@ -34,55 +34,55 @@ public class FlagStats {
         this.mateMappedToDifferentChrMapQ5 = mateMappedToDifferentChrMapQ5;
     }
 
-    public long total() {
+    public Double total() {
         return total;
     }
 
-    public long secondary() {
+    public Double secondary() {
         return secondary;
     }
 
-    public long supplementary() {
+    public Double supplementary() {
         return supplementary;
     }
 
-    public long duplicates() {
+    public Double duplicates() {
         return duplicates;
     }
 
-    public long mapped() {
+    public Double mapped() {
         return mapped;
     }
 
-    public long pairedInSequencing() {
+    public Double pairedInSequencing() {
         return pairedInSequencing;
     }
 
-    public long read1() {
+    public Double read1() {
         return read1;
     }
 
-    public long read2() {
+    public Double read2() {
         return read2;
     }
 
-    public long properlyPaired() {
+    public Double properlyPaired() {
         return properlyPaired;
     }
 
-    public long itselfAndMateMapped() {
+    public Double itselfAndMateMapped() {
         return itselfAndMateMapped;
     }
 
-    public long singletons() {
+    public Double singletons() {
         return singletons;
     }
 
-    public long mateMappedToDifferentChr() {
+    public Double mateMappedToDifferentChr() {
         return mateMappedToDifferentChr;
     }
 
-    public long mateMappedToDifferentChrMapQ5() {
+    public Double mateMappedToDifferentChrMapQ5() {
         return mateMappedToDifferentChrMapQ5;
     }
 

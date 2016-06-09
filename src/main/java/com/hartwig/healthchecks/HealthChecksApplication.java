@@ -13,13 +13,16 @@ import rx.schedulers.Schedulers;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Optional;
 
 public class HealthChecksApplication {
+
+    private static Logger LOGGER = LogManager.getLogger(HealthChecksApplication.class);
 
     private static final String RUN_DIRECTORY = "rundir";
     private static final String CHECK_TYPE = "checktype";
     private static final String ALL_CHECKS = "all";
-    private static Logger LOGGER = LogManager.getLogger(HealthChecksApplication.class);
+
     private String runDirectory;
     private String checkType;
 
@@ -71,7 +74,8 @@ public class HealthChecksApplication {
                 LOGGER.error(e.getMessage());
             }
         }
-        JsonReport.getInstance().generateReport();
+        Optional<String> fileName = JsonReport.getInstance().generateReport();
+        LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
     }
 
     protected void executeAllcheck(@NotNull String runDirectory) {
@@ -84,7 +88,8 @@ public class HealthChecksApplication {
                         (h) -> h.runCheck(runDirectory),
                         (t) -> t.printStackTrace(),
                         () -> {
-                            JsonReport.getInstance().generateReport();
+                            Optional<String> fileName = JsonReport.getInstance().generateReport();
+                            LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
                         }
                 );
 

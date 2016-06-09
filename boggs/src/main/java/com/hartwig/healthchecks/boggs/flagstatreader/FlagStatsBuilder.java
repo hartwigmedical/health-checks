@@ -4,94 +4,94 @@ import org.jetbrains.annotations.NotNull;
 
 class FlagStatsBuilder {
 
-    private long total;
-    private long secondary;
-    private long supplementary;
-    private long duplicates;
-    private long mapped;
-    private long pairedInSequencing;
-    private long read1;
-    private long read2;
-    private long properlyPaired;
-    private long itselfAndMateMapped;
-    private long singletons;
-    private long mateMappedToDifferentChr;
-    private long mateMappedToDifferentChrMapQ5;
+    private double total;
+    private double secondary;
+    private double supplementary;
+    private double duplicates;
+    private double mapped;
+    private double pairedInSequencing;
+    private double read1;
+    private double read2;
+    private double properlyPaired;
+    private double itselfAndMateMapped;
+    private double singletons;
+    private double mateMappedToDifferentChr;
+    private double mateMappedToDifferentChrMapQ5;
 
     @NotNull
-    public FlagStatsBuilder setTotal(long total) {
+    public FlagStatsBuilder setTotal(double total) {
         this.total = total;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setSecondary(long secondary) {
+    public FlagStatsBuilder setSecondary(double secondary) {
         this.secondary = secondary;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setSupplementary(long supplementary) {
+    public FlagStatsBuilder setSupplementary(double supplementary) {
         this.supplementary = supplementary;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setDuplicates(long duplicates) {
+    public FlagStatsBuilder setDuplicates(double duplicates) {
         this.duplicates = duplicates;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setMapped(long mapped) {
+    public FlagStatsBuilder setMapped(double mapped) {
         this.mapped = mapped;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setPairedInSequencing(long pairedInSequencing) {
+    public FlagStatsBuilder setPairedInSequencing(double pairedInSequencing) {
         this.pairedInSequencing = pairedInSequencing;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setRead1(long read1) {
+    public FlagStatsBuilder setRead1(double read1) {
         this.read1 = read1;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setRead2(long read2) {
+    public FlagStatsBuilder setRead2(double read2) {
         this.read2 = read2;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setProperlyPaired(long properlyPaired) {
+    public FlagStatsBuilder setProperlyPaired(double properlyPaired) {
         this.properlyPaired = properlyPaired;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setItselfAndMateMapped(long itselfAndMateMapped) {
+    public FlagStatsBuilder setItselfAndMateMapped(double itselfAndMateMapped) {
         this.itselfAndMateMapped = itselfAndMateMapped;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setSingletons(long singletons) {
+    public FlagStatsBuilder setSingletons(double singletons) {
         this.singletons = singletons;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setMateMappedToDifferentChr(long mateMappedToDifferentChr) {
+    public FlagStatsBuilder setMateMappedToDifferentChr(double mateMappedToDifferentChr) {
         this.mateMappedToDifferentChr = mateMappedToDifferentChr;
         return this;
     }
 
     @NotNull
-    public FlagStatsBuilder setMateMappedToDifferentChrMapQ5(long mateMappedToDifferentChrMapQ5) {
+    public FlagStatsBuilder setMateMappedToDifferentChrMapQ5(double mateMappedToDifferentChrMapQ5) {
         this.mateMappedToDifferentChrMapQ5 = mateMappedToDifferentChrMapQ5;
         return this;
     }
