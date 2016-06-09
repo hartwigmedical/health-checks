@@ -2,6 +2,7 @@ group 'com.hartwig.healthchecks'
 version '1.0.0-SNAPSHOT'
 
 apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 allprojects {
     apply plugin: 'java'
@@ -35,9 +36,10 @@ dependencies {
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.5.RELEASE")
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
