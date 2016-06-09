@@ -4,12 +4,21 @@
 
 This repository consists of a set of utilities that perform health checks against genomics data.
 
-# Running the Heath-Checks application
+# Build and Run the Health Checks
 
-After cloning the repository, one can run the Health-Checks application in the following way:
+The Health Checks project uses Gradle as the build management tool. However, in order to build the project Gradle doesn't have to be installed. One can simply use the Gradle wrapper (i.e. gradlew) to build the project once it has been cloned. The example below shows how it can be accomplished.
 
 ```
-./gradlew clean build run -Pargs="-rundir <directory> -checktype boggs"
+$ ./gradlew wrapper
+$ ./gradlw clean build shadowJar
+```
+
+The first line (i.e. ./gradlew wrapper) has to be executed only for the first time the project is built.
+
+Once built, the project can be executed in the following way:
+
+```
+java -jar build/libs/health-checks-1.0.0-SNAPSHOT-all.jar -rundir [run-directory] -checktype boggs
 ```
 
 # Logs location
