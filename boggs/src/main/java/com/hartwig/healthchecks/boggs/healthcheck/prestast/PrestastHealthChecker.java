@@ -12,7 +12,8 @@ import com.hartwig.healthchecks.common.util.BaseReport;
 public class PrestastHealthChecker implements HealthChecker {
 
 	private static Logger LOGGER = LogManager.getLogger(PrestastHealthChecker.class);
-	private static final String FOUND_FAILS_MSG = "NOT OK: Found Errors coming from the The Prestats file %s : %s  ";
+	private static final String FAIL_ERROR = "FAIL";
+	private static final String FOUND_FAILS_MSG = "NOT OK: %s has status FAIL in file %s ";
 
 	private String runDirectory;
 
@@ -25,10 +26,12 @@ public class PrestastHealthChecker implements HealthChecker {
 
 	@Override
 	public BaseReport runCheck() throws IOException {
-		PrestatsReport prestatsErrors = dataExtractor.extractFromRunDirectory(runDirectory);
-		prestatsErrors.getSummary().forEach((k, v) -> {
-			LOGGER.info(String.format(FOUND_FAILS_MSG, k, v));
+		PrestatsReport prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
+		prestatsReport.getSummary().forEach((v) -> {
+			if (v.getStatus().equalsIgnoreCase(FAIL_ERROR)) {
+				LOGGER.info(String.format(FOUND_FAILS_MSG, v.getCheckName(), v.getFile()));
+			}
 		});
-		return prestatsErrors;
+		return prestatsReport;
 	}
 }

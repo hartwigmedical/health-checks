@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
@@ -26,7 +27,8 @@ public class PrestastHealthCheckerTest {
 	@Test
 	public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
 		PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
-		testData.addData("DummyFile", "DummyData");
+		PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport("DummyCheckName", "FAIL", "DummyFile");
+		testData.addData(prestatsTestDataReport);
 
 		HealthChecker checker = new PrestastHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 
@@ -36,6 +38,7 @@ public class PrestastHealthCheckerTest {
 				returns(testData);
 			}
 		};
+		
 		BaseReport report = checker.runCheck();
 		assertEquals("Report with wrong type", CheckType.PRESTATS, report.getCheckType());
 		assertEquals("Report got wrong size of error", 1, ((PrestatsReport) report).getSummary().size());
