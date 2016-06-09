@@ -40,3 +40,37 @@ sbpltk1zffh04:health-checks wrodrigues$ cat boggs/logs/healthchecks-trace.log
 The current version of the Health Checks generates a JSON file with information about the executed checks. The reports are genrated under ```/tmp``` directory with the prefixed name ```health-checks_[timestamp]```.
 
 The location of the reports can be changed via the ```config.properties``` file located under the **resources** directory of the **common** module.
+
+# Report Snippet
+
+```
+{
+	"health_checks": [{
+		"PRESTATS": {
+			"summary": {
+				"CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz": ["Per tile sequence quality", "Per sequence GC content"],
+				"CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz": ["Per sequence GC content"]
+			},
+			"check_type": "PRESTATS"
+		}
+	}, {
+		"MAPPING": {
+			"ref_data": {
+				"external_id": "CPCT00R",
+				"mapped_percentage": "9.223372036854776E16%",
+				"properly_paired_percentage": "9.223372036854776E16%",
+				"singleton_percentage": "9.223372036854776E16%",
+				"mate_mapped_to_different_chr_percentage": "9.223372036854776E16%"
+			},
+			"tumor_data": {
+				"external_id": "CPCT00T",
+				"mapped_percentage": "9.223372036854776E16%",
+				"properly_paired_percentage": "9.223372036854776E16%",
+				"singleton_percentage": "9.223372036854776E16%",
+				"mate_mapped_to_different_chr_percentage": "9.223372036854776E16%"
+			},
+			"check_type": "MAPPING"
+		}
+	}]
+}
+```
