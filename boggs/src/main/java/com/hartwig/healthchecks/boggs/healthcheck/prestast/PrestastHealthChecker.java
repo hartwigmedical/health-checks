@@ -1,13 +1,13 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestast;
 
-import com.hartwig.healthchecks.boggs.model.PrestatsData;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.report.JsonReport;
-import com.hartwig.healthchecks.common.report.Report;
+import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.util.BaseReport;
 
 public class PrestastHealthChecker implements HealthChecker {
 
@@ -24,15 +24,11 @@ public class PrestastHealthChecker implements HealthChecker {
 	}
 
 	@Override
-	public boolean isHealthy() throws IOException {
-		PrestatsData prestatsErrors = dataExtractor.extractFromRunDirectory(runDirectory);
-		prestatsErrors.getSummary().forEach( (k, v) -> {
+	public BaseReport runCheck() throws IOException {
+		PrestatsReport prestatsErrors = dataExtractor.extractFromRunDirectory(runDirectory);
+		prestatsErrors.getSummary().forEach((k, v) -> {
 			LOGGER.info(String.format(FOUND_FAILS_MSG, k, v));
 		});
-
-		Report report = JsonReport.getInstance();
-		report.addReportData(prestatsErrors);
-
-		return true;
+		return prestatsErrors;
 	}
 }

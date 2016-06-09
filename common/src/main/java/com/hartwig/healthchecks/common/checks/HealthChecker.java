@@ -2,7 +2,9 @@ package com.hartwig.healthchecks.common.checks;
 
 import java.io.IOException;
 
-public interface HealthChecker {
+import com.hartwig.healthchecks.common.util.BaseReport;
 
-	boolean isHealthy() throws IOException;
+public interface HealthChecker {
+	
+	BaseReport runCheck() throws IOException;
 }

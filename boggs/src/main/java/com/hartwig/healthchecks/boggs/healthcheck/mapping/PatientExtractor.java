@@ -1,105 +1,118 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
-import com.google.common.collect.Lists;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
-import com.hartwig.healthchecks.boggs.model.PatientData;
-import com.hartwig.healthchecks.boggs.model.SampleData;
-import com.hartwig.healthchecks.common.util.CheckType;
-import org.jetbrains.annotations.NotNull;
+import static java.util.stream.Collectors.toCollection;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
+import com.hartwig.healthchecks.boggs.model.data.PatientData;
+import com.hartwig.healthchecks.boggs.model.data.SampleData;
 
 public class PatientExtractor {
+	private static Logger LOGGER = LogManager.getLogger(PatientExtractor.class);
 
-    private static final String SAMPLE_PREFIX = "CPCT";
-    private static final String REF_SAMPLE_SUFFIX = "R";
-    private static final String TUMOR_SAMPLE_SUFFIX = "T";
+	private static final String MAPPING = "mapping";
+	private static final String SORTED = "sorted";
+	private static final String DEDUP = "dedup";
+	private static final String REALIGN = "realign";
+	private static final String SAMPLE_PREFIX = "CPCT";
+	private static final String REF_SAMPLE_SUFFIX = "R";
+	private static final String TUMOR_SAMPLE_SUFFIX = "T";
+	private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
-    private static final String FLAGSTAT_SUFFIX = ".flagstat";
+	@NotNull
+	private final FlagStatParser flagstatParser;
 
-    @NotNull
-    private final FlagStatParser flagstatParser;
+	public PatientExtractor(@NotNull FlagStatParser flagstatParser) {
+		this.flagstatParser = flagstatParser;
+	}
 
-    public PatientExtractor(@NotNull FlagStatParser flagstatParser) {
-        this.flagstatParser = flagstatParser;
-    }
+	@NotNull
+	public PatientData extractFromRunDirectory(@NotNull String runDirectory) throws IOException {
+		SampleData refSample = extractSample(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
+		SampleData tumorSample = extractSample(runDirectory, SAMPLE_PREFIX, TUMOR_SAMPLE_SUFFIX);
+		return new PatientData(refSample, tumorSample);
+	}
 
-    @NotNull
-    public PatientData extractFromRunDirectory(@NotNull String runDirectory) throws IOException {
-        File directory = new File(runDirectory);
+	@NotNull
+	private SampleData extractSample(@NotNull String runDirectory, @NotNull String startsWith, @NotNull String endsWith)
+			throws IOException {
 
-        SampleData refSample = extractSample(directory, refSampleFilter());
-        SampleData tumorSample = extractSample(directory, tumorSampleFilter());
+		Optional<Path> sampleFile = Files.walk(new File(runDirectory).toPath()).filter(
+				p -> p.getFileName().toString().startsWith(startsWith) && p.getFileName().toString().endsWith(endsWith))
+				.findFirst();
 
-        return new PatientData(CheckType.MAPPING, refSample, tumorSample);
-    }
+		assert sampleFile.isPresent();
 
-    @NotNull
-    private SampleData extractSample(@NotNull File runDirectory, @NotNull FilenameFilter filter)
-            throws IOException {
-        File[] samples = runDirectory.listFiles(filter);
+		String externalID = sampleFile.get().getFileName().toString();
 
-        assert samples.length == 1;
+		FlagStatData markdupFlagstats = parseFile(sampleFile.get(), DEDUP);
+		FlagStatData realignedFlagstats = parseFile(sampleFile.get(), REALIGN);
 
-        String externalID = samples[0].getName();
+		List<FlagStatData> sortedMappingFlagstats = parseSortedFiles(sampleFile.get(), SORTED);
+		List<FlagStatData> rawMappingFlagstats = parseRestOfFiles(sampleFile.get());
 
-        File flagstatDir = new File(samples[0].getPath() + File.separator + "mapping" + File.separator);
-        File[] flagstats = flagstatDir.listFiles(flagstatFilter());
+		assert markdupFlagstats != null;
+		assert realignedFlagstats != null;
 
-        List<FlagStatData> rawMappingFlagstats = Lists.newArrayList();
-        List<FlagStatData> sortedMappingFlagstats = Lists.newArrayList();
-        FlagStatData markdupFlagstats = null;
-        FlagStatData realignedFlagstats = null;
-        for (File flagstat : flagstats) {
-            FlagStatData parsedFlagstatData = flagstatParser.parse(flagstat);
-            String name = flagstat.getName();
-            if (name.contains("realign")) {
-                realignedFlagstats = parsedFlagstatData;
-            } else if (name.contains("dedup")) {
-                markdupFlagstats = parsedFlagstatData;
-            } else if (name.contains("sorted")) {
-                sortedMappingFlagstats.add(parsedFlagstatData);
-            }
-            else {
-                rawMappingFlagstats.add(parsedFlagstatData);
-            }
-        }
+		return new SampleData(externalID, rawMappingFlagstats, sortedMappingFlagstats, markdupFlagstats,
+				realignedFlagstats);
+	}
 
-        assert markdupFlagstats != null;
-        assert realignedFlagstats != null;
+	private FlagStatData parseFile(Path sampleFile, String filePartName) throws IOException {
+		Optional<Path> filePath = Files.walk(new File(sampleFile + File.separator + MAPPING + File.separator).toPath())
+				.filter(p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
+						&& p.getFileName().toString().contains(filePartName))
+				.findFirst();
+		assert filePath.isPresent();
 
-        return new SampleData(CheckType.MAPPING, externalID, rawMappingFlagstats,
-                sortedMappingFlagstats, markdupFlagstats, realignedFlagstats);
-    }
+		return flagstatParser.parse(new File(filePath.get().toString()));
+	}
 
-    @NotNull
-    private static FilenameFilter refSampleFilter() {
-        return new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.startsWith(SAMPLE_PREFIX) && name.endsWith(REF_SAMPLE_SUFFIX);
-            }
-        };
-    }
+	private List<FlagStatData> parseSortedFiles(Path sampleFile, String filePartName) throws IOException {
+		List<Path> filesPaths = Files.walk(new File(sampleFile + File.separator + MAPPING + File.separator).toPath())
+				.filter(p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
+						&& p.getFileName().toString().contains(filePartName))
+				.sorted().collect(toCollection(ArrayList<Path>::new));
+		return filesPaths.stream().map(path -> {
+			FlagStatData parsedFlagstatData = null;
+			try {
+				parsedFlagstatData = flagstatParser.parse(new File(path.toString()));
+			} catch (IOException e) {
+				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
+						e.getMessage()));
+			}
+			return parsedFlagstatData;
+		}).collect(Collectors.toList());
+	}
 
-    @NotNull
-    private static FilenameFilter tumorSampleFilter() {
-        return new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.startsWith(SAMPLE_PREFIX) && name.endsWith(TUMOR_SAMPLE_SUFFIX);
-            }
-        };
-    }
-
-    @NotNull
-    private static FilenameFilter flagstatFilter() {
-        return new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.endsWith(FLAGSTAT_SUFFIX);
-            }
-        };
-    }
+	private List<FlagStatData> parseRestOfFiles(Path sampleFile) throws IOException {
+		List<Path> filesPaths = Files.walk(new File(sampleFile + File.separator + MAPPING + File.separator).toPath())
+				.filter(p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
+						&& !p.getFileName().toString().contains(REALIGN) && !p.getFileName().toString().contains(DEDUP)
+						&& !p.getFileName().toString().contains(SORTED))
+				.sorted().collect(toCollection(ArrayList<Path>::new));
+		return filesPaths.stream().map(path -> {
+			FlagStatData parsedFlagstatData = null;
+			try {
+				parsedFlagstatData = flagstatParser.parse(new File(path.toString()));
+			} catch (IOException e) {
+				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
+						e.getMessage()));
+			}
+			return parsedFlagstatData;
+		}).collect(Collectors.toList());
+	}
 }

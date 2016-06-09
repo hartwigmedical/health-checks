@@ -1,20 +1,21 @@
-package com.hartwig.healthchecks.boggs.model;
-
-import com.hartwig.healthchecks.common.util.BaseConfig;
-import com.hartwig.healthchecks.common.util.CheckType;
-import org.jetbrains.annotations.NotNull;
+package com.hartwig.healthchecks.boggs.model.report;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PrestatsData extends BaseConfig {
+import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
+
+public class PrestatsReport extends BaseReport {
 
     @NotNull
     private Map<String, List<String>> summary;
 
-    public PrestatsData(CheckType checkType) {
+    public PrestatsReport(CheckType checkType) {
         super(checkType);
         this.summary = new HashMap<>();
     }

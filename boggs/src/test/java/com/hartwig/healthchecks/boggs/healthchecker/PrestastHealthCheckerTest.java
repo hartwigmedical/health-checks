@@ -1,15 +1,20 @@
 package com.hartwig.healthchecks.boggs.healthchecker;
 
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
-import com.hartwig.healthchecks.boggs.model.PrestatsData;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.util.CheckType;
-import mockit.Expectations;
-import mockit.Mocked;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+
+import org.junit.Test;
+
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
+
+import mockit.Expectations;
+import mockit.Mocked;
 
 public class PrestastHealthCheckerTest {
 
@@ -19,7 +24,7 @@ public class PrestastHealthCheckerTest {
 
 	@Test
 	public void verifyPrestatsHealthChecker() throws IOException {
-		PrestatsData testData = new PrestatsData(CheckType.PRESTATS);
+		PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
 		testData.addData("DummyFile","DummyData");
 
 		HealthChecker checker = new PrestastHealthChecker(DUMMY_RUN_DIR, dataExtractor);
@@ -30,8 +35,9 @@ public class PrestastHealthCheckerTest {
 				returns(testData);
 			}
 		};
-		checker.isHealthy();
-		//assertFalse(checker.isHealthy());
+		BaseReport report = checker.runCheck();
+		assertEquals("Report with wrong type" ,CheckType.PRESTATS, report.getCheckType() );
+		assertEquals("Report got wrong size of error" ,1, ((PrestatsReport)report).getSummary().size());
 	}
 
 	@Test(expected = IOException.class)
@@ -43,6 +49,6 @@ public class PrestastHealthCheckerTest {
 				result = new IOException();
 			}
 		};
-		checker.isHealthy();
+		checker.runCheck();
 	}
 }

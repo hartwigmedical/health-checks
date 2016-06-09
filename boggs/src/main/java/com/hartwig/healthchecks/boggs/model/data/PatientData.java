@@ -1,19 +1,15 @@
-package com.hartwig.healthchecks.boggs.model;
+package com.hartwig.healthchecks.boggs.model.data;
 
-import com.hartwig.healthchecks.common.util.BaseConfig;
-import com.hartwig.healthchecks.common.util.CheckType;
 import org.jetbrains.annotations.NotNull;
 
-public class PatientData extends BaseConfig {
+public class PatientData {
 
     @NotNull
     private final SampleData refSample;
     @NotNull
     private final SampleData tumorSample;
 
-    public PatientData(@NotNull CheckType type, @NotNull SampleData refSample, @NotNull SampleData tumorSample) {
-        super(type);
-
+    public PatientData(@NotNull SampleData refSample, @NotNull SampleData tumorSample) {
         this.refSample = refSample;
         this.tumorSample = tumorSample;
     }
