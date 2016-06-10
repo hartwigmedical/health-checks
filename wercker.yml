@@ -15,3 +15,6 @@ build:
         name: Gradle Build
         code: |
             gradle clean build shadowJar
+  steps:
+   - tcnksm/goveralls:
+     token: $COVERALLS_TOKEN
