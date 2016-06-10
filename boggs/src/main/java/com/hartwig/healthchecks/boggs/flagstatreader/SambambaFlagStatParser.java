@@ -22,6 +22,7 @@ public class SambambaFlagStatParser implements FlagStatParser {
 		Files.lines(Paths.get(filePath)).map(line -> {
 			Double qcPassed = Double.parseDouble(line.split(SEPERATOR_REGEX)[0]);
 			Double qcFailed = Double.parseDouble(line.split(SEPERATOR_REGEX)[2]);
+
 			return new Double[] { qcPassed, qcFailed };
 		}).forEach(line -> {
 			passed.add(line[0]);
@@ -34,6 +35,7 @@ public class SambambaFlagStatParser implements FlagStatParser {
 
 		FlagStats passedFlagStats = buildFlagStatsData(passed.stream().toArray(Double[]::new));
 		FlagStats failedFlagStats = buildFlagStatsData(failed.stream().toArray(Double[]::new));
+
 		return new FlagStatData(filePath, passedFlagStats, failedFlagStats);
 	}
 

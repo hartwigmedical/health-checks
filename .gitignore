@@ -21,6 +21,8 @@ gradle/wrapper/gradle-wrapper.properties
 # Build artefacts
 boggs/build
 build/
+classes/
+boggs/classes
 
 # IntelliJ IDEA
 .idea/
