@@ -4,6 +4,9 @@ import com.google.gson.*;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,7 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class JsonReport extends Report {
+public class JsonReport implements Report {
+
+    private static Logger LOGGER = LogManager.getLogger(Report.class);
 
     private static final String REPORT_NAME = "health-checks_%s.json";
 
@@ -33,10 +38,11 @@ public class JsonReport extends Report {
     }
 
     @Override
-    public void addReportData(BaseReport reportData) {
+    public void addReportData(@NotNull BaseReport reportData) {
         healthChecks.putIfAbsent(reportData.getCheckType(), reportData);
     }
 
+    @NotNull
     @Override
     public Optional<String> generateReport() {
         JsonArray reportArray = new JsonArray();

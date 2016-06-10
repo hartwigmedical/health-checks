@@ -1,16 +1,14 @@
 package com.hartwig.healthchecks.common.report;
 
 import com.hartwig.healthchecks.common.util.BaseReport;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public abstract class Report {
+public interface Report {
 
-    protected static Logger LOGGER = LogManager.getLogger(Report.class);
+    void addReportData(@NotNull BaseReport reportData);
 
-    public abstract void addReportData(BaseReport reportData);
-
-    public abstract Optional<String> generateReport() ;
+    @NotNull
+    Optional<String> generateReport() ;
 }
