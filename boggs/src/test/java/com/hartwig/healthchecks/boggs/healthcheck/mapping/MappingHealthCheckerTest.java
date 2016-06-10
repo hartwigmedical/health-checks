@@ -7,8 +7,6 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -29,7 +27,7 @@ public class MappingHealthCheckerTest {
 
 	@NotNull
 	private static MappingReport dummyData() {
-		MappingDataReport mappingDataReport = new MappingDataReport(1.0d, 2.0d, 2.0d, 1.0d, 0.2d);
+		MappingDataReport mappingDataReport = new MappingDataReport(1.0d, 2.0d, 2.0d, 1.0d, 0.2d, true);
 		return new MappingReport(CheckType.MAPPING, SOME_EXTERNAL_ID, _8564, mappingDataReport);
 	}
 
@@ -48,15 +46,11 @@ public class MappingHealthCheckerTest {
 
 		assertEquals("Report with wrong type", CheckType.MAPPING, report.getCheckType());
 		assertEquals("External ID not correct", SOME_EXTERNAL_ID, ((MappingReport) report).getExternalId());
-		assertEquals(1.0d, ((MappingReport) report).getMappingDataReport().getMappedPercentage().doubleValue(), 0d);
-		assertEquals(1.0d,
-				((MappingReport) report).getMappingDataReport().getMateMappedToDifferentChrPercentage().doubleValue(),
-				0d);
-		assertEquals(2.0d, ((MappingReport) report).getMappingDataReport().getProperlyPairedPercentage().doubleValue(),
-				0d);
-		assertEquals(2.0d, ((MappingReport) report).getMappingDataReport().getSingletonPercentage().doubleValue(), 0d);
-		assertEquals(0.2d, ((MappingReport) report).getMappingDataReport().getProportionOfDuplicateRead().doubleValue(),
-				0d);
+		assertEquals(1.0d, ((MappingReport) report).getMappingDataReport().getMappedPercentage(), 0d);
+		assertEquals(1.0d, ((MappingReport) report).getMappingDataReport().getMateMappedToDifferentChrPercentage(), 0d);
+		assertEquals(2.0d, ((MappingReport) report).getMappingDataReport().getProperlyPairedPercentage(), 0d);
+		assertEquals(2.0d, ((MappingReport) report).getMappingDataReport().getSingletonPercentage(), 0d);
+		assertEquals(0.2d, ((MappingReport) report).getMappingDataReport().getProportionOfDuplicateRead(), 0d);
 	}
 
 }
