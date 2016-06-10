@@ -13,14 +13,19 @@ public class MappingDataReport {
 	private final Double mateMappedToDifferentChrPercentage;
 	@NotNull
 	private final Double proportionOfDuplicateRead;
+
+	@NotNull
+	private final boolean isAllReadsPresent;
+
 	public MappingDataReport(Double mappedPercentage, Double properlyPairedPercentage, Double singletonPercentage,
-			Double mateMappedToDifferentChrPercentage, Double proportionOfDuplicateRead) {
+			Double mateMappedToDifferentChrPercentage, Double proportionOfDuplicateRead, boolean isAllReadsPresent) {
 		super();
 		this.mappedPercentage = mappedPercentage;
 		this.properlyPairedPercentage = properlyPairedPercentage;
 		this.singletonPercentage = singletonPercentage;
 		this.mateMappedToDifferentChrPercentage = mateMappedToDifferentChrPercentage;
 		this.proportionOfDuplicateRead = proportionOfDuplicateRead;
+		this.isAllReadsPresent = isAllReadsPresent;
 	}
 
 	public Double getMappedPercentage() {
@@ -43,12 +48,16 @@ public class MappingDataReport {
 		return proportionOfDuplicateRead;
 	}
 
+	public boolean isAllReadsPresent() {
+		return isAllReadsPresent;
+	}
+
 	@Override
 	public String toString() {
 		return "MappingDataReport [mappedPercentage=" + mappedPercentage + ", properlyPairedPercentage="
 				+ properlyPairedPercentage + ", singletonPercentage=" + singletonPercentage
 				+ ", mateMappedToDifferentChrPercentage=" + mateMappedToDifferentChrPercentage
-				+ ", proportionOfDuplicateRead=" + proportionOfDuplicateRead + "]";
+				+ ", proportionOfDuplicateRead=" + proportionOfDuplicateRead + ", isAllReadsPresent="
+				+ isAllReadsPresent + "]";
 	}
-
 }

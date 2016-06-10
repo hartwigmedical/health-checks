@@ -6,21 +6,15 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsHealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+
 import mockit.Expectations;
 import mockit.Mocked;
-import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 
 public class PrestastHealthCheckerTest {
 

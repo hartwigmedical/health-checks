@@ -40,12 +40,12 @@ public class MappingExtractor extends BoggsExtractor {
 		assert sampleFile.isPresent();
 
 		String externalId = sampleFile.get().getFileName().toString();
-		MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get());
 		String totalSequences = getTotalSequences(sampleFile.get());
+		MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences);
 		return new MappingReport(CheckType.MAPPING, externalId, totalSequences, mappingDataReport);
 	}
 
-	private MappingDataReport getFlagstatsData(Path path) throws IOException, EmptyFileException {
+	private MappingDataReport getFlagstatsData(Path path ,String totalSequences) throws IOException, EmptyFileException {
 		Optional<Path> filePath = Files.walk(new File(path + File.separator + MAPPING + File.separator).toPath())
 				.filter(p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
 						&& p.getFileName().toString().contains(REALIGN))
@@ -56,12 +56,13 @@ public class MappingExtractor extends BoggsExtractor {
 		FlagStats passed = flagstatData.qcPassedReads();
 
 		Double mappedPercentage = toPercentage(passed.mapped() / passed.total());
-		Double properlyPairedPercentage = toPercentage(passed.properlyPaired() / passed.total());
-		Double singletonPercentage = toPercentage(passed.singletons() / passed.total());
-		Double mateMappedToDifferentChrPercentage = toPercentage(passed.mateMappedToDifferentChr() / passed.total());
+		Double properlyPairedPercentage = toPercentage(passed.properlyPaired() / passed.mapped());
+		Double singletonPercentage = passed.singletons();
+		Double mateMappedToDifferentChrPercentage = passed.mateMappedToDifferentChr();
 		Double proportionOfDuplicateRead = toPercentage(passed.duplicates() / passed.total());
+		boolean isAllReadsPresent = passed.total() == ((Double.parseDouble(totalSequences)*2  )+ passed.secondary());
 		return new MappingDataReport(mappedPercentage, properlyPairedPercentage, singletonPercentage,
-				mateMappedToDifferentChrPercentage, proportionOfDuplicateRead);
+				mateMappedToDifferentChrPercentage, proportionOfDuplicateRead ,isAllReadsPresent);
 	}
 
 	@NotNull

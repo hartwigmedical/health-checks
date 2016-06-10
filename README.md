@@ -60,10 +60,11 @@ The location of the reports can be changed via the ```config.properties``` file 
 			"total_sequences": "8960",
 			"mapping_data_report": {
 				"mapped_percentage": 99.69,
-				"properly_paired_percentage": 99.26,
-				"singleton_percentage": 0.31,
+				"properly_paired_percentage": 99.57,
+				"singleton_percentage": 55.0,
 				"mate_mapped_to_different_chr_percentage": 0.0,
-				"proportion_of_duplicate_read": 5.95
+				"proportion_of_duplicate_read": 5.95,
+				"is_all_reads_present": true
 			},
 			"check_type": "MAPPING"
 		}

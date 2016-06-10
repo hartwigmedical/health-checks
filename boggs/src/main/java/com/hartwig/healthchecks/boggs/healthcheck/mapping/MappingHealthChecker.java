@@ -35,40 +35,48 @@ public class MappingHealthChecker implements HealthChecker {
 		MappingDataReport mappingDataReport = mappingReport.getMappingDataReport();
 
 		LOGGER.info("Checking mapping health for " + mappingReport.getExternalId());
+		String allReadsMessage = "OK : All Reads are present";
+
+		if (!mappingDataReport.isAllReadsPresent()) {
+			allReadsMessage = "WARN : Not All Reads are present";
+		}
+		LOGGER.info(allReadsMessage);
+
+		String mappedMessage = "OK: Acceptable mapped percentage: " + mappingDataReport.getMappedPercentage();
 		if (mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERCENTAGE) {
-			LOGGER.info("WARN: Low mapped percentage: " + mappingDataReport.getMappedPercentage());
-		} else {
-			LOGGER.info("OK: Acceptable mapped percentage: " + mappingDataReport.getMappedPercentage());
+			mappedMessage = "WARN: Low mapped percentage: " + mappingDataReport.getMappedPercentage();
 		}
+		LOGGER.info(mappedMessage);
 
+		String properlyPairedMessage = "OK: Acceptable properly paired percentage: "
+				+ mappingDataReport.getProperlyPairedPercentage();
 		if (mappingDataReport.getProperlyPairedPercentage() < MIN_PROPERLY_PAIRED_PERCENTAGE) {
-			LOGGER.info("WARN: Low properly paired percentage: " + mappingDataReport.getProperlyPairedPercentage());
-		} else {
-			LOGGER.info(
-					"OK: Acceptable properly paired percentage: " + mappingDataReport.getProperlyPairedPercentage());
+			properlyPairedMessage = "WARN: Low properly paired percentage: "
+					+ mappingDataReport.getProperlyPairedPercentage();
 		}
+		LOGGER.info(properlyPairedMessage);
 
+		String singletonMessage = "OK: Acceptable singleton percentage: " + mappingDataReport.getSingletonPercentage();
 		if (mappingDataReport.getSingletonPercentage() > MAX_SINGLETONS) {
-			LOGGER.info("WARN: High singleton percentage: " + mappingDataReport.getSingletonPercentage());
-		} else {
-			LOGGER.info("OK: Acceptable singleton percentage: " + mappingDataReport.getSingletonPercentage());
+			singletonMessage = "WARN: High singleton percentage: " + mappingDataReport.getSingletonPercentage();
 		}
+		LOGGER.info(singletonMessage);
 
+		String mateMappedMessage = "OK: Acceptable mate mapped to different chr percentage: "
+				+ mappingDataReport.getMateMappedToDifferentChrPercentage();
 		if (mappingDataReport.getMateMappedToDifferentChrPercentage() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR) {
-			LOGGER.info("WARN: High mate mapped to different chr percentage: "
-					+ mappingDataReport.getMateMappedToDifferentChrPercentage());
-		} else {
-			LOGGER.info("OK: Acceptable mate mapped to different chr percentage: "
-					+ mappingDataReport.getMateMappedToDifferentChrPercentage());
+			mateMappedMessage = "WARN: High mate mapped to different chr percentage: "
+					+ mappingDataReport.getMateMappedToDifferentChrPercentage();
 		}
+		LOGGER.info(mateMappedMessage);
 
+		String proportionPercentageMessage = "OK: Acceptable proportion of Duplication percentage: "
+				+ mappingDataReport.getProportionOfDuplicateRead();
 		if (mappingDataReport.getProportionOfDuplicateRead() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR) {
-			LOGGER.info("WARN: High proportion of Duplication percentage: "
-					+ mappingDataReport.getProportionOfDuplicateRead());
-		} else {
-			LOGGER.info("OK: Acceptable proportion of Duplication percentage: "
-					+ mappingDataReport.getProportionOfDuplicateRead());
+			proportionPercentageMessage = "WARN: High proportion of Duplication percentage: "
+					+ mappingDataReport.getProportionOfDuplicateRead();
 		}
+		LOGGER.info(proportionPercentageMessage);
 
 		return mappingReport;
 	}

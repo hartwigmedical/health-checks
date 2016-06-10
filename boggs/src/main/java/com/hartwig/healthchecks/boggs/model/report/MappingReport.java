@@ -8,7 +8,7 @@ import com.hartwig.healthchecks.common.util.CheckType;
 public class MappingReport extends BaseReport {
 	@NotNull
 	private final String externalId;
-
+	@NotNull
 	private final String totalSequences;
 	@NotNull
 	private final MappingDataReport mappingDataReport;
@@ -32,6 +32,7 @@ public class MappingReport extends BaseReport {
 	public String getExternalId() {
 		return externalId;
 	}
+
 
 	@Override
 	public String toString() {
