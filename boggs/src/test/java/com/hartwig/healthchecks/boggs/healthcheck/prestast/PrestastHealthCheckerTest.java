@@ -1,6 +1,12 @@
-package com.hartwig.healthchecks.boggs.healthchecker;
+package com.hartwig.healthchecks.boggs.healthcheck.prestast;
 
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import org.junit.Test;
+
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
@@ -29,7 +35,7 @@ public class PrestastHealthCheckerTest {
 		PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport("DummyCheckName", "FAIL", "DummyFile");
 		testData.addData(prestatsTestDataReport);
 
-		HealthChecker checker = new PrestastHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+		HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 
 		new Expectations() {
 			{
@@ -45,7 +51,7 @@ public class PrestastHealthCheckerTest {
 
 	@Test(expected = IOException.class)
 	public void verifyPrestatsHealthCheckerIOException() throws IOException, EmptyFileException {
-		HealthChecker checker = new PrestastHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+		HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 		new Expectations() {
 			{
 				dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);

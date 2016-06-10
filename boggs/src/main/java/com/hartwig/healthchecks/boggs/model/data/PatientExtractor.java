@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.healthcheck.mapping;
+package com.hartwig.healthchecks.boggs.model.data;
 
 import static java.util.stream.Collectors.toCollection;
 
@@ -17,8 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
-import com.hartwig.healthchecks.boggs.model.data.PatientData;
-import com.hartwig.healthchecks.boggs.model.data.SampleData;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class PatientExtractor {

@@ -3,70 +3,52 @@ package com.hartwig.healthchecks.boggs.model.report;
 import org.jetbrains.annotations.NotNull;
 
 public class MappingDataReport {
-
 	@NotNull
-	private final String externalId;
-
+	private final Double mappedPercentage;
 	@NotNull
-	private String mappedPercentage;
+	private final Double properlyPairedPercentage;
 	@NotNull
-	private String properlyPairedPercentage;
+	private final Double singletonPercentage;
 	@NotNull
-	private String singletonPercentage;
+	private final Double mateMappedToDifferentChrPercentage;
 	@NotNull
-	private String mateMappedToDifferentChrPercentage;
-
-	public MappingDataReport(String externalId) {
-		this.externalId = externalId;
-	}
-
-	
-	public void setMappedPercentage(String mappedPercentage) {
+	private final Double proportionOfDuplicateRead;
+	public MappingDataReport(Double mappedPercentage, Double properlyPairedPercentage, Double singletonPercentage,
+			Double mateMappedToDifferentChrPercentage, Double proportionOfDuplicateRead) {
+		super();
 		this.mappedPercentage = mappedPercentage;
-	}
-
-
-	public void setProperlyPairedPercentage(String properlyPairedPercentage) {
 		this.properlyPairedPercentage = properlyPairedPercentage;
-	}
-
-
-	public void setSingletonPercentage(String singletonPercentage) {
 		this.singletonPercentage = singletonPercentage;
-	}
-
-
-	public void setMateMappedToDifferentChrPercentage(String mateMappedToDifferentChrPercentage) {
 		this.mateMappedToDifferentChrPercentage = mateMappedToDifferentChrPercentage;
+		this.proportionOfDuplicateRead = proportionOfDuplicateRead;
 	}
 
-
-	public String getExternalId() {
-		return externalId;
-	}
-
-	public String getMappedPercentage() {
+	public Double getMappedPercentage() {
 		return mappedPercentage;
 	}
 
-	public String getProperlyPairedPercentage() {
+	public Double getProperlyPairedPercentage() {
 		return properlyPairedPercentage;
 	}
 
-	public String getSingletonPercentage() {
+	public Double getSingletonPercentage() {
 		return singletonPercentage;
 	}
 
-	public String getMateMappedToDifferentChrPercentage() {
+	public Double getMateMappedToDifferentChrPercentage() {
 		return mateMappedToDifferentChrPercentage;
+	}
+
+	public Double getProportionOfDuplicateRead() {
+		return proportionOfDuplicateRead;
 	}
 
 	@Override
 	public String toString() {
-		return "MappingReport [externalId=" + externalId + ", mappedPercentage=" + mappedPercentage
-				+ ", properlyPairedPercentage=" + properlyPairedPercentage + ", singletonPercentage="
-				+ singletonPercentage + ", mateMappedToDifferentChrPercentage=" + mateMappedToDifferentChrPercentage
-				+ "]";
+		return "MappingDataReport [mappedPercentage=" + mappedPercentage + ", properlyPairedPercentage="
+				+ properlyPairedPercentage + ", singletonPercentage=" + singletonPercentage
+				+ ", mateMappedToDifferentChrPercentage=" + mateMappedToDifferentChrPercentage
+				+ ", proportionOfDuplicateRead=" + proportionOfDuplicateRead + "]";
 	}
 
 }

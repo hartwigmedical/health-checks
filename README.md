@@ -55,6 +55,19 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
+		"MAPPING": {
+			"external_id": "CPCT00R",
+			"total_sequences": "8960",
+			"mapping_data_report": {
+				"mapped_percentage": 99.69,
+				"properly_paired_percentage": 99.26,
+				"singleton_percentage": 0.31,
+				"mate_mapped_to_different_chr_percentage": 0.0,
+				"proportion_of_duplicate_read": 5.95
+			},
+			"check_type": "MAPPING"
+		}
+	}, {
 		"PRESTATS": {
 			"summary": [{
 				"check_name": "Basic Statistics",
@@ -152,26 +165,16 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"check_name": "Kmer Content",
 				"status": "PASS",
 				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
+			}, {
+				"check_name": "Total Sequences",
+				"status": "FAIL",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
+			}, {
+				"check_name": "Total Sequences",
+				"status": "FAIL",
+				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
 			}],
 			"check_type": "PRESTATS"
-		}
-	}, {
-		"MAPPING": {
-			"ref_data": {
-				"external_id": "CPCT00R",
-				"mapped_percentage": "9.223372036854776E16%",
-				"properly_paired_percentage": "9.223372036854776E16%",
-				"singleton_percentage": "9.223372036854776E16%",
-				"mate_mapped_to_different_chr_percentage": "9.223372036854776E16%"
-			},
-			"tumor_data": {
-				"external_id": "CPCT00T",
-				"mapped_percentage": "9.223372036854776E16%",
-				"properly_paired_percentage": "9.223372036854776E16%",
-				"singleton_percentage": "9.223372036854776E16%",
-				"mate_mapped_to_different_chr_percentage": "9.223372036854776E16%"
-			},
-			"check_type": "MAPPING"
 		}
 	}]
 }
