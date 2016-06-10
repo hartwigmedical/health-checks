@@ -14,4 +14,4 @@ build:
     - script:
         name: Gradle Build
         code: |
-            gradle clean build
+            gradle clean build shadowJar
