@@ -1,11 +1,5 @@
 package com.hartwig.healthchecks.boggs.healthchecker;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-
-import org.junit.Test;
-
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
@@ -14,15 +8,20 @@ import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-
 import mockit.Expectations;
 import mockit.Mocked;
+import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 public class PrestastHealthCheckerTest {
 
 	private static final String DUMMY_RUN_DIR = "DummyRunDir";
+
 	@Mocked
-	PrestatsExtractor dataExtractor;
+	private PrestatsExtractor dataExtractor;
 
 	@Test
 	public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {

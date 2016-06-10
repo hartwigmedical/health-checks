@@ -1,32 +1,31 @@
 package com.hartwig.healthchecks.boggs.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.net.URL;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
-
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.PatientExtractor;
 import com.hartwig.healthchecks.boggs.model.data.PatientData;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
-
 import mockit.Mocked;
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.net.URL;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class PatientExtractorTest {
 
 	@Mocked
-	FlagStatData flagStatData;
+	private FlagStatData flagStatData;
 
 	@Test
 	public void canProcessRunDirectoryStructure() throws IOException, EmptyFileException {
 		URL runDirURL = Resources.getResource("rundir");
-		PatientExtractor extractor = new PatientExtractor(new DummyFlagstatParser());
+
+        PatientExtractor extractor = new PatientExtractor(new DummyFlagstatParser());
 		PatientData patient = extractor.extractFromRunDirectory(runDirURL.getPath());
 
 		assertNotNull("Patient data should not be null", patient);
