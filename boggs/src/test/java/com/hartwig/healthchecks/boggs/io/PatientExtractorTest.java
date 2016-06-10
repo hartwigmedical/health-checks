@@ -12,8 +12,8 @@ import org.junit.Test;
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.PatientExtractor;
 import com.hartwig.healthchecks.boggs.model.data.PatientData;
+import com.hartwig.healthchecks.boggs.model.data.PatientExtractor;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 import mockit.Mocked;

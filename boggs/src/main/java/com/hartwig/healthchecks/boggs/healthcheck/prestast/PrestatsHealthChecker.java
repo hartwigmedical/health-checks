@@ -9,9 +9,9 @@ import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.util.BaseReport;
 
-public class PrestastHealthChecker implements HealthChecker {
+public class PrestatsHealthChecker implements HealthChecker {
 
-	private static Logger LOGGER = LogManager.getLogger(PrestastHealthChecker.class);
+	private static Logger LOGGER = LogManager.getLogger(PrestatsHealthChecker.class);
 	private static final String FAIL_ERROR = "FAIL";
 	private static final String FOUND_FAILS_MSG = "NOT OK: %s has status FAIL in file %s ";
 
@@ -19,7 +19,7 @@ public class PrestastHealthChecker implements HealthChecker {
 
 	private PrestatsExtractor dataExtractor;
 
-	public PrestastHealthChecker(String runDirectory, PrestatsExtractor dataExtractor) {
+	public PrestatsHealthChecker(String runDirectory, PrestatsExtractor dataExtractor) {
 		this.runDirectory = runDirectory;
 		this.dataExtractor = dataExtractor;
 	}

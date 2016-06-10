@@ -6,10 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
+import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.PatientExtractor;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestastHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
+import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsHealthChecker;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
@@ -31,13 +31,13 @@ public class BoggsAdapter implements HealthCheckAdapter {
 
 	public void runCheck(String runDirectory) {
 		try {
-			PatientExtractor dataExtractor = new PatientExtractor(new SambambaFlagStatParser());
+			MappingExtractor dataExtractor = new MappingExtractor(new SambambaFlagStatParser());
 			HealthChecker checker = new MappingHealthChecker(runDirectory, dataExtractor);
 			BaseReport mapping = checker.runCheck();
 			report.addReportData(mapping);
 
 			PrestatsExtractor prestatsExtractor = new PrestatsExtractor();
-			HealthChecker prestastHealthChecker = new PrestastHealthChecker(runDirectory, prestatsExtractor);
+			HealthChecker prestastHealthChecker = new PrestatsHealthChecker(runDirectory, prestatsExtractor);
 			BaseReport prestatsErrors = prestastHealthChecker.runCheck();
 			report.addReportData(prestatsErrors);
 		} catch (EmptyFileException e) {

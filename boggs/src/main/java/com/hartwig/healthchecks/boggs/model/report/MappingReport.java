@@ -6,28 +6,36 @@ import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
 public class MappingReport extends BaseReport {
-
 	@NotNull
-	private final MappingDataReport refData;
-	@NotNull
-	private final MappingDataReport tumorData;
+	private final String externalId;
 
-	public MappingReport(CheckType checkType, MappingDataReport refData, MappingDataReport tumorData) {
+	private final String totalSequences;
+	@NotNull
+	private final MappingDataReport mappingDataReport;
+
+	public MappingReport(CheckType checkType, String externalId, String totalSequences,
+			MappingDataReport mappingDataReport) {
 		super(checkType);
-		this.refData = refData;
-		this.tumorData = tumorData;
+		this.externalId = externalId;
+		this.totalSequences = totalSequences;
+		this.mappingDataReport = mappingDataReport;
 	}
 
-	public MappingDataReport getRefData() {
-		return refData;
+	public String getTotalSequences() {
+		return totalSequences;
 	}
 
-	public MappingDataReport getTumorData() {
-		return tumorData;
+	public MappingDataReport getMappingDataReport() {
+		return mappingDataReport;
+	}
+
+	public String getExternalId() {
+		return externalId;
 	}
 
 	@Override
 	public String toString() {
-		return "MappingReport [refData=" + refData + ", tumorData=" + tumorData + "]";
+		return "MappingReport [externalId=" + externalId + ", totalSequences=" + totalSequences + ", mappingDataReport="
+				+ mappingDataReport + "]";
 	}
 }
