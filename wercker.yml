@@ -12,17 +12,10 @@ build:
             javac -version
             gradle -v
     - script:
+        name: Export Java Home
+        code: |
+            export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+    - script:
         name: Gradle Build
         code: |
-            ./gradlew wrapper
-            ./gradlew clean build shadowJar
-  steps:
-    - script:
-        name: Get goveralls
-        code: |
-            mkdir go_code
-            export GOPATH=./go_code
-            export PATH=$PATH:$GOPATH/bin
-            go get github.com/mattn/goveralls
-    - tcnksm/goveralls:
-        token: $COVERALLS_TOKEN
+            gradle clean build jacocoRootReport coveralls shadowJar
