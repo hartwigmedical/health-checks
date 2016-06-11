@@ -20,6 +20,9 @@ build:
     - script:
         name: Get goveralls
         code: |
+            mkdir go_code
+            export GOPATH=./go_code
+            export PATH=$PATH:$GOPATH/bin
             go get github.com/mattn/goveralls
     - tcnksm/goveralls:
         token: $COVERALLS_TOKEN
