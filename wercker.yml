@@ -1,5 +1,5 @@
 # docker box definition
-box: nhelsherif/jdk-gradle
+box: ekholabs/wercker-jdk8-go
 
 # defining the build pipeline
 build:
@@ -14,7 +14,8 @@ build:
     - script:
         name: Gradle Build
         code: |
-            gradle clean build shadowJar
+            ./gradlew wrapper
+            ./gradlew clean build shadowJar
   steps:
    - tcnksm/goveralls:
      token: $COVERALLS_TOKEN
