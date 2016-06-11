@@ -7,6 +7,7 @@ build:
     - script:
         name: show base information
         code: |
+            echo $WERCKER_GIT_BRANCH
             echo $JAVA_HOME
             java -version
             javac -version
@@ -15,6 +16,7 @@ build:
         name: Export Java Home
         code: |
             export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+            export CI_BRANCH=$WERCKER_GIT_BRANCH
     - script:
         name: Gradle Build
         code: |
