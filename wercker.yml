@@ -17,5 +17,9 @@ build:
             ./gradlew wrapper
             ./gradlew clean build shadowJar
   steps:
-   - tcnksm/goveralls:
-     token: $COVERALLS_TOKEN
+    - script:
+        name: Get goveralls
+        code: |
+            go get github.com/mattn/goveralls
+    - tcnksm/goveralls:
+        token: $COVERALLS_TOKEN
