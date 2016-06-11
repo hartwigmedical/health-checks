@@ -13,6 +13,16 @@ RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" >> /
 
 RUN apt-get update
 RUN apt-get -y install golang
+RUN apt-get -y install wget
+RUN apt-get -y install unzip
+
+RUN cd ~
+RUN wget https://services.gradle.org/distributions/gradle-2.13-bin.zip
+RUN unzip gradle-2.13-bin.zip
+ENV GRADLE_HOME=$HOME/gradle-2.13
+ENV PATH=$PATH:$GRADLE_HOME/bin
+
+ENV JAVA_HOME=/usr/lib/jvm/java-8-oracle
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
