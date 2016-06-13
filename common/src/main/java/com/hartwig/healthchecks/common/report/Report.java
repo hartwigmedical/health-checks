@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public interface Report {
-
+	
     void addReportData(@NotNull BaseReport reportData);
 
     @NotNull

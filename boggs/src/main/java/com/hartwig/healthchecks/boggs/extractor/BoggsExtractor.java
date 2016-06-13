@@ -1,5 +1,6 @@
 package com.hartwig.healthchecks.boggs.extractor;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +24,9 @@ public class BoggsExtractor {
 	protected Map<String, String> getFastqcData(Path path) throws IOException {
 		Optional<Path> fastqcDataPath = Files.walk(path)
 				.filter(p -> p.getFileName().toString().startsWith(FASTQC_DATA_FILE_NAME)).findFirst();
-		assert fastqcDataPath.isPresent();
+		if (!fastqcDataPath.isPresent()) {
+			throw new FileNotFoundException();
+		}
 		return Files.lines(Paths.get(fastqcDataPath.get().toString()))
 				.filter(line -> line.contains(TOTAL_SEQUENCES) || line.contains(FILENAME)).map(line -> {
 					return line.split(SEPERATOR_REGEX);

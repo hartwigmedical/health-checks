@@ -21,6 +21,10 @@ public class PrestatsReport extends BaseReport {
 		summary.add(prestatsDataReport);
 	}
 
+	public void addAllData(List<PrestatsDataReport> prestatsDataReport) {
+		summary.addAll(prestatsDataReport);
+	}
+	
 	@NotNull
 	public List<PrestatsDataReport> getSummary() {
 		return summary;

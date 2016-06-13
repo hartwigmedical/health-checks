@@ -31,9 +31,9 @@ public class BoggsAdapter implements HealthCheckAdapter {
 
 	public void runCheck(String runDirectory) {
 		try {
-			MappingExtractor dataExtractor = new MappingExtractor(new SambambaFlagStatParser());
-			HealthChecker checker = new MappingHealthChecker(runDirectory, dataExtractor);
-			BaseReport mapping = checker.runCheck();
+			MappingExtractor mappingExtractor = new MappingExtractor(new SambambaFlagStatParser());
+			HealthChecker mappingHealthChecker = new MappingHealthChecker(runDirectory, mappingExtractor);
+			BaseReport mapping = mappingHealthChecker.runCheck();
 			report.addReportData(mapping);
 
 			PrestatsExtractor prestatsExtractor = new PrestatsExtractor();

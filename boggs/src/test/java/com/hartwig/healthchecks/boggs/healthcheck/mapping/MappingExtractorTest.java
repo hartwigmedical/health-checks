@@ -20,6 +20,8 @@ import mockit.Expectations;
 import mockit.Mocked;
 
 public class MappingExtractorTest {
+	private static final String EMPTY_FILES = "emptyFiles";
+
 	private static final String RUNDIR = "rundir";
 
 	private static final String DUMMY_RUN_DIR = "DummyRunDir";
@@ -42,17 +44,25 @@ public class MappingExtractorTest {
 		MappingReport mappingReport = extractor.extractFromRunDirectory(path);
 		assertNotNull("We should have data", mappingReport);
 		MappingDataReport mappingDataReport = mappingReport.getMappingDataReport();
-		assertTrue("Not All Read are Present",mappingDataReport.isAllReadsPresent());
+		assertTrue("Not All Read are Present", mappingDataReport.isAllReadsPresent());
 		assertEquals(99.69d, mappingDataReport.getMappedPercentage(), 0d);
 		assertEquals(0.0d, mappingDataReport.getMateMappedToDifferentChrPercentage(), 0d);
 		assertEquals(99.57d, mappingDataReport.getProperlyPairedPercentage(), 0d);
 		assertEquals(55.0d, mappingDataReport.getSingletonPercentage(), 0d);
-		assertEquals(5.95d, mappingDataReport.getProportionOfDuplicateRead(), 0d);	
+		assertEquals(5.95d, mappingDataReport.getProportionOfDuplicateRead(), 0d);
 	}
 
 	@Test(expected = IOException.class)
 	public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
 		MappingExtractor extractor = new MappingExtractor(flagstatParser);
 		extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+	}
+
+	@Test(expected = EmptyFileException.class)
+	public void extractDataEmptyFile() throws IOException, EmptyFileException {
+		URL exampleFlagStatURL = Resources.getResource("emptyFiles");
+		String path = exampleFlagStatURL.getPath();
+		MappingExtractor extractor = new MappingExtractor(flagstatParser);
+		extractor.extractFromRunDirectory(path);
 	}
 }
