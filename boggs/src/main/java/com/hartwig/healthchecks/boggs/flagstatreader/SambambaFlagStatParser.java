@@ -14,6 +14,7 @@ public class SambambaFlagStatParser implements FlagStatParser {
 	private static final String FLAGSTATS_FILE_EMPTY_ERROR = "flagstats file empty path -> %s";
 	private static final String SEPERATOR_REGEX = " ";
 
+	
 	@NotNull
 	public FlagStatData parse(@NotNull String filePath) throws IOException, EmptyFileException {
 		List<Double> passed = new ArrayList<>();

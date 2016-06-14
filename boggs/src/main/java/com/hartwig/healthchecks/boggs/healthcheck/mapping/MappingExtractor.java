@@ -1,6 +1,7 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +19,8 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.CheckType;
 
 public class MappingExtractor extends BoggsExtractor {
+	private static final String EMPTY_FILES_ERROR = "Found empty Summary files and/or fastqc_data under path -> %s";
+
 	private static final String REALIGN = "realign";
 	private static final String SAMPLE_PREFIX = "CPCT";
 	private static final String REF_SAMPLE_SUFFIX = "R";
@@ -36,23 +39,28 @@ public class MappingExtractor extends BoggsExtractor {
 				.filter(p -> p.getFileName().toString().startsWith(SAMPLE_PREFIX)
 						&& p.getFileName().toString().endsWith(REF_SAMPLE_SUFFIX))
 				.findFirst();
-
-		assert sampleFile.isPresent();
-
+		if (!sampleFile.isPresent()) {
+			throw new FileNotFoundException();
+		}
 		String externalId = sampleFile.get().getFileName().toString();
 		String totalSequences = getTotalSequences(sampleFile.get());
 		MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences);
 		return new MappingReport(CheckType.MAPPING, externalId, totalSequences, mappingDataReport);
 	}
 
-	private MappingDataReport getFlagstatsData(Path path ,String totalSequences) throws IOException, EmptyFileException {
+	private MappingDataReport getFlagstatsData(Path path, String totalSequences)
+			throws IOException, EmptyFileException {
 		Optional<Path> filePath = Files.walk(new File(path + File.separator + MAPPING + File.separator).toPath())
 				.filter(p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
 						&& p.getFileName().toString().contains(REALIGN))
 				.findFirst();
-		assert filePath.isPresent();
-
+		if (!filePath.isPresent()) {
+			throw new FileNotFoundException();
+		}
 		FlagStatData flagstatData = flagstatParser.parse(filePath.get().toString());
+		if (flagstatData == null) {
+			throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, path.toString()));
+		}
 		FlagStats passed = flagstatData.qcPassedReads();
 
 		Double mappedPercentage = toPercentage(passed.mapped() / passed.total());
@@ -60,9 +68,9 @@ public class MappingExtractor extends BoggsExtractor {
 		Double singletonPercentage = passed.singletons();
 		Double mateMappedToDifferentChrPercentage = passed.mateMappedToDifferentChr();
 		Double proportionOfDuplicateRead = toPercentage(passed.duplicates() / passed.total());
-		boolean isAllReadsPresent = passed.total() == ((Double.parseDouble(totalSequences)*2  )+ passed.secondary());
+		boolean isAllReadsPresent = passed.total() == ((Double.parseDouble(totalSequences) * 2) + passed.secondary());
 		return new MappingDataReport(mappedPercentage, properlyPairedPercentage, singletonPercentage,
-				mateMappedToDifferentChrPercentage, proportionOfDuplicateRead ,isAllReadsPresent);
+				mateMappedToDifferentChrPercentage, proportionOfDuplicateRead, isAllReadsPresent);
 	}
 
 	@NotNull
