@@ -1,10 +1,5 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
@@ -18,6 +13,10 @@ import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckCategory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 @ResourceWrapper(type = CheckCategory.BOGGS)
 public class BoggsAdapter implements HealthCheckAdapter {
@@ -27,7 +26,7 @@ public class BoggsAdapter implements HealthCheckAdapter {
 	private static final String IO_ERROR_MSG = "Got IO Exception with message: %s";
 	private static final String EMPTY_FILE_ERROR_MSG = "Got Empty File Exception with message: %s";
 
-	private Report report = JsonReport.getInstance();
+	private final Report report = JsonReport.getInstance();
 
 	public void runCheck(String runDirectory) {
 		try {
