@@ -4,6 +4,8 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/hartwigmedical/health-checks/badge.svg?branch=master)](https://coveralls.io/github/hartwigmedical/health-checks?branch=master)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7dbf5374790240bca110940a9319d6d0)](https://www.codacy.com/app/ekho/health-checks?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hartwigmedical/health-checks&amp;utm_campaign=Badge_Grade)
+
 This repository consists of a set of utilities that perform health checks against genomics data.
 
 # Build and Run the Health Checks
