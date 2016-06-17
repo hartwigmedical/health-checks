@@ -21,3 +21,5 @@ build:
         name: Gradle Build
         code: |
             gradle clean build jacocoRootReport coveralls shadowJar
+  after-steps:
+    - internal/store-container
