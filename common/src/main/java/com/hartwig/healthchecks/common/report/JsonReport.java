@@ -1,6 +1,11 @@
 package com.hartwig.healthchecks.common.report;
 
-import com.google.gson.*;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
@@ -17,18 +22,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class JsonReport implements Report {
 
-    private static Logger LOGGER = LogManager.getLogger(Report.class);
-
     private static final String REPORT_NAME = "health-checks_%s.json";
-
     private static final Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .disableHtmlEscaping()
             .create();
-
+    private static Logger LOGGER = LogManager.getLogger(Report.class);
     private static JsonReport instance = new JsonReport();
 
-    private Map<CheckType, BaseReport> healthChecks = new ConcurrentHashMap<>();
+    private final Map<CheckType, BaseReport> healthChecks = new ConcurrentHashMap<>();
 
     private JsonReport() {
     }
@@ -38,14 +40,14 @@ public class JsonReport implements Report {
     }
 
     @Override
-    public void addReportData(@NotNull BaseReport reportData) {
+    public void addReportData(@NotNull final BaseReport reportData) {
         healthChecks.putIfAbsent(reportData.getCheckType(), reportData);
     }
 
     @NotNull
     @Override
     public Optional<String> generateReport() {
-        JsonArray reportArray = new JsonArray();
+        final JsonArray reportArray = new JsonArray();
 
         healthChecks.forEach((k, v) -> {
             JsonElement configJson = gson.toJsonTree(v);
@@ -58,8 +60,8 @@ public class JsonReport implements Report {
 
         PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
 
-        String reportDir = propertiesUtil.getProperty("report.dir");
-        String fileName = String.format("%s/%s", reportDir, String.format(REPORT_NAME, System.currentTimeMillis()));
+        final String reportDir = propertiesUtil.getProperty("report.dir");
+        final String fileName = String.format("%s/%s", reportDir, String.format(REPORT_NAME, System.currentTimeMillis()));
 
         try (FileWriter fileWriter = new FileWriter(new File(fileName))) {
             JsonObject reportJson = new JsonObject();
