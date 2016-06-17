@@ -33,7 +33,8 @@ public class MappingExtractor extends BoggsExtractor {
 		this.flagstatParser = flagstatParser;
 	}
 
-	public MappingReport extractFromRunDirectory(String runDirectory) throws IOException, EmptyFileException {
+	public MappingReport extractFromRunDirectory(@NotNull final String runDirectory)
+			throws IOException, EmptyFileException {
 
 		Optional<Path> sampleFile = Files.walk(new File(runDirectory).toPath())
 				.filter(p -> p.getFileName().toString().startsWith(SAMPLE_PREFIX)
@@ -43,12 +44,12 @@ public class MappingExtractor extends BoggsExtractor {
 			throw new FileNotFoundException();
 		}
 		String externalId = sampleFile.get().getFileName().toString();
-		String totalSequences = getTotalSequences(sampleFile.get());
-		MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences);
-		return new MappingReport(CheckType.MAPPING, externalId, totalSequences, mappingDataReport);
+		Long totalSequences = sumOfTotalSequences(runDirectory);
+		MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences.toString());
+		return new MappingReport(CheckType.MAPPING, externalId, totalSequences.toString(), mappingDataReport);
 	}
 
-	private MappingDataReport getFlagstatsData(Path path, String totalSequences)
+	private MappingDataReport getFlagstatsData(@NotNull final Path path, @NotNull final String totalSequences)
 			throws IOException, EmptyFileException {
 		Optional<Path> filePath = Files.walk(new File(path + File.separator + MAPPING + File.separator).toPath())
 				.filter(p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
@@ -74,7 +75,7 @@ public class MappingExtractor extends BoggsExtractor {
 	}
 
 	@NotNull
-	private static double toPercentage(double percentage) {
+	private static double toPercentage(@NotNull final double percentage) {
 		return (Math.round(percentage * 10000L) / 100D);
 	}
 }

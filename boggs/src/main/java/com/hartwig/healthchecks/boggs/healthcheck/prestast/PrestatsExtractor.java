@@ -10,12 +10,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
@@ -25,59 +25,48 @@ import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
 
-	private static Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
+	private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
 
-	private static String DATA_FILE_NAME = "summary.txt";
+	private static final String DATA_FILE_NAME = "summary.txt";
 	private static final String EMPTY_FILES_ERROR = "Found empty Summary files and/or fastqc_data under path -> %s";
 	private static final long MIN_TOTAL_SQ = 85000000l;
 
-	public PrestatsReport extractFromRunDirectory(String runDirectory) throws IOException, EmptyFileException {
+	public PrestatsReport extractFromRunDirectory(@NotNull final String runDirectory)
+			throws IOException, EmptyFileException {
 		List<PrestatsDataReport> summaryData = getSummaryFilesData(runDirectory);
-		List<PrestatsDataReport> fastqcData = getfastqFilesData(runDirectory);
+		PrestatsDataReport fastqcData = getfastqFilesData(runDirectory);
 
-		if (summaryData.isEmpty() || fastqcData.isEmpty()) {
+		if (summaryData.isEmpty() || fastqcData == null) {
 			throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirectory));
 		}
 
 		PrestatsReport prestatsData = new PrestatsReport(CheckType.PRESTATS);
 		prestatsData.addAllData(summaryData);
-		prestatsData.addAllData(fastqcData);
+		prestatsData.addData(fastqcData);
 
 		return prestatsData;
 	}
 
-	List<PrestatsDataReport> getfastqFilesData(String runDirectory) throws IOException {
-		List<Path> fastqcFiles = Files.walk(new File(runDirectory).toPath())
-				.filter(p -> p.getFileName().toString().contains(FASTQC_DATA_FILE_NAME)).sorted()
-				.collect(toCollection(ArrayList<Path>::new));
-
-		List<PrestatsDataReport> fastqcData = fastqcFiles.stream().map(path -> {
-			PrestatsDataReport prestatsDataReport = null;
-			try {
-				Map<String, String> data = getFastqcData(path);
-				String totalSequences = data.get(TOTAL_SEQUENCES);
-				if (totalSequences != null) {
-					String status = "PASS";
-					if (Long.parseLong(totalSequences) < MIN_TOTAL_SQ) {
-						status = "FAIL";
-					}
-					prestatsDataReport = new PrestatsDataReport(status, TOTAL_SEQUENCES, data.get(FILENAME));
-				}
-			} catch (IOException e) {
-				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
-						e.getMessage()));
+	private PrestatsDataReport getfastqFilesData(@NotNull final String runDirectory)
+			throws IOException, EmptyFileException {
+		final Long totalSequences = sumOfTotalSequences(runDirectory);
+		PrestatsDataReport prestatsDataReport = null;
+		if (totalSequences != null) {
+			String status = "PASS";
+			if (totalSequences < MIN_TOTAL_SQ) {
+				status = "FAIL";
 			}
-			return prestatsDataReport;
-		}).collect(Collectors.toList());
-		return fastqcData;
+			prestatsDataReport = new PrestatsDataReport(status, TOTAL_SEQUENCES, "ForNowEmptyFileName");
+		}
+		return prestatsDataReport;
 	}
 
-	private List<PrestatsDataReport> getSummaryFilesData(String runDirectory) throws IOException {
+	private List<PrestatsDataReport> getSummaryFilesData(@NotNull final String runDirectory) throws IOException {
 		List<Path> summaryFiles = Files.walk(new File(runDirectory).toPath())
 				.filter(p -> p.getFileName().toString().startsWith(DATA_FILE_NAME)).sorted()
 				.collect(toCollection(ArrayList<Path>::new));
 
-		List<PrestatsDataReport> summaryData = summaryFiles.stream().map(path -> {
+		return summaryFiles.stream().map(path -> {
 			Stream<String> fileLines = Stream.empty();
 			try {
 				fileLines = Files.lines(path);
@@ -93,6 +82,5 @@ public class PrestatsExtractor extends BoggsExtractor {
 			String file = values[2];
 			return new PrestatsDataReport(status, check, file);
 		}).collect(Collectors.toList());
-		return summaryData;
 	}
 }
