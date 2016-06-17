@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
@@ -20,11 +21,11 @@ public class MappingHealthChecker implements HealthChecker {
 	private static final double MAX_SINGLETONS = 0.5d;
 	private static final double MAX_MATE_MAPPED_TO_DIFFERENT_CHR = 0.01;
 
-	private String runDirectory;
+	private final String runDirectory;
 
-	private MappingExtractor dataExtractor;
+	private final MappingExtractor dataExtractor;
 
-	public MappingHealthChecker(String runDirectory, MappingExtractor dataExtractor) {
+	public MappingHealthChecker(@NotNull final String runDirectory,@NotNull final MappingExtractor dataExtractor) {
 		this.runDirectory = runDirectory;
 		this.dataExtractor = dataExtractor;
 	}
