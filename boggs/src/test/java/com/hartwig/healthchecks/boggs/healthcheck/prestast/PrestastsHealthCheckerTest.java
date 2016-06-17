@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class PrestastHealthCheckerTest {
+public class PrestastsHealthCheckerTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 

@@ -22,7 +22,7 @@ public class PrestatsExtractorTest {
         PrestatsReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
 
         assertNotNull("We should get some fails", prestatsData);
-        assertEquals("Number of files that has failed is not correct", 25, prestatsData.getSummary().size());
+        assertEquals("Number of files that has failed is not correct", 49, prestatsData.getSummary().size());
     }
 
     @Test(expected = EmptyFileException.class)
