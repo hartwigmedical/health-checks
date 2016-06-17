@@ -10,11 +10,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class BoggsExtractor {
 	protected static final String FILENAME = "Filename";
@@ -23,10 +23,10 @@ public class BoggsExtractor {
 	protected static final String MAPPING = "mapping";
 	protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
 	protected static final String FILE_NOT_FOUND = "File %s was not found";
-	private static Logger LOGGER = LogManager.getLogger(BoggsExtractor.class);
+	private static final Logger LOGGER = LogManager.getLogger(BoggsExtractor.class);
 
-	protected Long sumOfTotalSequences(String runDirectory) throws IOException {
-		List<Path> fastqcFiles = Files.walk(new File(runDirectory).toPath())
+	protected Long sumOfTotalSequences(@NotNull final String runDirectory) throws IOException {
+		final List<Path> fastqcFiles = Files.walk(new File(runDirectory).toPath())
 				.filter(p -> p.getFileName().toString().contains(FASTQC_DATA_FILE_NAME)).sorted()
 				.collect(toCollection(ArrayList<Path>::new));
 
@@ -39,11 +39,10 @@ public class BoggsExtractor {
 						e.getMessage()));
 			}
 			return fileLines.collect(toList());
-		}).flatMap(Collection::stream).filter(line -> line.contains(TOTAL_SEQUENCES))
-		  .map(line -> {
-			String[] values = line.split(SEPERATOR_REGEX);
+		}).flatMap(Collection::stream).filter(line -> line.contains(TOTAL_SEQUENCES)).map(line -> {
+			final String[] values = line.split(SEPERATOR_REGEX);
 			return values[1];
-		}).collect(Collectors.toList()).stream( ).mapToLong(Long::parseLong).sum();
+		}).collect(toList()).stream().mapToLong(Long::parseLong).sum();
 	}
 
 }
