@@ -23,14 +23,15 @@ public class PropertiesUtil {
         }
     }
 
-    private PropertiesUtil(){}
+    private PropertiesUtil() {
+    }
 
     public static PropertiesUtil getInstance() {
         return instance;
     }
 
     @NotNull
-    public String getProperty(@NotNull  String key) {
+    public String getProperty(@NotNull final String key) {
         return properties.getProperty(key);
     }
 }

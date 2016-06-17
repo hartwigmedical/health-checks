@@ -11,20 +11,20 @@ import java.util.Optional;
 
 public class ReportTest {
 
-    private Report report = JsonReport.getInstance();
+    private final Report report = JsonReport.getInstance();
 
     @Mocked
     private Report jsonReport;
 
     @Test
     public void generateReport() {
-        BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
         report.addReportData(baseConfig1);
 
-        BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
+        final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
-        Optional<String> location = report.generateReport();
+        final Optional<String> location = report.generateReport();
 
         Assert.assertNotNull(location);
         Assert.assertTrue(location.isPresent());
@@ -32,7 +32,7 @@ public class ReportTest {
 
     @Test
     public void generateReportException() {
-        BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
         jsonReport.addReportData(baseConfig1);
 
         new Expectations() {

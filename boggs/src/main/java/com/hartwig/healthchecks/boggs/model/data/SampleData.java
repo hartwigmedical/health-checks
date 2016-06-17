@@ -1,12 +1,11 @@
 package com.hartwig.healthchecks.boggs.model.data;
 
-import java.util.List;
-
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
+import java.util.List;
 
-public class SampleData{
+public class SampleData {
 
     @NotNull
     private final String sampleID = "IRRELEVANT"; // KODU: Eventually should contain sample barcode (FR12345678)
@@ -21,9 +20,9 @@ public class SampleData{
     @NotNull
     private final FlagStatData realignFlagstats;
 
-    public SampleData( @NotNull String externalID, @NotNull List<FlagStatData> rawMappingFlagstats,
-                      @NotNull List<FlagStatData> sortedMappingFlagstats, @NotNull FlagStatData markdupFlagstats,
-                      @NotNull FlagStatData realignFlagstats) {
+    public SampleData(@NotNull final String externalID, @NotNull final List<FlagStatData> rawMappingFlagstats,
+                      @NotNull final List<FlagStatData> sortedMappingFlagstats, @NotNull final FlagStatData markdupFlagstats,
+                      @NotNull final FlagStatData realignFlagstats) {
         this.externalID = externalID;
         this.rawMappingFlagstats = rawMappingFlagstats;
         this.sortedMappingFlagstats = sortedMappingFlagstats;

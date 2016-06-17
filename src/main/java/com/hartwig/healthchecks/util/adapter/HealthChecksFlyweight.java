@@ -9,27 +9,31 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 
 public class HealthChecksFlyweight {
 
-    private static Logger LOGGER = LogManager.getLogger(HealthChecksFlyweight.class);
+    private static final Logger LOGGER = LogManager.getLogger(HealthChecksFlyweight.class);
 
-    private static Map<CheckCategory, HealthCheckAdapter> flyweight = new HashMap<>();
-    private static HealthChecksFlyweight instance = new HealthChecksFlyweight();
+    private static final Map<CheckCategory, HealthCheckAdapter> flyweight = new HashMap<>();
+    private static final HealthChecksFlyweight instance = new HealthChecksFlyweight();
 
-    private static Reflections base = new Reflections("com.hartwig.healthchecks.boggs.adapter");
+    private static final Reflections base = new Reflections("com.hartwig.healthchecks.boggs.adapter");
     @SuppressWarnings("rawtypes")
-    private static Set<Class<? extends HealthCheckAdapter>> baseSet = base.getSubTypesOf(HealthCheckAdapter.class);
+    private static final Set<Class<? extends HealthCheckAdapter>> baseSet = base.getSubTypesOf(HealthCheckAdapter.class);
 
     static {
         baseSet.stream()
                 .forEach(adapter -> {
                     try {
-                        HealthCheckAdapter adapterInstance = adapter.newInstance();
-                        ResourceWrapper resourceWrapper = adapter.getAnnotation(ResourceWrapper.class);
-                        CheckCategory checkCategory = resourceWrapper.type();
+                        final HealthCheckAdapter adapterInstance = adapter.newInstance();
+                        final ResourceWrapper resourceWrapper = adapter.getAnnotation(ResourceWrapper.class);
+                        final CheckCategory checkCategory = resourceWrapper.type();
 
                         flyweight.put(checkCategory, adapterInstance);
                     } catch (InstantiationException | IllegalAccessException e) {
@@ -45,8 +49,9 @@ public class HealthChecksFlyweight {
         return instance;
     }
 
-    public HealthCheckAdapter getAdapter(@NotNull String type) throws NotFoundException {
-        Optional<CheckCategory> checkType = CheckCategory.getByCategory(type);
+    @NotNull
+    public HealthCheckAdapter getAdapter(@NotNull final String type) throws NotFoundException {
+        final Optional<CheckCategory> checkType = CheckCategory.getByCategory(type);
         if (!checkType.isPresent()) {
             throw new NotFoundException(String.format("Invalid CheckCategory informed %s", type));
         }

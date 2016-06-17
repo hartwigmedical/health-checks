@@ -9,7 +9,7 @@ public class PatientData {
     @NotNull
     private final SampleData tumorSample;
 
-    public PatientData(@NotNull SampleData refSample, @NotNull SampleData tumorSample) {
+    public PatientData(@NotNull final SampleData refSample, @NotNull final SampleData tumorSample) {
         this.refSample = refSample;
         this.tumorSample = tumorSample;
     }

@@ -16,9 +16,11 @@ public class FlagStats {
     private final Double mateMappedToDifferentChr;
     private final Double mateMappedToDifferentChrMapQ5;
 
-    FlagStats(Double total, Double secondary, Double supplementary, Double duplicates, Double mapped, Double pairedInSequencing,
-              Double read1, Double read2, Double properlyPaired, Double itselfAndMateMapped, Double singletons,
-              Double mateMappedToDifferentChr, Double mateMappedToDifferentChrMapQ5) {
+    FlagStats(final Double total, final Double secondary, final Double supplementary, final Double duplicates,
+              final Double mapped, final Double pairedInSequencing, final Double read1, final Double read2,
+              final Double properlyPaired, final Double itselfAndMateMapped, final Double singletons,
+              final Double mateMappedToDifferentChr, final Double mateMappedToDifferentChrMapQ5) {
+
         this.total = total;
         this.secondary = secondary;
         this.supplementary = supplementary;
