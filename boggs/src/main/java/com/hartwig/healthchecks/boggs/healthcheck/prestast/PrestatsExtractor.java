@@ -1,40 +1,44 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestast;
 
-import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import com.hartwig.healthchecks.common.util.CheckType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import static java.util.stream.Collectors.toCollection;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
     private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
 
-    private static final String DATA_FILE_NAME = "summary.txt";
-    private static final String EMPTY_FILES_ERROR = "Found empty Summary files and/or fastqc_data under path -> %s";
+    private static final String SUMMARY_FILE_NAME = "summary.txt";
     private static final long MIN_TOTAL_SQ = 85000000l;
 
     public PrestatsReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, EmptyFileException {
-        List<PrestatsDataReport> summaryData = getSummaryFilesData(runDirectory);
-        PrestatsDataReport fastqcData = getfastqFilesData(runDirectory);
+        final Optional<Path> pathToCheck = getFilesPath(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
+        if (!pathToCheck.isPresent()) {
+            throw new FileNotFoundException(
+                    String.format(FILE_NOT_FOUND_ERROR, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX, runDirectory));
+        }
+        List<PrestatsDataReport> summaryData = getSummaryFilesData(pathToCheck.get());
+        PrestatsDataReport fastqcData = getfastqFilesData(pathToCheck.get());
 
-        if (summaryData.isEmpty() || fastqcData == null) {
+        if (summaryData == null || summaryData.isEmpty() || fastqcData == null) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirectory));
         }
 
@@ -45,32 +49,34 @@ public class PrestatsExtractor extends BoggsExtractor {
         return prestatsData;
     }
 
-    private List<PrestatsDataReport> getSummaryFilesData(@NotNull final String runDirectory) throws IOException {
-        final List<Path> summaryFiles = Files.walk(new File(runDirectory).toPath())
-                .filter(p -> p.getFileName().toString().startsWith(DATA_FILE_NAME)).sorted()
+    private List<PrestatsDataReport> getSummaryFilesData(@NotNull final Path pathToCheck)
+            throws IOException, EmptyFileException {
+        final List<Path> zipFiles = Files.walk(pathToCheck)
+                .filter(p -> p.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
                 .collect(toCollection(ArrayList<Path>::new));
-
-        return summaryFiles.stream().map(path -> {
-            Stream<String> fileLines = Stream.empty();
-            try {
-                fileLines = Files.lines(path);
-            } catch (IOException e) {
-                LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
-                        e.getMessage()));
+        return zipFiles.stream().map(path -> {
+            List<String> lines = null;
+            lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
+            if (lines == null) {
+                lines = new ArrayList<>();
             }
-            return fileLines.collect(toList());
+            return lines;
         }).flatMap(Collection::stream).map(line -> {
             String[] values = line.split(SEPERATOR_REGEX);
-            String status = values[0];
-            String check = values[1];
-            String file = values[2];
-            return new PrestatsDataReport(status, check, file);
-        }).collect(Collectors.toList());
+            PrestatsDataReport prestatsDataReport = null;
+            if (values.length == 3) {
+                String status = values[0];
+                String check = values[1];
+                String file = values[2];
+                prestatsDataReport = new PrestatsDataReport(status, check, file);
+            }
+            return prestatsDataReport;
+        }).filter(p -> p != null).collect(Collectors.toList());
     }
 
-    private PrestatsDataReport getfastqFilesData(@NotNull final String runDirectory)
+    private PrestatsDataReport getfastqFilesData(@NotNull final Path pathToCheck)
             throws IOException, EmptyFileException {
-        final Long totalSequences = sumOfTotalSequences(runDirectory);
+        final Long totalSequences = sumOfTotalSequences(pathToCheck);
         PrestatsDataReport prestatsDataReport = null;
         if (totalSequences != null) {
             String status = "PASS";

@@ -29,11 +29,11 @@ public class PatientExtractorTest {
         PatientData patient = extractor.extractFromRunDirectory(runDirURL.getPath());
 
         assertNotNull("Patient data should not be null", patient);
-        assertEquals("Ref External Id Not correct", "CPCT00R", patient.getRefSample().getExternalId());
+        assertEquals("Ref External Id Not correct", "CPCT12345678R", patient.getRefSample().getExternalId());
         assertEquals("Ref size of sorted Mapping not correct", 2,
                 patient.getRefSample().getSortedMappingFlagstats().size());
         assertEquals("Ref size of raw Mapping not correct", 2, patient.getRefSample().getRawMappingFlagstats().size());
-        assertEquals("Tumor External Id Not correct", "CPCT00T", patient.getTumorSample().getExternalId());
+        assertEquals("Tumor External Id Not correct", "CPCT12345678T", patient.getTumorSample().getExternalId());
         assertEquals("Tumor size of sorted Mapping not correct", 2,
                 patient.getTumorSample().getSortedMappingFlagstats().size());
         assertEquals("Tumor size of raw Mapping not correct", 2,

@@ -18,11 +18,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public class MappingExtractor extends BoggsExtractor {
-    private static final String EMPTY_FILES_ERROR = "Found empty Summary files and/or fastqc_data under path -> %s";
-
     private static final String REALIGN = "realign";
-    private static final String SAMPLE_PREFIX = "CPCT";
-    private static final String REF_SAMPLE_SUFFIX = "R";
     private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
     @NotNull
@@ -34,16 +30,9 @@ public class MappingExtractor extends BoggsExtractor {
 
     public MappingReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, EmptyFileException {
-
-        final Optional<Path> sampleFile = Files.walk(new File(runDirectory).toPath())
-                .filter(p -> p.getFileName().toString().startsWith(SAMPLE_PREFIX)
-                        && p.getFileName().toString().endsWith(REF_SAMPLE_SUFFIX))
-                .findFirst();
-        if (!sampleFile.isPresent()) {
-            throw new FileNotFoundException();
-        }
+        final Optional<Path> sampleFile = getFilesPath(runDirectory ,SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final String externalId = sampleFile.get().getFileName().toString();
-        final Long totalSequences = sumOfTotalSequences(runDirectory);
+        final Long totalSequences = sumOfTotalSequences(sampleFile.get());
         final MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences.toString());
         return new MappingReport(CheckType.MAPPING, externalId, totalSequences.toString(), mappingDataReport);
     }

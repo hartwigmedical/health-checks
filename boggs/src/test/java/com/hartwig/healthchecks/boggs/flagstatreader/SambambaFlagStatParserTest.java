@@ -13,7 +13,7 @@ public class SambambaFlagStatParserTest {
 
     @Test
     public void canParseExampleFile() throws IOException, EmptyFileException {
-        final URL exampleFlagStatURL = Resources.getResource("flagstats/example.flagstat");
+        final URL exampleFlagStatURL = Resources.getResource("rundir/CPCT12345678R/mapping/CPCT12345678R_FLOWCELL_S2_L001_001.flagstat");
         final String exampleFlagStatFile = exampleFlagStatURL.getPath();
 
         final FlagStatParser parser = new SambambaFlagStatParser();
@@ -50,7 +50,7 @@ public class SambambaFlagStatParserTest {
 
     @Test(expected = EmptyFileException.class)
     public void canParseEmptyFile() throws IOException, EmptyFileException {
-        final URL exampleFlagStatURL = Resources.getResource("emptyFiles/CPCTEMPTY00R/mapping/CPCT_empty_dedup.realigned.flagstat");
+        final URL exampleFlagStatURL = Resources.getResource("emptyFiles/CPCT12345678R/mapping/CPCT12345678R_FLOWCELL_S2_L001_001.flagstat");
         final String exampleFlagStatFile = exampleFlagStatURL.getPath();
         final FlagStatParser parser = new SambambaFlagStatParser();
         parser.parse(exampleFlagStatFile);
