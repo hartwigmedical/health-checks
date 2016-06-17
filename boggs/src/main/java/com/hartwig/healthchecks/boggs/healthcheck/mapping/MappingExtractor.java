@@ -43,7 +43,7 @@ public class MappingExtractor extends BoggsExtractor {
 			throw new FileNotFoundException();
 		}
 		String externalId = sampleFile.get().getFileName().toString();
-		String totalSequences = getTotalSequences(sampleFile.get());
+		String totalSequences = sumOfTotalSequences(runDirectory).toString();
 		MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences);
 		return new MappingReport(CheckType.MAPPING, externalId, totalSequences, mappingDataReport);
 	}

@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,43 +32,29 @@ public class PrestatsExtractor extends BoggsExtractor {
 
 	public PrestatsReport extractFromRunDirectory(String runDirectory) throws IOException, EmptyFileException {
 		List<PrestatsDataReport> summaryData = getSummaryFilesData(runDirectory);
-		List<PrestatsDataReport> fastqcData = getfastqFilesData(runDirectory);
+		PrestatsDataReport fastqcData = getfastqFilesData(runDirectory);
 
-		if (summaryData.isEmpty() || fastqcData.isEmpty()) {
+		if (summaryData.isEmpty() || fastqcData == null) {
 			throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirectory));
 		}
 
 		PrestatsReport prestatsData = new PrestatsReport(CheckType.PRESTATS);
 		prestatsData.addAllData(summaryData);
-		prestatsData.addAllData(fastqcData);
+		prestatsData.addData(fastqcData);
 
 		return prestatsData;
 	}
 
-	List<PrestatsDataReport> getfastqFilesData(String runDirectory) throws IOException {
-		List<Path> fastqcFiles = Files.walk(new File(runDirectory).toPath())
-				.filter(p -> p.getFileName().toString().contains(FASTQC_DATA_FILE_NAME)).sorted()
-				.collect(toCollection(ArrayList<Path>::new));
-
-		List<PrestatsDataReport> fastqcData = fastqcFiles.stream().map(path -> {
-			PrestatsDataReport prestatsDataReport = null;
-			try {
-				Map<String, String> data = getFastqcData(path);
-				String totalSequences = data.get(TOTAL_SEQUENCES);
-				if (totalSequences != null) {
-					String status = "PASS";
-					if (Long.parseLong(totalSequences) < MIN_TOTAL_SQ) {
-						status = "FAIL";
-					}
-					prestatsDataReport = new PrestatsDataReport(status, TOTAL_SEQUENCES, data.get(FILENAME));
-				}
-			} catch (IOException e) {
-				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
-						e.getMessage()));
-			}
-			return prestatsDataReport;
-		}).collect(Collectors.toList());
-		return fastqcData;
+	PrestatsDataReport getfastqFilesData(String runDirectory) throws IOException, EmptyFileException {
+		Long totalSequences = sumOfTotalSequences(runDirectory);
+		if (totalSequences == null) {
+			return null;
+		}
+		String status = "PASS";
+		if (totalSequences < MIN_TOTAL_SQ) {
+			status = "FAIL";
+		}
+		return new PrestatsDataReport(status, TOTAL_SEQUENCES, "ForNowEmptyFileName");
 	}
 
 	private List<PrestatsDataReport> getSummaryFilesData(String runDirectory) throws IOException {

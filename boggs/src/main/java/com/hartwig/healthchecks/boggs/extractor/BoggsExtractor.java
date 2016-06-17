@@ -1,13 +1,20 @@
 package com.hartwig.healthchecks.boggs.extractor;
 
-import java.io.FileNotFoundException;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BoggsExtractor {
 	protected static final String FILENAME = "Filename";
@@ -15,21 +22,28 @@ public class BoggsExtractor {
 	protected static final String TOTAL_SEQUENCES = "Total Sequences";
 	protected static final String MAPPING = "mapping";
 	protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
+	protected static final String FILE_NOT_FOUND = "File %s was not found";
+	private static Logger LOGGER = LogManager.getLogger(BoggsExtractor.class);
 
-	protected String getTotalSequences(Path path) throws IOException {
-		Map<String, String> data = getFastqcData(path);
-		return data.get(TOTAL_SEQUENCES);
+	protected Long sumOfTotalSequences(String runDirectory) throws IOException {
+		List<Path> fastqcFiles = Files.walk(new File(runDirectory).toPath())
+				.filter(p -> p.getFileName().toString().contains(FASTQC_DATA_FILE_NAME)).sorted()
+				.collect(toCollection(ArrayList<Path>::new));
+
+		return fastqcFiles.stream().map(path -> {
+			Stream<String> fileLines = Stream.empty();
+			try {
+				fileLines = Files.lines(path);
+			} catch (IOException e) {
+				LOGGER.error(String.format("Error occurred when reading file. Will return empty stream. Error -> %s",
+						e.getMessage()));
+			}
+			return fileLines.collect(toList());
+		}).flatMap(Collection::stream).filter(line -> line.contains(TOTAL_SEQUENCES))
+		  .map(line -> {
+			String[] values = line.split(SEPERATOR_REGEX);
+			return values[1];
+		}).collect(Collectors.toList()).stream( ).mapToLong(Long::parseLong).sum();
 	}
 
-	protected Map<String, String> getFastqcData(Path path) throws IOException {
-		Optional<Path> fastqcDataPath = Files.walk(path)
-				.filter(p -> p.getFileName().toString().startsWith(FASTQC_DATA_FILE_NAME)).findFirst();
-		if (!fastqcDataPath.isPresent()) {
-			throw new FileNotFoundException();
-		}
-		return Files.lines(Paths.get(fastqcDataPath.get().toString()))
-				.filter(line -> line.contains(TOTAL_SEQUENCES) || line.contains(FILENAME)).map(line -> {
-					return line.split(SEPERATOR_REGEX);
-				}).collect(Collectors.toMap(values -> values[0], values -> values[1]));
-	}
 }

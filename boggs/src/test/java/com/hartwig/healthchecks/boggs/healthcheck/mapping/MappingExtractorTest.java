@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,7 +44,7 @@ public class MappingExtractorTest {
 		MappingReport mappingReport = extractor.extractFromRunDirectory(path);
 		assertNotNull("We should have data", mappingReport);
 		MappingDataReport mappingDataReport = mappingReport.getMappingDataReport();
-		assertTrue("Not All Read are Present", mappingDataReport.isAllReadsPresent());
+		assertFalse("Not All Read are Present", mappingDataReport.isAllReadsPresent());
 		assertEquals(99.69d, mappingDataReport.getMappedPercentage(), 0d);
 		assertEquals(0.0d, mappingDataReport.getMateMappedToDifferentChrPercentage(), 0d);
 		assertEquals(99.57d, mappingDataReport.getProperlyPairedPercentage(), 0d);
@@ -60,7 +60,7 @@ public class MappingExtractorTest {
 
 	@Test(expected = EmptyFileException.class)
 	public void extractDataEmptyFile() throws IOException, EmptyFileException {
-		URL exampleFlagStatURL = Resources.getResource("emptyFiles");
+		URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
 		String path = exampleFlagStatURL.getPath();
 		MappingExtractor extractor = new MappingExtractor(flagstatParser);
 		extractor.extractFromRunDirectory(path);
