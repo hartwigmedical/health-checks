@@ -15,10 +15,8 @@ public class BaseReport implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "BaseConfig{" +
-                "checkType=" + checkType +
-                '}';
+    public int hashCode() {
+        return checkType.hashCode();
     }
 
     @Override
@@ -33,7 +31,9 @@ public class BaseReport implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return checkType.hashCode();
+    public String toString() {
+        return "BaseConfig{" +
+                "checkType=" + checkType +
+                '}';
     }
 }
