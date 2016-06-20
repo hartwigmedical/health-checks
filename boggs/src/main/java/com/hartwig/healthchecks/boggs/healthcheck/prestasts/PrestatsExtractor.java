@@ -25,21 +25,21 @@ import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
 
-    private final static int ONE = 1;
-    
-    private final static int NEGATIVE_ONE = -1;
-    
-    private final static int ZERO = 0;
-    
-    protected final static String PASS = "PASS";
-    
-    protected final static String WARN = "WARN";
-    
-    protected final static String FAIL = "FAIL";
-    
-    private final static String SUMMARY_FILE_NAME = "summary.txt";
-    
-    private final static long MIN_TOTAL_SQ = 85000000l;
+    private static final int ONE = 1;
+
+    private static final int NEGATIVE_ONE = -1;
+
+    private static final int ZERO = 0;
+
+    protected static final String PASS = "PASS";
+
+    protected static final String WARN = "WARN";
+
+    protected static final String FAIL = "FAIL";
+
+    private static final String SUMMARY_FILE_NAME = "summary.txt";
+
+    private static final long MIN_TOTAL_SQ = 85000000l;
 
     public PrestatsReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, EmptyFileException {
@@ -66,7 +66,7 @@ public class PrestatsExtractor extends BoggsExtractor {
             throws IOException, EmptyFileException {
 
         final List<Path> zipFiles = Files.walk(pathToCheck)
-                .filter(p -> p.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
+                .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
                 .collect(toCollection(ArrayList<Path>::new));
 
         final Comparator<PrestatsDataReport> isStatusWorse = new Comparator<PrestatsDataReport>() {
@@ -75,28 +75,13 @@ public class PrestatsExtractor extends BoggsExtractor {
                     @NotNull final PrestatsDataReport secondData) {
                 String firstStatus = firstData.getStatus();
                 String secondStatus = secondData.getStatus();
-
-                if (FAIL.equals(firstStatus)) {
-                    if (FAIL.equals(secondStatus)) {
-                        return ZERO;
-                    } else {
-                        return NEGATIVE_ONE;
-                    }
-                } else if (WARN.equals(firstStatus)) {
-                    if (FAIL.equals(secondStatus)) {
-                        return ONE;
-                    } else if (WARN.equals(secondStatus)) {
-                        return ZERO;
-                    } else {
-                        return NEGATIVE_ONE;
-                    }
-                } else {
-                    if (PASS.equals(secondStatus)) {
-                        return ZERO;
-                    } else {
-                        return ONE;
-                    }
+                int status = ONE;
+                if (firstStatus.equals(secondStatus)) {
+                    status = ZERO;
+                } else if (FAIL.equals(firstStatus) || WARN.equals(firstStatus)) {
+                    status = NEGATIVE_ONE;
                 }
+                return status;
             }
         };
 
@@ -117,10 +102,11 @@ public class PrestatsExtractor extends BoggsExtractor {
                 prestatsDataReport = new PrestatsDataReport(status, check, file);
             }
             return prestatsDataReport;
-        }).filter(p -> p != null).collect(groupingBy(PrestatsDataReport::getCheckName));
+        }).filter(prestatsDataReport -> prestatsDataReport != null)
+                .collect(groupingBy(PrestatsDataReport::getCheckName));
 
-        return data.values().stream().map(l -> {
-            return l.stream().min(isStatusWorse).get();
+        return data.values().stream().map(prestatsDataReportList -> {
+            return prestatsDataReportList.stream().min(isStatusWorse).get();
         }).collect(toList());
     }
 

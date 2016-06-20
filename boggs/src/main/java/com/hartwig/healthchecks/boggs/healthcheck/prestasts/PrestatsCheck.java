@@ -23,7 +23,7 @@ public enum PrestatsCheck {
     
     private final String description;
 
-    private PrestatsCheck(String description) {
+    private PrestatsCheck(@NotNull final String description) {
         this.description = description;
     }
 
