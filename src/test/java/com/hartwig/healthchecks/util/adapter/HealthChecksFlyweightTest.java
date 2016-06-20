@@ -1,38 +1,33 @@
 package com.hartwig.healthchecks.util.adapter;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import com.hartwig.healthchecks.boggs.adapter.BoggsAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
-import mockit.Expectations;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class HealthChecksFlyweightTest {
 
+    private static final String WRONG_TYPE_MSG = "Wrong Type fo Adapter";
+    private static final String BOGGS = "boggs";
+    private static final String NOT_NULL_MSG = "healthChecksFlyweight should not be null";
+    private static final String DUMMY_TYPE = "bla";
+
     @Test
-    public void getAdapterSuccess() {
+    public void getAdapterSuccess() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
-
-        Assert.assertNotNull(healthChecksFlyweight);
-
-        try {
-            final HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter("boggs");
-
-            Assert.assertTrue(boggsAdapter instanceof BoggsAdapter);
-        } catch (NotFoundException e) {
-            Assert.fail();
-        }
+        assertNotNull(NOT_NULL_MSG, healthChecksFlyweight);
+        final HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter(BOGGS);
+        assertTrue(WRONG_TYPE_MSG, boggsAdapter instanceof BoggsAdapter);
     }
 
     @Test(expected = NotFoundException.class)
     public void getAdapterFailure() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
-
-        Assert.assertNotNull(healthChecksFlyweight);
-
-        new Expectations() {{
-            healthChecksFlyweight.getAdapter("bugs");
-            result = new NotFoundException("Expected error.");
-        }};
+        assertNotNull(NOT_NULL_MSG, healthChecksFlyweight);
+        healthChecksFlyweight.getAdapter(DUMMY_TYPE);
     }
 }

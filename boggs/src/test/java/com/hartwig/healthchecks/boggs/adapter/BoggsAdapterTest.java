@@ -2,8 +2,8 @@ package com.hartwig.healthchecks.boggs.adapter;
 
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsExtractor;
-import com.hartwig.healthchecks.boggs.healthcheck.prestast.PrestatsHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
+import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsHealthChecker;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
