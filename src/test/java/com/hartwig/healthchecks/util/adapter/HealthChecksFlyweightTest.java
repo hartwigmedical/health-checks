@@ -1,13 +1,18 @@
 package com.hartwig.healthchecks.util.adapter;
 
-import com.hartwig.healthchecks.boggs.adapter.BoggsAdapter;
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
-import com.hartwig.healthchecks.common.exception.NotFoundException;
-import mockit.Expectations;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.hartwig.healthchecks.boggs.adapter.BoggsAdapter;
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.exception.NotFoundException;
+
 public class HealthChecksFlyweightTest {
+
+    private static final String DUMMY_TYPE = "bla";
 
     @Test
     public void getAdapterSuccess() {
@@ -18,7 +23,7 @@ public class HealthChecksFlyweightTest {
         try {
             final HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter("boggs");
 
-            Assert.assertTrue(boggsAdapter instanceof BoggsAdapter);
+            assertTrue(boggsAdapter instanceof BoggsAdapter);
         } catch (NotFoundException e) {
             Assert.fail();
         }
@@ -27,12 +32,7 @@ public class HealthChecksFlyweightTest {
     @Test(expected = NotFoundException.class)
     public void getAdapterFailure() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
-
-        Assert.assertNotNull(healthChecksFlyweight);
-
-        new Expectations() {{
-            healthChecksFlyweight.getAdapter("bugs");
-            result = new NotFoundException("Expected error.");
-        }};
+        assertNotNull(healthChecksFlyweight);
+        healthChecksFlyweight.getAdapter(DUMMY_TYPE);
     }
 }

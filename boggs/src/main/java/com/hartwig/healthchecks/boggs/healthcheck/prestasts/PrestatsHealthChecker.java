@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.healthcheck.prestast;
+package com.hartwig.healthchecks.boggs.healthcheck.prestasts;
 
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;

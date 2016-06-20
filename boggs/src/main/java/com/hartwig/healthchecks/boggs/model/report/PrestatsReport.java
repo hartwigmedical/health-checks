@@ -1,11 +1,12 @@
 package com.hartwig.healthchecks.boggs.model.report;
 
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsReport extends BaseReport {
 
@@ -31,6 +32,8 @@ public class PrestatsReport extends BaseReport {
 
     @Override
     public String toString() {
-        return "PrestatsReport [summary=" + summary + "]";
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("PrestatsReport [summary=").append(summary).append("]");
+        return buffer.toString();
     }
 }
