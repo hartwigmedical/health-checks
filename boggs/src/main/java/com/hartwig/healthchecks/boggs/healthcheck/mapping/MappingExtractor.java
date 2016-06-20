@@ -19,12 +19,12 @@ import java.util.Optional;
 
 public class MappingExtractor extends BoggsExtractor {
 
-    private final static Long MILLIS_FACTOR = 10000L;
-    private final static Double HUNDRED_FACTOR = 100D;
-    private final static Integer DOUBLE_SEQUENCE = 2;
+    private static final Long MILLIS_FACTOR = 10000L;
+    private static final Double HUNDRED_FACTOR = 100D;
+    private static final Integer DOUBLE_SEQUENCE = 2;
 
-    private final static String REALIGN = "realign";
-    private final static String FLAGSTAT_SUFFIX = ".flagstat";
+    private static final String REALIGN = "realign";
+    private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
     @NotNull
     private final FlagStatParser flagstatParser;

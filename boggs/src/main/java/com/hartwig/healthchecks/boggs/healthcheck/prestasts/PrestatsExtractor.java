@@ -47,7 +47,7 @@ public class PrestatsExtractor extends BoggsExtractor {
             throw new FileNotFoundException(
                     String.format(FILE_NOT_FOUND_ERROR, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX, runDirectory));
         }
-        final List<PrestatsDataReport> summaryData = getSummaryFilesData(pathToCheck.get());
+        final List<PrestatsDataReport> summaryData = this.getSummaryFilesData(pathToCheck.get());
         final PrestatsDataReport fastqcData = getfastqFilesData(pathToCheck.get());
 
         if (summaryData == null || summaryData.isEmpty() || fastqcData == null) {
@@ -65,7 +65,8 @@ public class PrestatsExtractor extends BoggsExtractor {
             throws IOException, EmptyFileException {
 
         final List<Path> zipFiles = Files.walk(pathToCheck)
-                .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
+                .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX))
+                .sorted()
                 .collect(toCollection(ArrayList<Path>::new));
 
         final Comparator<PrestatsDataReport> isStatusWorse = new Comparator<PrestatsDataReport>() {
