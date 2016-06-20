@@ -72,13 +72,13 @@ public class HealthChecksApplication {
         } else {
             HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
             try {
-                HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
+                final HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
                 healthCheckAdapter.runCheck(runDirectory);
             } catch (NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
         }
-        Optional<String> fileName = JsonReport.getInstance().generateReport();
+        final Optional<String> fileName = JsonReport.getInstance().generateReport();
         LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
     }
 
@@ -89,10 +89,10 @@ public class HealthChecksApplication {
         Observable.from(adapters)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                        (h) -> h.runCheck(runDirectory),
-                        (t) -> t.printStackTrace(),
+                        (adapter) -> adapter.runCheck(runDirectory),
+                        (error) -> LOGGER.error(error.getMessage()),
                         () -> {
-                            Optional<String> fileName = JsonReport.getInstance().generateReport();
+                            final Optional<String> fileName = JsonReport.getInstance().generateReport();
                             LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
                         }
                 );
