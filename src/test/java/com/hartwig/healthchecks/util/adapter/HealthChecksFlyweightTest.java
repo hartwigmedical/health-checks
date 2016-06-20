@@ -3,7 +3,6 @@ package com.hartwig.healthchecks.util.adapter;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.boggs.adapter.BoggsAdapter;
@@ -20,7 +19,7 @@ public class HealthChecksFlyweightTest {
     @Test
     public void getAdapterSuccess() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
-        Assert.assertNotNull(NOT_NULL_MSG, healthChecksFlyweight);
+        assertNotNull(NOT_NULL_MSG, healthChecksFlyweight);
         final HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter(BOGGS);
         assertTrue(WRONG_TYPE_MSG, boggsAdapter instanceof BoggsAdapter);
     }

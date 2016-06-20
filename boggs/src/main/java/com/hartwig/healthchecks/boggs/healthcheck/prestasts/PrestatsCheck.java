@@ -1,7 +1,6 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestasts;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,22 +19,20 @@ public enum PrestatsCheck {
     PRESTATS_OVERREPRESENTED_SEQUENCES("Overrepresented sequences"), 
     PRESTATS_ADAPTER_CONTENT("Adapter Content"), 
     PRESTATS_KMER_CONTENT("Kmer Content"),
-    PRESTATS_NUMBER_OF_READS("Total Sequences"), 
-   ;
+    PRESTATS_NUMBER_OF_READS("Total Sequences");
     
     private final String description;
 
-    private PrestatsCheck(@NotNull final String description) {
+    private PrestatsCheck(String description) {
         this.description = description;
     }
 
     public static Optional<PrestatsCheck> getByDescription(@NotNull final String description) {
-        List<PrestatsCheck> types = Arrays.asList(PrestatsCheck.values());
-        return types.stream().filter(t -> t.description.equalsIgnoreCase(description))
+        return Arrays.asList(PrestatsCheck.values()).stream().filter(t -> t.description.equalsIgnoreCase(description))
                 .findFirst();
     }
     
     public String getDescription() {
-        return description;
+        return this.description;
     }
 }

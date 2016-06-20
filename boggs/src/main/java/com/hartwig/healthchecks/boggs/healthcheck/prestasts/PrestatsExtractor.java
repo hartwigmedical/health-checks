@@ -25,14 +25,21 @@ import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
 
-    private static final int ONE = 1;
-    private static final int NEGATIVE_ONE = -1;
-    private static final int ZERO = 0;
-    protected static final String PASS = "PASS";
-    protected static final String WARN = "WARN";
-    protected static final String FAIL = "FAIL";
-    private static final String SUMMARY_FILE_NAME = "summary.txt";
-    private static final long MIN_TOTAL_SQ = 85000000l;
+    private final static int ONE = 1;
+    
+    private final static int NEGATIVE_ONE = -1;
+    
+    private final static int ZERO = 0;
+    
+    protected final static String PASS = "PASS";
+    
+    protected final static String WARN = "WARN";
+    
+    protected final static String FAIL = "FAIL";
+    
+    private final static String SUMMARY_FILE_NAME = "summary.txt";
+    
+    private final static long MIN_TOTAL_SQ = 85000000l;
 
     public PrestatsReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, EmptyFileException {
