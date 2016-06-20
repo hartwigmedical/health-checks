@@ -32,7 +32,7 @@ public class PrestatsReport extends BaseReport {
 
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append("PrestatsReport [summary=").append(summary).append("]");
         return buffer.toString();
     }

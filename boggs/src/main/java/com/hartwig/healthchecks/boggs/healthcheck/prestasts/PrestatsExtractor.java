@@ -64,7 +64,8 @@ public class PrestatsExtractor extends BoggsExtractor {
 
         final Comparator<PrestatsDataReport> isStatusWorse = new Comparator<PrestatsDataReport>() {
             @Override
-            public int compare(PrestatsDataReport firstData, PrestatsDataReport secondData) {
+            public int compare(@NotNull final PrestatsDataReport firstData,
+                    @NotNull final PrestatsDataReport secondData) {
                 String firstStatus = firstData.getStatus();
                 String secondStatus = secondData.getStatus();
 
@@ -92,7 +93,7 @@ public class PrestatsExtractor extends BoggsExtractor {
             }
         };
 
-        Map<String, List<PrestatsDataReport>> data = zipFiles.stream().map(path -> {
+        final Map<String, List<PrestatsDataReport>> data = zipFiles.stream().map(path -> {
             List<String> lines = null;
             lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
             if (lines == null) {

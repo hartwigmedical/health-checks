@@ -12,27 +12,23 @@ import com.hartwig.healthchecks.common.exception.NotFoundException;
 
 public class HealthChecksFlyweightTest {
 
+    private static final String WRONG_TYPE_MSG = "Wrong Type fo Adapter";
+    private static final String BOGGS = "boggs";
+    private static final String NOT_NULL_MSG = "healthChecksFlyweight should not be null";
     private static final String DUMMY_TYPE = "bla";
 
     @Test
-    public void getAdapterSuccess() {
+    public void getAdapterSuccess() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
-
-        Assert.assertNotNull(healthChecksFlyweight);
-
-        try {
-            final HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter("boggs");
-
-            assertTrue(boggsAdapter instanceof BoggsAdapter);
-        } catch (NotFoundException e) {
-            Assert.fail();
-        }
+        Assert.assertNotNull(NOT_NULL_MSG, healthChecksFlyweight);
+        final HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter(BOGGS);
+        assertTrue(WRONG_TYPE_MSG, boggsAdapter instanceof BoggsAdapter);
     }
 
     @Test(expected = NotFoundException.class)
     public void getAdapterFailure() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
-        assertNotNull(healthChecksFlyweight);
+        assertNotNull(NOT_NULL_MSG, healthChecksFlyweight);
         healthChecksFlyweight.getAdapter(DUMMY_TYPE);
     }
 }

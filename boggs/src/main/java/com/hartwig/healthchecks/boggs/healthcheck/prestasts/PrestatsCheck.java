@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum PrestatsCheck {
     
     PRESTATS_PER_BASE_SEQUENCE_QUALITY("Per base sequence quality"), 
@@ -23,11 +25,11 @@ public enum PrestatsCheck {
     
     private final String description;
 
-    private PrestatsCheck(String description) {
+    private PrestatsCheck(@NotNull final String description) {
         this.description = description;
     }
 
-    public static Optional<PrestatsCheck> getByDescription(String description) {
+    public static Optional<PrestatsCheck> getByDescription(@NotNull final String description) {
         List<PrestatsCheck> types = Arrays.asList(PrestatsCheck.values());
         return types.stream().filter(t -> t.description.equalsIgnoreCase(description))
                 .findFirst();
