@@ -21,6 +21,11 @@ import static org.junit.Assert.assertEquals;
 
 public class BoggsAdapterTest {
 
+    private static final String DUMMY_ID = "DUMMY_ID";
+    private static final String DUMMY_CHECK_NAME = "DummyCheckName";
+    private static final String DUMMY_STATUS = "DummyStatus";
+    private static final String _123 = "123";
+    private static final String SOME_ID = "SomeId";
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     @Test
@@ -57,12 +62,12 @@ public class BoggsAdapterTest {
 
     private MappingReport getDummyMappingReport() {
         final MappingDataReport mappingDataReport = new MappingDataReport(1.0d, 2.0d, 2.0d, 1.0d, 0.2d, true);
-        return new MappingReport(CheckType.MAPPING, "SomeId", "123", mappingDataReport);
+        return new MappingReport(CheckType.MAPPING, SOME_ID, _123, mappingDataReport);
     }
 
     private PrestatsReport getDummyPrestatsReport() {
-        final PrestatsDataReport prestatsDataReport = new PrestatsDataReport("DummyStatus", "DummyCheckName", "DummyFile");
-        final PrestatsReport prestatsReport = new PrestatsReport(CheckType.PRESTATS);
+        final PrestatsDataReport prestatsDataReport = new PrestatsDataReport(DUMMY_STATUS, DUMMY_CHECK_NAME);
+        final PrestatsReport prestatsReport = new PrestatsReport(CheckType.PRESTATS ,DUMMY_ID);
         prestatsReport.addData(prestatsDataReport);
         return prestatsReport;
     }

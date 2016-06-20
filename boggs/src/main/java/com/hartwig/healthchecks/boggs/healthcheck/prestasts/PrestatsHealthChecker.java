@@ -13,7 +13,7 @@ import java.io.IOException;
 public class PrestatsHealthChecker implements HealthChecker {
 
     private static final String FAIL_ERROR = "FAIL";
-    private static final String FOUND_FAILS_MSG = "NOT OK: %s has status FAIL in file %s ";
+    private static final String FOUND_FAILS_MSG = "NOT OK: %s has status FAIL for Patient %s";
     private static Logger LOGGER = LogManager.getLogger(PrestatsHealthChecker.class);
     private final String runDirectory;
 
@@ -29,7 +29,7 @@ public class PrestatsHealthChecker implements HealthChecker {
         PrestatsReport prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
         prestatsReport.getSummary().forEach((v) -> {
             if (v.getStatus().equalsIgnoreCase(FAIL_ERROR)) {
-                LOGGER.info(String.format(FOUND_FAILS_MSG, v.getCheckName(), v.getFile()));
+                LOGGER.info(String.format(FOUND_FAILS_MSG, v.getCheckName(), prestatsReport.getExternalId()));
             }
         });
         return prestatsReport;

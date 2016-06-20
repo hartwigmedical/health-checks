@@ -6,12 +6,10 @@ public class PrestatsDataReport {
 
     private final String checkName;
     private final String status;
-    private final String file;
 
-    public PrestatsDataReport(@NotNull final String status, @NotNull final String checkName, @NotNull final String file) {
+    public PrestatsDataReport(@NotNull final String status, @NotNull final String checkName) {
         this.status = status;
         this.checkName = checkName;
-        this.file = file;
     }
 
     @NotNull
@@ -24,13 +22,8 @@ public class PrestatsDataReport {
         return status;
     }
 
-    @NotNull
-    public String getFile() {
-        return file;
-    }
-
     @Override
     public String toString() {
-        return "PrestatsDataReport [checkName=" + checkName + ", status=" + status + ", file=" + file + "]";
+        return "PrestatsDataReport [checkName=" + checkName + ", status=" + status + "]";
     }
 }

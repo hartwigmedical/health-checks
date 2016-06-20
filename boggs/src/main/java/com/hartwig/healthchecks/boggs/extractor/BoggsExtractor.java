@@ -51,10 +51,10 @@ public class BoggsExtractor {
         return filePath;
     }
 
-    protected Long sumOfTotalSequences(@NotNull Path path) throws IOException {
+    protected Long sumOfTotalSequences(@NotNull final Path path) throws IOException {
         final List<Path> zipFiles = Files.walk(path).filter(p -> p.getFileName().toString().endsWith(ZIP_FILES_SUFFIX))
                 .sorted().collect(toCollection(ArrayList<Path>::new));
-        List<String> allValues = zipFiles.stream().map(zipPath -> {
+        final List<String> allValues = zipFiles.stream().map(zipPath -> {
             return getLineFromFile(zipPath, FASTQC_DATA_FILE_NAME, TOTAL_SEQUENCES);
         }).map(line -> {
             String totalSequences = null;

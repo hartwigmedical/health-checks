@@ -44,18 +44,21 @@ public class PrestatsExtractor extends BoggsExtractor {
     public PrestatsReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, EmptyFileException {
         final Optional<Path> pathToCheck = getFilesPath(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
+        
         if (!pathToCheck.isPresent()) {
             throw new FileNotFoundException(
                     String.format(FILE_NOT_FOUND_ERROR, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX, runDirectory));
         }
-        List<PrestatsDataReport> summaryData = getSummaryFilesData(pathToCheck.get());
-        PrestatsDataReport fastqcData = getfastqFilesData(pathToCheck.get());
+        final String externalId = pathToCheck.get().getFileName().toString();
+
+        final List<PrestatsDataReport> summaryData = getSummaryFilesData(pathToCheck.get());
+        final PrestatsDataReport fastqcData = getfastqFilesData(pathToCheck.get());
 
         if (summaryData == null || summaryData.isEmpty() || fastqcData == null) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirectory));
         }
 
-        final PrestatsReport prestatsData = new PrestatsReport(CheckType.PRESTATS);
+        final PrestatsReport prestatsData = new PrestatsReport(CheckType.PRESTATS , externalId);
         prestatsData.addAllData(summaryData);
         prestatsData.addData(fastqcData);
 
@@ -98,8 +101,7 @@ public class PrestatsExtractor extends BoggsExtractor {
             if (values.length == 3) {
                 String status = values[0];
                 String check = values[1];
-                String file = values[2];
-                prestatsDataReport = new PrestatsDataReport(status, check, file);
+                prestatsDataReport = new PrestatsDataReport(status, check);
             }
             return prestatsDataReport;
         }).filter(prestatsDataReport -> prestatsDataReport != null)
@@ -119,7 +121,7 @@ public class PrestatsExtractor extends BoggsExtractor {
             if (totalSequences < MIN_TOTAL_SQ) {
                 status = FAIL;
             }
-            prestatsDataReport = new PrestatsDataReport(status, TOTAL_SEQUENCES, "ForNowEmptyFileName");
+            prestatsDataReport = new PrestatsDataReport(status, TOTAL_SEQUENCES);
         }
         return prestatsDataReport;
     }

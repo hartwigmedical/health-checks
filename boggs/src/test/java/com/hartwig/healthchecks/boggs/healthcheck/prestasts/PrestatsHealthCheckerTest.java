@@ -18,16 +18,30 @@ import mockit.Mocked;
 
 public class PrestatsHealthCheckerTest {
 
+    private static final String WRONG_REPORT_STRING = "Wrong Report String";
+
+    private static final String WRONG_PATIENT_ID_MSG = "Wrong Patient ID";
+
+    private static final String WRONG_NUMBER_OF_CHECKS_MSG = "Wrong Number of checks";
+
+    private static final String WRONG_TYPE_MSG = "Report with wrong type";
+
+    private static final String DUMMY_ID = "DUMMY_ID";
+
+    private static final String DUMMY_CHECK_NAME = "DummyCheckName";
+
+    private static final String FAIL = "FAIL";
+
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
-    private static final String EXPECTED_REPORT = "PrestatsReport [summary=[PrestatsDataReport [checkName=DummyCheckName, status=FAIL, file=DummyFile]]]";
+    private static final String EXPECTED_REPORT = "PrestatsReport [externalId=DUMMY_ID, summary=[PrestatsDataReport [checkName=DummyCheckName, status=FAIL]]]";
     @Mocked
     private PrestatsExtractor dataExtractor;
 
     @Test
     public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
-        final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
-        final PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport("FAIL","DummyCheckName", "DummyFile");
+        final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS, DUMMY_ID);
+        final PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport(FAIL, DUMMY_CHECK_NAME);
         testData.addData(prestatsTestDataReport);
 
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
@@ -40,9 +54,11 @@ public class PrestatsHealthCheckerTest {
         };
 
         final BaseReport report = checker.runCheck();
-        assertEquals("Report with wrong type", CheckType.PRESTATS, report.getCheckType());
-        assertEquals("Report got wrong size of error", 1, ((PrestatsReport) report).getSummary().size());
-        assertEquals("Report String is not correct", EXPECTED_REPORT, ((PrestatsReport) report).toString());
+        assertEquals(WRONG_TYPE_MSG, CheckType.PRESTATS, report.getCheckType());
+        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, 1, ((PrestatsReport) report).getSummary().size());
+        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, ((PrestatsReport) report).getExternalId());
+
+        assertEquals(WRONG_REPORT_STRING, EXPECTED_REPORT, ((PrestatsReport) report).toString());
 
     }
 

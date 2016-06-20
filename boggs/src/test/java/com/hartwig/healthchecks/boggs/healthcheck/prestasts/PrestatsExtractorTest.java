@@ -13,6 +13,9 @@ import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class PrestatsExtractorTest {
+    private static final String REPORT_SHOULD_NOT_BE_NULL = "Report should not be null";
+    private static final String TEST_ID = "CPCT12345678R";
+    private static final String WRONG_PATIENT_ID_MSG = "Wrong Patient Id";
     private static final String WRONG_NUMBER_OF_CHECKS_MSG = "Wrong number of checks";
     private static final int EXPECTED_CHECKS_NUM = 13;
     private static final String EMPTY_FILES = "emptyFiles";
@@ -24,7 +27,9 @@ public class PrestatsExtractorTest {
         PrestatsExtractor extractor = new PrestatsExtractor();
         PrestatsReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
 
-        assertNotNull("We should get some fails", prestatsData);
+        assertNotNull(REPORT_SHOULD_NOT_BE_NULL, prestatsData);
+        assertEquals(WRONG_PATIENT_ID_MSG, TEST_ID,
+                prestatsData.getExternalId());
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM,
                 prestatsData.getSummary().size());
         String actualStatus = prestatsData.getSummary().stream()
