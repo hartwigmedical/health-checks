@@ -32,8 +32,6 @@ public class PrestatsReport extends BaseReport {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("PrestatsReport [summary=").append(this.summary).append("]");
-        return builder.toString();
+        return "PrestatsReport [summary=" + summary + "]";
     }
 }

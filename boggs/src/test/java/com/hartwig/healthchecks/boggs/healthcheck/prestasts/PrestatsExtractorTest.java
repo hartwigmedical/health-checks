@@ -13,7 +13,7 @@ import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class PrestatsExtractorTest {
-    private static final String WRONG_NUMBER_OF_FILES_MSG = "Wrong number of checks";
+    private static final String WRONG_NUMBER_OF_CHECKS_MSG = "Wrong number of checks";
     private static final int EXPECTED_CHECKS_NUM = 13;
     private static final String EMPTY_FILES = "emptyFiles";
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
@@ -25,23 +25,23 @@ public class PrestatsExtractorTest {
         PrestatsReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
 
         assertNotNull("We should get some fails", prestatsData);
-        assertEquals(WRONG_NUMBER_OF_FILES_MSG, EXPECTED_CHECKS_NUM,
+        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM,
                 prestatsData.getSummary().size());
         String actualStatus = prestatsData.getSummary().stream()
                 .filter(p -> p.getCheckName().equals(PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription()))
                 .findFirst().get().getStatus();
-        assertEquals(WRONG_NUMBER_OF_FILES_MSG, PrestatsExtractor.WARN, actualStatus);
+        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, PrestatsExtractor.WARN, actualStatus);
         actualStatus = prestatsData.getSummary().stream()
                 .filter(p -> p.getCheckName()
                         .equals(PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription()))
                 .findFirst().get().getStatus();
-        assertEquals(WRONG_NUMBER_OF_FILES_MSG, PrestatsExtractor.FAIL, actualStatus);
+        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, PrestatsExtractor.FAIL, actualStatus);
 
         actualStatus = prestatsData.getSummary().stream()
                 .filter(p -> p.getCheckName()
                         .equals(PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription()))
                 .findFirst().get().getStatus();
-        assertEquals(WRONG_NUMBER_OF_FILES_MSG, PrestatsExtractor.PASS, actualStatus);
+        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, PrestatsExtractor.PASS, actualStatus);
     }
 
     @Test(expected = EmptyFileException.class)

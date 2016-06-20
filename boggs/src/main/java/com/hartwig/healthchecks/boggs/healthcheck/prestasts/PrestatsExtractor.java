@@ -24,18 +24,18 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
-
-    private static final int ONE = 1;
-
-    private static final int NEGATIVE_ONE = -1;
-
-    private static final int ZERO = 0;
-
+    
     protected static final String PASS = "PASS";
 
     protected static final String WARN = "WARN";
 
     protected static final String FAIL = "FAIL";
+    
+    private static final int ONE = 1;
+
+    private static final int NEGATIVE_ONE = -1;
+
+    private static final int ZERO = 0;
 
     private static final String SUMMARY_FILE_NAME = "summary.txt";
 
