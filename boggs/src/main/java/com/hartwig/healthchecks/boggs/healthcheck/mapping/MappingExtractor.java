@@ -18,8 +18,13 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public class MappingExtractor extends BoggsExtractor {
-    private static final String REALIGN = "realign";
-    private static final String FLAGSTAT_SUFFIX = ".flagstat";
+
+    private final static Long MILLIS_FACTOR = 10000L;
+    private final static Double HUNDRED_FACTOR = 100D;
+    private final static Integer DOUBLE_SEQUENCE = 2;
+
+    private final static String REALIGN = "realign";
+    private final static String FLAGSTAT_SUFFIX = ".flagstat";
 
     @NotNull
     private final FlagStatParser flagstatParser;
@@ -43,13 +48,16 @@ public class MappingExtractor extends BoggsExtractor {
                 .filter(p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
                         && p.getFileName().toString().contains(REALIGN))
                 .findFirst();
+
         if (!filePath.isPresent()) {
             throw new FileNotFoundException();
         }
+
         final FlagStatData flagstatData = flagstatParser.parse(filePath.get().toString());
         if (flagstatData == null) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, path.toString()));
         }
+
         final FlagStats passed = flagstatData.qcPassedReads();
 
         final Double mappedPercentage = toPercentage(passed.mapped() / passed.total());
@@ -57,13 +65,15 @@ public class MappingExtractor extends BoggsExtractor {
         final Double singletonPercentage = passed.singletons();
         final Double mateMappedToDifferentChrPercentage = passed.mateMappedToDifferentChr();
         final Double proportionOfDuplicateRead = toPercentage(passed.duplicates() / passed.total());
-        final boolean isAllReadsPresent = passed.total() == ((Double.parseDouble(totalSequences) * 2) + passed.secondary());
+        final boolean isAllReadsPresent = passed.total() == (Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE)
+                + passed.secondary();
+
         return new MappingDataReport(mappedPercentage, properlyPairedPercentage, singletonPercentage,
                 mateMappedToDifferentChrPercentage, proportionOfDuplicateRead, isAllReadsPresent);
     }
 
     @NotNull
     private static double toPercentage(@NotNull final double percentage) {
-        return (Math.round(percentage * 10000L) / 100D);
+        return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
     }
 }

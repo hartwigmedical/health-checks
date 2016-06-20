@@ -1,8 +1,11 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestasts;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
+import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.util.CheckType;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,22 +18,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
-
-import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import com.hartwig.healthchecks.common.util.CheckType;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 public class PrestatsExtractor extends BoggsExtractor {
-    
+
     protected static final String PASS = "PASS";
 
     protected static final String WARN = "WARN";
 
     protected static final String FAIL = "FAIL";
-    
+
     private static final int ONE = 1;
 
     private static final int NEGATIVE_ONE = -1;
@@ -48,8 +47,8 @@ public class PrestatsExtractor extends BoggsExtractor {
             throw new FileNotFoundException(
                     String.format(FILE_NOT_FOUND_ERROR, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX, runDirectory));
         }
-        List<PrestatsDataReport> summaryData = getSummaryFilesData(pathToCheck.get());
-        PrestatsDataReport fastqcData = getfastqFilesData(pathToCheck.get());
+        final List<PrestatsDataReport> summaryData = getSummaryFilesData(pathToCheck.get());
+        final PrestatsDataReport fastqcData = getfastqFilesData(pathToCheck.get());
 
         if (summaryData == null || summaryData.isEmpty() || fastqcData == null) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirectory));
@@ -72,9 +71,9 @@ public class PrestatsExtractor extends BoggsExtractor {
         final Comparator<PrestatsDataReport> isStatusWorse = new Comparator<PrestatsDataReport>() {
             @Override
             public int compare(@NotNull final PrestatsDataReport firstData,
-                    @NotNull final PrestatsDataReport secondData) {
-                String firstStatus = firstData.getStatus();
-                String secondStatus = secondData.getStatus();
+                               @NotNull final PrestatsDataReport secondData) {
+                final String firstStatus = firstData.getStatus();
+                final String secondStatus = secondData.getStatus();
                 int status = ONE;
                 if (firstStatus.equals(secondStatus)) {
                     status = ZERO;
@@ -85,29 +84,37 @@ public class PrestatsExtractor extends BoggsExtractor {
             }
         };
 
-        final Map<String, List<PrestatsDataReport>> data = zipFiles.stream().map(path -> {
-            List<String> lines = null;
-            lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
-            if (lines == null) {
-                lines = new ArrayList<>();
-            }
-            return lines;
-        }).flatMap(Collection::stream).map(line -> {
-            String[] values = line.split(SEPERATOR_REGEX);
-            PrestatsDataReport prestatsDataReport = null;
-            if (values.length == 3) {
-                String status = values[0];
-                String check = values[1];
-                String file = values[2];
-                prestatsDataReport = new PrestatsDataReport(status, check, file);
-            }
-            return prestatsDataReport;
-        }).filter(prestatsDataReport -> prestatsDataReport != null)
-                .collect(groupingBy(PrestatsDataReport::getCheckName));
+        final Map<String, List<PrestatsDataReport>> data = zipFiles
+            .stream()
+            .map(path -> {
+                List<String> lines = null;
+                lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
+                if (lines == null) {
+                    lines = new ArrayList<>();
+                }
+                return lines;
+             })
+            .flatMap(Collection::stream)
+            .map(line -> {
+                final String[] values = line.split(SEPERATOR_REGEX);
+                PrestatsDataReport prestatsDataReport = null;
+                if (values.length == 3) {
+                    final String status = values[0];
+                    final String check = values[1];
+                    final String file = values[2];
+                    prestatsDataReport = new PrestatsDataReport(status, check, file);
+                }
+                return prestatsDataReport;
+            })
+            .filter(prestatsDataReport -> prestatsDataReport != null)
+            .collect(groupingBy(PrestatsDataReport::getCheckName));
 
-        return data.values().stream().map(prestatsDataReportList -> {
-            return prestatsDataReportList.stream().min(isStatusWorse).get();
-        }).collect(toList());
+        return data.values()
+            .stream()
+            .map(prestatsDataReportList -> {
+                return prestatsDataReportList.stream().min(isStatusWorse).get();
+            })
+            .collect(toList());
     }
 
     private PrestatsDataReport getfastqFilesData(@NotNull final Path pathToCheck)
