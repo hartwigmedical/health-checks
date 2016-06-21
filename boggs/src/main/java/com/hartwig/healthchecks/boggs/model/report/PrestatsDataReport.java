@@ -2,17 +2,19 @@ package com.hartwig.healthchecks.boggs.model.report;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
+
 public class PrestatsDataReport {
 
     @NotNull
     private final String patientId;
     @NotNull
-    private final String checkName;
+    private final PrestatsCheck checkName;
     @NotNull
     private final String status;
 
     public PrestatsDataReport(@NotNull final String patientId, @NotNull final String status,
-            @NotNull final String checkName) {
+            @NotNull final PrestatsCheck checkName) {
         this.patientId = patientId;
         this.status = status;
         this.checkName = checkName;
@@ -24,7 +26,7 @@ public class PrestatsDataReport {
     }
 
     @NotNull
-    public String getCheckName() {
+    public PrestatsCheck getCheckName() {
         return this.checkName;
     }
 

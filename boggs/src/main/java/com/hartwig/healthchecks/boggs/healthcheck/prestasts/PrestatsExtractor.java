@@ -84,7 +84,7 @@ public class PrestatsExtractor extends BoggsExtractor {
             }
         };
 
-        final Map<String, List<PrestatsDataReport>> data = zipFiles.stream().map(path -> {
+        final Map<PrestatsCheck, List<PrestatsDataReport>> data = zipFiles.stream().map(path -> {
             List<String> lines = null;
             lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
             if (lines == null) {
@@ -96,12 +96,14 @@ public class PrestatsExtractor extends BoggsExtractor {
             PrestatsDataReport prestatsDataReport = null;
             if (values.length == 3) {
                 final String status = values[0];
-                final String check = values[1];
-                prestatsDataReport = new PrestatsDataReport(patientId, status, check);
+                final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
+                if (check.isPresent()) {
+                    prestatsDataReport = new PrestatsDataReport(patientId, status, check.get());
+                }
             }
             return prestatsDataReport;
         }).filter(prestatsDataReport -> prestatsDataReport != null)
-                .collect(groupingBy(PrestatsDataReport::getCheckName));
+                .collect(groupingBy((PrestatsDataReport::getCheckName)));
 
         return data.values().stream().map(prestatsDataReportList -> {
             return prestatsDataReportList.stream().min(isStatusWorse).get();
@@ -117,7 +119,7 @@ public class PrestatsExtractor extends BoggsExtractor {
             if (totalSequences < MIN_TOTAL_SQ) {
                 status = FAIL;
             }
-            prestatsDataReport = new PrestatsDataReport(status, TOTAL_SEQUENCES, patientId);
+            prestatsDataReport = new PrestatsDataReport(patientId, status, PrestatsCheck.PRESTATS_NUMBER_OF_READS);
         }
         return prestatsDataReport;
     }

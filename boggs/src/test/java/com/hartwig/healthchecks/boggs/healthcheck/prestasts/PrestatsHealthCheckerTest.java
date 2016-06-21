@@ -29,8 +29,6 @@ public class PrestatsHealthCheckerTest {
 
     private static final String DUMMY_ID = "DUMMY_ID";
 
-    private static final String DUMMY_CHECK_NAME = "DummyCheckName";
-
     private static final String FAIL = "FAIL";
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
@@ -41,7 +39,7 @@ public class PrestatsHealthCheckerTest {
     @Test
     public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
         final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
-        final PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport(DUMMY_ID, FAIL, DUMMY_CHECK_NAME);
+        final PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport(DUMMY_ID, FAIL, PrestatsCheck.DUMMY);
         testData.addData(prestatsTestDataReport);
 
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
@@ -58,7 +56,7 @@ public class PrestatsHealthCheckerTest {
         List<PrestatsDataReport> summaryData = ((PrestatsReport) report).getSummary();
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, 1, summaryData.size());
         assertEquals(WRONG_CHECK_NAME, FAIL, summaryData.get(0).getStatus());
-        assertEquals(WRONG_CHECK_STATUS, DUMMY_CHECK_NAME, summaryData.get(0).getCheckName());
+        assertEquals(WRONG_CHECK_STATUS, PrestatsCheck.DUMMY, summaryData.get(0).getCheckName());
         assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, summaryData.get(0).getPatientId());
     }
 

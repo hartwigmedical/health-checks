@@ -28,14 +28,7 @@ public class PrestatsExtractorTest {
         PrestatsExtractor extractor = new PrestatsExtractor();
         PrestatsReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
 
-        assertNotNull(REPORT_SHOULD_NOT_BE_NULL, prestatsData);
-        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, prestatsData.getSummary().size());
-        assertPrestatsReport(prestatsData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription(),
-                PrestatsExtractor.WARN);
-        assertPrestatsReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription(),
-                PrestatsExtractor.FAIL);
-        assertPrestatsReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription(),
-                PrestatsExtractor.PASS);
+        assertPrestatsReport(prestatsData);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -51,7 +44,19 @@ public class PrestatsExtractorTest {
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }
 
-    private void assertPrestatsReport(PrestatsReport prestatsData, String check, String expectedStatus) {
+    private void assertPrestatsReport(PrestatsReport prestatsData) {
+        assertNotNull(REPORT_SHOULD_NOT_BE_NULL, prestatsData);
+        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, prestatsData.getSummary().size());
+        assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, PrestatsExtractor.FAIL);
+        assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY,
+                PrestatsExtractor.WARN);
+        assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
+                PrestatsExtractor.FAIL);
+        assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
+                PrestatsExtractor.PASS);
+    }
+
+    private void assertPrestatsDataReport(PrestatsReport prestatsData, PrestatsCheck check, String expectedStatus) {
         String actualStatus = prestatsData.getSummary().stream().filter(p -> p.getCheckName().equals(check)).findFirst()
                 .get().getStatus();
         String externalId = prestatsData.getSummary().stream().filter(p -> p.getCheckName().equals(check)).findFirst()

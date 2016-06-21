@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsHealthChecker;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
@@ -24,7 +25,6 @@ import mockit.MockUp;
 public class BoggsAdapterTest {
 
     private static final String DUMMY_ID = "DUMMY_ID";
-    private static final String DUMMY_CHECK_NAME = "DummyCheckName";
     private static final String DUMMY_STATUS = "DummyStatus";
     private static final String _123 = "123";
     private static final String SOME_ID = "SomeId";
@@ -68,7 +68,7 @@ public class BoggsAdapterTest {
     }
 
     private PrestatsReport getDummyPrestatsReport() {
-        final PrestatsDataReport prestatsDataReport = new PrestatsDataReport(DUMMY_STATUS, DUMMY_CHECK_NAME, DUMMY_ID);
+        final PrestatsDataReport prestatsDataReport = new PrestatsDataReport(DUMMY_ID, DUMMY_STATUS, PrestatsCheck.DUMMY);
         final PrestatsReport prestatsReport = new PrestatsReport(CheckType.PRESTATS);
         prestatsReport.addData(prestatsDataReport);
         return prestatsReport;

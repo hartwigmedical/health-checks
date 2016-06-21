@@ -19,7 +19,8 @@ public enum PrestatsCheck {
     PRESTATS_OVERREPRESENTED_SEQUENCES("Overrepresented sequences"), 
     PRESTATS_ADAPTER_CONTENT("Adapter Content"), 
     PRESTATS_KMER_CONTENT("Kmer Content"),
-    PRESTATS_NUMBER_OF_READS("Total Sequences");
+    PRESTATS_NUMBER_OF_READS("Total Sequences"),
+    DUMMY("DummyCheckName");
     
     private final String description;
 
@@ -30,9 +31,5 @@ public enum PrestatsCheck {
     public static Optional<PrestatsCheck> getByDescription(@NotNull final String description) {
         return Arrays.asList(PrestatsCheck.values()).stream()
                 .filter(prestatsCheck -> prestatsCheck.description.equalsIgnoreCase(description)).findFirst();
-    }
-
-    public String getDescription() {
-        return this.description;
     }
 }
