@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
@@ -15,8 +17,6 @@ import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.CheckType;
-
-import org.jetbrains.annotations.NotNull;
 
 public class MappingExtractor extends BoggsExtractor {
 
@@ -41,7 +41,7 @@ public class MappingExtractor extends BoggsExtractor {
     }
 
     public MappingReport extractFromRunDirectory(@NotNull final String runDirectory)
-            throws IOException, EmptyFileException {
+                    throws IOException, EmptyFileException {
         final Optional<Path> sampleFile = getFilesPath(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final String externalId = sampleFile.get().getFileName().toString();
         final Long totalSequences = sumOfTotalSequences(sampleFile.get());
@@ -49,12 +49,13 @@ public class MappingExtractor extends BoggsExtractor {
         return new MappingReport(CheckType.MAPPING, externalId, totalSequences.toString(), mappingDataReport);
     }
 
-    private MappingDataReport getFlagstatsData(@NotNull final Path path, @NotNull final String totalSequences)
-            throws IOException, EmptyFileException {
-        final Optional<Path> filePath = Files.walk(
-                new File(path + File.separator + MAPPING + File.separator).toPath()).filter(
-                p -> p.getFileName().toString().endsWith(FLAGSTAT_SUFFIX) && p.getFileName().toString().contains(
-                        REALIGN)).findFirst();
+    private MappingDataReport getFlagstatsData(@NotNull final Path runDirPath, @NotNull final String totalSequences)
+                    throws IOException, EmptyFileException {
+        final Optional<Path> filePath = Files
+                        .walk(new File(runDirPath + File.separator + MAPPING + File.separator).toPath())
+                        .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
+                                        && path.getFileName().toString().contains(REALIGN))
+                        .findFirst();
 
         if (!filePath.isPresent()) {
             throw new FileNotFoundException();
@@ -62,7 +63,7 @@ public class MappingExtractor extends BoggsExtractor {
 
         final FlagStatData flagstatData = flagstatParser.parse(filePath.get().toString());
         if (flagstatData == null) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, path.toString()));
+            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirPath.toString()));
         }
 
         final FlagStats passed = flagstatData.getQcPassedReads();
@@ -72,10 +73,10 @@ public class MappingExtractor extends BoggsExtractor {
         final Double singletonPercentage = passed.getSingletons();
         final Double mateMappedToDifferentChrPercentage = passed.getMateMappedToDifferentChr();
         final Double proportionOfDuplicateRead = toPercentage(passed.getDuplicates() / passed.getTotal());
-        final boolean isAllReadsPresent =
-                passed.getTotal() == (Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE) + passed.getSecondary();
+        final boolean isAllReadsPresent = passed.getTotal() == Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE
+                        + passed.getSecondary();
 
         return new MappingDataReport(mappedPercentage, properlyPairedPercentage, singletonPercentage,
-                mateMappedToDifferentChrPercentage, proportionOfDuplicateRead, isAllReadsPresent);
+                        mateMappedToDifferentChrPercentage, proportionOfDuplicateRead, isAllReadsPresent);
     }
 }
