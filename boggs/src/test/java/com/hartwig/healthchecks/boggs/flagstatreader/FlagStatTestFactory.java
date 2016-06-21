@@ -7,8 +7,7 @@ public final class FlagStatTestFactory {
     private FlagStatTestFactory() {
     }
 
-    @NotNull
-    public static FlagStatData createTestData() {
+    @NotNull public static FlagStatData createTestData() {
         final FlagStatsBuilder builder = new FlagStatsBuilder();
         builder.setMapped(17885d);
         builder.setTotal(17940d);

@@ -15,23 +15,19 @@ public class PrestatsDataReport {
         this.file = file;
     }
 
-    @NotNull
-    public String getCheckName() {
+    @NotNull public String getCheckName() {
         return checkName;
     }
 
-    @NotNull
-    public String getStatus() {
+    @NotNull public String getStatus() {
         return status;
     }
 
-    @NotNull
-    public String getFile() {
+    @NotNull public String getFile() {
         return file;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "PrestatsDataReport [checkName=" + checkName + ", status=" + status + ", file=" + file + "]";
     }
 }

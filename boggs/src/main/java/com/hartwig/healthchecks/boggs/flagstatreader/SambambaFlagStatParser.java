@@ -6,9 +6,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+
+import org.jetbrains.annotations.NotNull;
 
 public class SambambaFlagStatParser implements FlagStatParser {
 
@@ -42,8 +42,7 @@ public class SambambaFlagStatParser implements FlagStatParser {
 
     private static final String SEPERATOR_REGEX = " ";
 
-    @NotNull
-    public FlagStatData parse(@NotNull final String filePath) throws IOException, EmptyFileException {
+    @NotNull public FlagStatData parse(@NotNull final String filePath) throws IOException, EmptyFileException {
         final List<Double> passed = new ArrayList<>();
         final List<Double> failed = new ArrayList<>();
 
@@ -67,14 +66,14 @@ public class SambambaFlagStatParser implements FlagStatParser {
         return new FlagStatData(filePath, passedFlagStats, failedFlagStats);
     }
 
-    @NotNull
-    private FlagStats buildFlagStatsData(@NotNull final Double[] data) {
-        return new FlagStatsBuilder().setTotal(data[TOTAL_INDEX]).setSecondary(data[SECONDARY_INDEX])
-                .setSupplementary(data[SUPPLEMENTARY_INDEX]).setDuplicates(data[DUPLICATES_INDEX])
-                .setMapped(data[MAPPED_INDEX]).setPairedInSequencing(data[PAIRED_IN_SEQ_INDEX])
-                .setRead1(data[READ_INDEX]).setRead2(data[READ_2_INDEX]).setProperlyPaired(data[PROPERLY_PAIRED_INDEX])
-                .setItselfAndMateMapped(data[ITSELF_AND_MATE_INDEX]).setSingletons(data[SINGELTONS_INDEX])
-                .setMateMappedToDifferentChr(data[MATE_MAP_DIF_CHR_INDEX])
-                .setMateMappedToDifferentChrMapQ5(data[MATE_MAP_DIF_CHR_Q5_INDEX]).build();
+    @NotNull private FlagStats buildFlagStatsData(@NotNull final Double... data) {
+        return new FlagStatsBuilder().setTotal(data[TOTAL_INDEX]).setSecondary(data[SECONDARY_INDEX]).setSupplementary(
+                data[SUPPLEMENTARY_INDEX]).setDuplicates(data[DUPLICATES_INDEX]).setMapped(
+                data[MAPPED_INDEX]).setPairedInSequencing(data[PAIRED_IN_SEQ_INDEX]).setRead1(
+                data[READ_INDEX]).setRead2(data[READ_2_INDEX]).setProperlyPaired(
+                data[PROPERLY_PAIRED_INDEX]).setItselfAndMateMapped(data[ITSELF_AND_MATE_INDEX]).setSingletons(
+                data[SINGELTONS_INDEX]).setMateMappedToDifferentChr(
+                data[MATE_MAP_DIF_CHR_INDEX]).setMateMappedToDifferentChrMapQ5(
+                data[MATE_MAP_DIF_CHR_Q5_INDEX]).build();
     }
 }

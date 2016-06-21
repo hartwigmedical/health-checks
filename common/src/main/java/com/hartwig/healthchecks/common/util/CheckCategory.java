@@ -4,27 +4,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum CheckCategory {
 
-    BOGGS(new String[]{"summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat"}),
-    DUMMY(new String[]{"summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat"});
+    BOGGS(new String[] { "summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat" }),
+    DUMMY(new String[] { "summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat" });
 
     private String[] files;
 
-    CheckCategory(String[] files) {
+    CheckCategory(@NotNull final String... files) {
         this.files = files;
     }
 
-    public static Optional<CheckCategory> getByCategory(String type) {
+    public static Optional<CheckCategory> getByCategory(@NotNull final String typeToCheck) {
         List<CheckCategory> types = Arrays.asList(CheckCategory.values());
-        Optional<CheckCategory> returnType = types.stream()
-                .filter(t -> t.toString().equalsIgnoreCase(type))
-                .findFirst();
+        Optional<CheckCategory> returnType = types.stream().filter(
+                type -> type.toString().equalsIgnoreCase(typeToCheck)).findFirst();
 
         return returnType;
     }
 
-    public String[] getFiles() {
+    @NotNull public String[] getFiles() {
         return files;
     }
 }

@@ -15,24 +15,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.CheckType;
 
+import org.jetbrains.annotations.NotNull;
+
 public class PrestatsExtractor extends BoggsExtractor {
 
-    private static final int EXPECTED_LINE_LENGTH = 3;
-
     protected static final String PASS = "PASS";
-
     protected static final String WARN = "WARN";
-
     protected static final String FAIL = "FAIL";
-
+    private static final int EXPECTED_LINE_LENGTH = 3;
     private static final int ONE = 1;
 
     private static final int NEGATIVE_ONE = -1;
@@ -67,9 +63,9 @@ public class PrestatsExtractor extends BoggsExtractor {
     private List<PrestatsDataReport> getSummaryFilesData(@NotNull final Path pathToCheck)
             throws IOException, EmptyFileException {
 
-        final List<Path> zipFiles = Files.walk(pathToCheck)
-                .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
-                .collect(toCollection(ArrayList<Path>::new));
+        final List<Path> zipFiles = Files.walk(pathToCheck).filter(
+                path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted().collect(
+                toCollection(ArrayList<Path>::new));
 
         final Map<String, List<PrestatsDataReport>> data = zipFiles.stream().map(path -> {
             List<String> lines = null;
@@ -88,8 +84,8 @@ public class PrestatsExtractor extends BoggsExtractor {
                 prestatsDataReport = new PrestatsDataReport(status, check, file);
             }
             return prestatsDataReport;
-        }).filter(prestatsDataReport -> prestatsDataReport != null)
-                .collect(groupingBy(PrestatsDataReport::getCheckName));
+        }).filter(prestatsDataReport -> prestatsDataReport != null).collect(
+                groupingBy(PrestatsDataReport::getCheckName));
 
         return data.values().stream().map(prestatsDataReportList -> {
             return prestatsDataReportList.stream().min(isStatusWorse()).get();
@@ -98,8 +94,7 @@ public class PrestatsExtractor extends BoggsExtractor {
 
     private Comparator<PrestatsDataReport> isStatusWorse() {
         final Comparator<PrestatsDataReport> isStatusWorse = new Comparator<PrestatsDataReport>() {
-            @Override
-            public int compare(@NotNull final PrestatsDataReport firstData,
+            @Override public int compare(@NotNull final PrestatsDataReport firstData,
                     @NotNull final PrestatsDataReport secondData) {
                 final String firstStatus = firstData.getStatus();
                 final String secondStatus = secondData.getStatus();

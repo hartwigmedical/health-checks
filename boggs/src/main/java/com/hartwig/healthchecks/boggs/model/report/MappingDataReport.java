@@ -4,19 +4,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class MappingDataReport {
 
-    @NotNull
-    private final Double mappedPercentage;
-    @NotNull
-    private final Double properlyPairedPercentage;
-    @NotNull
-    private final Double singletonPercentage;
-    @NotNull
-    private final Double mateMappedToDifferentChrPercentage;
-    @NotNull
-    private final Double proportionOfDuplicateRead;
+    @NotNull private final Double mappedPercentage;
+    @NotNull private final Double properlyPairedPercentage;
+    @NotNull private final Double singletonPercentage;
+    @NotNull private final Double mateMappedToDifferentChrPercentage;
+    @NotNull private final Double proportionOfDuplicateRead;
 
-    @NotNull
-    private final boolean isAllReadsPresent;
+    @NotNull private final boolean isAllReadsPresent;
 
     public MappingDataReport(@NotNull final Double mappedPercentage, @NotNull final Double properlyPairedPercentage,
             @NotNull final Double singletonPercentage, @NotNull final Double mateMappedToDifferentChrPercentage,
@@ -30,28 +24,23 @@ public class MappingDataReport {
         this.isAllReadsPresent = isAllReadsPresent;
     }
 
-    @NotNull
-    public Double getMappedPercentage() {
+    @NotNull public Double getMappedPercentage() {
         return mappedPercentage;
     }
 
-    @NotNull
-    public Double getProperlyPairedPercentage() {
+    @NotNull public Double getProperlyPairedPercentage() {
         return properlyPairedPercentage;
     }
 
-    @NotNull
-    public Double getSingletonPercentage() {
+    @NotNull public Double getSingletonPercentage() {
         return singletonPercentage;
     }
 
-    @NotNull
-    public Double getMateMappedToDifferentChrPercentage() {
+    @NotNull public Double getMateMappedToDifferentChrPercentage() {
         return mateMappedToDifferentChrPercentage;
     }
 
-    @NotNull
-    public Double getProportionOfDuplicateRead() {
+    @NotNull public Double getProportionOfDuplicateRead() {
         return proportionOfDuplicateRead;
     }
 
@@ -59,8 +48,7 @@ public class MappingDataReport {
         return isAllReadsPresent;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "MappingDataReport [mappedPercentage=" + mappedPercentage + ", properlyPairedPercentage="
                 + properlyPairedPercentage + ", singletonPercentage=" + singletonPercentage
                 + ", mateMappedToDifferentChrPercentage=" + mateMappedToDifferentChrPercentage

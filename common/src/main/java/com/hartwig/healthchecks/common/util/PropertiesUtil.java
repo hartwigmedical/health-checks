@@ -1,11 +1,11 @@
 package com.hartwig.healthchecks.common.util;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.util.Properties;
 
 public final class PropertiesUtil {
 
@@ -30,8 +30,7 @@ public final class PropertiesUtil {
         return instance;
     }
 
-    @NotNull
-    public String getProperty(@NotNull final String key) {
+    @NotNull public String getProperty(@NotNull final String key) {
         return properties.getProperty(key);
     }
 }
