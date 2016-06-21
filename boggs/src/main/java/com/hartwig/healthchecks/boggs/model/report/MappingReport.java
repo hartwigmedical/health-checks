@@ -1,12 +1,13 @@
 package com.hartwig.healthchecks.boggs.model.report;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
-import org.jetbrains.annotations.NotNull;
-
 public class MappingReport extends BaseReport {
 
+    private static final long serialVersionUID = 7647060563039702736L;
     @NotNull
     private final String externalId;
     @NotNull
@@ -15,7 +16,7 @@ public class MappingReport extends BaseReport {
     private final MappingDataReport mappingDataReport;
 
     public MappingReport(@NotNull final CheckType checkType, @NotNull final String externalId,
-            @NotNull final String totalSequences, @NotNull final MappingDataReport mappingDataReport) {
+                    @NotNull final String totalSequences, @NotNull final MappingDataReport mappingDataReport) {
         super(checkType);
         this.externalId = externalId;
         this.totalSequences = totalSequences;
@@ -39,7 +40,7 @@ public class MappingReport extends BaseReport {
 
     @Override
     public String toString() {
-        return "MappingReport [externalId=" + externalId + ", totalSequences=" + totalSequences
-                + ", mappingDataReport=" + mappingDataReport + "]";
+        return "MappingReport [externalId=" + externalId + ", totalSequences=" + totalSequences + ", mappingDataReport="
+                        + mappingDataReport + "]";
     }
 }
