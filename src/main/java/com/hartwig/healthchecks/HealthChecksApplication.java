@@ -25,6 +25,8 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class HealthChecksApplication {
+    private static final String REPORT_GENERATED_MSG = "Report generated with following name -> %s";
+
     private static final Logger LOGGER = LogManager.getLogger(HealthChecksApplication.class);
 
     private static final String RUN_DIRECTORY = "rundir";
@@ -85,7 +87,7 @@ public class HealthChecksApplication {
 
         try {
             final Optional<String> fileName = JsonReport.getInstance().generateReport();
-            LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
+            LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
         } catch (GenerateReportException e) {
             LOGGER.log(Level.ERROR, e.getMessage());
         }
@@ -100,7 +102,7 @@ public class HealthChecksApplication {
 
                     try {
                         final Optional<String> fileName = JsonReport.getInstance().generateReport();
-                        LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
+                        LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
                     } catch (GenerateReportException e) {
                         LOGGER.log(Level.ERROR, e.getMessage());
                     }

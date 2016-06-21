@@ -15,9 +15,12 @@ import com.hartwig.healthchecks.common.util.BaseReport;
 public class MappingHealthChecker implements HealthChecker {
     private static final Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
 
-    private static final double MIN_MAPPED_PERCENTAGE = 99.2d;
-    private static final double MIN_PROP_PAIRED_PERCENTAGE = 99.0d;
+    private static final double MIN_MAPPED_PERC = 99.2d;
+
+    private static final double MIN_PROP_PAIRED_PERC = 99.0d;
+
     private static final double MAX_SINGLETONS = 0.5d;
+
     private static final double MAX_MATE_MAP_TO_DIFF_CHR = 0.01d;
 
     private final String runDirectory;
@@ -45,12 +48,12 @@ public class MappingHealthChecker implements HealthChecker {
 
         final boolean isAllReadsPresent = !mappingDataReport.isAllReadsPresent();
         logMappingReportLine(isAllReadsPresent, "OK : All Reads are present", "WARN : Not All Reads are present %s");
-        final boolean isMappedPrecentageInRange = mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERCENTAGE;
+        final boolean isMappedPrecentageInRange = mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERC;
         logMappingReportFormattedLine(isMappedPrecentageInRange, "OK: Acceptable getMapped percentage: %s",
                         "WARN: Low getMapped percentage: %s", mappingDataReport.getMappedPercentage());
 
         final boolean isProperlyPairedPerInRange = mappingDataReport
-                        .getProperlyPairedPercentage() < MIN_PROP_PAIRED_PERCENTAGE;
+                        .getProperlyPairedPercentage() < MIN_PROP_PAIRED_PERC;
         logMappingReportFormattedLine(isProperlyPairedPerInRange, "OK: Acceptable properly paired percentage: %s",
                         "WARN: Low properly paired percentage: ", mappingDataReport.getProperlyPairedPercentage());
 
