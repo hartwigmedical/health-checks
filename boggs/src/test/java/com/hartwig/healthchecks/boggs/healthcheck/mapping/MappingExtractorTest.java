@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.NoSuchFileException;
+
+import org.junit.Test;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
@@ -13,8 +16,6 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatTestFactory;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
-
-import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -53,7 +54,7 @@ public class MappingExtractorTest {
         assertEquals(5.95d, mappingDataReport.getProportionOfDuplicateRead(), 0d);
     }
 
-    @Test(expected = IOException.class)
+    @Test(expected = NoSuchFileException.class)
     public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
         final MappingExtractor extractor = new MappingExtractor(flagstatParser);
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
