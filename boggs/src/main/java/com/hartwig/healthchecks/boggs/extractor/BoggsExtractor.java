@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,14 +38,10 @@ public class BoggsExtractor {
     private static final Logger LOGGER = LogManager.getLogger(BoggsExtractor.class);
 
     protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
-            @NotNull final String suffix) throws IOException, FileNotFoundException {
+            @NotNull final String suffix) throws IOException {
         final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath()).filter(
                 path -> path.getFileName().toString().startsWith(prefix) && path.getFileName().toString().endsWith(
                         suffix)).findFirst();
-
-        if (!filePath.isPresent()) {
-            throw new FileNotFoundException(String.format(FILE_NOT_FOUND_ERROR, prefix, suffix, runDirectory));
-        }
         return filePath;
     }
 

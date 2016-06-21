@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-@ResourceWrapper(type = CheckCategory.BOGGS)
+@ResourceWrapper(type = CheckCategory.BOGGS) 
 public class BoggsAdapter implements HealthCheckAdapter {
     private static final Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);
 
