@@ -15,7 +15,8 @@ public class ReportTest {
 
     private final Report report = JsonReport.getInstance();
 
-    @Mocked private Report jsonReport;
+    @Mocked
+    private Report jsonReport;
 
     @Test
     public void generateReport() {

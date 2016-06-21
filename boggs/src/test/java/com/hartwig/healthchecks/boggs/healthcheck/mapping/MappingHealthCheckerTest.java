@@ -22,7 +22,8 @@ public class MappingHealthCheckerTest {
     private static final String _8564 = "8564";
     private static final String SOME_EXTERNAL_ID = "SomeExternalId";
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
-    @Mocked private MappingExtractor dataExtractor;
+    @Mocked
+    private MappingExtractor dataExtractor;
 
     @NotNull
     private static MappingReport dummyData() {

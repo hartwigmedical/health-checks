@@ -106,11 +106,11 @@ public class FlagStats {
     @NotNull
     @Override
     public String toString() {
-        return "FlagStats{" + "getTotal=" + total + ", getSecondary=" + secondary + ", getSupplementary=" + supplementary
-                + ", getDuplicates=" + duplicates + ", getMapped=" + mapped + ", getPairedInSequencing=" + pairedInSequencing
-                + ", getRead1=" + read1 + ", getRead2=" + read2 + ", getProperlyPaired=" + properlyPaired
-                + ", getItselfAndMateMapped=" + itselfAndMateMapped + ", getSingletons=" + singletons
-                + ", getMateMappedToDifferentChr=" + mateMappedToDifferentChr + ", getMateMappedToDifferentChrMapQ5="
-                + mateMappedToDifferentChrMapQ5 + '}';
+        return "FlagStats{" + "getTotal=" + total + ", getSecondary=" + secondary + ", getSupplementary="
+                + supplementary + ", getDuplicates=" + duplicates + ", getMapped=" + mapped
+                + ", getPairedInSequencing=" + pairedInSequencing + ", getRead1=" + read1 + ", getRead2=" + read2
+                + ", getProperlyPaired=" + properlyPaired + ", getItselfAndMateMapped=" + itselfAndMateMapped
+                + ", getSingletons=" + singletons + ", getMateMappedToDifferentChr=" + mateMappedToDifferentChr
+                + ", getMateMappedToDifferentChrMapQ5=" + mateMappedToDifferentChrMapQ5 + '}';
     }
 }

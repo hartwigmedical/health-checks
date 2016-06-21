@@ -27,7 +27,8 @@ public class MappingExtractor extends BoggsExtractor {
     private static final String REALIGN = "realign";
     private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
-    @NotNull private final FlagStatParser flagstatParser;
+    @NotNull
+    private final FlagStatParser flagstatParser;
 
     public MappingExtractor(@NotNull final FlagStatParser flagstatParser) {
         this.flagstatParser = flagstatParser;

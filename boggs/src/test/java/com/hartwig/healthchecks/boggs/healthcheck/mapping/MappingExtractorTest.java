@@ -26,7 +26,8 @@ public class MappingExtractorTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
-    @Mocked private FlagStatParser flagstatParser;
+    @Mocked
+    private FlagStatParser flagstatParser;
 
     @Test
     public void extractData() throws IOException, EmptyFileException {

@@ -4,9 +4,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlagStatData {
 
-    @NotNull private final String path;
-    @NotNull private final FlagStats qcPassedReads;
-    @NotNull private final FlagStats qcFailedReads;
+    @NotNull
+    private final String path;
+    @NotNull
+    private final FlagStats qcPassedReads;
+    @NotNull
+    private final FlagStats qcFailedReads;
 
     FlagStatData(@NotNull final String path, @NotNull final FlagStats qcPassedReads,
             @NotNull final FlagStats qcFailedReads) {

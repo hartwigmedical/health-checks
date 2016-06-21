@@ -10,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class PrestatsReport extends BaseReport {
 
-    @NotNull private final List<PrestatsDataReport> summary = new ArrayList<>();
+    @NotNull
+    private final List<PrestatsDataReport> summary = new ArrayList<>();
 
     public PrestatsReport(@NotNull final CheckType checkType) {
         super(checkType);

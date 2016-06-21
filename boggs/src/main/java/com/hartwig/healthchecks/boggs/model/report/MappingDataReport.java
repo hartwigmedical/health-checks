@@ -4,13 +4,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class MappingDataReport {
 
-    @NotNull private final Double mappedPercentage;
-    @NotNull private final Double properlyPairedPercentage;
-    @NotNull private final Double singletonPercentage;
-    @NotNull private final Double mateMappedToDifferentChrPercentage;
-    @NotNull private final Double proportionOfDuplicateRead;
+    @NotNull
+    private final Double mappedPercentage;
+    @NotNull
+    private final Double properlyPairedPercentage;
+    @NotNull
+    private final Double singletonPercentage;
+    @NotNull
+    private final Double mateMappedToDifferentChrPercentage;
+    @NotNull
+    private final Double proportionOfDuplicateRead;
 
-    @NotNull private final boolean isAllReadsPresent;
+    @NotNull
+    private final boolean isAllReadsPresent;
 
     public MappingDataReport(@NotNull final Double mappedPercentage, @NotNull final Double properlyPairedPercentage,
             @NotNull final Double singletonPercentage, @NotNull final Double mateMappedToDifferentChrPercentage,

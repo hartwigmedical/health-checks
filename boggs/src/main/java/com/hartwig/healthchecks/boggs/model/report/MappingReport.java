@@ -7,9 +7,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class MappingReport extends BaseReport {
 
-    @NotNull private final String externalId;
-    @NotNull private final String totalSequences;
-    @NotNull private final MappingDataReport mappingDataReport;
+    @NotNull
+    private final String externalId;
+    @NotNull
+    private final String totalSequences;
+    @NotNull
+    private final MappingDataReport mappingDataReport;
 
     public MappingReport(@NotNull final CheckType checkType, @NotNull final String externalId,
             @NotNull final String totalSequences, @NotNull final MappingDataReport mappingDataReport) {

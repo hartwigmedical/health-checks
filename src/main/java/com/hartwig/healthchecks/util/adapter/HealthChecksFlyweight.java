@@ -24,7 +24,8 @@ public final class HealthChecksFlyweight {
     private static final HealthChecksFlyweight INSTANCE = new HealthChecksFlyweight();
 
     private static final Reflections BASE = new Reflections("com.hartwig.healthchecks.boggs.adapter");
-    @SuppressWarnings("rawtypes") private static final Set<Class<? extends HealthCheckAdapter>> BASE_SET = BASE.getSubTypesOf(
+    @SuppressWarnings("rawtypes")
+    private static final Set<Class<? extends HealthCheckAdapter>> BASE_SET = BASE.getSubTypesOf(
             HealthCheckAdapter.class);
 
     static {

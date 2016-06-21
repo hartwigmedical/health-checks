@@ -21,7 +21,8 @@ public class PrestatsHealthCheckerTest {
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     private static final String EXPECTED_REPORT = "PrestatsReport [summary=[PrestatsDataReport [checkName=DummyCheckName, status=FAIL, file=DummyFile]]]";
-    @Mocked private PrestatsExtractor dataExtractor;
+    @Mocked
+    private PrestatsExtractor dataExtractor;
 
     @Test
     public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
