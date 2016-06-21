@@ -1,13 +1,15 @@
 package com.hartwig.healthchecks.common.util;
 
-import com.hartwig.healthchecks.common.report.JsonReport;
-import com.hartwig.healthchecks.common.report.Report;
-import mockit.Expectations;
-import mockit.Mocked;
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Optional;
+import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.common.report.Report;
+
+import mockit.Expectations;
+import mockit.Mocked;
 
 public class ReportTest {
 

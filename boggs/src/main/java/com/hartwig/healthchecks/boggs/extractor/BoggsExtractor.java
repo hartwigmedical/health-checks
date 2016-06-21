@@ -1,12 +1,10 @@
 package com.hartwig.healthchecks.boggs.extractor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,8 +19,9 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class BoggsExtractor {
     private static final Logger LOGGER = LogManager.getLogger(BoggsExtractor.class);
@@ -41,21 +40,19 @@ public class BoggsExtractor {
     protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";
 
     protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
-            @NotNull final String suffix) throws IOException, FileNotFoundException {
+            @NotNull final String suffix) throws IOException {
         final Optional<Path> filePath = Files
                 .walk(new File(runDirectory) .toPath())
                 .filter(
                      path -> path.getFileName().toString().startsWith(prefix) && path.getFileName().toString().endsWith(suffix))
                 .findFirst();
-        if (!filePath.isPresent()) {
-            throw new FileNotFoundException(String.format(FILE_NOT_FOUND_ERROR, prefix, suffix, runDirectory));
-        }
         return filePath;
     }
 
     protected Long sumOfTotalSequences(@NotNull final Path path) throws IOException {
         final List<Path> zipFiles = Files.walk(path).filter(p -> p.getFileName().toString().endsWith(ZIP_FILES_SUFFIX))
                 .sorted().collect(toCollection(ArrayList<Path>::new));
+
         final List<String> allValues = zipFiles
                 .stream()
                 .map(zipPath -> {

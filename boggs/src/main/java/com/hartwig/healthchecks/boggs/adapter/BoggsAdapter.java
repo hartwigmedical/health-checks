@@ -1,5 +1,11 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
@@ -13,11 +19,6 @@ import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckCategory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 @ResourceWrapper(type = CheckCategory.BOGGS)
 public class BoggsAdapter implements HealthCheckAdapter {

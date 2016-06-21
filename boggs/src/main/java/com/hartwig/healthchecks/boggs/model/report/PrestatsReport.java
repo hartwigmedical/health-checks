@@ -27,11 +27,11 @@ public class PrestatsReport extends BaseReport {
 
     @NotNull
     public List<PrestatsDataReport> getSummary() {
-        return summary;
+        return this.summary;
     }
 
     @Override
     public String toString() {
-        return "PrestatsReport [summary=" + summary + "]";
+        return "PrestatsReport [summary=" + this.summary + "]";
     }
 }

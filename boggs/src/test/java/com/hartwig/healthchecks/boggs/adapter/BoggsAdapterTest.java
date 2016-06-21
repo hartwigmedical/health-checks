@@ -1,7 +1,14 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import org.junit.Test;
+
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsHealthChecker;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
@@ -11,16 +18,16 @@ import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+
 import mockit.Mock;
 import mockit.MockUp;
-import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 
 public class BoggsAdapterTest {
 
+    private static final String DUMMY_ID = "DUMMY_ID";
+    private static final String DUMMY_STATUS = "DummyStatus";
+    private static final String _123 = "123";
+    private static final String SOME_ID = "SomeId";
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     @Test
@@ -57,11 +64,11 @@ public class BoggsAdapterTest {
 
     private MappingReport getDummyMappingReport() {
         final MappingDataReport mappingDataReport = new MappingDataReport(1.0d, 2.0d, 2.0d, 1.0d, 0.2d, true);
-        return new MappingReport(CheckType.MAPPING, "SomeId", "123", mappingDataReport);
+        return new MappingReport(CheckType.MAPPING, SOME_ID, _123, mappingDataReport);
     }
 
     private PrestatsReport getDummyPrestatsReport() {
-        final PrestatsDataReport prestatsDataReport = new PrestatsDataReport("DummyStatus", "DummyCheckName", "DummyFile");
+        final PrestatsDataReport prestatsDataReport = new PrestatsDataReport(DUMMY_ID, DUMMY_STATUS, PrestatsCheck.DUMMY);
         final PrestatsReport prestatsReport = new PrestatsReport(CheckType.PRESTATS);
         prestatsReport.addData(prestatsDataReport);
         return prestatsReport;

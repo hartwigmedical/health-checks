@@ -59,127 +59,75 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
+		"PRESTATS": {
+			"summary": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_PER_BASE_SEQUENCE_CONTENT",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_PER_SEQUENCE_QUALITY_SCORES",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION",
+				"status": "FAIL"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_PER_SEQUENCE_GC_CONTENT",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_PER_BASE_SEQUENCE_QUALITY",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_KMER_CONTENT",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_ADAPTER_CONTENT",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_SEQUENCE_DUPLICATION_LEVELS",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_BASIC_STATISTICS",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_PER_BASE_N_CONTENT",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_OVERREPRESENTED_SEQUENCES",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_PER_TILE_SEQUENCE_QUALITY",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_NUMBER_OF_READS",
+				"status": "FAIL"
+			}],
+			"check_type": "PRESTATS"
+		}
+	}, {
 		"MAPPING": {
-			"external_id": "CPCT00R",
-			"total_sequences": "8960",
+			"external_id": "CPCT12345678R",
+			"total_sequences": "36809",
 			"mapping_data_report": {
 				"mapped_percentage": 99.69,
 				"properly_paired_percentage": 99.57,
 				"singleton_percentage": 55.0,
 				"mate_mapped_to_different_chr_percentage": 0.0,
 				"proportion_of_duplicate_read": 5.95,
-				"is_all_reads_present": true
+				"is_all_reads_present": false
 			},
 			"check_type": "MAPPING"
-		}
-	}, {
-		"PRESTATS": {
-			"summary": [{
-				"check_name": "Basic Statistics",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Per base sequence quality",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Per tile sequence quality",
-				"status": "FAIL",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Per sequence quality scores",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Per base sequence content",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Per sequence GC content",
-				"status": "FAIL",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Per base N content",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Sequence Length Distribution",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Sequence Duplication Levels",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Overrepresented sequences",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Adapter Content",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Kmer Content",
-				"status": "WARN",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Basic Statistics",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Per base sequence quality",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Per tile sequence quality",
-				"status": "WARN",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Per sequence quality scores",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Per base sequence content",
-				"status": "WARN",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Per sequence GC content",
-				"status": "FAIL",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Per base N content",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Sequence Length Distribution",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Sequence Duplication Levels",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Overrepresented sequences",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Adapter Content",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Kmer Content",
-				"status": "PASS",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}, {
-				"check_name": "Total Sequences",
-				"status": "FAIL",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R1_001.fastq.gz"
-			}, {
-				"check_name": "Total Sequences",
-				"status": "FAIL",
-				"file": "CPCT12345678T_HJJLGCCXX_S1_L001_R2_001.fastq.gz"
-			}],
-			"check_type": "PRESTATS"
 		}
 	}]
 }

@@ -1,8 +1,9 @@
 package com.hartwig.healthchecks.boggs.model.report;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import org.jetbrains.annotations.NotNull;
 
 public class MappingReport extends BaseReport {
 

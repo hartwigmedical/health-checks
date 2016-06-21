@@ -1,19 +1,20 @@
 package com.hartwig.healthchecks.util.adapter;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
-import com.hartwig.healthchecks.common.exception.NotFoundException;
-import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-import com.hartwig.healthchecks.common.util.CheckCategory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
+
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.exception.NotFoundException;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
+import com.hartwig.healthchecks.common.util.CheckCategory;
 
 
 public class HealthChecksFlyweight {

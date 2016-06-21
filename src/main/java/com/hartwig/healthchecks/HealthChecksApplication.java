@@ -1,9 +1,9 @@
 package com.hartwig.healthchecks;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
-import com.hartwig.healthchecks.common.exception.NotFoundException;
-import com.hartwig.healthchecks.common.report.JsonReport;
-import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Optional;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -13,12 +13,14 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.exception.NotFoundException;
+import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
+
 import rx.Observable;
 import rx.schedulers.Schedulers;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Optional;
 
 public class HealthChecksApplication {
     private static final Logger LOGGER = LogManager.getLogger(HealthChecksApplication.class);

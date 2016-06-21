@@ -1,13 +1,14 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class SambambaFlagStatParser implements FlagStatParser {
 

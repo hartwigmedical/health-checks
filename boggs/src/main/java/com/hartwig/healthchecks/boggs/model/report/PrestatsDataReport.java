@@ -2,35 +2,42 @@ package com.hartwig.healthchecks.boggs.model.report;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
+
 public class PrestatsDataReport {
 
-    private final String checkName;
+    @NotNull
+    private final String patientId;
+    @NotNull
+    private final PrestatsCheck checkName;
+    @NotNull
     private final String status;
-    private final String file;
 
-    public PrestatsDataReport(@NotNull final String status, @NotNull final String checkName, @NotNull final String file) {
+    public PrestatsDataReport(@NotNull final String patientId, @NotNull final String status,
+            @NotNull final PrestatsCheck checkName) {
+        this.patientId = patientId;
         this.status = status;
         this.checkName = checkName;
-        this.file = file;
     }
 
     @NotNull
-    public String getCheckName() {
-        return checkName;
+    public String getPatientId() {
+        return this.patientId;
+    }
+
+    @NotNull
+    public PrestatsCheck getCheckName() {
+        return this.checkName;
     }
 
     @NotNull
     public String getStatus() {
-        return status;
-    }
-
-    @NotNull
-    public String getFile() {
-        return file;
+        return this.status;
     }
 
     @Override
     public String toString() {
-        return "PrestatsDataReport [checkName=" + checkName + ", status=" + status + ", file=" + file + "]";
+        return "PrestatsDataReport [externalId=" + this.patientId + ", checkName=" + this.checkName + ", status="
+                + this.status + "]";
     }
 }
