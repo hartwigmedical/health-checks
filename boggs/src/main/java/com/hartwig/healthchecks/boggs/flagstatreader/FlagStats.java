@@ -17,9 +17,9 @@ public class FlagStats {
     private final Double mateMappedToDifferentChrMapQ5;
 
     FlagStats(final Double total, final Double secondary, final Double supplementary, final Double duplicates,
-              final Double mapped, final Double pairedInSequencing, final Double read1, final Double read2,
-              final Double properlyPaired, final Double itselfAndMateMapped, final Double singletons,
-              final Double mateMappedToDifferentChr, final Double mateMappedToDifferentChrMapQ5) {
+            final Double mapped, final Double pairedInSequencing, final Double read1, final Double read2,
+            final Double properlyPaired, final Double itselfAndMateMapped, final Double singletons,
+            final Double mateMappedToDifferentChr, final Double mateMappedToDifferentChrMapQ5) {
 
         this.total = total;
         this.secondary = secondary;
@@ -90,20 +90,11 @@ public class FlagStats {
 
     @Override
     public String toString() {
-        return "FlagStats{" +
-                "total=" + total +
-                ", secondary=" + secondary +
-                ", supplementary=" + supplementary +
-                ", duplicates=" + duplicates +
-                ", mapped=" + mapped +
-                ", pairedInSequencing=" + pairedInSequencing +
-                ", read1=" + read1 +
-                ", read2=" + read2 +
-                ", properlyPaired=" + properlyPaired +
-                ", itselfAndMateMapped=" + itselfAndMateMapped +
-                ", singletons=" + singletons +
-                ", mateMappedToDifferentChr=" + mateMappedToDifferentChr +
-                ", mateMappedToDifferentChrMapQ5=" + mateMappedToDifferentChrMapQ5 +
-                '}';
+        return "FlagStats{" + "total=" + total + ", secondary=" + secondary + ", supplementary=" + supplementary
+                + ", duplicates=" + duplicates + ", mapped=" + mapped + ", pairedInSequencing=" + pairedInSequencing
+                + ", read1=" + read1 + ", read2=" + read2 + ", properlyPaired=" + properlyPaired
+                + ", itselfAndMateMapped=" + itselfAndMateMapped + ", singletons=" + singletons
+                + ", mateMappedToDifferentChr=" + mateMappedToDifferentChr + ", mateMappedToDifferentChrMapQ5="
+                + mateMappedToDifferentChrMapQ5 + '}';
     }
 }

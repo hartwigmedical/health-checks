@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.Properties;
 
-public class PropertiesUtil {
+public final class PropertiesUtil {
 
     private static Logger LOGGER = LogManager.getLogger(PropertiesUtil.class);
 

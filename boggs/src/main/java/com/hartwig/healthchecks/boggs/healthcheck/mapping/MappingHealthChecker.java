@@ -1,15 +1,16 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 public class MappingHealthChecker implements HealthChecker {
     private static final Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
@@ -34,51 +35,55 @@ public class MappingHealthChecker implements HealthChecker {
         final MappingReport mappingReport = dataExtractor.extractFromRunDirectory(runDirectory);
         final MappingDataReport mappingDataReport = mappingReport.getMappingDataReport();
 
-        LOGGER.info(String.format("Checking mapping health for %s", mappingReport.getExternalId()));
-
-         String allReadsMessage = "OK : All Reads are present";
-
-        if (!mappingDataReport.isAllReadsPresent()) {
-            allReadsMessage = "WARN : Not All Reads are present";
-        }
-        LOGGER.info(allReadsMessage);
-
-        String mappedMessage = String.format("OK: Acceptable mapped percentage: %s", mappingDataReport.getMappedPercentage());
-        if (mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERCENTAGE) {
-            mappedMessage = String.format("WARN: Low mapped percentage: %s", mappingDataReport.getMappedPercentage());
-        }
-        LOGGER.info(mappedMessage);
-
-        String properlyPairedMessage = String.format("OK: Acceptable properly paired percentage: %s",
-                mappingDataReport.getProperlyPairedPercentage());
-        if (mappingDataReport.getProperlyPairedPercentage() < MIN_PROPERLY_PAIRED_PERCENTAGE) {
-            properlyPairedMessage = "WARN: Low properly paired percentage: "
-                    + mappingDataReport.getProperlyPairedPercentage();
-        }
-        LOGGER.info(properlyPairedMessage);
-
-        String singletonMessage = String.format("OK: Acceptable singleton percentage: %s", mappingDataReport.getSingletonPercentage());
-        if (mappingDataReport.getSingletonPercentage() > MAX_SINGLETONS) {
-            singletonMessage = String.format("WARN: High singleton percentage: %s", mappingDataReport.getSingletonPercentage());
-        }
-        LOGGER.info(singletonMessage);
-
-        String mateMappedMessage = String.format("OK: Acceptable mate mapped to different chr percentage: %s",
-                mappingDataReport.getMateMappedToDifferentChrPercentage());
-        if (mappingDataReport.getMateMappedToDifferentChrPercentage() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR) {
-            mateMappedMessage = String.format("WARN: High mate mapped to different chr percentage: %s",
-                    mappingDataReport.getMateMappedToDifferentChrPercentage());
-        }
-        LOGGER.info(mateMappedMessage);
-
-        String proportionPercentageMessage = String.format("OK: Acceptable proportion of Duplication percentage: %s",
-                mappingDataReport.getProportionOfDuplicateRead());
-        if (mappingDataReport.getProportionOfDuplicateRead() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR) {
-            proportionPercentageMessage = String.format("WARN: High proportion of Duplication percentage: %s",
-                    mappingDataReport.getProportionOfDuplicateRead());
-        }
-        LOGGER.info(proportionPercentageMessage);
+        logMappingReport(mappingReport, mappingDataReport);
 
         return mappingReport;
+    }
+
+    private void logMappingReport(final MappingReport mappingReport, final MappingDataReport mappingDataReport) {
+        LOGGER.info(String.format("Checking mapping health for %s", mappingReport.getExternalId()));
+
+        boolean isAllReadsPresent = !mappingDataReport.isAllReadsPresent();
+        logMappingReportLine(isAllReadsPresent, "OK : All Reads are present", "WARN : Not All Reads are present %s");
+        boolean isMappedPrecentageInRange = mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERCENTAGE;
+        logMappingReportFormattedLine(isMappedPrecentageInRange, "OK: Acceptable mapped percentage: %s",
+                "WARN: Low mapped percentage: %s", mappingDataReport.getMappedPercentage());
+
+        boolean isProperlyPairedPercentageInRange = mappingDataReport
+                .getProperlyPairedPercentage() < MIN_PROPERLY_PAIRED_PERCENTAGE;
+        logMappingReportFormattedLine(isProperlyPairedPercentageInRange,
+                "OK: Acceptable properly paired percentage: %s", "WARN: Low properly paired percentage: ",
+                mappingDataReport.getProperlyPairedPercentage());
+
+        boolean isSingletonPerInRange = mappingDataReport.getSingletonPercentage() > MAX_SINGLETONS;
+        logMappingReportFormattedLine(isSingletonPerInRange, "OK: Acceptable singleton percentage: %s",
+                "WARN: High singleton percentage: %s", mappingDataReport.getSingletonPercentage());
+
+        boolean isMatMapToDiffChrInRange = mappingDataReport
+                .getMateMappedToDifferentChrPercentage() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
+        logMappingReportFormattedLine(isMatMapToDiffChrInRange,
+                "OK: Acceptable mate mapped to different chr percentage: %s",
+                "WARN: High mate mapped to different chr percentage: %s",
+                mappingDataReport.getMateMappedToDifferentChrPercentage());
+
+        boolean isPropOfDuplicateInRange = mappingDataReport
+                .getProportionOfDuplicateRead() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
+        logMappingReportFormattedLine(isPropOfDuplicateInRange,
+                "OK: Acceptable proportion of Duplication percentage: %s",
+                "WARN: High proportion of Duplication percentage: %s",
+                mappingDataReport.getProportionOfDuplicateRead());
+    }
+
+    private void logMappingReportLine(final boolean failStatus, final String succesMessage, final String failMessage) {
+        String message = succesMessage;
+        if (failStatus) {
+            message = failMessage;
+        }
+        LOGGER.info(message);
+    }
+
+    private void logMappingReportFormattedLine(final boolean failStatus, final String succesMessage,
+            final String failMessage, final Double value) {
+        logMappingReportLine(failStatus, String.format(succesMessage, value), String.format(failMessage, value));
     }
 }

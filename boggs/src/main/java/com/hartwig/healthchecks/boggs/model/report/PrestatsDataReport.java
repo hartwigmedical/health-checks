@@ -8,7 +8,8 @@ public class PrestatsDataReport {
     private final String status;
     private final String file;
 
-    public PrestatsDataReport(@NotNull final String status, @NotNull final String checkName, @NotNull final String file) {
+    public PrestatsDataReport(@NotNull final String status, @NotNull final String checkName,
+            @NotNull final String file) {
         this.status = status;
         this.checkName = checkName;
         this.file = file;

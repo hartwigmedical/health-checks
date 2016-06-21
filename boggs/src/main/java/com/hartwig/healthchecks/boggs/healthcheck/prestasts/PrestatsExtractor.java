@@ -1,11 +1,8 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestasts;
 
-import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import com.hartwig.healthchecks.common.util.CheckType;
-import org.jetbrains.annotations.NotNull;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,11 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
+import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
+import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
+
+    private static final int EXPECTED_LINE_LENGTH = 3;
 
     protected static final String PASS = "PASS";
 
@@ -38,7 +41,7 @@ public class PrestatsExtractor extends BoggsExtractor {
 
     private static final String SUMMARY_FILE_NAME = "summary.txt";
 
-    private static final long MIN_TOTAL_SQ = 85000000l;
+    private static final long MIN_TOTAL_SQ = 85000000L;
 
     public PrestatsReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, EmptyFileException {
@@ -65,14 +68,39 @@ public class PrestatsExtractor extends BoggsExtractor {
             throws IOException, EmptyFileException {
 
         final List<Path> zipFiles = Files.walk(pathToCheck)
-                .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX))
-                .sorted()
+                .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
                 .collect(toCollection(ArrayList<Path>::new));
 
+        final Map<String, List<PrestatsDataReport>> data = zipFiles.stream().map(path -> {
+            List<String> lines = null;
+            lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
+            if (lines == null) {
+                lines = new ArrayList<>();
+            }
+            return lines;
+        }).flatMap(Collection::stream).map(line -> {
+            final String[] values = line.split(SEPERATOR_REGEX);
+            PrestatsDataReport prestatsDataReport = null;
+            if (values.length == EXPECTED_LINE_LENGTH) {
+                final String status = values[0];
+                final String check = values[1];
+                final String file = values[2];
+                prestatsDataReport = new PrestatsDataReport(status, check, file);
+            }
+            return prestatsDataReport;
+        }).filter(prestatsDataReport -> prestatsDataReport != null)
+                .collect(groupingBy(PrestatsDataReport::getCheckName));
+
+        return data.values().stream().map(prestatsDataReportList -> {
+            return prestatsDataReportList.stream().min(isStatusWorse()).get();
+        }).collect(toList());
+    }
+
+    private Comparator<PrestatsDataReport> isStatusWorse() {
         final Comparator<PrestatsDataReport> isStatusWorse = new Comparator<PrestatsDataReport>() {
             @Override
             public int compare(@NotNull final PrestatsDataReport firstData,
-                               @NotNull final PrestatsDataReport secondData) {
+                    @NotNull final PrestatsDataReport secondData) {
                 final String firstStatus = firstData.getStatus();
                 final String secondStatus = secondData.getStatus();
                 int status = ONE;
@@ -84,38 +112,7 @@ public class PrestatsExtractor extends BoggsExtractor {
                 return status;
             }
         };
-
-        final Map<String, List<PrestatsDataReport>> data = zipFiles
-            .stream()
-            .map(path -> {
-                List<String> lines = null;
-                lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
-                if (lines == null) {
-                    lines = new ArrayList<>();
-                }
-                return lines;
-             })
-            .flatMap(Collection::stream)
-            .map(line -> {
-                final String[] values = line.split(SEPERATOR_REGEX);
-                PrestatsDataReport prestatsDataReport = null;
-                if (values.length == 3) {
-                    final String status = values[0];
-                    final String check = values[1];
-                    final String file = values[2];
-                    prestatsDataReport = new PrestatsDataReport(status, check, file);
-                }
-                return prestatsDataReport;
-            })
-            .filter(prestatsDataReport -> prestatsDataReport != null)
-            .collect(groupingBy(PrestatsDataReport::getCheckName));
-
-        return data.values()
-            .stream()
-            .map(prestatsDataReportList -> {
-                return prestatsDataReportList.stream().min(isStatusWorse).get();
-            })
-            .collect(toList());
+        return isStatusWorse;
     }
 
     private PrestatsDataReport getfastqFilesData(@NotNull final Path pathToCheck)

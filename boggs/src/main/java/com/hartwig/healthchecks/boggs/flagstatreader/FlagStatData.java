@@ -11,7 +11,8 @@ public class FlagStatData {
     @NotNull
     private final FlagStats qcFailedReads;
 
-    FlagStatData(@NotNull final String path, @NotNull final FlagStats qcPassedReads, @NotNull final FlagStats qcFailedReads) {
+    FlagStatData(@NotNull final String path, @NotNull final FlagStats qcPassedReads,
+            @NotNull final FlagStats qcFailedReads) {
         this.path = path;
         this.qcPassedReads = qcPassedReads;
         this.qcFailedReads = qcFailedReads;
@@ -34,10 +35,7 @@ public class FlagStatData {
 
     @Override
     public String toString() {
-        return "FlagStatData{" +
-                "path='" + path + '\'' +
-                ", qcPassedReads=" + qcPassedReads +
-                ", qcFailedReads=" + qcFailedReads +
-                '}';
+        return "FlagStatData{" + "path='" + path + '\'' + ", qcPassedReads=" + qcPassedReads + ", qcFailedReads="
+                + qcFailedReads + '}';
     }
 }

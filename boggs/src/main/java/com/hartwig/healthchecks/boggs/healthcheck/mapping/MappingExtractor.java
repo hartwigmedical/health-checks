@@ -1,5 +1,14 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
@@ -8,14 +17,6 @@ import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.CheckType;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
 
 public class MappingExtractor extends BoggsExtractor {
 
@@ -29,13 +30,13 @@ public class MappingExtractor extends BoggsExtractor {
     @NotNull
     private final FlagStatParser flagstatParser;
 
-    public  MappingExtractor(@NotNull final FlagStatParser flagstatParser) {
+    public MappingExtractor(@NotNull final FlagStatParser flagstatParser) {
         this.flagstatParser = flagstatParser;
     }
 
     public MappingReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, EmptyFileException {
-        final Optional<Path> sampleFile = getFilesPath(runDirectory ,SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
+        final Optional<Path> sampleFile = getFilesPath(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final String externalId = sampleFile.get().getFileName().toString();
         final Long totalSequences = sumOfTotalSequences(sampleFile.get());
         final MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences.toString());
