@@ -24,12 +24,14 @@ public class MappingHealthCheckerTest {
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
     @Mocked private MappingExtractor dataExtractor;
 
-    @NotNull private static MappingReport dummyData() {
+    @NotNull
+    private static MappingReport dummyData() {
         MappingDataReport mappingDataReport = new MappingDataReport(1.0d, 2.0d, 2.0d, 1.0d, 0.2d, true);
         return new MappingReport(CheckType.MAPPING, SOME_EXTERNAL_ID, _8564, mappingDataReport);
     }
 
-    @Test public void verifyMappingHealthChecker() throws IOException, EmptyFileException {
+    @Test
+    public void verifyMappingHealthChecker() throws IOException, EmptyFileException {
 
         final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {

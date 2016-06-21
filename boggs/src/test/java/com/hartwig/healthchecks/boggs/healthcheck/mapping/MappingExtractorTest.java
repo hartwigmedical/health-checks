@@ -28,7 +28,8 @@ public class MappingExtractorTest {
 
     @Mocked private FlagStatParser flagstatParser;
 
-    @Test public void extractData() throws IOException, EmptyFileException {
+    @Test
+    public void extractData() throws IOException, EmptyFileException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         final String path = runDirURL.getPath();
         final MappingExtractor extractor = new MappingExtractor(flagstatParser);
@@ -51,14 +52,14 @@ public class MappingExtractorTest {
         assertEquals(5.95d, mappingDataReport.getProportionOfDuplicateRead(), 0d);
     }
 
-    @Test(expected = IOException.class) public void extractDataNoneExistingDir()
-            throws IOException, EmptyFileException {
+    @Test(expected = IOException.class)
+    public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
         final MappingExtractor extractor = new MappingExtractor(flagstatParser);
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }
 
-    @Test(expected = EmptyFileException.class) public void extractDataEmptyFile()
-            throws IOException, EmptyFileException {
+    @Test(expected = EmptyFileException.class)
+    public void extractDataEmptyFile() throws IOException, EmptyFileException {
         final URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
         final String path = exampleFlagStatURL.getPath();
         final MappingExtractor extractor = new MappingExtractor(flagstatParser);

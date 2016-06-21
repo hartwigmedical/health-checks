@@ -23,7 +23,8 @@ public class PrestatsHealthCheckerTest {
     private static final String EXPECTED_REPORT = "PrestatsReport [summary=[PrestatsDataReport [checkName=DummyCheckName, status=FAIL, file=DummyFile]]]";
     @Mocked private PrestatsExtractor dataExtractor;
 
-    @Test public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
+    @Test
+    public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
         final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
         final PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport("FAIL", "DummyCheckName",
                 "DummyFile");
@@ -45,8 +46,8 @@ public class PrestatsHealthCheckerTest {
 
     }
 
-    @Test(expected = IOException.class) public void verifyPrestatsHealthCheckerIOException()
-            throws IOException, EmptyFileException {
+    @Test(expected = IOException.class)
+    public void verifyPrestatsHealthCheckerIOException() throws IOException, EmptyFileException {
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
             {

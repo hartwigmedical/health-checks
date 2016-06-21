@@ -29,7 +29,9 @@ public class MappingHealthChecker implements HealthChecker {
         this.dataExtractor = dataExtractor;
     }
 
-    @Override @NotNull public BaseReport runCheck() throws IOException, EmptyFileException {
+    @Override
+    @NotNull
+    public BaseReport runCheck() throws IOException, EmptyFileException {
         final MappingReport mappingReport = dataExtractor.extractFromRunDirectory(runDirectory);
         final MappingDataReport mappingDataReport = mappingReport.getMappingDataReport();
 
@@ -44,8 +46,8 @@ public class MappingHealthChecker implements HealthChecker {
         final boolean isAllReadsPresent = !mappingDataReport.isAllReadsPresent();
         logMappingReportLine(isAllReadsPresent, "OK : All Reads are present", "WARN : Not All Reads are present %s");
         final boolean isMappedPrecentageInRange = mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERCENTAGE;
-        logMappingReportFormattedLine(isMappedPrecentageInRange, "OK: Acceptable mapped percentage: %s",
-                "WARN: Low mapped percentage: %s", mappingDataReport.getMappedPercentage());
+        logMappingReportFormattedLine(isMappedPrecentageInRange, "OK: Acceptable getMapped percentage: %s",
+                "WARN: Low getMapped percentage: %s", mappingDataReport.getMappedPercentage());
 
         final boolean isProperlyPairedPercentageInRange =
                 mappingDataReport.getProperlyPairedPercentage() < MIN_PROPERLY_PAIRED_PERCENTAGE;
@@ -60,8 +62,8 @@ public class MappingHealthChecker implements HealthChecker {
         final boolean isMatMapToDiffChrInRange =
                 mappingDataReport.getMateMappedToDifferentChrPercentage() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
         logMappingReportFormattedLine(isMatMapToDiffChrInRange,
-                "OK: Acceptable mate mapped to different chr percentage: %s",
-                "WARN: High mate mapped to different chr percentage: %s",
+                "OK: Acceptable mate getMapped to different chr percentage: %s",
+                "WARN: High mate getMapped to different chr percentage: %s",
                 mappingDataReport.getMateMappedToDifferentChrPercentage());
 
         final boolean isPropOfDuplicateInRange =

@@ -15,19 +15,23 @@ public class FlagStatData {
         this.qcFailedReads = qcFailedReads;
     }
 
-    @NotNull public String path() {
+    @NotNull
+    public String path() {
         return path;
     }
 
-    @NotNull public FlagStats getQcPassedReads() {
+    @NotNull
+    public FlagStats getQcPassedReads() {
         return qcPassedReads;
     }
 
-    @NotNull public FlagStats getQcFailedReads() {
+    @NotNull
+    public FlagStats getQcFailedReads() {
         return qcFailedReads;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "FlagStatData{" + "path='" + path + '\'' + ", getQcPassedReads=" + qcPassedReads + ", getQcFailedReads="
                 + qcFailedReads + '}';
     }

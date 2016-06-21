@@ -24,11 +24,13 @@ public class PrestatsReport extends BaseReport {
         summary.addAll(prestatsDataReport);
     }
 
-    @NotNull public List<PrestatsDataReport> getSummary() {
+    @NotNull
+    public List<PrestatsDataReport> getSummary() {
         return summary;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "PrestatsReport [summary=" + summary + "]";
     }
 }

@@ -8,9 +8,11 @@ import org.jetbrains.annotations.NotNull;
 
 public enum CheckType {
 
-    MAPPING, PRESTATS;
+    MAPPING,
+    PRESTATS;
 
-    @NotNull public static Optional<CheckType> getByType(String typeToCheck) {
+    @NotNull
+    public static Optional<CheckType> getByType(@NotNull final String typeToCheck) {
         final List<CheckType> types = Arrays.asList(CheckType.values());
         final Optional<CheckType> returnType = types.stream().filter(
                 type -> type.toString().equalsIgnoreCase(typeToCheck)).findFirst();

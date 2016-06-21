@@ -37,7 +37,7 @@ public class HealthChecksApplication {
         this.checkType = checkType;
     }
 
-    public static void main(String... args) throws ParseException, IOException {
+    public static void main(final String... args) throws ParseException, IOException {
         final Options options = createOptions();
         final CommandLine cmd = createCommandLine(options, args);
 
@@ -53,14 +53,16 @@ public class HealthChecksApplication {
         healthChecksApplication.processHealthChecks();
     }
 
-    @NotNull private static Options createOptions() {
+    @NotNull
+    private static Options createOptions() {
         final Options options = new Options();
         options.addOption(RUN_DIRECTORY, true, "The path containing the data for a single run");
         options.addOption(CHECK_TYPE, true, "The type of check to b executed for a single run");
         return options;
     }
 
-    @NotNull private static CommandLine createCommandLine(@NotNull final Options options, @NotNull final String... args)
+    @NotNull
+    private static CommandLine createCommandLine(@NotNull final Options options, @NotNull final String... args)
             throws ParseException {
         final CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);

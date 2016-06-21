@@ -33,7 +33,8 @@ public class MappingExtractor extends BoggsExtractor {
         this.flagstatParser = flagstatParser;
     }
 
-    @NotNull private static double toPercentage(@NotNull final double percentage) {
+    @NotNull
+    private static double toPercentage(@NotNull final double percentage) {
         return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
     }
 
@@ -64,13 +65,13 @@ public class MappingExtractor extends BoggsExtractor {
 
         final FlagStats passed = flagstatData.getQcPassedReads();
 
-        final Double mappedPercentage = toPercentage(passed.mapped() / passed.total());
-        final Double properlyPairedPercentage = toPercentage(passed.properlyPaired() / passed.mapped());
-        final Double singletonPercentage = passed.singletons();
-        final Double mateMappedToDifferentChrPercentage = passed.mateMappedToDifferentChr();
-        final Double proportionOfDuplicateRead = toPercentage(passed.duplicates() / passed.total());
+        final Double mappedPercentage = toPercentage(passed.getMapped() / passed.getTotal());
+        final Double properlyPairedPercentage = toPercentage(passed.getProperlyPaired() / passed.getMapped());
+        final Double singletonPercentage = passed.getSingletons();
+        final Double mateMappedToDifferentChrPercentage = passed.getMateMappedToDifferentChr();
+        final Double proportionOfDuplicateRead = toPercentage(passed.getDuplicates() / passed.getTotal());
         final boolean isAllReadsPresent =
-                passed.total() == (Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE) + passed.secondary();
+                passed.getTotal() == (Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE) + passed.getSecondary();
 
         return new MappingDataReport(mappedPercentage, properlyPairedPercentage, singletonPercentage,
                 mateMappedToDifferentChrPercentage, proportionOfDuplicateRead, isAllReadsPresent);
