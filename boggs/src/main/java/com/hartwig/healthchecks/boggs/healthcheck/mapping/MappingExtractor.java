@@ -31,6 +31,7 @@ public class MappingExtractor extends BoggsExtractor {
     private final FlagStatParser flagstatParser;
 
     public MappingExtractor(@NotNull final FlagStatParser flagstatParser) {
+        super();
         this.flagstatParser = flagstatParser;
     }
 

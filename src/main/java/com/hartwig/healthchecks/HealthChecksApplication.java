@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
@@ -15,6 +16,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -80,8 +82,13 @@ public class HealthChecksApplication {
                 LOGGER.error(e.getMessage());
             }
         }
-        final Optional<String> fileName = JsonReport.getInstance().generateReport();
-        LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
+
+        try {
+            final Optional<String> fileName = JsonReport.getInstance().generateReport();
+            LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
+        } catch (GenerateReportException e) {
+            LOGGER.log(Level.ERROR, e.getMessage());
+        }
     }
 
     protected void executeAllcheck(@NotNull final String runDirectory) {
@@ -90,8 +97,13 @@ public class HealthChecksApplication {
 
         Observable.from(adapters).subscribeOn(Schedulers.io()).subscribe((adapter) -> adapter.runCheck(runDirectory),
                 (error) -> LOGGER.error(error.getMessage()), () -> {
-                    final Optional<String> fileName = JsonReport.getInstance().generateReport();
-                    LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
+
+                    try {
+                        final Optional<String> fileName = JsonReport.getInstance().generateReport();
+                        LOGGER.info(String.format("Report generated with following name -> %s", fileName.get()));
+                    } catch (GenerateReportException e) {
+                        LOGGER.log(Level.ERROR, e.getMessage());
+                    }
                 });
 
     }

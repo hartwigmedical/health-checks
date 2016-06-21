@@ -20,7 +20,7 @@ public class MappingDataReport {
 
     public MappingDataReport(@NotNull final Double mappedPercentage, @NotNull final Double properlyPairedPercentage,
             @NotNull final Double singletonPercentage, @NotNull final Double mateMappedToDifferentChrPercentage,
-            @NotNull final Double proportionOfDuplicateRead, boolean isAllReadsPresent) {
+            @NotNull final Double proportionOfDuplicateRead, final boolean isAllReadsPresent) {
 
         this.mappedPercentage = mappedPercentage;
         this.properlyPairedPercentage = properlyPairedPercentage;

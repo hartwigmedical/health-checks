@@ -2,6 +2,7 @@ package com.hartwig.healthchecks.common.util;
 
 import java.util.Optional;
 
+import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 
@@ -26,21 +27,25 @@ public class ReportTest {
         final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
-        final Optional<String> location = report.generateReport();
+        try {
+            final Optional<String> location = report.generateReport();
 
-        Assert.assertNotNull(location);
-        Assert.assertTrue(location.isPresent());
+            Assert.assertNotNull(location);
+            Assert.assertTrue(location.isPresent());
+        } catch (GenerateReportException e) {
+            Assert.fail("Failed to generate report.");
+        }
     }
 
-    @Test
-    public void generateReportException() {
+    @Test(expected = GenerateReportException.class)
+    public void generateReportException() throws GenerateReportException {
         final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
         jsonReport.addReportData(baseConfig1);
 
         new Expectations() {
             {
                 jsonReport.generateReport();
-                returns(Optional.empty());
+                result = new GenerateReportException("Exception occurred.");
             }
         };
 

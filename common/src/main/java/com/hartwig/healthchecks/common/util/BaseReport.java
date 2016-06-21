@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class BaseReport implements Serializable {
 
-    private CheckType checkType;
+    private final CheckType checkType;
 
     public BaseReport(final CheckType checkType) {
         this.checkType = checkType;

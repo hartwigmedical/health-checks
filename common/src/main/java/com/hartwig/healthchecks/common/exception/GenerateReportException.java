@@ -2,9 +2,9 @@ package com.hartwig.healthchecks.common.exception;
 
 import org.jetbrains.annotations.NotNull;
 
-public class NotFoundException extends Exception {
+public class GenerateReportException extends Exception {
 
-    public NotFoundException(@NotNull final String message) {
+    public GenerateReportException(@NotNull final String message) {
         super(message);
     }
 }
