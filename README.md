@@ -59,6 +59,63 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
+		"PRESTATS": {
+			"summary": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "Per sequence quality scores",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Basic Statistics",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Overrepresented sequences",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Per base sequence quality",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Per sequence GC content",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Per base sequence content",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Sequence Duplication Levels",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Adapter Content",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Sequence Length Distribution",
+				"status": "FAIL"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Per tile sequence quality",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Kmer Content",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "Per base N content",
+				"status": "PASS"
+			}, {
+				"patient_id": "FAIL",
+				"check_name": "CPCT12345678R",
+				"status": "Total Sequences"
+			}],
+			"check_type": "PRESTATS"
+		}
+	}, {
 		"MAPPING": {
 			"external_id": "CPCT12345678R",
 			"total_sequences": "36809",
@@ -71,51 +128,6 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"is_all_reads_present": false
 			},
 			"check_type": "MAPPING"
-		}
-	}, {
-		"PRESTATS": {
-			"external_id": "CPCT12345678R",
-			"summary": [{
-				"check_name": "Per sequence quality scores",
-				"status": "PASS"
-			}, {
-				"check_name": "Basic Statistics",
-				"status": "PASS"
-			}, {
-				"check_name": "Overrepresented sequences",
-				"status": "WARN"
-			}, {
-				"check_name": "Per base sequence quality",
-				"status": "PASS"
-			}, {
-				"check_name": "Per sequence GC content",
-				"status": "PASS"
-			}, {
-				"check_name": "Per base sequence content",
-				"status": "PASS"
-			}, {
-				"check_name": "Sequence Duplication Levels",
-				"status": "PASS"
-			}, {
-				"check_name": "Adapter Content",
-				"status": "PASS"
-			}, {
-				"check_name": "Sequence Length Distribution",
-				"status": "FAIL"
-			}, {
-				"check_name": "Per tile sequence quality",
-				"status": "WARN"
-			}, {
-				"check_name": "Kmer Content",
-				"status": "WARN"
-			}, {
-				"check_name": "Per base N content",
-				"status": "PASS"
-			}, {
-				"check_name": "Total Sequences",
-				"status": "FAIL"
-			}],
-			"check_type": "PRESTATS"
 		}
 	}]
 }

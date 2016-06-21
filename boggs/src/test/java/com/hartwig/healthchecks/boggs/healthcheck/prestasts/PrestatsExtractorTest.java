@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.NoSuchFileException;
 
 import org.junit.Test;
 
@@ -28,25 +29,13 @@ public class PrestatsExtractorTest {
         PrestatsReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
 
         assertNotNull(REPORT_SHOULD_NOT_BE_NULL, prestatsData);
-        assertEquals(WRONG_PATIENT_ID_MSG, TEST_ID,
-                prestatsData.getExternalId());
-        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM,
-                prestatsData.getSummary().size());
-        String actualStatus = prestatsData.getSummary().stream()
-                .filter(p -> p.getCheckName().equals(PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription()))
-                .findFirst().get().getStatus();
-        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, PrestatsExtractor.WARN, actualStatus);
-        actualStatus = prestatsData.getSummary().stream()
-                .filter(p -> p.getCheckName()
-                        .equals(PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription()))
-                .findFirst().get().getStatus();
-        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, PrestatsExtractor.FAIL, actualStatus);
-
-        actualStatus = prestatsData.getSummary().stream()
-                .filter(p -> p.getCheckName()
-                        .equals(PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription()))
-                .findFirst().get().getStatus();
-        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, PrestatsExtractor.PASS, actualStatus);
+        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, prestatsData.getSummary().size());
+        assertPrestatsReport(prestatsData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription(),
+                PrestatsExtractor.WARN);
+        assertPrestatsReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription(),
+                PrestatsExtractor.FAIL);
+        assertPrestatsReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription(),
+                PrestatsExtractor.PASS);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -56,9 +45,18 @@ public class PrestatsExtractorTest {
         extractor.extractFromRunDirectory(runDirURL.getPath().toString());
     }
 
-    @Test(expected = IOException.class)
+    @Test(expected = NoSuchFileException.class)
     public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
         PrestatsExtractor extractor = new PrestatsExtractor();
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+    }
+
+    private void assertPrestatsReport(PrestatsReport prestatsData, String check, String expectedStatus) {
+        String actualStatus = prestatsData.getSummary().stream().filter(p -> p.getCheckName().equals(check)).findFirst()
+                .get().getStatus();
+        String externalId = prestatsData.getSummary().stream().filter(p -> p.getCheckName().equals(check)).findFirst()
+                .get().getExternalId();
+        assertEquals(WRONG_PATIENT_ID_MSG, TEST_ID, externalId);
+        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, expectedStatus, actualStatus);
     }
 }

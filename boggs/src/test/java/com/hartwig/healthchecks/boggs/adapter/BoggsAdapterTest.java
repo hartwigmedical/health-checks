@@ -1,5 +1,11 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import org.junit.Test;
+
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
@@ -11,13 +17,9 @@ import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+
 import mockit.Mock;
 import mockit.MockUp;
-import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 
 public class BoggsAdapterTest {
 
@@ -66,8 +68,8 @@ public class BoggsAdapterTest {
     }
 
     private PrestatsReport getDummyPrestatsReport() {
-        final PrestatsDataReport prestatsDataReport = new PrestatsDataReport(DUMMY_STATUS, DUMMY_CHECK_NAME);
-        final PrestatsReport prestatsReport = new PrestatsReport(CheckType.PRESTATS ,DUMMY_ID);
+        final PrestatsDataReport prestatsDataReport = new PrestatsDataReport(DUMMY_STATUS, DUMMY_CHECK_NAME, DUMMY_ID);
+        final PrestatsReport prestatsReport = new PrestatsReport(CheckType.PRESTATS);
         prestatsReport.addData(prestatsDataReport);
         return prestatsReport;
     }

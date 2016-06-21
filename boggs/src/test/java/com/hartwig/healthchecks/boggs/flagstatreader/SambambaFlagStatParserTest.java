@@ -1,13 +1,14 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
-import com.google.common.io.Resources;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import com.google.common.io.Resources;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class SambambaFlagStatParserTest {
 

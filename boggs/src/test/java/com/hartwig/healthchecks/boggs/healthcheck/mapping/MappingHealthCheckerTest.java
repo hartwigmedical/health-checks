@@ -1,19 +1,21 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
+
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+
 import mockit.Expectations;
 import mockit.Mocked;
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 
 public class MappingHealthCheckerTest {
 

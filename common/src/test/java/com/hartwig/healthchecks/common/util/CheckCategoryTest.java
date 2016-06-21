@@ -1,9 +1,9 @@
 package com.hartwig.healthchecks.common.util;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Optional;
 
 public class CheckCategoryTest {
 

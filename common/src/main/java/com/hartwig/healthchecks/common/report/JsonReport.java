@@ -1,5 +1,16 @@
 package com.hartwig.healthchecks.common.report;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,16 +20,6 @@ import com.google.gson.JsonObject;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class JsonReport implements Report {
 

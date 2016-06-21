@@ -11,14 +11,10 @@ import com.hartwig.healthchecks.common.util.CheckType;
 public class PrestatsReport extends BaseReport {
 
     @NotNull
-    private final String externalId;
-
-    @NotNull
     private final List<PrestatsDataReport> summary = new ArrayList<>();
 
-    public PrestatsReport(@NotNull final CheckType checkType, @NotNull final String externalId) {
+    public PrestatsReport(@NotNull final CheckType checkType) {
         super(checkType);
-        this.externalId = externalId;
     }
 
     public void addData(@NotNull final PrestatsDataReport prestatsDataReport) {
@@ -33,14 +29,9 @@ public class PrestatsReport extends BaseReport {
     public List<PrestatsDataReport> getSummary() {
         return summary;
     }
-    
-    @NotNull
-    public String getExternalId() {
-        return externalId;
-    }
-    
+
     @Override
     public String toString() {
-        return "PrestatsReport [externalId=" + externalId + ", summary=" + summary + "]";
+        return "PrestatsReport [summary=" + summary + "]";
     }
 }

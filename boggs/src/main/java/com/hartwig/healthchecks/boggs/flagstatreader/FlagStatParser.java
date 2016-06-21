@@ -1,9 +1,10 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import java.io.IOException;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public interface FlagStatParser {
 
