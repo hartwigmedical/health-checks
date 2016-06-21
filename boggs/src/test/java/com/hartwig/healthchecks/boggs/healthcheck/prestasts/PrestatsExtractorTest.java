@@ -24,45 +24,46 @@ public class PrestatsExtractorTest {
 
   @Test
   public void canProcessRunDirectoryStructure() throws IOException, EmptyFileException {
-      URL runDirURL = Resources.getResource("rundir");
-      PrestatsExtractor extractor = new PrestatsExtractor();
-      PrestatsReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
+    URL runDirURL = Resources.getResource("rundir");
+    PrestatsExtractor extractor = new PrestatsExtractor();
+    PrestatsReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
 
-      assertPrestatsReport(prestatsData);
+    assertPrestatsReport(prestatsData);
   }
 
   @Test(expected = EmptyFileException.class)
   public void extractDataEmptyFile() throws IOException, EmptyFileException {
-      URL runDirURL = Resources.getResource(EMPTY_FILES);
-      PrestatsExtractor extractor = new PrestatsExtractor();
-      extractor.extractFromRunDirectory(runDirURL.getPath().toString());
+    URL runDirURL = Resources.getResource(EMPTY_FILES);
+    PrestatsExtractor extractor = new PrestatsExtractor();
+    extractor.extractFromRunDirectory(runDirURL.getPath().toString());
   }
 
   @Test(expected = NoSuchFileException.class)
   public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
-      PrestatsExtractor extractor = new PrestatsExtractor();
-      extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+    PrestatsExtractor extractor = new PrestatsExtractor();
+    extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
   }
 
   private void assertPrestatsReport(PrestatsReport prestatsData) {
-      assertNotNull(REPORT_SHOULD_NOT_BE_NULL, prestatsData);
-      assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, prestatsData.getSummary().size());
-      assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, PrestatsExtractor.FAIL);
-      assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY,
-              PrestatsExtractor.WARN);
-      assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
-              PrestatsExtractor.FAIL);
-      assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
-              PrestatsExtractor.PASS);
+    assertNotNull(REPORT_SHOULD_NOT_BE_NULL, prestatsData);
+    assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, prestatsData.getSummary().size());
+    assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_NUMBER_OF_READS,
+        PrestatsExtractor.FAIL);
+    assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY,
+        PrestatsExtractor.WARN);
+    assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
+        PrestatsExtractor.FAIL);
+    assertPrestatsDataReport(prestatsData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
+        PrestatsExtractor.PASS);
   }
 
-  private void assertPrestatsDataReport(PrestatsReport prestatsData, PrestatsCheck check, String expectedStatus) {
-      String actualStatus = prestatsData.getSummary().stream().filter(p -> p.getCheckName().equals(check)).findFirst()
-              .get().getStatus();
-      String externalId = prestatsData.getSummary().stream().filter(p -> p.getCheckName().equals(check)).findFirst()
-              .get().getPatientId();
-      assertEquals(WRONG_PATIENT_ID_MSG, TEST_ID, externalId);
-      assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, expectedStatus, actualStatus);
+  private void assertPrestatsDataReport(PrestatsReport prestatsData, PrestatsCheck check,
+      String expectedStatus) {
+    String actualStatus = prestatsData.getSummary().stream().filter(
+        p -> p.getCheckName().equals(check)).findFirst().get().getStatus();
+    String externalId = prestatsData.getSummary().stream().filter(
+        p -> p.getCheckName().equals(check)).findFirst().get().getPatientId();
+    assertEquals(WRONG_PATIENT_ID_MSG, TEST_ID, externalId);
+    assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, expectedStatus, actualStatus);
   }
 }
-

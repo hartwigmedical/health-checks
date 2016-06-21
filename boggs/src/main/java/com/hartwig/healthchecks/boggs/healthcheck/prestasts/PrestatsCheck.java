@@ -22,18 +22,18 @@ public enum PrestatsCheck {
     PRESTATS_NUMBER_OF_READS("Total Sequences"),
     DUMMY("DummyCheckName");
 
-    private final String description;
+  private final String description;
 
-    PrestatsCheck(@NotNull final String description) {
-        this.description = description;
-    }
+  PrestatsCheck(@NotNull final String description) {
+    this.description = description;
+  }
 
-    public static Optional<PrestatsCheck> getByDescription(@NotNull final String description) {
-        return Arrays.asList(PrestatsCheck.values()).stream().filter(
-                prestatsCheck -> prestatsCheck.description.equalsIgnoreCase(description)).findFirst();
-    }
+  public static Optional<PrestatsCheck> getByDescription(@NotNull final String description) {
+    return Arrays.asList(PrestatsCheck.values()).stream().filter(
+        prestatsCheck -> prestatsCheck.description.equalsIgnoreCase(description)).findFirst();
+  }
 
-    public String getDescription() {
-        return this.description;
-    }
+  public String getDescription() {
+    return this.description;
+  }
 }
