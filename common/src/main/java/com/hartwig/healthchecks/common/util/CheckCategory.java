@@ -8,14 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 public enum CheckCategory {
 
-    BOGGS(new String[] { "summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat" }),
-    DUMMY(new String[] { "summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat" });
-
-    private String[] files;
-
-    CheckCategory(@NotNull final String... files) {
-        this.files = files;
-    }
+    BOGGS,
+    DUMMY;
 
     public static Optional<CheckCategory> getByCategory(@NotNull final String typeToCheck) {
         final List<CheckCategory> types = Arrays.asList(CheckCategory.values());
@@ -23,10 +17,5 @@ public enum CheckCategory {
                 type -> type.toString().equalsIgnoreCase(typeToCheck)).findFirst();
 
         return returnType;
-    }
-
-    @NotNull
-    public String[] getFiles() {
-        return files;
     }
 }

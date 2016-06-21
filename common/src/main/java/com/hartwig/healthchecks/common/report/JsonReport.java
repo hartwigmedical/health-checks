@@ -13,6 +13,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
@@ -46,7 +47,7 @@ public final class JsonReport implements Report {
 
     @NotNull
     @Override
-    public Optional<String> generateReport() {
+    public Optional<String> generateReport() throws GenerateReportException {
         final JsonArray reportArray = new JsonArray();
 
         healthChecks.forEach((k, v) -> {
@@ -71,10 +72,8 @@ public final class JsonReport implements Report {
             fileWriter.flush();
         } catch (IOException e) {
             LOGGER.error(String.format("Error occurred whilst generating reports. Error -> %s", e.getMessage()));
-
-            return Optional.empty();
+            throw new GenerateReportException(e.getMessage());
         }
-
-        return Optional.of(fileName);
+        return Optional.ofNullable(fileName);
     }
 }

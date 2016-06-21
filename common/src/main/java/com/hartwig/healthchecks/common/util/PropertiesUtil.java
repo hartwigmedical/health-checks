@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PropertiesUtil {
 
-    private static Logger LOGGER = LogManager.getLogger(PropertiesUtil.class);
+    private static final Logger LOGGER = LogManager.getLogger(PropertiesUtil.class);
 
     private static PropertiesUtil instance = new PropertiesUtil();
 
