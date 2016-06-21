@@ -30,7 +30,8 @@ public final class PropertiesUtil {
         return instance;
     }
 
-    @NotNull public String getProperty(@NotNull final String key) {
+    @NotNull
+    public String getProperty(@NotNull final String key) {
         return properties.getProperty(key);
     }
 }

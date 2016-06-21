@@ -7,9 +7,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class MappingReport extends BaseReport {
 
-    @NotNull private final String externalId;
-    @NotNull private final String totalSequences;
-    @NotNull private final MappingDataReport mappingDataReport;
+    @NotNull
+    private final String externalId;
+    @NotNull
+    private final String totalSequences;
+    @NotNull
+    private final MappingDataReport mappingDataReport;
 
     public MappingReport(@NotNull final CheckType checkType, @NotNull final String externalId,
             @NotNull final String totalSequences, @NotNull final MappingDataReport mappingDataReport) {
@@ -19,19 +22,23 @@ public class MappingReport extends BaseReport {
         this.mappingDataReport = mappingDataReport;
     }
 
-    @NotNull public String getTotalSequences() {
+    @NotNull
+    public String getTotalSequences() {
         return totalSequences;
     }
 
-    @NotNull public MappingDataReport getMappingDataReport() {
+    @NotNull
+    public MappingDataReport getMappingDataReport() {
         return mappingDataReport;
     }
 
-    @NotNull public String getExternalId() {
+    @NotNull
+    public String getExternalId() {
         return externalId;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "MappingReport [externalId=" + externalId + ", totalSequences=" + totalSequences
                 + ", mappingDataReport=" + mappingDataReport + "]";
     }

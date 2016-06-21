@@ -10,5 +10,6 @@ public interface Report {
 
     void addReportData(@NotNull BaseReport reportData);
 
-    @NotNull Optional<String> generateReport();
+    @NotNull
+    Optional<String> generateReport();
 }

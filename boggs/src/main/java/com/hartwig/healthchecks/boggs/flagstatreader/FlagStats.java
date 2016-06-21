@@ -38,64 +38,79 @@ public class FlagStats {
         this.mateMappedToDifferentChrMapQ5 = mateMappedToDifferentChrMapQ5;
     }
 
-    @NotNull public Double total() {
+    @NotNull
+    public Double getTotal() {
         return total;
     }
 
-    @NotNull public Double secondary() {
+    @NotNull
+    public Double getSecondary() {
         return secondary;
     }
 
-    @NotNull public Double supplementary() {
+    @NotNull
+    public Double getSupplementary() {
         return supplementary;
     }
 
-    @NotNull public Double duplicates() {
+    @NotNull
+    public Double getDuplicates() {
         return duplicates;
     }
 
-    @NotNull public Double mapped() {
+    @NotNull
+    public Double getMapped() {
         return mapped;
     }
 
-    @NotNull public Double pairedInSequencing() {
+    @NotNull
+    public Double getPairedInSequencing() {
         return pairedInSequencing;
     }
 
-    @NotNull public Double read1() {
+    @NotNull
+    public Double getRead1() {
         return read1;
     }
 
-    @NotNull public Double read2() {
+    @NotNull
+    public Double getRead2() {
         return read2;
     }
 
-    @NotNull public Double properlyPaired() {
+    @NotNull
+    public Double getProperlyPaired() {
         return properlyPaired;
     }
 
-    @NotNull public Double itselfAndMateMapped() {
+    @NotNull
+    public Double getItselfAndMateMapped() {
         return itselfAndMateMapped;
     }
 
-    @NotNull public Double singletons() {
+    @NotNull
+    public Double getSingletons() {
         return singletons;
     }
 
-    @NotNull public Double mateMappedToDifferentChr() {
+    @NotNull
+    public Double getMateMappedToDifferentChr() {
         return mateMappedToDifferentChr;
     }
 
-    @NotNull public Double mateMappedToDifferentChrMapQ5() {
+    @NotNull
+    public Double getMateMappedToDifferentChrMapQ5() {
         return mateMappedToDifferentChrMapQ5;
     }
 
-    @NotNull @Override public String toString() {
-        return "FlagStats{" + "total=" + total + ", secondary=" + secondary + ", supplementary=" + supplementary
-                + ", duplicates=" + duplicates + ", mapped=" + mapped + ", pairedInSequencing=" + pairedInSequencing
-                + ", read1=" + read1 + ", read2=" + read2 + ", properlyPaired=" + properlyPaired
-                + ", itselfAndMateMapped=" + itselfAndMateMapped + ", singletons=" + singletons
-                + ", mateMappedToDifferentChr=" + mateMappedToDifferentChr + ", mateMappedToDifferentChrMapQ5="
-                + mateMappedToDifferentChrMapQ5 + '}';
+    @NotNull
+    @Override
+    public String toString() {
+        return "FlagStats{" + "getTotal=" + total + ", getSecondary=" + secondary + ", getSupplementary="
+                + supplementary + ", getDuplicates=" + duplicates + ", getMapped=" + mapped
+                + ", getPairedInSequencing=" + pairedInSequencing + ", getRead1=" + read1 + ", getRead2=" + read2
+                + ", getProperlyPaired=" + properlyPaired + ", getItselfAndMateMapped=" + itselfAndMateMapped
+                + ", getSingletons=" + singletons + ", getMateMappedToDifferentChr=" + mateMappedToDifferentChr
+                + ", getMateMappedToDifferentChrMapQ5=" + mateMappedToDifferentChrMapQ5 + '}';
     }
 }

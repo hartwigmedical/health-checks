@@ -24,8 +24,9 @@ public final class HealthChecksFlyweight {
     private static final HealthChecksFlyweight INSTANCE = new HealthChecksFlyweight();
 
     private static final Reflections BASE = new Reflections("com.hartwig.healthchecks.boggs.adapter");
-    @SuppressWarnings("rawtypes") private static final Set<Class<? extends HealthCheckAdapter>> BASE_SET =
-            BASE.getSubTypesOf(HealthCheckAdapter.class);
+    @SuppressWarnings("rawtypes")
+    private static final Set<Class<? extends HealthCheckAdapter>> BASE_SET = BASE.getSubTypesOf(
+            HealthCheckAdapter.class);
 
     static {
         BASE_SET.stream().forEach(adapter -> {
@@ -48,7 +49,8 @@ public final class HealthChecksFlyweight {
         return INSTANCE;
     }
 
-    @NotNull public HealthCheckAdapter getAdapter(@NotNull final String type) throws NotFoundException {
+    @NotNull
+    public HealthCheckAdapter getAdapter(@NotNull final String type) throws NotFoundException {
         final Optional<CheckCategory> checkType = CheckCategory.getByCategory(type);
         if (!checkType.isPresent()) {
             throw new NotFoundException(String.format("Invalid CheckCategory informed %s", type));

@@ -15,9 +15,11 @@ public class ReportTest {
 
     private final Report report = JsonReport.getInstance();
 
-    @Mocked private Report jsonReport;
+    @Mocked
+    private Report jsonReport;
 
-    @Test public void generateReport() {
+    @Test
+    public void generateReport() {
         final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
         report.addReportData(baseConfig1);
 
@@ -30,7 +32,8 @@ public class ReportTest {
         Assert.assertTrue(location.isPresent());
     }
 
-    @Test public void generateReportException() {
+    @Test
+    public void generateReportException() {
         final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
         jsonReport.addReportData(baseConfig1);
 

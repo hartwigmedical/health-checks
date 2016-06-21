@@ -43,6 +43,7 @@ public class BoggsExtractor {
         final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath()).filter(
                 path -> path.getFileName().toString().startsWith(prefix) && path.getFileName().toString().endsWith(
                         suffix)).findFirst();
+
         if (!filePath.isPresent()) {
             throw new FileNotFoundException(String.format(FILE_NOT_FOUND_ERROR, prefix, suffix, runDirectory));
         }

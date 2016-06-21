@@ -42,7 +42,8 @@ public class SambambaFlagStatParser implements FlagStatParser {
 
     private static final String SEPERATOR_REGEX = " ";
 
-    @NotNull public FlagStatData parse(@NotNull final String filePath) throws IOException, EmptyFileException {
+    @NotNull
+    public FlagStatData parse(@NotNull final String filePath) throws IOException, EmptyFileException {
         final List<Double> passed = new ArrayList<>();
         final List<Double> failed = new ArrayList<>();
 
@@ -66,7 +67,8 @@ public class SambambaFlagStatParser implements FlagStatParser {
         return new FlagStatData(filePath, passedFlagStats, failedFlagStats);
     }
 
-    @NotNull private FlagStats buildFlagStatsData(@NotNull final Double... data) {
+    @NotNull
+    private FlagStats buildFlagStatsData(@NotNull final Double... data) {
         return new FlagStatsBuilder().setTotal(data[TOTAL_INDEX]).setSecondary(data[SECONDARY_INDEX]).setSupplementary(
                 data[SUPPLEMENTARY_INDEX]).setDuplicates(data[DUPLICATES_INDEX]).setMapped(
                 data[MAPPED_INDEX]).setPairedInSequencing(data[PAIRED_IN_SEQ_INDEX]).setRead1(

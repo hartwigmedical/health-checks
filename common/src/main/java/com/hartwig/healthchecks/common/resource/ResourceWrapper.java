@@ -7,7 +7,9 @@ import java.lang.annotation.Target;
 
 import com.hartwig.healthchecks.common.util.CheckCategory;
 
-@Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) public @interface ResourceWrapper {
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ResourceWrapper {
 
     CheckCategory type();
 
