@@ -11,7 +11,7 @@ public enum CheckCategory {
 
     private String[] files;
 
-    private CheckCategory(String[] files) {
+    CheckCategory(String[] files) {
         this.files = files;
     }
 

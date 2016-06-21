@@ -6,17 +6,14 @@ import java.util.Optional;
 
 public enum CheckType {
 
-    MAPPING,
-    PRESTATS;
+    MAPPING, PRESTATS;
 
-    private CheckType() {
+    CheckType() {
     }
 
     public static Optional<CheckType> getByType(String type) {
         List<CheckType> types = Arrays.asList(CheckType.values());
-        Optional<CheckType> returnType = types.stream()
-                .filter(t -> t.toString().equalsIgnoreCase(type))
-                .findFirst();
+        Optional<CheckType> returnType = types.stream().filter(t -> t.toString().equalsIgnoreCase(type)).findFirst();
 
         return returnType;
     }

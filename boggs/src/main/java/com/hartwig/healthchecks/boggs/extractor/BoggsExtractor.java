@@ -42,10 +42,9 @@ public class BoggsExtractor {
 
     protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
             @NotNull final String suffix) throws IOException, FileNotFoundException {
-        final Optional<Path> filePath = Files
-                .walk(new File(runDirectory) .toPath())
-                .filter(
-                     path -> path.getFileName().toString().startsWith(prefix) && path.getFileName().toString().endsWith(suffix))
+        final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath())
+                .filter(path -> path.getFileName().toString().startsWith(prefix)
+                        && path.getFileName().toString().endsWith(suffix))
                 .findFirst();
         if (!filePath.isPresent()) {
             throw new FileNotFoundException(String.format(FILE_NOT_FOUND_ERROR, prefix, suffix, runDirectory));
@@ -56,19 +55,16 @@ public class BoggsExtractor {
     protected Long sumOfTotalSequences(@NotNull final Path path) throws IOException {
         final List<Path> zipFiles = Files.walk(path).filter(p -> p.getFileName().toString().endsWith(ZIP_FILES_SUFFIX))
                 .sorted().collect(toCollection(ArrayList<Path>::new));
-        final List<String> allValues = zipFiles
-                .stream()
-                .map(zipPath -> {
-                    return this.getLineFromFile(zipPath, FASTQC_DATA_FILE_NAME, TOTAL_SEQUENCES);
-                })
-                .map(line -> {
+        final List<String> allValues = zipFiles.stream().map(zipPath -> {
+            return this.getLineFromFile(zipPath, FASTQC_DATA_FILE_NAME, TOTAL_SEQUENCES);
+        }).map(line -> {
             String totalSequences = null;
             if (line != null) {
                 final String[] values = line.split(SEPERATOR_REGEX);
                 totalSequences = values[1];
             }
             return totalSequences;
-        }).filter(lines -> lines!=null).collect(toList());
+        }).filter(lines -> lines != null).collect(toList());
 
         return allValues.stream().mapToLong(Long::parseLong).sum();
     }
@@ -76,10 +72,8 @@ public class BoggsExtractor {
     protected String getLineFromFile(@NotNull final Path path, @NotNull final String fileName,
             @NotNull final String filter) {
         String searchedLine = null;
-        final Optional<String> optinalValue = this.getLinesFromFile(path, fileName)
-                .stream()
-                .filter(line -> line.contains(filter))
-                .findFirst();
+        final Optional<String> optinalValue = this.getLinesFromFile(path, fileName).stream()
+                .filter(line -> line.contains(filter)).findFirst();
         if (optinalValue.isPresent()) {
             searchedLine = optinalValue.get();
         }
@@ -91,23 +85,18 @@ public class BoggsExtractor {
         try (final ZipFile zipFile = new ZipFile(path.toString())) {
             final Predicate<ZipEntry> isFile = zipEntry -> !zipEntry.isDirectory();
             final Predicate<ZipEntry> isFastQC = zipEntry -> zipEntry.getName().contains(fileName);
-            final List<String> values = zipFile
-                    .stream()
-                    .filter(isFile.and(isFastQC))
-                    .map(ze -> {
-                        Stream<String> readLines = Stream.empty();
-                        try {
-                            InputStream inputStream = zipFile.getInputStream(ze);
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                            readLines = reader.lines();
-                        } catch (IOException e) {
-                            LOGGER.error(String.format(
-                                    "Error occurred when reading file. Will return empty stream. Error -> %s",
-                                    e.getMessage()));
-                        }
-                        return readLines.collect(toList());
-                    })
-                    .flatMap(Collection::stream).collect(toList());
+            final List<String> values = zipFile.stream().filter(isFile.and(isFastQC)).map(ze -> {
+                Stream<String> readLines = Stream.empty();
+                try {
+                    InputStream inputStream = zipFile.getInputStream(ze);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    readLines = reader.lines();
+                } catch (IOException e) {
+                    LOGGER.error(String.format(
+                            "Error occurred when reading file. Will return empty stream. Error -> %s", e.getMessage()));
+                }
+                return readLines.collect(toList());
+            }).flatMap(Collection::stream).collect(toList());
 
             if (values != null) {
                 fileLines.addAll(values);

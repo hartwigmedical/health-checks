@@ -24,7 +24,15 @@ allprojects {
     apply plugin: 'eclipse'
     apply plugin: 'idea'
     apply plugin: "jacoco"
-
+    apply plugin: 'checkstyle'
+    checkstyle.toolVersion = '6.18'
+	checkstyle {
+	  ignoreFailures = false
+	  showViolations = true
+      configFile = rootProject.file('config/checkstyle/checkstyle.xml')	  
+      configProperties = [ "suppressionFile" : project(':').file('config/checkstyle/suppressions.xml')]
+	} 
+	
     repositories {
         mavenCentral()
     }
