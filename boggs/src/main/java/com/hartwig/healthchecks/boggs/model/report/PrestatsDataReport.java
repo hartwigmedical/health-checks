@@ -18,22 +18,24 @@ public class PrestatsDataReport {
         this.checkName = checkName;
     }
 
-    public String getExternalId() {
-        return patientId;
+    @NotNull
+    public String getPatientId() {
+        return this.patientId;
     }
 
     @NotNull
     public String getCheckName() {
-        return checkName;
+        return this.checkName;
     }
 
     @NotNull
     public String getStatus() {
-        return status;
+        return this.status;
     }
 
     @Override
     public String toString() {
-        return "PrestatsDataReport [externalId=" + patientId + ", checkName=" + checkName + ", status=" + status + "]";
+        return "PrestatsDataReport [externalId=" + this.patientId + ", checkName=" + this.checkName + ", status="
+                + this.status + "]";
     }
 }

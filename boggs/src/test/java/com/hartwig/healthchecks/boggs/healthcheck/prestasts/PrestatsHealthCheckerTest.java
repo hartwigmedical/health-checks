@@ -59,7 +59,7 @@ public class PrestatsHealthCheckerTest {
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, 1, summaryData.size());
         assertEquals(WRONG_CHECK_NAME, FAIL, summaryData.get(0).getStatus());
         assertEquals(WRONG_CHECK_STATUS, DUMMY_CHECK_NAME, summaryData.get(0).getCheckName());
-        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, summaryData.get(0).getExternalId());
+        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, summaryData.get(0).getPatientId());
     }
 
     @Test(expected = IOException.class)

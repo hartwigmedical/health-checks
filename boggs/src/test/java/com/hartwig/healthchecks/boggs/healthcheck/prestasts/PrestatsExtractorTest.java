@@ -55,7 +55,7 @@ public class PrestatsExtractorTest {
         String actualStatus = prestatsData.getSummary().stream().filter(p -> p.getCheckName().equals(check)).findFirst()
                 .get().getStatus();
         String externalId = prestatsData.getSummary().stream().filter(p -> p.getCheckName().equals(check)).findFirst()
-                .get().getExternalId();
+                .get().getPatientId();
         assertEquals(WRONG_PATIENT_ID_MSG, TEST_ID, externalId);
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, expectedStatus, actualStatus);
     }
