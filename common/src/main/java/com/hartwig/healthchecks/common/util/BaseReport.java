@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class BaseReport implements Serializable {
 
+    private static final long serialVersionUID = -4752339157661751000L;
+
     private final CheckType checkType;
 
     public BaseReport(final CheckType checkType) {

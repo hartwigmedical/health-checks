@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,15 +22,11 @@ import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 public final class JsonReport implements Report {
 
     private static final String REPORT_NAME = "health-checks_%s.json";
-    private static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(
-            FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).disableHtmlEscaping().create();
+    private static final Gson GSON = new GsonBuilder()
+                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).disableHtmlEscaping().create();
     private static final Logger LOGGER = LogManager.getLogger(Report.class);
 
     private static JsonReport instance = new JsonReport();
@@ -50,11 +50,11 @@ public final class JsonReport implements Report {
     public Optional<String> generateReport() throws GenerateReportException {
         final JsonArray reportArray = new JsonArray();
 
-        healthChecks.forEach((k, v) -> {
-            final JsonElement configJson = GSON.toJsonTree(v);
+        healthChecks.forEach((checkType, baseReport) -> {
+            final JsonElement configJson = GSON.toJsonTree(baseReport);
 
             final JsonObject element = new JsonObject();
-            element.add(k.toString(), configJson);
+            element.add(checkType.toString(), configJson);
 
             reportArray.add(element);
         });
@@ -63,14 +63,14 @@ public final class JsonReport implements Report {
 
         final String reportDir = propertiesUtil.getProperty("report.dir");
         final String fileName = String.format("%s/%s", reportDir,
-                String.format(REPORT_NAME, System.currentTimeMillis()));
+                        String.format(REPORT_NAME, System.currentTimeMillis()));
 
         try (FileWriter fileWriter = new FileWriter(new File(fileName))) {
             final JsonObject reportJson = new JsonObject();
             reportJson.add("health_checks", reportArray);
             fileWriter.write(GSON.toJson(reportJson));
             fileWriter.flush();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error(String.format("Error occurred whilst generating reports. Error -> %s", e.getMessage()));
             throw new GenerateReportException(e.getMessage());
         }

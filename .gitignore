@@ -17,6 +17,8 @@ hs_err_pid*
 # This one can be removed if we update the Gradle version
 gradle/wrapper/gradle-wrapper.properties
 
+#checkstyle
+.checkstyle
 
 # Build artefacts
 boggs/build
