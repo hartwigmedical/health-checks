@@ -41,30 +41,30 @@ public class MappingHealthChecker implements HealthChecker {
     private void logMappingReport(final MappingReport mappingReport, final MappingDataReport mappingDataReport) {
         LOGGER.info(String.format("Checking mapping health for %s", mappingReport.getExternalId()));
 
-        boolean isAllReadsPresent = !mappingDataReport.isAllReadsPresent();
+        final boolean isAllReadsPresent = !mappingDataReport.isAllReadsPresent();
         logMappingReportLine(isAllReadsPresent, "OK : All Reads are present", "WARN : Not All Reads are present %s");
-        boolean isMappedPrecentageInRange = mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERCENTAGE;
+        final boolean isMappedPrecentageInRange = mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERCENTAGE;
         logMappingReportFormattedLine(isMappedPrecentageInRange, "OK: Acceptable mapped percentage: %s",
                 "WARN: Low mapped percentage: %s", mappingDataReport.getMappedPercentage());
 
-        boolean isProperlyPairedPercentageInRange =
+        final boolean isProperlyPairedPercentageInRange =
                 mappingDataReport.getProperlyPairedPercentage() < MIN_PROPERLY_PAIRED_PERCENTAGE;
         logMappingReportFormattedLine(isProperlyPairedPercentageInRange,
                 "OK: Acceptable properly paired percentage: %s", "WARN: Low properly paired percentage: ",
                 mappingDataReport.getProperlyPairedPercentage());
 
-        boolean isSingletonPerInRange = mappingDataReport.getSingletonPercentage() > MAX_SINGLETONS;
+        final boolean isSingletonPerInRange = mappingDataReport.getSingletonPercentage() > MAX_SINGLETONS;
         logMappingReportFormattedLine(isSingletonPerInRange, "OK: Acceptable singleton percentage: %s",
                 "WARN: High singleton percentage: %s", mappingDataReport.getSingletonPercentage());
 
-        boolean isMatMapToDiffChrInRange =
+        final boolean isMatMapToDiffChrInRange =
                 mappingDataReport.getMateMappedToDifferentChrPercentage() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
         logMappingReportFormattedLine(isMatMapToDiffChrInRange,
                 "OK: Acceptable mate mapped to different chr percentage: %s",
                 "WARN: High mate mapped to different chr percentage: %s",
                 mappingDataReport.getMateMappedToDifferentChrPercentage());
 
-        boolean isPropOfDuplicateInRange =
+        final boolean isPropOfDuplicateInRange =
                 mappingDataReport.getProportionOfDuplicateRead() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
         logMappingReportFormattedLine(isPropOfDuplicateInRange,
                 "OK: Acceptable proportion of Duplication percentage: %s",

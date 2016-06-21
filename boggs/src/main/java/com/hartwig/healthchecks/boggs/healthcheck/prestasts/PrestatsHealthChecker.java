@@ -20,13 +20,13 @@ public class PrestatsHealthChecker implements HealthChecker {
 
     private final PrestatsExtractor dataExtractor;
 
-    public PrestatsHealthChecker(@NotNull String runDirectory, @NotNull PrestatsExtractor dataExtractor) {
+    public PrestatsHealthChecker(@NotNull final String runDirectory, @NotNull final PrestatsExtractor dataExtractor) {
         this.runDirectory = runDirectory;
         this.dataExtractor = dataExtractor;
     }
 
-    @Override public BaseReport runCheck() throws IOException, EmptyFileException {
-        PrestatsReport prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
+    @NotNull @Override public BaseReport runCheck() throws IOException, EmptyFileException {
+        final PrestatsReport prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
         prestatsReport.getSummary().forEach((v) -> {
             if (v.getStatus().equalsIgnoreCase(FAIL_ERROR)) {
                 LOGGER.info(String.format(FOUND_FAILS_MSG, v.getCheckName(), v.getFile()));

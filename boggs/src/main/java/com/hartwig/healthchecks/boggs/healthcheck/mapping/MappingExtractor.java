@@ -62,7 +62,7 @@ public class MappingExtractor extends BoggsExtractor {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, path.toString()));
         }
 
-        final FlagStats passed = flagstatData.qcPassedReads();
+        final FlagStats passed = flagstatData.getQcPassedReads();
 
         final Double mappedPercentage = toPercentage(passed.mapped() / passed.total());
         final Double properlyPairedPercentage = toPercentage(passed.properlyPaired() / passed.mapped());

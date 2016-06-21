@@ -19,16 +19,16 @@ public class FlagStatData {
         return path;
     }
 
-    @NotNull public FlagStats qcPassedReads() {
+    @NotNull public FlagStats getQcPassedReads() {
         return qcPassedReads;
     }
 
-    @NotNull public FlagStats qcFailedReads() {
+    @NotNull public FlagStats getQcFailedReads() {
         return qcFailedReads;
     }
 
     @Override public String toString() {
-        return "FlagStatData{" + "path='" + path + '\'' + ", qcPassedReads=" + qcPassedReads + ", qcFailedReads="
+        return "FlagStatData{" + "path='" + path + '\'' + ", getQcPassedReads=" + qcPassedReads + ", getQcFailedReads="
                 + qcFailedReads + '}';
     }
 }

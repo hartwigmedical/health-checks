@@ -37,15 +37,15 @@ public class HealthChecksApplication {
         this.checkType = checkType;
     }
 
-    public static void main(String[] args) throws ParseException, IOException {
+    public static void main(String... args) throws ParseException, IOException {
         final Options options = createOptions();
-        final CommandLine cmd = createCommandLine(args, options);
+        final CommandLine cmd = createCommandLine(options, args);
 
         final String runDirectory = cmd.getOptionValue(RUN_DIRECTORY);
         final String checkType = cmd.getOptionValue(CHECK_TYPE);
 
         if (runDirectory == null || checkType == null) {
-            HelpFormatter formatter = new HelpFormatter();
+            final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Health-Checks", options);
         }
 
@@ -60,7 +60,7 @@ public class HealthChecksApplication {
         return options;
     }
 
-    @NotNull private static CommandLine createCommandLine(@NotNull String[] args, @NotNull Options options)
+    @NotNull private static CommandLine createCommandLine(@NotNull final Options options, @NotNull final String... args)
             throws ParseException {
         final CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);
@@ -70,7 +70,7 @@ public class HealthChecksApplication {
         if (checkType.equals(ALL_CHECKS)) {
             executeAllcheck(runDirectory);
         } else {
-            HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
+            final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
             try {
                 final HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
                 healthCheckAdapter.runCheck(runDirectory);

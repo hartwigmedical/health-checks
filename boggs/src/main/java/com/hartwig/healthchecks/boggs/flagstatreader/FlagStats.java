@@ -1,5 +1,7 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
+import org.jetbrains.annotations.NotNull;
+
 public class FlagStats {
 
     private final Double total;
@@ -36,59 +38,59 @@ public class FlagStats {
         this.mateMappedToDifferentChrMapQ5 = mateMappedToDifferentChrMapQ5;
     }
 
-    public Double total() {
+    @NotNull public Double total() {
         return total;
     }
 
-    public Double secondary() {
+    @NotNull public Double secondary() {
         return secondary;
     }
 
-    public Double supplementary() {
+    @NotNull public Double supplementary() {
         return supplementary;
     }
 
-    public Double duplicates() {
+    @NotNull public Double duplicates() {
         return duplicates;
     }
 
-    public Double mapped() {
+    @NotNull public Double mapped() {
         return mapped;
     }
 
-    public Double pairedInSequencing() {
+    @NotNull public Double pairedInSequencing() {
         return pairedInSequencing;
     }
 
-    public Double read1() {
+    @NotNull public Double read1() {
         return read1;
     }
 
-    public Double read2() {
+    @NotNull public Double read2() {
         return read2;
     }
 
-    public Double properlyPaired() {
+    @NotNull public Double properlyPaired() {
         return properlyPaired;
     }
 
-    public Double itselfAndMateMapped() {
+    @NotNull public Double itselfAndMateMapped() {
         return itselfAndMateMapped;
     }
 
-    public Double singletons() {
+    @NotNull public Double singletons() {
         return singletons;
     }
 
-    public Double mateMappedToDifferentChr() {
+    @NotNull public Double mateMappedToDifferentChr() {
         return mateMappedToDifferentChr;
     }
 
-    public Double mateMappedToDifferentChrMapQ5() {
+    @NotNull public Double mateMappedToDifferentChrMapQ5() {
         return mateMappedToDifferentChrMapQ5;
     }
 
-    @Override public String toString() {
+    @NotNull @Override public String toString() {
         return "FlagStats{" + "total=" + total + ", secondary=" + secondary + ", supplementary=" + supplementary
                 + ", duplicates=" + duplicates + ", mapped=" + mapped + ", pairedInSequencing=" + pairedInSequencing
                 + ", read1=" + read1 + ", read2=" + read2 + ", properlyPaired=" + properlyPaired
