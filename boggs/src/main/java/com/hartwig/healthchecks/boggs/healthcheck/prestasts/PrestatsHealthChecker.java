@@ -17,7 +17,7 @@ public class PrestatsHealthChecker implements HealthChecker {
 
   private static final String FOUND_FAILS_MSG = "NOT OK: %s has status FAIL for Patient %s";
 
-  private static Logger LOGGER = LogManager.getLogger(PrestatsHealthChecker.class);
+  private static final Logger LOGGER = LogManager.getLogger(PrestatsHealthChecker.class);
 
   @NotNull
   private final String runDirectory;
