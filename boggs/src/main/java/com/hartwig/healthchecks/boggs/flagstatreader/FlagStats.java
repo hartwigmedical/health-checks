@@ -88,8 +88,7 @@ public class FlagStats {
         return mateMappedToDifferentChrMapQ5;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "FlagStats{" + "total=" + total + ", secondary=" + secondary + ", supplementary=" + supplementary
                 + ", duplicates=" + duplicates + ", mapped=" + mapped + ", pairedInSequencing=" + pairedInSequencing
                 + ", read1=" + read1 + ", read2=" + read2 + ", properlyPaired=" + properlyPaired

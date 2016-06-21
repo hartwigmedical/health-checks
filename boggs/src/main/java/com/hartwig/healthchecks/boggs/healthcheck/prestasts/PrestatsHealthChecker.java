@@ -1,14 +1,15 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestasts;
 
+import java.io.IOException;
+
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 public class PrestatsHealthChecker implements HealthChecker {
 
@@ -24,8 +25,7 @@ public class PrestatsHealthChecker implements HealthChecker {
         this.dataExtractor = dataExtractor;
     }
 
-    @Override
-    public BaseReport runCheck() throws IOException, EmptyFileException {
+    @Override public BaseReport runCheck() throws IOException, EmptyFileException {
         PrestatsReport prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
         prestatsReport.getSummary().forEach((v) -> {
             if (v.getStatus().equalsIgnoreCase(FAIL_ERROR)) {

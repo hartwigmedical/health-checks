@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public enum CheckCategory {
 
-    BOGGS(new String[]{"summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat"}),
-    DUMMY(new String[]{"summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat"});
+    BOGGS(new String[] { "summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat" }),
+    DUMMY(new String[] { "summary.txt", "fastqc_data.txt", "_dedup.realigned.flagstat" });
 
     private String[] files;
 
@@ -17,9 +17,8 @@ public enum CheckCategory {
 
     public static Optional<CheckCategory> getByCategory(String type) {
         List<CheckCategory> types = Arrays.asList(CheckCategory.values());
-        Optional<CheckCategory> returnType = types.stream()
-                .filter(t -> t.toString().equalsIgnoreCase(type))
-                .findFirst();
+        Optional<CheckCategory> returnType = types.stream().filter(
+                t -> t.toString().equalsIgnoreCase(type)).findFirst();
 
         return returnType;
     }

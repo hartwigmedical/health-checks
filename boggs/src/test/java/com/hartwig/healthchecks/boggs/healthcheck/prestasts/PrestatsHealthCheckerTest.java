@@ -4,14 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -21,13 +21,12 @@ public class PrestatsHealthCheckerTest {
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     private static final String EXPECTED_REPORT = "PrestatsReport [summary=[PrestatsDataReport [checkName=DummyCheckName, status=FAIL, file=DummyFile]]]";
-    @Mocked
-    private PrestatsExtractor dataExtractor;
+    @Mocked private PrestatsExtractor dataExtractor;
 
-    @Test
-    public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
+    @Test public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
         final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
-        final PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport("FAIL","DummyCheckName", "DummyFile");
+        final PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport("FAIL", "DummyCheckName",
+                "DummyFile");
         testData.addData(prestatsTestDataReport);
 
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
@@ -46,8 +45,8 @@ public class PrestatsHealthCheckerTest {
 
     }
 
-    @Test(expected = IOException.class)
-    public void verifyPrestatsHealthCheckerIOException() throws IOException, EmptyFileException {
+    @Test(expected = IOException.class) public void verifyPrestatsHealthCheckerIOException()
+            throws IOException, EmptyFileException {
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
             {

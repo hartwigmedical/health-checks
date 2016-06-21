@@ -2,15 +2,15 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class MappingHealthChecker implements HealthChecker {
     private static final Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
@@ -29,9 +29,7 @@ public class MappingHealthChecker implements HealthChecker {
         this.dataExtractor = dataExtractor;
     }
 
-    @Override
-    @NotNull
-    public BaseReport runCheck() throws IOException, EmptyFileException {
+    @Override @NotNull public BaseReport runCheck() throws IOException, EmptyFileException {
         final MappingReport mappingReport = dataExtractor.extractFromRunDirectory(runDirectory);
         final MappingDataReport mappingDataReport = mappingReport.getMappingDataReport();
 
@@ -49,8 +47,8 @@ public class MappingHealthChecker implements HealthChecker {
         logMappingReportFormattedLine(isMappedPrecentageInRange, "OK: Acceptable mapped percentage: %s",
                 "WARN: Low mapped percentage: %s", mappingDataReport.getMappedPercentage());
 
-        boolean isProperlyPairedPercentageInRange = mappingDataReport
-                .getProperlyPairedPercentage() < MIN_PROPERLY_PAIRED_PERCENTAGE;
+        boolean isProperlyPairedPercentageInRange =
+                mappingDataReport.getProperlyPairedPercentage() < MIN_PROPERLY_PAIRED_PERCENTAGE;
         logMappingReportFormattedLine(isProperlyPairedPercentageInRange,
                 "OK: Acceptable properly paired percentage: %s", "WARN: Low properly paired percentage: ",
                 mappingDataReport.getProperlyPairedPercentage());
@@ -59,15 +57,15 @@ public class MappingHealthChecker implements HealthChecker {
         logMappingReportFormattedLine(isSingletonPerInRange, "OK: Acceptable singleton percentage: %s",
                 "WARN: High singleton percentage: %s", mappingDataReport.getSingletonPercentage());
 
-        boolean isMatMapToDiffChrInRange = mappingDataReport
-                .getMateMappedToDifferentChrPercentage() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
+        boolean isMatMapToDiffChrInRange =
+                mappingDataReport.getMateMappedToDifferentChrPercentage() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
         logMappingReportFormattedLine(isMatMapToDiffChrInRange,
                 "OK: Acceptable mate mapped to different chr percentage: %s",
                 "WARN: High mate mapped to different chr percentage: %s",
                 mappingDataReport.getMateMappedToDifferentChrPercentage());
 
-        boolean isPropOfDuplicateInRange = mappingDataReport
-                .getProportionOfDuplicateRead() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
+        boolean isPropOfDuplicateInRange =
+                mappingDataReport.getProportionOfDuplicateRead() > MAX_MATE_MAPPED_TO_DIFFERENT_CHR;
         logMappingReportFormattedLine(isPropOfDuplicateInRange,
                 "OK: Acceptable proportion of Duplication percentage: %s",
                 "WARN: High proportion of Duplication percentage: %s",

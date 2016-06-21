@@ -1,9 +1,9 @@
 package com.hartwig.healthchecks.common.checks;
 
+import java.io.IOException;
+
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
-
-import java.io.IOException;
 
 public interface HealthChecker {
 

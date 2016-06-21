@@ -5,8 +5,7 @@ import org.junit.Test;
 
 public class PropertiesUtilTest {
 
-    @Test
-    public void getProperty() throws Exception {
+    @Test public void getProperty() throws Exception {
         final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
         final String dir = propertiesUtil.getProperty("report.dir");
 

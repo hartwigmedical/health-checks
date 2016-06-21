@@ -1,21 +1,23 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.net.URL;
+
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatTestFactory;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import mockit.Expectations;
-import mockit.Mocked;
+
 import org.junit.Test;
 
-import java.io.IOException;
-import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import mockit.Expectations;
+import mockit.Mocked;
 
 public class MappingExtractorTest {
     private static final String EMPTY_FILES = "emptyFiles";
@@ -24,11 +26,9 @@ public class MappingExtractorTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
-    @Mocked
-    private FlagStatParser flagstatParser;
+    @Mocked private FlagStatParser flagstatParser;
 
-    @Test
-    public void extractData() throws IOException, EmptyFileException {
+    @Test public void extractData() throws IOException, EmptyFileException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         final String path = runDirURL.getPath();
         final MappingExtractor extractor = new MappingExtractor(flagstatParser);
@@ -51,14 +51,14 @@ public class MappingExtractorTest {
         assertEquals(5.95d, mappingDataReport.getProportionOfDuplicateRead(), 0d);
     }
 
-    @Test(expected = IOException.class)
-    public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
+    @Test(expected = IOException.class) public void extractDataNoneExistingDir()
+            throws IOException, EmptyFileException {
         final MappingExtractor extractor = new MappingExtractor(flagstatParser);
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }
 
-    @Test(expected = EmptyFileException.class)
-    public void extractDataEmptyFile() throws IOException, EmptyFileException {
+    @Test(expected = EmptyFileException.class) public void extractDataEmptyFile()
+            throws IOException, EmptyFileException {
         final URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
         final String path = exampleFlagStatURL.getPath();
         final MappingExtractor extractor = new MappingExtractor(flagstatParser);
