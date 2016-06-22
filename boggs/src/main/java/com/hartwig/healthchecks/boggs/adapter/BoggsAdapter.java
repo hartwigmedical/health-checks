@@ -22,10 +22,13 @@ import org.jetbrains.annotations.NotNull;
 
 @ResourceWrapper(type = CheckCategory.BOGGS) 
 public class BoggsAdapter implements HealthCheckAdapter {
+
     private static final Logger LOGGER = LogManager.getLogger(BoggsAdapter.class);
 
     private static final String IO_ERROR_MSG = "Got IO Exception with message: %s";
+
     private static final String EMPTY_FILE_ERROR_MSG = "Got Empty File Exception with message: %s";
+
     private final Report report = JsonReport.getInstance();
 
     public void runCheck(@NotNull final String runDirectory) {

@@ -5,17 +5,29 @@ import org.jetbrains.annotations.NotNull;
 public class FlagStats {
 
     private final Double total;
+
     private final Double secondary;
+
     private final Double supplementary;
+
     private final Double duplicates;
+
     private final Double mapped;
+
     private final Double pairedInSequencing;
+
     private final Double read1;
+
     private final Double read2;
+
     private final Double properlyPaired;
+
     private final Double itselfAndMateMapped;
+
     private final Double singletons;
+
     private final Double mateMappedToDifferentChr;
+
     private final Double mateMappedToDifferentChrMapQ5;
 
     FlagStats(final Double total, final Double secondary, final Double supplementary, final Double duplicates,

@@ -1,15 +1,17 @@
 package com.hartwig.healthchecks.boggs.model.report;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 public class PrestatsDataReport {
 
     @NotNull
     private final String patientId;
+
     @NotNull
     private final PrestatsCheck checkName;
+
     @NotNull
     private final String status;
 

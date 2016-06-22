@@ -6,8 +6,10 @@ public class FlagStatData {
 
     @NotNull
     private final String path;
+
     @NotNull
     private final FlagStats qcPassedReads;
+
     @NotNull
     private final FlagStats qcFailedReads;
 

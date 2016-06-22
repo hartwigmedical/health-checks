@@ -3,14 +3,15 @@ package com.hartwig.healthchecks.boggs.model.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+
+import org.jetbrains.annotations.NotNull;
 
 public class PrestatsReport extends BaseReport {
 
     private static final long serialVersionUID = 3588650481644358694L;
+
     @NotNull
     private final List<PrestatsDataReport> summary = new ArrayList<>();
 

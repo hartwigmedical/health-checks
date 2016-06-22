@@ -2,17 +2,18 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 public class MappingHealthChecker implements HealthChecker {
+
     private static final Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
 
     private static final double MIN_MAPPED_PERC = 99.2d;

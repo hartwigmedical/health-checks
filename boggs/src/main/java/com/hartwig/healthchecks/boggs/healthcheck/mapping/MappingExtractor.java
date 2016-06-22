@@ -21,10 +21,13 @@ import org.jetbrains.annotations.NotNull;
 public class MappingExtractor extends BoggsExtractor {
 
     private static final Long MILLIS_FACTOR = 10000L;
+
     private static final Double HUNDRED_FACTOR = 100D;
+
     private static final Integer DOUBLE_SEQUENCE = 2;
 
     private static final String REALIGN = "realign";
+
     private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
     @NotNull
@@ -50,7 +53,7 @@ public class MappingExtractor extends BoggsExtractor {
 
         return new MappingReport(CheckType.MAPPING, externalId, totalSequences.toString(), mappingDataReport);
     }
-    
+
     private MappingDataReport getFlagstatsData(@NotNull final Path runDirPath, @NotNull final String totalSequences)
                     throws IOException, EmptyFileException {
         final Optional<Path> filePath = Files

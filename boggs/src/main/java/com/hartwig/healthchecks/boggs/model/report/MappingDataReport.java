@@ -6,12 +6,16 @@ public class MappingDataReport {
 
     @NotNull
     private final Double mappedPercentage;
+
     @NotNull
     private final Double properlyPairedPercentage;
+
     @NotNull
     private final Double singletonPercentage;
+
     @NotNull
     private final Double mateMappedToDifferentChrPercentage;
+
     @NotNull
     private final Double proportionOfDuplicateRead;
 
