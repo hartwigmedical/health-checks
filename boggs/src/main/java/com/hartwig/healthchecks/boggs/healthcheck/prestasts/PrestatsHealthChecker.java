@@ -9,13 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
-import com.hartwig.healthchecks.common.checks.BaseHealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
 
-public class PrestatsHealthChecker extends BaseHealthCheck {
+public class PrestatsHealthChecker implements HealthChecker {
+
+    protected static final String ERROR_MSG = "Got An Exception with message: %s";
 
     private static final String FAIL_ERROR = "FAIL";
 

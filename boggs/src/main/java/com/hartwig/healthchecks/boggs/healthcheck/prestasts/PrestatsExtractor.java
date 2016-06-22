@@ -144,15 +144,14 @@ public class PrestatsExtractor extends BoggsExtractor {
                     status = ZERO;
                 } else if (FAIL.equals(firstStatus)) {
                     status = NEGATIVE_ONE;
-                } else if (WARN.equals(firstStatus)) {
-                    if (PASS.equals(secondStatus)) {
-                        status = NEGATIVE_ONE;
-                    }
+                } else if (WARN.equals(firstStatus) && PASS.equals(secondStatus)) {
+                    status = NEGATIVE_ONE;
                 }
                 return status;
             }
         };
         return isStatusWorse;
+
     }
 
     private PrestatsDataReport getFastqFilesData(@NotNull final Path pathToCheck, @NotNull final String patientId)
