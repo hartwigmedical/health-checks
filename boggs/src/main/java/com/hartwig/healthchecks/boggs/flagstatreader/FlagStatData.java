@@ -19,7 +19,7 @@ public class FlagStatData {
     }
 
     @NotNull
-    public String path() {
+    public String getPath() {
         return path;
     }
 

@@ -7,8 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
@@ -17,6 +15,8 @@ import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.CheckType;
+
+import org.jetbrains.annotations.NotNull;
 
 public class MappingExtractor extends BoggsExtractor {
 
@@ -41,14 +41,16 @@ public class MappingExtractor extends BoggsExtractor {
     }
 
     public MappingReport extractFromRunDirectory(@NotNull final String runDirectory)
-                    throws IOException, EmptyFileException {
+            throws IOException, EmptyFileException {
+
         final Optional<Path> sampleFile = getFilesPath(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final String externalId = sampleFile.get().getFileName().toString();
         final Long totalSequences = sumOfTotalSequences(sampleFile.get());
         final MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences.toString());
+
         return new MappingReport(CheckType.MAPPING, externalId, totalSequences.toString(), mappingDataReport);
     }
-
+    
     private MappingDataReport getFlagstatsData(@NotNull final Path runDirPath, @NotNull final String totalSequences)
                     throws IOException, EmptyFileException {
         final Optional<Path> filePath = Files
