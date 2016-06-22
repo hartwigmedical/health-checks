@@ -42,6 +42,8 @@ public class BoggsExtractor {
 
     protected static final String REF_SAMPLE_SUFFIX = "R";
 
+    protected static final String TUM_SAMPLE_SUFFIX = "T";
+
     protected static final String EMPTY_FILES_ERROR = "Found empty Summary files under path -> %s";
 
     protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";

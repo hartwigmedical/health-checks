@@ -60,7 +60,7 @@ The location of the reports can be changed via the ```config.properties``` file 
 {
 	"health_checks": [{
 		"PRESTATS": {
-			"summary": [{
+			"reference_sample": [{
 				"patient_id": "CPCT12345678R",
 				"check_name": "PRESTATS_PER_BASE_SEQUENCE_CONTENT",
 				"status": "PASS"
@@ -110,6 +110,59 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"status": "WARN"
 			}, {
 				"patient_id": "CPCT12345678R",
+				"check_name": "PRESTATS_NUMBER_OF_READS",
+				"status": "FAIL"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_PER_BASE_SEQUENCE_CONTENT",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_PER_SEQUENCE_QUALITY_SCORES",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION",
+				"status": "FAIL"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_PER_SEQUENCE_GC_CONTENT",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_PER_BASE_SEQUENCE_QUALITY",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_KMER_CONTENT",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_ADAPTER_CONTENT",
+				"status": "FAIL"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_SEQUENCE_DUPLICATION_LEVELS",
+				"status": "FAIL"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_BASIC_STATISTICS",
+				"status": "PASS"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_PER_BASE_N_CONTENT",
+				"status": "FAIL"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_OVERREPRESENTED_SEQUENCES",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "PRESTATS_PER_TILE_SEQUENCE_QUALITY",
+				"status": "WARN"
+			}, {
+				"patient_id": "CPCT12345678T",
 				"check_name": "PRESTATS_NUMBER_OF_READS",
 				"status": "FAIL"
 			}],

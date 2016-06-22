@@ -1,11 +1,13 @@
 package com.hartwig.healthchecks.boggs.healthcheck.prestasts;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
@@ -33,12 +35,16 @@ public class PrestatsHealthChecker implements HealthChecker {
     @Override
     public BaseReport runCheck() throws IOException, EmptyFileException {
         final PrestatsReport prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
-        prestatsReport.getSummary().forEach((prestatsDataReport) -> {
-            if (prestatsDataReport.getStatus().equalsIgnoreCase(FAIL_ERROR)) {
-                LOGGER.info(String.format(FOUND_FAILS_MSG, prestatsDataReport.getCheckName(),
-                                prestatsDataReport.getPatientId()));
+        logPrestatsReport(prestatsReport.getReferenceSample());
+        logPrestatsReport(prestatsReport.getTumorSample());
+        return prestatsReport;
+    }
+
+    private void logPrestatsReport(final List<PrestatsDataReport> prestatsDataReport) {
+        prestatsDataReport.forEach((prestatsData) -> {
+            if (prestatsData.getStatus().equalsIgnoreCase(FAIL_ERROR)) {
+                LOGGER.info(String.format(FOUND_FAILS_MSG, prestatsData.getCheckName(), prestatsData.getPatientId()));
             }
         });
-        return prestatsReport;
     }
 }

@@ -12,27 +12,34 @@ public class PrestatsReport extends BaseReport {
 
     private static final long serialVersionUID = 3588650481644358694L;
     @NotNull
-    private final List<PrestatsDataReport> summary = new ArrayList<>();
+    private final List<PrestatsDataReport> referenceSample = new ArrayList<>();
+    @NotNull
+    private final List<PrestatsDataReport> tumorSample = new ArrayList<>();
 
     public PrestatsReport(@NotNull final CheckType checkType) {
         super(checkType);
     }
 
-    public void addData(@NotNull final PrestatsDataReport prestatsDataReport) {
-        summary.add(prestatsDataReport);
+    public void addReferenceData(@NotNull final List<PrestatsDataReport> prestatsDataReport) {
+        referenceSample.addAll(prestatsDataReport);
     }
 
-    public void addAllData(@NotNull final List<PrestatsDataReport> prestatsDataReport) {
-        summary.addAll(prestatsDataReport);
+    public void addTumorData(@NotNull final List<PrestatsDataReport> prestatsDataReport) {
+        tumorSample.addAll(prestatsDataReport);
     }
 
     @NotNull
-    public List<PrestatsDataReport> getSummary() {
-        return summary;
+    public List<PrestatsDataReport> getTumorSample() {
+        return tumorSample;
+    }
+
+    @NotNull
+    public List<PrestatsDataReport> getReferenceSample() {
+        return referenceSample;
     }
 
     @Override
     public String toString() {
-        return "PrestatsReport [summary=" + summary + "]";
+        return "PrestatsReport [referenceSample=" + referenceSample + ", tumorSample=" + tumorSample + "]";
     }
 }
