@@ -8,11 +8,14 @@ import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.checks.BaseHealthCheck;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.util.ErrorReport;
 
-public class MappingHealthChecker implements HealthChecker {
+public class MappingHealthChecker extends BaseHealthCheck {
+
     private static final Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
 
     private static final double MIN_MAPPED_PERC = 99.2d;
@@ -34,12 +37,16 @@ public class MappingHealthChecker implements HealthChecker {
 
     @Override
     @NotNull
-    public BaseReport runCheck() throws IOException, EmptyFileException {
-        final MappingReport mappingReport = dataExtractor.extractFromRunDirectory(runDirectory);
+    public BaseReport runCheck() {
+        MappingReport mappingReport;
+        try {
+            mappingReport = dataExtractor.extractFromRunDirectory(runDirectory);
+        } catch (IOException | EmptyFileException exception) {
+            LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
+            return new ErrorReport(CheckType.MAPPING, exception.getClass().getName(), exception.getMessage());
+        }
         final MappingDataReport mappingDataReport = mappingReport.getMappingDataReport();
-
         logMappingReport(mappingReport, mappingDataReport);
-
         return mappingReport;
     }
 

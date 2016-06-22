@@ -14,14 +14,23 @@ import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.util.ErrorReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
 
 public class PrestatsHealthCheckerTest {
 
+    private static final String WRONG_ERROR_MESSAGE = "Wrong Error Message";
+
+    private static final String WRONG_ERROR = "Wrong Error";
+
+    private static final String DUMMY_ERROR = "DUMMY_ERROR";
+
     private static final String WRONG_CHECK_NAME = "Wrong Check Name";
+
     private static final String WRONG_CHECK_STATUS = "Wrong Check status";
+
     private static final String WRONG_PATIENT_ID_MSG = "Wrong Patient ID";
 
     private static final String WRONG_NUMBER_OF_CHECKS_MSG = "Wrong Number of checks";
@@ -62,15 +71,39 @@ public class PrestatsHealthCheckerTest {
         assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, summaryData.get(0).getPatientId());
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void verifyPrestatsHealthCheckerIOException() throws IOException, EmptyFileException {
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
-                result = new IOException();
+                result = new IOException(DUMMY_ERROR);
             }
         };
-        checker.runCheck();
+        final BaseReport report = checker.runCheck();
+        assertEquals(WRONG_TYPE_MSG, CheckType.PRESTATS, report.getCheckType());
+        final String error = ((ErrorReport) report).getError();
+        final String errorMessage = ((ErrorReport) report).getMessage();
+
+        assertEquals(WRONG_ERROR, IOException.class.getName(), error);
+        assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
+    }
+
+    @Test
+    public void verifyPrestatsHealthCheckerEmptyFileException() throws IOException, EmptyFileException {
+        final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+        new Expectations() {
+            {
+                dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+                result = new EmptyFileException(DUMMY_ERROR);
+            }
+        };
+        final BaseReport report = checker.runCheck();
+        assertEquals(WRONG_TYPE_MSG, CheckType.PRESTATS, report.getCheckType());
+        final String error = ((ErrorReport) report).getError();
+        final String errorMessage = ((ErrorReport) report).getMessage();
+
+        assertEquals(WRONG_ERROR, EmptyFileException.class.getName(), error);
+        assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
     }
 }

@@ -9,11 +9,13 @@ import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.checks.BaseHealthCheck;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.util.ErrorReport;
 
-public class PrestatsHealthChecker implements HealthChecker {
+public class PrestatsHealthChecker extends BaseHealthCheck {
 
     private static final String FAIL_ERROR = "FAIL";
 
@@ -33,8 +35,15 @@ public class PrestatsHealthChecker implements HealthChecker {
     }
 
     @Override
-    public BaseReport runCheck() throws IOException, EmptyFileException {
-        final PrestatsReport prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
+    public BaseReport runCheck() {
+
+        PrestatsReport prestatsReport;
+        try {
+            prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
+        } catch (IOException | EmptyFileException exception) {
+            LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
+            return new ErrorReport(CheckType.PRESTATS, exception.getClass().getName(), exception.getMessage());
+        }
         logPrestatsReport(prestatsReport.getReferenceSample());
         logPrestatsReport(prestatsReport.getTumorSample());
         return prestatsReport;
