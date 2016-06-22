@@ -20,6 +20,6 @@ build:
     - script:
         name: Gradle Build
         code: |
-            gradle clean build jacocoRootReport coveralls check shadowJar
+            gradle clean build jacocoRootReport coveralls check shadowJar --stacktrace
   after-steps:
     - internal/store-container
