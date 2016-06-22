@@ -22,9 +22,6 @@ public class ZipFileReader {
 
     private static final Logger LOGGER = LogManager.getLogger(ZipFileReader.class);
 
-    public ZipFileReader() {
-    }
-
     public List<String> readFileFromZip(@NotNull final String path, @NotNull final String fileName) {
         final List<String> fileLines = new ArrayList<>();
         try (final ZipFile zipFile = new ZipFile(path)) {

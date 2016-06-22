@@ -45,6 +45,8 @@ public class PrestatsExtractor extends BoggsExtractor {
 
     private static final long MIN_TOTAL_SQ = 85000000L;
 
+    private static final String FOUND_FAILS_MSG = "NOT OK: %s has status FAIL for Patient %s";
+
     private static final Logger LOGGER = LogManager.getLogger(ZipFileReader.class);
 
     @NotNull
@@ -59,6 +61,9 @@ public class PrestatsExtractor extends BoggsExtractor {
                     throws IOException, EmptyFileException {
         final List<PrestatsDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final List<PrestatsDataReport> tumSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
+
+        logPrestatsReport(refSampleData);
+        logPrestatsReport(tumSampleData);
 
         final PrestatsReport prestatsData = new PrestatsReport(CheckType.PRESTATS);
         prestatsData.addReferenceData(refSampleData);
@@ -171,5 +176,13 @@ public class PrestatsExtractor extends BoggsExtractor {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, pathToCheck));
         }
         return prestatsDataReport;
+    }
+
+    private void logPrestatsReport(final List<PrestatsDataReport> prestatsDataReport) {
+        prestatsDataReport.forEach((prestatsData) -> {
+            if (prestatsData.getStatus().equalsIgnoreCase(FAIL)) {
+                LOGGER.info(String.format(FOUND_FAILS_MSG, prestatsData.getCheckName(), prestatsData.getPatientId()));
+            }
+        });
     }
 }
