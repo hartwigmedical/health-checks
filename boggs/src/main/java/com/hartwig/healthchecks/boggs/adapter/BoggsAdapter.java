@@ -7,6 +7,7 @@ import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsHealthChecker;
+import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.report.JsonReport;
@@ -22,12 +23,13 @@ public class BoggsAdapter implements HealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory) {
-        final MappingExtractor mappingExtractor = new MappingExtractor(new SambambaFlagStatParser());
+        final ZipFileReader zipFileReader = new ZipFileReader();
+        final MappingExtractor mappingExtractor = new MappingExtractor(new SambambaFlagStatParser(), zipFileReader);
         final HealthChecker mappingHealthChecker = new MappingHealthChecker(runDirectory, mappingExtractor);
         final BaseReport mapping = mappingHealthChecker.runCheck();
         report.addReportData(mapping);
 
-        final PrestatsExtractor prestatsExtractor = new PrestatsExtractor();
+        final PrestatsExtractor prestatsExtractor = new PrestatsExtractor(zipFileReader);
         final HealthChecker prestastHealthChecker = new PrestatsHealthChecker(runDirectory, prestatsExtractor);
         final BaseReport prestats = prestastHealthChecker.runCheck();
         report.addReportData(prestats);

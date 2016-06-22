@@ -54,7 +54,7 @@ public class MappingHealthChecker extends BaseHealthCheck {
         LOGGER.info(String.format("Checking mapping health for %s", mappingReport.getExternalId()));
 
         final boolean isAllReadsPresent = !mappingDataReport.isAllReadsPresent();
-        logMappingReportLine(isAllReadsPresent, "OK : All Reads are present", "WARN : Not All Reads are present %s");
+        logMappingReportLine(isAllReadsPresent, "OK : All Reads are present", "WARN : Not All Reads are present");
         final boolean isMappedPrecentageInRange = mappingDataReport.getMappedPercentage() < MIN_MAPPED_PERC;
         logMappingReportFormattedLine(isMappedPrecentageInRange, "OK: Acceptable getMapped percentage: %s",
                         "WARN: Low getMapped percentage: %s", mappingDataReport.getMappedPercentage());

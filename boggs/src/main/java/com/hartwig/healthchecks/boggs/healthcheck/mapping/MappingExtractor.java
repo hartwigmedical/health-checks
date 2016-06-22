@@ -15,6 +15,7 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
+import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -30,9 +31,13 @@ public class MappingExtractor extends BoggsExtractor {
     @NotNull
     private final FlagStatParser flagstatParser;
 
-    public MappingExtractor(@NotNull final FlagStatParser flagstatParser) {
+    @NotNull
+    private final ZipFileReader zipFileReader;
+
+    public MappingExtractor(@NotNull final FlagStatParser flagstatParser, final ZipFileReader zipFileReader) {
         super();
         this.flagstatParser = flagstatParser;
+        this.zipFileReader = zipFileReader;
     }
 
     @NotNull
@@ -44,7 +49,7 @@ public class MappingExtractor extends BoggsExtractor {
                     throws IOException, EmptyFileException {
         final Optional<Path> sampleFile = getFilesPath(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final String externalId = sampleFile.get().getFileName().toString();
-        final Long totalSequences = sumOfTotalSequences(sampleFile.get());
+        final Long totalSequences = sumOfTotalSequences(sampleFile.get(), zipFileReader);
         final MappingDataReport mappingDataReport = getFlagstatsData(sampleFile.get(), totalSequences.toString());
         return new MappingReport(CheckType.MAPPING, externalId, totalSequences.toString(), mappingDataReport);
     }
