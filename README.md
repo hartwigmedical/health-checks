@@ -185,3 +185,30 @@ The location of the reports can be changed via the ```config.properties``` file 
 	}]
 }
 ```
+# In Case of Error Report Snippet
+
+```
+{
+	"health_checks": [{
+		"PRESTATS": {
+			"error": "com.hartwig.healthchecks.common.exception.EmptyFileException",
+			"message": "Found empty Summary files under path -> /health-checks/boggs/src/test/resources/emptyFiles/CPCT12345678R",
+			"check_type": "PRESTATS"
+		}
+	}, {
+		"MAPPING": {
+			"external_id": "CPCT12345678R",
+			"total_sequences": "36809",
+			"mapping_data_report": {
+				"mapped_percentage": 99.69,
+				"properly_paired_percentage": 99.57,
+				"singleton_percentage": 55.0,
+				"mate_mapped_to_different_chr_percentage": 0.0,
+				"proportion_of_duplicate_read": 5.95,
+				"is_all_reads_present": false
+			},
+			"check_type": "MAPPING"
+		}
+	}]
+}
+```

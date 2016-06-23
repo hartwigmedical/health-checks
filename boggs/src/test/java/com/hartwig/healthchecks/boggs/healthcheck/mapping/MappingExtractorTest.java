@@ -7,25 +7,46 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatTestFactory;
+import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
 import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
+import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 import mockit.Expectations;
 import mockit.Mocked;
 
 public class MappingExtractorTest {
+
+    private static final String FASTQC_DATA_TXT = "fastqc_data.txt";
+
     private static final String EMPTY_FILES = "emptyFiles";
 
     private static final String RUNDIR = "rundir";
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
+
+    private List<String> fastqLines;
+
+    private List<String> emptyList;
+
+    @Mocked
+    private ZipFileReader zipFileReader;
+
+    @Before
+    public void setUp() {
+        fastqLines = TestZipFileFactory.getFastqLines();
+        emptyList = new ArrayList<>();
+    }
 
     @Mocked
     private FlagStatParser flagstatParser;
@@ -34,9 +55,12 @@ public class MappingExtractorTest {
     public void extractData() throws IOException, EmptyFileException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         final String path = runDirURL.getPath();
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
         new Expectations() {
             {
+                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
+                returns(fastqLines, fastqLines, fastqLines, fastqLines);
+
                 flagstatParser.parse(anyString);
                 returns(FlagStatTestFactory.createTestData());
             }
@@ -56,7 +80,7 @@ public class MappingExtractorTest {
 
     @Test(expected = NoSuchFileException.class)
     public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }
 
@@ -64,7 +88,7 @@ public class MappingExtractorTest {
     public void extractDataEmptyFile() throws IOException, EmptyFileException {
         final URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
         final String path = exampleFlagStatURL.getPath();
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
         extractor.extractFromRunDirectory(path);
     }
 }
