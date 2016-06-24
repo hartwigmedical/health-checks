@@ -25,16 +25,15 @@ import com.hartwig.healthchecks.common.util.PropertiesUtil;
 public final class JsonReport implements Report {
 
     private static final String REPORT_NAME = "health-checks_%s.json";
+
     private static final Gson GSON = new GsonBuilder()
                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).disableHtmlEscaping().create();
+
     private static final Logger LOGGER = LogManager.getLogger(Report.class);
 
     private static JsonReport instance = new JsonReport();
 
     private final Map<CheckType, BaseReport> healthChecks = new ConcurrentHashMap<>();
-
-    private JsonReport() {
-    }
 
     public static JsonReport getInstance() {
         return instance;
