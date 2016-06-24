@@ -14,8 +14,8 @@ public enum CheckType {
     @NotNull
     public static Optional<CheckType> getByType(@NotNull final String typeToCheck) {
         final List<CheckType> types = Arrays.asList(CheckType.values());
-        final Optional<CheckType> returnType = types.stream().filter(
-                type -> type.toString().equalsIgnoreCase(typeToCheck)).findFirst();
+        final Optional<CheckType> returnType = types.stream()
+                        .filter(type -> type.toString().equalsIgnoreCase(typeToCheck)).findFirst();
 
         return returnType;
     }

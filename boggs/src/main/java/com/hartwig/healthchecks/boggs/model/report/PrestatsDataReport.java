@@ -8,8 +8,10 @@ public class PrestatsDataReport {
 
     @NotNull
     private final String patientId;
+
     @NotNull
     private final PrestatsCheck checkName;
+
     @NotNull
     private final String status;
 

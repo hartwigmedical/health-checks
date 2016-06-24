@@ -11,8 +11,10 @@ import com.hartwig.healthchecks.common.util.CheckType;
 public class PrestatsReport extends BaseReport {
 
     private static final long serialVersionUID = 3588650481644358694L;
+
     @NotNull
     private final List<PrestatsDataReport> referenceSample = new ArrayList<>();
+
     @NotNull
     private final List<PrestatsDataReport> tumorSample = new ArrayList<>();
 

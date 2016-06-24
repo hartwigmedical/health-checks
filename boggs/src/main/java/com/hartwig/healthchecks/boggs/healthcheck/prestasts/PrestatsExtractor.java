@@ -139,6 +139,7 @@ public class PrestatsExtractor extends BoggsExtractor {
 
     private Comparator<PrestatsDataReport> isStatusWorse() {
         final Comparator<PrestatsDataReport> isStatusWorse = new Comparator<PrestatsDataReport>() {
+
             @Override
             public int compare(@NotNull final PrestatsDataReport firstData,
                             @NotNull final PrestatsDataReport secondData) {
