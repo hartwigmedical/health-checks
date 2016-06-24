@@ -3,8 +3,10 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
+import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
@@ -27,8 +29,19 @@ public class MappingHealthCheckerTest {
 
     @NotNull
     private static MappingReport dummyData() {
-        MappingDataReport mappingDataReport = new MappingDataReport(1.0d, 2.0d, 2.0d, 1.0d, 0.2d, true);
-        return new MappingReport(CheckType.MAPPING, SOME_EXTERNAL_ID, _8564, mappingDataReport);
+
+        BaseDataReport mappedData = new BaseDataReport("Dummy", MappingCheck.MAPPING_MAPPED.getDescription(), "0.0");
+        BaseDataReport duplicateData = new BaseDataReport("Dummy",
+                MappingCheck.MAPPING_DUPLIVATES.getDescription(), "0.0");
+        BaseDataReport properlyData = new BaseDataReport("Dummy",
+                MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(), "0.0");
+
+        List<BaseDataReport> reports = Arrays.asList(mappedData, duplicateData, properlyData);
+
+        MappingReport mappingReport = new MappingReport(CheckType.MAPPING);
+        mappingReport.addAll(reports);
+
+        return mappingReport;
     }
 
     @Test
@@ -45,13 +58,8 @@ public class MappingHealthCheckerTest {
         final BaseReport report = checker.runCheck();
 
         assertEquals("Report with wrong type", CheckType.MAPPING, report.getCheckType());
-        assertEquals("External ID not correct", SOME_EXTERNAL_ID, ((MappingReport) report).getExternalId());
-        assertEquals(1.0d, ((MappingReport) report).getMappingDataReport().getMappedPercentage(), 0d);
-        assertEquals(1.0d, ((MappingReport) report).getMappingDataReport().getMateMappedToDifferentChrPercentage(),
-                0d);
-        assertEquals(2.0d, ((MappingReport) report).getMappingDataReport().getProperlyPairedPercentage(), 0d);
-        assertEquals(2.0d, ((MappingReport) report).getMappingDataReport().getSingletonPercentage(), 0d);
-        assertEquals(0.2d, ((MappingReport) report).getMappingDataReport().getProportionOfDuplicateRead(), 0d);
+        assertEquals("Dummy", ((MappingReport) report).getMapping().get(0).getPatientId());
+        assertEquals(MappingCheck.MAPPING_MAPPED.getDescription(),
+                ((MappingReport) report).getMapping().get(0).getCheckName());
     }
-
 }

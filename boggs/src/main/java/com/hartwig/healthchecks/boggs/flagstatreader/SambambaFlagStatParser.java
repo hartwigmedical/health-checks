@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.FlagStatsType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
@@ -42,14 +41,13 @@ public class SambambaFlagStatParser implements FlagStatParser {
             final int firstWordIndex = line.indexOf(firstWord);
             final String checkName = line.substring(firstWordIndex, line.length());
 
-
             return new String[] {qcPassed, qcFailed, checkName};
-        }).forEach(line -> {
-            final double passedValue = Double.parseDouble(line[ZERO]);
-            final double failedValue = Double.parseDouble(line[ONE]);
+        }).forEach(array -> {
+            final double passedValue = Double.parseDouble(array[ZERO]);
+            final double failedValue = Double.parseDouble(array[ONE]);
 
-            passed.put(line[TWO], passedValue);
-            failed.put(line[TWO], failedValue);
+            passed.put(array[TWO], passedValue);
+            failed.put(array[TWO], failedValue);
         });
 
         if (failed.isEmpty() || passed.isEmpty()) {
@@ -65,14 +63,15 @@ public class SambambaFlagStatParser implements FlagStatParser {
     @NotNull
     private List<FlagStats> buildFlagStatsData(@NotNull final Map<String, Double> data) {
         final List<FlagStats> failedStats = new ArrayList<>();
-        IntStream.range(ZERO, data.size()).forEach(index -> {
-            data.forEach((checkName, value) -> {
-                final Optional<FlagStatsType> statsTypeOpt = FlagStatsType.getByIndex(index);
-                final FlagStatsType flagStatsType = statsTypeOpt.get();
+        final int [] index = {ZERO};
+        data.forEach((checkName, value) -> {
+            final Optional<FlagStatsType> statsTypeOpt = FlagStatsType.getByIndex(index[ZERO]);
+            final FlagStatsType flagStatsType = statsTypeOpt.get();
 
-                final FlagStats flagStats = new FlagStats(flagStatsType, checkName, value);
-                failedStats.add(flagStats);
-            });
+            final FlagStats flagStats = new FlagStats(flagStatsType, checkName, value);
+            failedStats.add(flagStats);
+
+            index[ZERO] += ONE;
         });
         return failedStats;
     }

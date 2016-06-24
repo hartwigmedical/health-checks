@@ -82,10 +82,10 @@ public class MappingExtractor extends BoggsExtractor {
         final BaseDataReport mateMappedDataReport = generateMateMappedDataReport(externalId, passed);
         mappingDataReports.add(mateMappedDataReport);
 
-        final BaseDataReport duplicateDataReport = generateDupliucateDataReport(externalId, passed);
+        final BaseDataReport duplicateDataReport = generateDuplicateDataReport(externalId, passed);
         mappingDataReports.add(duplicateDataReport);
 
-        final BaseDataReport secondaryDataReport = generateSecondaryDataReport(externalId, totalSequences, passed);
+        final BaseDataReport secondaryDataReport = generateIsAllReadDataReport(externalId, totalSequences, passed);
 
         mappingDataReports.add(secondaryDataReport);
 
@@ -121,7 +121,8 @@ public class MappingExtractor extends BoggsExtractor {
         final double mappedPercentage = toPercentage(mappedStatCalc.calculate(mappedStat.getValue(),
                 totalStat.getValue()));
 
-        final BaseDataReport mappedDataReport = new BaseDataReport(externalId, mappedStat.getCheckType(),
+        final BaseDataReport mappedDataReport = new BaseDataReport(externalId,
+                MappingCheck.MAPPING_MAPPED.getDescription(),
                 String.valueOf(mappedPercentage));
 
         return mappedDataReport;
@@ -131,12 +132,14 @@ public class MappingExtractor extends BoggsExtractor {
     private BaseDataReport generateProperDataReport(@NotNull final String externalId,
             @NotNull final  List<FlagStats> passed) {
 
+        final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats properPaired = passed.get(FlagStatsType.PROPERLY_PAIRED_INDEX.getIndex());
         final DivisionOperator properStatCalc = FlagStatsType.PROPERLY_PAIRED_INDEX.getCalculableInstance();
         final double properlyPairedPercentage = toPercentage(properStatCalc.calculate(properPaired.getValue(),
-                properPaired.getValue()));
+                mappedStat.getValue()));
 
-        final BaseDataReport properReport = new BaseDataReport(externalId, properPaired.getCheckType(),
+        final BaseDataReport properReport = new BaseDataReport(externalId,
+                MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(),
                 String.valueOf(properlyPairedPercentage));
 
         return properReport;
@@ -149,7 +152,8 @@ public class MappingExtractor extends BoggsExtractor {
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGELTONS_INDEX.getIndex());
         final double singletonPercentage = singletonStat.getValue();
 
-        final BaseDataReport singletonReport = new BaseDataReport(externalId, singletonStat.getCheckType(),
+        final BaseDataReport singletonReport = new BaseDataReport(externalId,
+                MappingCheck.MAPPING_SINGLETON.getDescription(),
                 String.valueOf(singletonPercentage));
 
         return singletonReport;
@@ -162,14 +166,15 @@ public class MappingExtractor extends BoggsExtractor {
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
         final double mateMappedDiffChrPercentage = diffPercStat.getValue();
 
-        final BaseDataReport mateMappedDiffReport = new BaseDataReport(externalId, diffPercStat.getCheckType(),
+        final BaseDataReport mateMappedDiffReport = new BaseDataReport(externalId,
+                MappingCheck.MAPPING_MATE_MAPPED_DIFFERENT_CHR.getDescription(),
                 String.valueOf(mateMappedDiffChrPercentage));
 
         return mateMappedDiffReport;
     }
 
     @NotNull
-    private BaseDataReport generateDupliucateDataReport(@NotNull final String externalId,
+    private BaseDataReport generateDuplicateDataReport(@NotNull final String externalId,
             @NotNull final  List<FlagStats> passed) {
 
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
@@ -178,14 +183,15 @@ public class MappingExtractor extends BoggsExtractor {
         final double proportionOfDuplicateRead = toPercentage(duplicateStatCalc.calculate(duplicateStat.getValue(),
                 totalStat.getValue()));
 
-        final BaseDataReport duplicateReport = new BaseDataReport(externalId, duplicateStat.getCheckType(),
+        final BaseDataReport duplicateReport = new BaseDataReport(externalId,
+                MappingCheck.MAPPING_DUPLIVATES.getDescription(),
                 String.valueOf(proportionOfDuplicateRead));
 
         return duplicateReport;
     }
 
     @NotNull
-    private BaseDataReport generateSecondaryDataReport(@NotNull final String externalId,
+    private BaseDataReport generateIsAllReadDataReport(@NotNull final String externalId,
             @NotNull final String totalSequences, @NotNull final  List<FlagStats> passed) {
 
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
@@ -193,9 +199,10 @@ public class MappingExtractor extends BoggsExtractor {
         final boolean isAllReadsPresent = totalStat.getValue() == Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE
                 + secondaryStat.getValue();
 
-        final BaseDataReport secondaryReport = new BaseDataReport(externalId, secondaryStat.getCheckType(),
+        final BaseDataReport isAllReadReport = new BaseDataReport(externalId,
+                MappingCheck.MAPPING_IS_ALL_READ.getDescription(),
                 String.valueOf(isAllReadsPresent));
 
-        return secondaryReport;
+        return isAllReadReport;
     }
 }

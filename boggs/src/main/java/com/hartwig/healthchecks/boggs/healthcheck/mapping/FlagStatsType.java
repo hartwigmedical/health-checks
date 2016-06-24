@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public enum FlagStatsType {
 
     TOTAL_INDEX(0, DivisionOperator.apply(), DivisionOperator.class, 0d),
-    SECONDARY_INDEX(1, SingleValue.apply(), SingleValue.class, 1d),
+    SECONDARY_INDEX(1, SingleValue.apply(), SingleValue.class, 0d),
     SUPPLEMENTARY_INDEX(2, SingleValue.apply(), SingleValue.class, 0d),
     DUPLICATES_INDEX(3, DivisionOperator.apply(), DivisionOperator.class, 0d),
     MAPPED_INDEX(4, DivisionOperator.apply(), DivisionOperator.class, 99.2d),
@@ -60,7 +60,7 @@ public enum FlagStatsType {
 
     @NotNull
     public <T>T getCalculableInstance() {
-        calculableClass.cast(getCalculable());
-        return (T) calculableClass;
+        final Object calculable = calculableClass.cast(getCalculable());
+        return (T) calculable;
     }
 }

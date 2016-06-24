@@ -15,7 +15,7 @@ public class FlagStatData {
     @NotNull
     private final List<FlagStats> failedStats;
 
-    FlagStatData(@NotNull final String path, @NotNull final List<FlagStats> passedStats,
+    public FlagStatData(@NotNull final String path, @NotNull final List<FlagStats> passedStats,
             @NotNull final List<FlagStats> failedStats) {
         this.path = path;
         this.passedStats = passedStats;
