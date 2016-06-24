@@ -3,11 +3,11 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boggs.healthcheck.function.Calculable;
 import com.hartwig.healthchecks.boggs.healthcheck.function.DivisionOperator;
 import com.hartwig.healthchecks.boggs.healthcheck.function.SingleValue;
-
-import org.jetbrains.annotations.NotNull;
 
 public enum FlagStatsType {
 
@@ -26,12 +26,15 @@ public enum FlagStatsType {
     MATE_MAP_DIF_CHR_Q5_INDEX(12, SingleValue.apply(), SingleValue.class, 0d);
 
     private final int index;
+
     private final Calculable calculable;
+
     private final Class calculableClass;
+
     private final double threshold;
 
-    FlagStatsType(@NotNull final int index, @NotNull final Calculable calculable, @NotNull Class calculableClass,
-            @NotNull final double threshold) {
+    FlagStatsType(@NotNull final int index, @NotNull final Calculable calculable, @NotNull final Class calculableClass,
+                    @NotNull final double threshold) {
         this.index = index;
         this.calculable = calculable;
         this.calculableClass = calculableClass;
@@ -39,9 +42,7 @@ public enum FlagStatsType {
     }
 
     public static Optional<FlagStatsType> getByIndex(@NotNull final int index) {
-        return Arrays.stream(FlagStatsType.values())
-                .filter(type -> type.getIndex() == index)
-                .findFirst();
+        return Arrays.stream(FlagStatsType.values()).filter(type -> type.getIndex() == index).findFirst();
     }
 
     @NotNull
@@ -59,7 +60,7 @@ public enum FlagStatsType {
     }
 
     @NotNull
-    public <T>T getCalculableInstance() {
+    public <T> T getCalculableInstance() {
         final Object calculable = calculableClass.cast(getCalculable());
         return (T) calculable;
     }
