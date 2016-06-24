@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class BoggsExtractor {
+
     protected static final String FILENAME = "Filename";
 
     protected static final String SEPERATOR_REGEX = "\t";
@@ -48,6 +49,7 @@ public class BoggsExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(BoggsExtractor.class);
 
+    @NotNull
     protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException {
         final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath())
@@ -57,24 +59,32 @@ public class BoggsExtractor {
         return filePath;
     }
 
+    @NotNull
     protected Long sumOfTotalSequences(@NotNull final Path path) throws IOException {
         final List<Path> zipFiles = Files.walk(path)
                         .filter(filePath -> filePath.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
                         .collect(toCollection(ArrayList<Path>::new));
-        final List<String> allValues = zipFiles.stream().map(zipPath -> {
-            return getLineFromFile(zipPath, FASTQC_DATA_FILE_NAME, TOTAL_SEQUENCES);
-        }).map(line -> {
-            String totalSequences = null;
-            if (line != null) {
-                final String[] values = line.split(SEPERATOR_REGEX);
-                totalSequences = values[1];
-            }
-            return totalSequences;
-        }).filter(lines -> lines != null).collect(toList());
+        final List<String> allValues = zipFiles.stream()
+                .map(zipPath -> {
+                    return getLineFromFile(zipPath, FASTQC_DATA_FILE_NAME, TOTAL_SEQUENCES);
+                 })
+                .map(line -> {
+                    String totalSequences = null;
+                    if (line != null) {
+                        final String[] values = line.split(SEPERATOR_REGEX);
+                        totalSequences = values[1];
+                    }
+                    return totalSequences;
+                })
+                .filter(lines -> lines != null)
+                .collect(toList());
 
-        return allValues.stream().mapToLong(Long::parseLong).sum();
+        return allValues.stream()
+                .mapToLong(Long::parseLong)
+                .sum();
     }
 
+    @NotNull
     protected String getLineFromFile(@NotNull final Path path, @NotNull final String fileName,
                     @NotNull final String filter) {
         String searchedLine = null;
@@ -86,6 +96,7 @@ public class BoggsExtractor {
         return searchedLine;
     }
 
+    @NotNull
     protected List<String> getLinesFromFile(@NotNull final Path path, @NotNull final String fileName) {
         final List<String> fileLines = new ArrayList<>();
         try (final ZipFile zipFile = new ZipFile(path.toString())) {

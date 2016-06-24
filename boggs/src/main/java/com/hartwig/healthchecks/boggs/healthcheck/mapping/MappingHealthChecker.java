@@ -33,7 +33,8 @@ public class MappingHealthChecker implements HealthChecker {
         final List<BaseDataReport> mapping = mappingReport.getMapping();
 
         mapping.forEach(report -> {
-            LOGGER.info("Result for mapping health check '%s' is '%s'", report.getCheckName(), report.getValue());
+            LOGGER.info(String.format("Result for mapping health check '%s' is '%s'",
+                    report.getCheckName(), report.getValue()));
         });
 
         return mappingReport;

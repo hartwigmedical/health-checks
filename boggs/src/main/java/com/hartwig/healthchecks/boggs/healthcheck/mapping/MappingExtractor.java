@@ -42,11 +42,6 @@ public class MappingExtractor extends BoggsExtractor {
     }
 
     @NotNull
-    private static double toPercentage(@NotNull final double percentage) {
-        return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
-    }
-
-    @NotNull
     public MappingReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, EmptyFileException {
 
@@ -56,10 +51,15 @@ public class MappingExtractor extends BoggsExtractor {
         final List<BaseDataReport> mapping = getFlagStatsData(externalId, sampleFile.get(),
                 totalSequences.toString());
 
-        MappingReport report = new MappingReport(CheckType.MAPPING);
+        final MappingReport report = new MappingReport(CheckType.MAPPING);
         report.addAll(mapping);
 
         return report;
+    }
+
+    @NotNull
+    private static double toPercentage(@NotNull final double percentage) {
+        return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
     }
 
     private List<BaseDataReport> getFlagStatsData(@NotNull final String externalId, @NotNull final Path runDirPath,
@@ -85,9 +85,8 @@ public class MappingExtractor extends BoggsExtractor {
         final BaseDataReport duplicateDataReport = generateDuplicateDataReport(externalId, passed);
         mappingDataReports.add(duplicateDataReport);
 
-        final BaseDataReport secondaryDataReport = generateIsAllReadDataReport(externalId, totalSequences, passed);
-
-        mappingDataReports.add(secondaryDataReport);
+        final BaseDataReport isAllReadDataReport = generateIsAllReadDataReport(externalId, totalSequences, passed);
+        mappingDataReports.add(isAllReadDataReport);
 
         return mappingDataReports;
     }
