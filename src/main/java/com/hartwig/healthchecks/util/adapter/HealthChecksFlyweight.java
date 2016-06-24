@@ -6,27 +6,29 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
-import com.hartwig.healthchecks.common.exception.NotFoundException;
-import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-import com.hartwig.healthchecks.common.util.CheckCategory;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
+
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.exception.NotFoundException;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
+import com.hartwig.healthchecks.common.util.CheckCategory;
 
 public final class HealthChecksFlyweight {
 
     private static final Logger LOGGER = LogManager.getLogger(HealthChecksFlyweight.class);
 
     private static final Map<CheckCategory, HealthCheckAdapter> FLYWEIGHT = new HashMap<>();
+
     private static final HealthChecksFlyweight INSTANCE = new HealthChecksFlyweight();
 
     private static final Reflections BASE = new Reflections("com.hartwig.healthchecks.boggs.adapter");
+
     @SuppressWarnings("rawtypes")
-    private static final Set<Class<? extends HealthCheckAdapter>> BASE_SET = BASE.getSubTypesOf(
-            HealthCheckAdapter.class);
+    private static final Set<Class<? extends HealthCheckAdapter>> BASE_SET = BASE
+                    .getSubTypesOf(HealthCheckAdapter.class);
 
     static {
         BASE_SET.stream().forEach(adapter -> {
