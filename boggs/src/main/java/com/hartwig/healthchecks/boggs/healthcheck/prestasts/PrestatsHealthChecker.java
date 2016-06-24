@@ -34,7 +34,7 @@ public class PrestatsHealthChecker implements HealthChecker {
     public BaseReport runCheck() throws IOException, EmptyFileException {
         final PrestatsReport prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
         prestatsReport.getSummary().forEach((prestatsDataReport) -> {
-            if (prestatsDataReport.getStatus().equalsIgnoreCase(FAIL_ERROR)) {
+            if (prestatsDataReport.getValue().equalsIgnoreCase(FAIL_ERROR)) {
                 LOGGER.info(String.format(FOUND_FAILS_MSG, prestatsDataReport.getCheckName(),
                                 prestatsDataReport.getPatientId()));
             }

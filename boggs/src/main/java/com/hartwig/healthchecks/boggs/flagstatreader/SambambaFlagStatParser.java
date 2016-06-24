@@ -4,85 +4,70 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
+import com.hartwig.healthchecks.boggs.healthcheck.mapping.FlagStatsType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 import org.jetbrains.annotations.NotNull;
 
 public class SambambaFlagStatParser implements FlagStatParser {
 
-    private static final int MATE_MAP_DIF_CHR_Q5_INDEX = 12;
-
-    private static final int MATE_MAP_DIF_CHR_INDEX = 11;
-
-    private static final int SINGELTONS_INDEX = 10;
-
-    private static final int ITSELF_AND_MATE_INDEX = 9;
-
-    private static final int PROPERLY_PAIRED_INDEX = 8;
-
-    private static final int READ_2_INDEX = 7;
-
-    private static final int READ_INDEX = 6;
-
-    private static final int PAIRED_IN_SEQ_INDEX = 5;
-
-    private static final int MAPPED_INDEX = 4;
-
-    private static final int DUPLICATES_INDEX = 3;
-
-    private static final int SUPPLEMENTARY_INDEX = 2;
-
-    private static final int SECONDARY_INDEX = 1;
-
-    private static final int TOTAL_INDEX = 0;
-
-    private static final String FLAGSTATS_FILE_EMPTY_ERROR = "flagstats file empty path -> %s";
+    private static final String EMPTY_FILE_ERROR = "flagstats file empty path -> %s";
 
     private static final String SEPERATOR_REGEX = " ";
 
+    private static final int START = 0;
+
     @NotNull
     public FlagStatData parse(@NotNull final String filePath) throws IOException, EmptyFileException {
-        final List<Double> passed = new ArrayList<>();
-        final List<Double> failed = new ArrayList<>();
+        final Map<String, Double> passed = new HashMap<>();
+        final Map<String, Double> failed = new HashMap<>();
 
         Files.lines(Paths.get(filePath)).map(line -> {
-            final Double qcPassed = Double.parseDouble(line.split(SEPERATOR_REGEX)[0]);
-            final Double qcFailed = Double.parseDouble(line.split(SEPERATOR_REGEX)[2]);
+            final String qcPassed = line.split(SEPERATOR_REGEX)[0];
+            final String qcFailed = line.split(SEPERATOR_REGEX)[2];
 
-            return new Double[] { qcPassed, qcFailed };
+            final String firstWord = line.split(SEPERATOR_REGEX)[3];
+            final int firstWordIndex = line.indexOf(firstWord);
+            final String checkName = line.substring(firstWordIndex, line.length());
+
+
+            return new String[] {qcPassed, qcFailed, checkName};
         }).forEach(line -> {
-            passed.add(line[0]);
-            failed.add(line[1]);
+            final double passedValue = Double.parseDouble(line[0]);
+            final double failedValue = Double.parseDouble(line[1]);
+
+            passed.put(line[2], passedValue);
+            failed.put(line[2], failedValue);
         });
 
         if (failed.isEmpty() || passed.isEmpty()) {
-            throw new EmptyFileException(String.format(FLAGSTATS_FILE_EMPTY_ERROR, filePath));
+            throw new EmptyFileException(String.format(EMPTY_FILE_ERROR, filePath));
         }
 
-        final FlagStats passedFlagStats = buildFlagStatsData(passed.stream().toArray(Double[]::new));
-        final FlagStats failedFlagStats = buildFlagStatsData(failed.stream().toArray(Double[]::new));
+        final List<FlagStats> passedStats = buildFlagStatsData(passed);
+        final List<FlagStats> failedStats = buildFlagStatsData(failed);
 
-        return new FlagStatData(filePath, passedFlagStats, failedFlagStats);
+        return new FlagStatData(filePath, passedStats, failedStats);
     }
 
     @NotNull
-    private FlagStats buildFlagStatsData(@NotNull final Double... data) {
-        return new FlagStatsBuilder()
-                .setTotal(data[TOTAL_INDEX])
-                .setSecondary(data[SECONDARY_INDEX])
-                .setSupplementary(data[SUPPLEMENTARY_INDEX])
-                .setDuplicates(data[DUPLICATES_INDEX])
-                .setMapped(data[MAPPED_INDEX])
-                .setPairedInSequencing(data[PAIRED_IN_SEQ_INDEX])
-                .setRead1(data[READ_INDEX])
-                .setRead2(data[READ_2_INDEX])
-                .setProperlyPaired(data[PROPERLY_PAIRED_INDEX])
-                .setItselfAndMateMapped(data[ITSELF_AND_MATE_INDEX])
-                .setSingletons(data[SINGELTONS_INDEX])
-                .setMateMappedToDifferentChr(data[MATE_MAP_DIF_CHR_INDEX])
-                .setMateMappedToDifferentChrMapQ5(data[MATE_MAP_DIF_CHR_Q5_INDEX])
-                .build();
+    private List<FlagStats> buildFlagStatsData(@NotNull final Map<String, Double> data) {
+        final List<FlagStats> failedStats = new ArrayList<>();
+        IntStream.range(START, data.size()).forEach(index -> {
+            data.forEach((checkName, value) -> {
+                final Optional<FlagStatsType> statsTypeOpt = FlagStatsType.getByIndex(index);
+                final FlagStatsType flagStatsType = statsTypeOpt.get();
+
+                final FlagStats flagStats = new FlagStats(flagStatsType, checkName, value);
+                failedStats.add(flagStats);
+            });
+        });
+        return failedStats;
     }
 }
