@@ -29,13 +29,11 @@ public enum PrestatsCheck {
     }
 
     public static Optional<PrestatsCheck> getByDescription(@NotNull final String description) {
-        return Arrays.asList(PrestatsCheck.values())
-                .stream()
-                .filter(prestatsCheck -> prestatsCheck.description.equalsIgnoreCase(description))
-                .findFirst();
+        return Arrays.asList(PrestatsCheck.values()).stream()
+                        .filter(prestatsCheck -> prestatsCheck.description.equalsIgnoreCase(description)).findFirst();
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 }

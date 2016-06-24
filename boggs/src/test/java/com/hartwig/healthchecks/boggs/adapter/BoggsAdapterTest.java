@@ -11,9 +11,8 @@ import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsHealthChecker;
-import com.hartwig.healthchecks.boggs.model.report.MappingDataReport;
+import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -24,143 +23,157 @@ import mockit.MockUp;
 
 public class BoggsAdapterTest {
 
-  private static final String DUMMY_ID = "DUMMY_ID";
-  private static final String DUMMY_STATUS = "DummyStatus";
-  private static final String _123 = "123";
-  private static final String SOME_ID = "SomeId";
-  private static final String DUMMY_RUN_DIR = "DummyRunDir";
+    private static final String DUMMY_VALUE = "1.0d";
 
-  @Test
-  public void verifyAdapterRunning() throws IOException, EmptyFileException {
-      final MappingReport dummyMappingReport = getDummyMappingReport();
-      final PrestatsReport dummyPrestatsReport = getDummyPrestatsReport();
+    private static final String DUMMY_CHECK = "DUMMY_CHECK";
 
-      new MockUp<MappingHealthChecker>() {
-          @Mock
-          void $init(String runDir, MappingExtractor extractor) {
-              assertEquals(runDir, DUMMY_RUN_DIR);
-          }
+    private static final String DUMMY_ID = "DUMMY_ID";
 
-          @Mock(invocations = 1)
-          public BaseReport runCheck() {
-              return dummyMappingReport;
-          }
-      };
-      new MockUp<PrestatsHealthChecker>() {
-          @Mock
-          void $init(String runDir, PrestatsExtractor extractor) {
-              assertEquals(runDir, DUMMY_RUN_DIR);
-          }
+    private static final String DUMMY_STATUS = "DummyStatus";
 
-          @Mock(invocations = 1)
-          public BaseReport runCheck() {
-              return dummyPrestatsReport;
-          }
-      };
+    private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
-      final BoggsAdapter adapter = new BoggsAdapter();
-      adapter.runCheck(DUMMY_RUN_DIR);
-  }
+    @Test
+    public void verifyAdapterRunning() throws IOException, EmptyFileException {
+        final MappingReport dummyMappingReport = getDummyMappingReport();
+        final PrestatsReport dummyPrestatsReport = getDummyPrestatsReport();
 
-  private MappingReport getDummyMappingReport() {
-      final MappingDataReport mappingDataReport = new MappingDataReport(1.0d, 2.0d, 2.0d, 1.0d, 0.2d, true);
-      return new MappingReport(CheckType.MAPPING, SOME_ID, _123, mappingDataReport);
-  }
+        new MockUp<MappingHealthChecker>() {
 
-  private PrestatsReport getDummyPrestatsReport() {
-      final PrestatsDataReport prestatsDataReport = new PrestatsDataReport(DUMMY_ID, DUMMY_STATUS, PrestatsCheck.DUMMY);
-      final PrestatsReport prestatsReport = new PrestatsReport(CheckType.PRESTATS);
-      prestatsReport.addData(prestatsDataReport);
-      return prestatsReport;
-  }
+            @Mock
+            void $init(final String runDir, final MappingExtractor extractor) {
+                assertEquals(runDir, DUMMY_RUN_DIR);
+            }
 
-  @Test
-  public void verifyMappingHealthCheckerIoException() throws IOException, EmptyFileException {
+            @Mock(invocations = 1)
+            public BaseReport runCheck() {
+                return dummyMappingReport;
+            }
+        };
+        new MockUp<PrestatsHealthChecker>() {
 
-      new MockUp<MappingHealthChecker>() {
-          @Mock
-          void $init(String runDir, MappingExtractor extractor) {
-              assertEquals(runDir, DUMMY_RUN_DIR);
-          }
+            @Mock
+            void $init(final String runDir, final PrestatsExtractor extractor) {
+                assertEquals(runDir, DUMMY_RUN_DIR);
+            }
 
-          @Mock(invocations = 1)
-          public BaseReport runCheck() throws IOException, EmptyFileException {
-              throw new IOException();
-          }
-      };
-      new MockUp<PrestatsHealthChecker>() {
-          @Mock
-          void $init(String runDir, PrestatsExtractor extractor) {
-              assertEquals(runDir, DUMMY_RUN_DIR);
-          }
+            @Mock(invocations = 1)
+            public BaseReport runCheck() {
+                return dummyPrestatsReport;
+            }
+        };
 
-          @Mock(invocations = 0)
-          public BaseReport runCheck() throws IOException, EmptyFileException {
-              return null;
-          }
-      };
+        final BoggsAdapter adapter = new BoggsAdapter();
+        adapter.runCheck(DUMMY_RUN_DIR);
+    }
 
-      final BoggsAdapter adapter = new BoggsAdapter();
-      adapter.runCheck(DUMMY_RUN_DIR);
-  }
+    private MappingReport getDummyMappingReport() {
+        final MappingReport mappingReport = new MappingReport(CheckType.MAPPING);
+        mappingReport.addData(new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE));
+        return mappingReport;
+    }
 
-  @Test
-  public void verifyMappingHealthCheckerEmptyFileException() throws IOException, EmptyFileException {
+    private PrestatsReport getDummyPrestatsReport() {
+        final BaseDataReport prestatsDataReport = new BaseDataReport(DUMMY_ID, PrestatsCheck.DUMMY.toString(),
+                        DUMMY_STATUS);
+        final PrestatsReport prestatsReport = new PrestatsReport(CheckType.PRESTATS);
+        prestatsReport.addData(prestatsDataReport);
+        return prestatsReport;
+    }
 
-      new MockUp<MappingHealthChecker>() {
-          @Mock
-          void $init(String runDir, MappingExtractor extractor) {
-              assertEquals(runDir, DUMMY_RUN_DIR);
-          }
+    @Test
+    public void verifyMappingHealthCheckerIoException() throws IOException, EmptyFileException {
 
-          @Mock(invocations = 1)
-          public BaseReport runCheck() throws IOException, EmptyFileException {
-              throw new EmptyFileException("SomeMessage");
-          }
-      };
-      new MockUp<PrestatsHealthChecker>() {
-          @Mock
-          void $init(String runDir, PrestatsExtractor extractor) {
-              assertEquals(runDir, DUMMY_RUN_DIR);
-          }
+        new MockUp<MappingHealthChecker>() {
 
-          @Mock(invocations = 0)
-          public BaseReport runCheck() throws IOException, EmptyFileException {
-              return null;
-          }
-      };
+            @Mock
+            void $init(final String runDir, final MappingExtractor extractor) {
+                assertEquals(runDir, DUMMY_RUN_DIR);
+            }
 
-      final BoggsAdapter adapter = new BoggsAdapter();
-      adapter.runCheck(DUMMY_RUN_DIR);
-  }
+            @Mock(invocations = 1)
+            public BaseReport runCheck() throws IOException, EmptyFileException {
+                throw new IOException();
+            }
+        };
+        new MockUp<PrestatsHealthChecker>() {
 
-  @Test
-  public void verifyPrestatsHealthCheckerEmptyFileException() throws IOException, EmptyFileException {
+            @Mock
+            void $init(final String runDir, final PrestatsExtractor extractor) {
+                assertEquals(runDir, DUMMY_RUN_DIR);
+            }
 
-      new MockUp<MappingHealthChecker>() {
-          @Mock
-          void $init(String runDir, MappingExtractor extractor) {
-              assertEquals(runDir, DUMMY_RUN_DIR);
-          }
+            @Mock(invocations = 0)
+            public BaseReport runCheck() throws IOException, EmptyFileException {
+                return null;
+            }
+        };
 
-          @Mock(invocations = 1)
-          public BaseReport runCheck() throws IOException, EmptyFileException {
-              return getDummyMappingReport();
-          }
-      };
-      new MockUp<PrestatsHealthChecker>() {
-          @Mock
-          void $init(String runDir, PrestatsExtractor extractor) {
-              assertEquals(runDir, DUMMY_RUN_DIR);
-          }
+        final BoggsAdapter adapter = new BoggsAdapter();
+        adapter.runCheck(DUMMY_RUN_DIR);
+    }
 
-          @Mock(invocations = 1)
-          public BaseReport runCheck() throws IOException, EmptyFileException {
-              throw new EmptyFileException("SomeMessage");
-          }
-      };
+    @Test
+    public void verifyMappingHealthCheckerEmptyFileException() throws IOException, EmptyFileException {
 
-      final BoggsAdapter adapter = new BoggsAdapter();
-      adapter.runCheck(DUMMY_RUN_DIR);
-  }
+        new MockUp<MappingHealthChecker>() {
+
+            @Mock
+            void $init(final String runDir, final MappingExtractor extractor) {
+                assertEquals(runDir, DUMMY_RUN_DIR);
+            }
+
+            @Mock(invocations = 1)
+            public BaseReport runCheck() throws IOException, EmptyFileException {
+                throw new EmptyFileException("SomeMessage");
+            }
+        };
+        new MockUp<PrestatsHealthChecker>() {
+
+            @Mock
+            void $init(final String runDir, final PrestatsExtractor extractor) {
+                assertEquals(runDir, DUMMY_RUN_DIR);
+            }
+
+            @Mock(invocations = 0)
+            public BaseReport runCheck() throws IOException, EmptyFileException {
+                return null;
+            }
+        };
+
+        final BoggsAdapter adapter = new BoggsAdapter();
+        adapter.runCheck(DUMMY_RUN_DIR);
+    }
+
+    @Test
+    public void verifyPrestatsHealthCheckerEmptyFileException() throws IOException, EmptyFileException {
+
+        new MockUp<MappingHealthChecker>() {
+
+            @Mock
+            void $init(final String runDir, final MappingExtractor extractor) {
+                assertEquals(runDir, DUMMY_RUN_DIR);
+            }
+
+            @Mock(invocations = 1)
+            public BaseReport runCheck() throws IOException, EmptyFileException {
+                return getDummyMappingReport();
+            }
+        };
+        new MockUp<PrestatsHealthChecker>() {
+
+            @Mock
+            void $init(final String runDir, final PrestatsExtractor extractor) {
+                assertEquals(runDir, DUMMY_RUN_DIR);
+            }
+
+            @Mock(invocations = 1)
+            public BaseReport runCheck() throws IOException, EmptyFileException {
+                throw new EmptyFileException("SomeMessage");
+            }
+        };
+
+        final BoggsAdapter adapter = new BoggsAdapter();
+        adapter.runCheck(DUMMY_RUN_DIR);
+    }
 }

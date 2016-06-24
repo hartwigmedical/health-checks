@@ -14,7 +14,7 @@ public class BaseDataReport {
     private final String value;
 
     public BaseDataReport(@NotNull final String patientId, @NotNull final String checkName,
-            @NotNull final String value) {
+                    @NotNull final String value) {
         this.patientId = patientId;
         this.checkName = checkName;
         this.value = value;
@@ -37,10 +37,7 @@ public class BaseDataReport {
 
     @Override
     public String toString() {
-        return "BaseDataReport{" +
-                "patientId='" + patientId + '\'' +
-                ", checkName=" + checkName +
-                ", value='" + value + '\'' +
-                '}';
+        return "BaseDataReport{" + "patientId='" + patientId + '\'' + ", checkName=" + checkName + ", value='" + value
+                        + '\'' + '}';
     }
 }

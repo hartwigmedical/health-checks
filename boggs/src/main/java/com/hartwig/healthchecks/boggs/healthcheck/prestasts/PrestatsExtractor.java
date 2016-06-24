@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.CheckType;
-
-import org.jetbrains.annotations.NotNull;
 
 public class PrestatsExtractor extends BoggsExtractor {
 
@@ -63,52 +63,48 @@ public class PrestatsExtractor extends BoggsExtractor {
         return prestatsData;
     }
 
-    private List<BaseDataReport> getSummaryFilesData(@NotNull final Path pathToCheck,
-                    @NotNull final String patientId) throws IOException, EmptyFileException {
+    private List<BaseDataReport> getSummaryFilesData(@NotNull final Path pathToCheck, @NotNull final String patientId)
+                    throws IOException, EmptyFileException {
 
         final List<Path> zipFiles = Files.walk(pathToCheck)
-                .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
-                .collect(toCollection(ArrayList<Path>::new));
+                        .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
+                        .collect(toCollection(ArrayList<Path>::new));
 
-        final Map<String, List<BaseDataReport>> data = zipFiles
-                .stream()
-                .map(path -> {
-                    List<String> lines = null;
-                    lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
-                    if (lines == null) {
-                        lines = new ArrayList<>();
-                    }
-                    return lines;
-                 })
-                .flatMap(Collection::stream)
-                .map(line -> {
-                    final String[] values = line.split(SEPERATOR_REGEX);
-                    BaseDataReport prestatsDataReport = null;
-                    if (values.length == EXPECTED_LINE_LENGTH) {
-                        final String status = values[0];
-                        final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
-                        if (check.isPresent()) {
-                            prestatsDataReport = new BaseDataReport(patientId, check.get().getDescription(), status);
-                        }
-                    }
-                    return prestatsDataReport;
-                })
-                .filter(prestatsDataReport -> prestatsDataReport != null)
-                .collect(groupingBy(baseDataReport -> {
-                    return baseDataReport.getCheckName();
-                }));
+        final Map<String, List<BaseDataReport>> data = getDataFromZipFiles(patientId, zipFiles);
 
-        return data.values()
-                .stream()
-                .map(prestatsDataReportList -> {
-                    return prestatsDataReportList.stream().min(isStatusWorse()).get();
-                })
-                .collect(toList());
+        return data.values().stream().map(prestatsDataReportList -> {
+            return prestatsDataReportList.stream().min(isStatusWorse()).get();
+        }).collect(toList());
+    }
+
+    private Map<String, List<BaseDataReport>> getDataFromZipFiles(final String patientId, final List<Path> zipFiles) {
+        final Map<String, List<BaseDataReport>> data = zipFiles.stream().map(path -> {
+            List<String> lines = null;
+            lines = getLinesFromFile(path, SUMMARY_FILE_NAME);
+            if (lines == null) {
+                lines = new ArrayList<>();
+            }
+            return lines;
+        }).flatMap(Collection::stream).map(line -> {
+            final String[] values = line.split(SEPERATOR_REGEX);
+            BaseDataReport prestatsDataReport = null;
+            if (values.length == EXPECTED_LINE_LENGTH) {
+                final String status = values[0];
+                final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
+                if (check.isPresent()) {
+                    prestatsDataReport = new BaseDataReport(patientId, check.get().getDescription(), status);
+                }
+            }
+            return prestatsDataReport;
+        }).filter(prestatsDataReport -> prestatsDataReport != null).collect(groupingBy(baseDataReport -> {
+            return baseDataReport.getCheckName();
+        }));
+        return data;
     }
 
     private Comparator<BaseDataReport> isStatusWorse() {
 
-        Comparator<BaseDataReport> isStatusWorse = (firstData, secondData) -> {
+        final Comparator<BaseDataReport> isStatusWorse = (firstData, secondData) -> {
             final String firstStatus = firstData.getValue();
             final String secondStatus = secondData.getValue();
             int status = ONE;
@@ -131,7 +127,8 @@ public class PrestatsExtractor extends BoggsExtractor {
             if (totalSequences < MIN_TOTAL_SQ) {
                 status = FAIL;
             }
-            prestatsDataReport = new BaseDataReport(patientId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.toString(), status);
+            prestatsDataReport = new BaseDataReport(patientId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(),
+                            status);
         }
         return prestatsDataReport;
     }

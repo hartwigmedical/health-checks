@@ -3,10 +3,10 @@ package com.hartwig.healthchecks.boggs.model.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-
-import org.jetbrains.annotations.NotNull;
 
 public class MappingReport extends BaseReport {
 
@@ -19,11 +19,11 @@ public class MappingReport extends BaseReport {
         super(checkType);
     }
 
-    public void addData(@NotNull  final BaseDataReport dataReport) {
+    public void addData(@NotNull final BaseDataReport dataReport) {
         mapping.add(dataReport);
     }
 
-    public void addAll(List<BaseDataReport> mappingReportList) {
+    public void addAll(final List<BaseDataReport> mappingReportList) {
         mapping.addAll(mappingReportList);
     }
 
@@ -34,8 +34,6 @@ public class MappingReport extends BaseReport {
 
     @Override
     public String toString() {
-        return "MappingReport{" +
-                "mapping=" + mapping +
-                '}';
+        return "MappingReport{" + "mapping=" + mapping + '}';
     }
 }
