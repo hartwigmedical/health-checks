@@ -39,10 +39,10 @@ public class FlagStatData {
 
     @Override
     public String toString() {
-        return "FlagStatData{" +
-                "path='" + path + '\'' +
-                ", passedStats=" + passedStats +
-                ", failedStats=" + failedStats +
-                '}';
+        return "FlagStatData{"
+                + "path='" + path + '\''
+                + ", passedStats=" + passedStats
+                + ", failedStats=" + failedStats
+                + '}';
     }
 }

@@ -21,7 +21,13 @@ public class SambambaFlagStatParser implements FlagStatParser {
 
     private static final String SEPERATOR_REGEX = " ";
 
-    private static final int START = 0;
+    private static final int ZERO = 0;
+
+    private static final int ONE = 1;
+
+    private static final int TWO = 2;
+
+    private static final int THREE = 3;
 
     @NotNull
     public FlagStatData parse(@NotNull final String filePath) throws IOException, EmptyFileException {
@@ -29,21 +35,21 @@ public class SambambaFlagStatParser implements FlagStatParser {
         final Map<String, Double> failed = new HashMap<>();
 
         Files.lines(Paths.get(filePath)).map(line -> {
-            final String qcPassed = line.split(SEPERATOR_REGEX)[0];
-            final String qcFailed = line.split(SEPERATOR_REGEX)[2];
+            final String qcPassed = line.split(SEPERATOR_REGEX)[ZERO];
+            final String qcFailed = line.split(SEPERATOR_REGEX)[TWO];
 
-            final String firstWord = line.split(SEPERATOR_REGEX)[3];
+            final String firstWord = line.split(SEPERATOR_REGEX)[THREE];
             final int firstWordIndex = line.indexOf(firstWord);
             final String checkName = line.substring(firstWordIndex, line.length());
 
 
             return new String[] {qcPassed, qcFailed, checkName};
         }).forEach(line -> {
-            final double passedValue = Double.parseDouble(line[0]);
-            final double failedValue = Double.parseDouble(line[1]);
+            final double passedValue = Double.parseDouble(line[ZERO]);
+            final double failedValue = Double.parseDouble(line[ONE]);
 
-            passed.put(line[2], passedValue);
-            failed.put(line[2], failedValue);
+            passed.put(line[TWO], passedValue);
+            failed.put(line[TWO], failedValue);
         });
 
         if (failed.isEmpty() || passed.isEmpty()) {
@@ -59,7 +65,7 @@ public class SambambaFlagStatParser implements FlagStatParser {
     @NotNull
     private List<FlagStats> buildFlagStatsData(@NotNull final Map<String, Double> data) {
         final List<FlagStats> failedStats = new ArrayList<>();
-        IntStream.range(START, data.size()).forEach(index -> {
+        IntStream.range(ZERO, data.size()).forEach(index -> {
             data.forEach((checkName, value) -> {
                 final Optional<FlagStatsType> statsTypeOpt = FlagStatsType.getByIndex(index);
                 final FlagStatsType flagStatsType = statsTypeOpt.get();

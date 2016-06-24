@@ -28,10 +28,10 @@ public class FlagStats {
 
     @Override
     public String toString() {
-        return "FlagStats{" +
-                "flagStatsType=" + flagStatsType +
-                ", checkType='" + checkType + '\'' +
-                ", value=" + value +
-                '}';
+        return "FlagStats{"
+                + "flagStatsType=" + flagStatsType
+                + ", checkType='" + checkType + '\''
+                + ", value=" + value
+                + '}';
     }
 }

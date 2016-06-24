@@ -65,6 +65,35 @@ public class MappingExtractor extends BoggsExtractor {
     private List<BaseDataReport> getFlagStatsData(@NotNull final String externalId, @NotNull final Path runDirPath,
             @NotNull final String totalSequences) throws IOException, EmptyFileException {
 
+        final FlagStatData flagstatData = parseFlagStatFile(runDirPath);
+
+        final List<BaseDataReport> mappingDataReports = new ArrayList<>();
+        final List<FlagStats> passed = flagstatData.getPassedStats();
+
+        final BaseDataReport mappedDataReport = generateMappedDataReport(externalId, passed);
+        mappingDataReports.add(mappedDataReport);
+
+        final BaseDataReport properDataReport = generateProperDataReport(externalId, passed);
+        mappingDataReports.add(properDataReport);
+
+        final BaseDataReport singletonDataReport = generateSingletonDataReport(externalId, passed);
+        mappingDataReports.add(singletonDataReport);
+
+        final BaseDataReport mateMappedDataReport = generateMateMappedDataReport(externalId, passed);
+        mappingDataReports.add(mateMappedDataReport);
+
+        final BaseDataReport duplicateDataReport = generateDupliucateDataReport(externalId, passed);
+        mappingDataReports.add(duplicateDataReport);
+
+        final BaseDataReport secondaryDataReport = generateSecondaryDataReport(externalId, totalSequences, passed);
+
+        mappingDataReports.add(secondaryDataReport);
+
+        return mappingDataReports;
+    }
+
+    @NotNull
+    private FlagStatData parseFlagStatFile(final @NotNull Path runDirPath) throws IOException, EmptyFileException {
         final Optional<Path> filePath = Files
                         .walk(new File(runDirPath + File.separator + MAPPING + File.separator).toPath())
                         .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
@@ -79,51 +108,94 @@ public class MappingExtractor extends BoggsExtractor {
         if (flagstatData == null) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirPath.toString()));
         }
+        return flagstatData;
+    }
 
-        final List<BaseDataReport> mappingDataReports = new ArrayList<>();
-        final List<FlagStats> passed = flagstatData.getPassedStats();
+    @NotNull
+    private BaseDataReport generateMappedDataReport(@NotNull final String externalId,
+            @NotNull final  List<FlagStats> passed) {
 
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final DivisionOperator mappedStatCalc = FlagStatsType.MAPPED_INDEX.getCalculableInstance();
-        final double mappedPercentage = toPercentage(mappedStatCalc.calculate(mappedStat.getValue(), totalStat.getValue()));
+        final double mappedPercentage = toPercentage(mappedStatCalc.calculate(mappedStat.getValue(),
+                totalStat.getValue()));
 
-        final BaseDataReport percentageReport = new BaseDataReport(externalId, mappedStat.getCheckType(), String.valueOf(mappedPercentage));
-        mappingDataReports.add(percentageReport);
+        final BaseDataReport mappedDataReport = new BaseDataReport(externalId, mappedStat.getCheckType(),
+                String.valueOf(mappedPercentage));
+
+        return mappedDataReport;
+    }
+
+    @NotNull
+    private BaseDataReport generateProperDataReport(@NotNull final String externalId,
+            @NotNull final  List<FlagStats> passed) {
 
         final FlagStats properPaired = passed.get(FlagStatsType.PROPERLY_PAIRED_INDEX.getIndex());
         final DivisionOperator properStatCalc = FlagStatsType.PROPERLY_PAIRED_INDEX.getCalculableInstance();
-        final double properlyPairedPercentage = toPercentage(properStatCalc.calculate(properPaired.getValue(), properPaired.getValue()));
+        final double properlyPairedPercentage = toPercentage(properStatCalc.calculate(properPaired.getValue(),
+                properPaired.getValue()));
 
-        final BaseDataReport properlyReport = new BaseDataReport(externalId, properPaired.getCheckType(), String.valueOf(properlyPairedPercentage));
-        mappingDataReports.add(properlyReport);
+        final BaseDataReport properReport = new BaseDataReport(externalId, properPaired.getCheckType(),
+                String.valueOf(properlyPairedPercentage));
+
+        return properReport;
+    }
+
+    @NotNull
+    private BaseDataReport generateSingletonDataReport(@NotNull final String externalId,
+            @NotNull final  List<FlagStats> passed) {
 
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGELTONS_INDEX.getIndex());
         final double singletonPercentage = singletonStat.getValue();
 
-        final BaseDataReport singletonReport = new BaseDataReport(externalId, singletonStat.getCheckType(), String.valueOf(singletonPercentage));
-        mappingDataReports.add(singletonReport);
+        final BaseDataReport singletonReport = new BaseDataReport(externalId, singletonStat.getCheckType(),
+                String.valueOf(singletonPercentage));
+
+        return singletonReport;
+    }
+
+    @NotNull
+    private BaseDataReport generateMateMappedDataReport(@NotNull final String externalId,
+            @NotNull final  List<FlagStats> passed) {
 
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
         final double mateMappedDiffChrPercentage = diffPercStat.getValue();
 
-        final BaseDataReport mateMappedDiffReport = new BaseDataReport(externalId, diffPercStat.getCheckType(), String.valueOf(mateMappedDiffChrPercentage));
-        mappingDataReports.add(mateMappedDiffReport);
+        final BaseDataReport mateMappedDiffReport = new BaseDataReport(externalId, diffPercStat.getCheckType(),
+                String.valueOf(mateMappedDiffChrPercentage));
 
+        return mateMappedDiffReport;
+    }
+
+    @NotNull
+    private BaseDataReport generateDupliucateDataReport(@NotNull final String externalId,
+            @NotNull final  List<FlagStats> passed) {
+
+        final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats duplicateStat = passed.get(FlagStatsType.DUPLICATES_INDEX.getIndex());
         final DivisionOperator duplicateStatCalc = FlagStatsType.DUPLICATES_INDEX.getCalculableInstance();
-        final double proportionOfDuplicateRead = toPercentage(duplicateStatCalc.calculate(duplicateStat.getValue(), totalStat.getValue()));
+        final double proportionOfDuplicateRead = toPercentage(duplicateStatCalc.calculate(duplicateStat.getValue(),
+                totalStat.getValue()));
 
-        final BaseDataReport duplicateReport = new BaseDataReport(externalId, diffPercStat.getCheckType(), String.valueOf(proportionOfDuplicateRead));
-        mappingDataReports.add(duplicateReport);
+        final BaseDataReport duplicateReport = new BaseDataReport(externalId, duplicateStat.getCheckType(),
+                String.valueOf(proportionOfDuplicateRead));
 
+        return duplicateReport;
+    }
+
+    @NotNull
+    private BaseDataReport generateSecondaryDataReport(@NotNull final String externalId,
+            @NotNull final String totalSequences, @NotNull final  List<FlagStats> passed) {
+
+        final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats secondaryStat = passed.get(FlagStatsType.SECONDARY_INDEX.getIndex());
         final boolean isAllReadsPresent = totalStat.getValue() == Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE
                 + secondaryStat.getValue();
 
-        final BaseDataReport secondaryReport = new BaseDataReport(externalId, secondaryStat.getCheckType(), String.valueOf(isAllReadsPresent));
-        mappingDataReports.add(secondaryReport);
+        final BaseDataReport secondaryReport = new BaseDataReport(externalId, secondaryStat.getCheckType(),
+                String.valueOf(isAllReadsPresent));
 
-        return mappingDataReports;
+        return secondaryReport;
     }
 }

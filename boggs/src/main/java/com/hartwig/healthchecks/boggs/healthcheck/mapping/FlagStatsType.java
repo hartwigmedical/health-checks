@@ -61,6 +61,6 @@ public enum FlagStatsType {
     @NotNull
     public <T>T getCalculableInstance() {
         calculableClass.cast(getCalculable());
-        return (T)calculableClass;
+        return (T) calculableClass;
     }
 }
