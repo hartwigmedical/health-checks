@@ -47,7 +47,7 @@ public class PrestatsExtractor extends BoggsExtractor {
 
     private static final String FOUND_FAILS_MSG = "NOT OK: %s has status FAIL for Patient %s";
 
-    private static final Logger LOGGER = LogManager.getLogger(ZipFileReader.class);
+    private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
 
     @NotNull
     private final ZipFileReader zipFileReader;
