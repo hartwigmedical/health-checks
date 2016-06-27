@@ -1,7 +1,6 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -117,11 +116,6 @@ public class MappingExtractor extends BoggsExtractor {
                         .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
                                         && path.getFileName().toString().contains(REALIGN))
                         .findFirst();
-
-        if (!filePath.isPresent()) {
-            throw new FileNotFoundException();
-        }
-
         final FlagStatData flagstatData = flagstatParser.parse(filePath.get().toString());
         if (flagstatData == null) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirPath.toString()));
