@@ -28,6 +28,8 @@ import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
 
+    private static final double ZERO_DOUBLE_VALUE = 0.0d;
+
     protected static final String PASS = "PASS";
 
     protected static final String WARN = "WARN";
@@ -157,7 +159,7 @@ public class PrestatsExtractor extends BoggsExtractor {
     private BaseDataReport getFastqFilesData(@NotNull final Path pathToCheck, @NotNull final String patientId)
                     throws IOException, EmptyFileException {
         final Long totalSequences = sumOfTotalSequences(pathToCheck, zipFileReader);
-        if (totalSequences == 0.0d) {
+        if (totalSequences == ZERO_DOUBLE_VALUE) {
             LOGGER.error(String.format(EMPTY_FILES_ERROR, pathToCheck));
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, pathToCheck));
         }
