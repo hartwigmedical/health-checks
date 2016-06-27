@@ -56,7 +56,9 @@ public class MappingExtractor extends BoggsExtractor {
 
         final Optional<Path> sampleFile = getFilesPath(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final String externalId = sampleFile.get().getFileName().toString();
-        final Long totalSequences = sumOfTotalSequences(sampleFile.get(), zipFileReader);
+        final Path totalSequencesPath = new File(sampleFile.get() + File.separator + QC_STATS + File.separator)
+                        .toPath();
+        final Long totalSequences = sumOfTotalSequences(totalSequencesPath, zipFileReader);
         final List<BaseDataReport> mapping = getFlagStatsData(externalId, sampleFile.get(), totalSequences.toString());
 
         mapping.forEach(mappingReport -> {

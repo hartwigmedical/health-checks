@@ -99,6 +99,7 @@ public class PrestatsExtractorTest {
 
                 zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
                 returns(firstTList, secondTList, thridTList, forthTList);
+
                 zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
                 returns(fastqLines, fastqLines, fastqLines, fastqLines);
 

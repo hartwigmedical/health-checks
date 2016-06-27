@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -75,8 +76,9 @@ public class PrestatsExtractor extends BoggsExtractor {
                     @NotNull final String suffix) throws IOException, EmptyFileException {
         final Optional<Path> samplePath = getFilesPath(runDirectory, prefix, suffix);
         final String samplePatientId = samplePath.get().getFileName().toString();
-        final List<BaseDataReport> sampleData = getSummaryFilesData(samplePath.get(), samplePatientId);
-        final BaseDataReport sampleFastq = getFastqFilesData(samplePath.get(), samplePatientId);
+        final Path pathToCheck = new File(samplePath.get() + File.separator + QC_STATS + File.separator).toPath();
+        final List<BaseDataReport> sampleData = getSummaryFilesData(pathToCheck, samplePatientId);
+        final BaseDataReport sampleFastq = getFastqFilesData(pathToCheck, samplePatientId);
         sampleData.add(sampleFastq);
         return sampleData;
     }
@@ -129,10 +131,8 @@ public class PrestatsExtractor extends BoggsExtractor {
     }
 
     private List<Path> getAllZipFilesPaths(final Path pathToCheck) throws IOException {
-        return Files.walk(pathToCheck)
-                        .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)
-                                        && path.getParent().getFileName().toString().equals("QCStats"))
-                        .sorted().collect(toCollection(ArrayList<Path>::new));
+        return Files.walk(pathToCheck).filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
+                        .collect(toCollection(ArrayList<Path>::new));
     }
 
     private Comparator<BaseDataReport> isStatusWorse() {

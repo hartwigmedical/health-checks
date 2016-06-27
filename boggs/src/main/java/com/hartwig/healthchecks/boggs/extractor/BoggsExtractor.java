@@ -17,6 +17,10 @@ import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 
 public class BoggsExtractor {
 
+    private static final String SOMATIC_VARIANTS = "somaticVariants";
+
+    protected static final String QC_STATS = "QCStats";
+
     protected static final String FILENAME = "Filename";
 
     protected static final String SEPERATOR_REGEX = "\t";
@@ -46,7 +50,8 @@ public class BoggsExtractor {
                     @NotNull final String suffix) throws IOException {
         final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath())
                         .filter(path -> path.getFileName().toString().startsWith(prefix)
-                                        && path.getFileName().toString().endsWith(suffix))
+                                        && path.getFileName().toString().endsWith(suffix)
+                                        && !path.toString().contains(SOMATIC_VARIANTS))
                         .findFirst();
         return filePath;
     }
