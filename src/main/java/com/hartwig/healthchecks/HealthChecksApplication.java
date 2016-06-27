@@ -25,15 +25,19 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class HealthChecksApplication {
+
     private static final String REPORT_GENERATED_MSG = "Report generated with following name -> %s";
 
     private static final Logger LOGGER = LogManager.getLogger(HealthChecksApplication.class);
 
     private static final String RUN_DIRECTORY = "rundir";
+
     private static final String CHECK_TYPE = "checktype";
+
     private static final String ALL_CHECKS = "all";
 
     private final String runDirectory;
+
     private final String checkType;
 
     public HealthChecksApplication(@NotNull final String runDirectory, @NotNull final String checkType) {

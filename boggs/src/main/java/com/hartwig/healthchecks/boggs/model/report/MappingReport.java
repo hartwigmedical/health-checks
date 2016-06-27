@@ -1,5 +1,8 @@
 package com.hartwig.healthchecks.boggs.model.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -8,39 +11,29 @@ import com.hartwig.healthchecks.common.util.CheckType;
 public class MappingReport extends BaseReport {
 
     private static final long serialVersionUID = 7647060563039702736L;
-    @NotNull
-    private final String externalId;
-    @NotNull
-    private final String totalSequences;
-    @NotNull
-    private final MappingDataReport mappingDataReport;
 
-    public MappingReport(@NotNull final CheckType checkType, @NotNull final String externalId,
-                    @NotNull final String totalSequences, @NotNull final MappingDataReport mappingDataReport) {
+    @NotNull
+    private final List<BaseDataReport> mapping = new ArrayList<>();
+
+    public MappingReport(@NotNull final CheckType checkType) {
         super(checkType);
-        this.externalId = externalId;
-        this.totalSequences = totalSequences;
-        this.mappingDataReport = mappingDataReport;
+    }
+
+    public void addData(@NotNull final BaseDataReport dataReport) {
+        mapping.add(dataReport);
+    }
+
+    public void addAll(final List<BaseDataReport> mappingReportList) {
+        mapping.addAll(mappingReportList);
     }
 
     @NotNull
-    public String getTotalSequences() {
-        return totalSequences;
-    }
-
-    @NotNull
-    public MappingDataReport getMappingDataReport() {
-        return mappingDataReport;
-    }
-
-    @NotNull
-    public String getExternalId() {
-        return externalId;
+    public List<BaseDataReport> getMapping() {
+        return mapping;
     }
 
     @Override
     public String toString() {
-        return "MappingReport [externalId=" + externalId + ", totalSequences=" + totalSequences + ", mappingDataReport="
-                        + mappingDataReport + "]";
+        return "MappingReport{" + "mapping=" + mapping + '}';
     }
 }

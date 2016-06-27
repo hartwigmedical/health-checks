@@ -1,41 +1,48 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 
 public class FlagStatData {
 
     @NotNull
     private final String path;
-    @NotNull
-    private final FlagStats qcPassedReads;
-    @NotNull
-    private final FlagStats qcFailedReads;
 
-    FlagStatData(@NotNull final String path, @NotNull final FlagStats qcPassedReads,
-            @NotNull final FlagStats qcFailedReads) {
+    @NotNull
+    private final List<FlagStats> passedStats;
+
+    @NotNull
+    private final List<FlagStats> failedStats;
+
+    public FlagStatData(@NotNull final String path, @NotNull final List<FlagStats> passedStats,
+            @NotNull final List<FlagStats> failedStats) {
         this.path = path;
-        this.qcPassedReads = qcPassedReads;
-        this.qcFailedReads = qcFailedReads;
+        this.passedStats = passedStats;
+        this.failedStats = failedStats;
     }
 
     @NotNull
-    public String path() {
+    public String getPath() {
         return path;
     }
 
     @NotNull
-    public FlagStats getQcPassedReads() {
-        return qcPassedReads;
+    public List<FlagStats> getPassedStats() {
+        return passedStats;
     }
 
     @NotNull
-    public FlagStats getQcFailedReads() {
-        return qcFailedReads;
+    public List<FlagStats> getFailedStats() {
+        return failedStats;
     }
 
     @Override
     public String toString() {
-        return "FlagStatData{" + "path='" + path + '\'' + ", getQcPassedReads=" + qcPassedReads + ", getQcFailedReads="
-                + qcFailedReads + '}';
+        return "FlagStatData{"
+                + "path='" + path + '\''
+                + ", passedStats=" + passedStats
+                + ", failedStats=" + failedStats
+                + '}';
     }
 }

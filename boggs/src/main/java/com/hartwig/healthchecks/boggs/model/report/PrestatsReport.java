@@ -11,30 +11,32 @@ import com.hartwig.healthchecks.common.util.CheckType;
 public class PrestatsReport extends BaseReport {
 
     private static final long serialVersionUID = 3588650481644358694L;
+
     @NotNull
-    private final List<PrestatsDataReport> referenceSample = new ArrayList<>();
+    private final List<BaseDataReport> referenceSample = new ArrayList<>();
+
     @NotNull
-    private final List<PrestatsDataReport> tumorSample = new ArrayList<>();
+    private final List<BaseDataReport> tumorSample = new ArrayList<>();
 
     public PrestatsReport(@NotNull final CheckType checkType) {
         super(checkType);
     }
 
-    public void addReferenceData(@NotNull final List<PrestatsDataReport> prestatsDataReport) {
+    public void addReferenceData(@NotNull final List<BaseDataReport> prestatsDataReport) {
         referenceSample.addAll(prestatsDataReport);
     }
 
-    public void addTumorData(@NotNull final List<PrestatsDataReport> prestatsDataReport) {
+    public void addTumorData(@NotNull final List<BaseDataReport> prestatsDataReport) {
         tumorSample.addAll(prestatsDataReport);
     }
 
     @NotNull
-    public List<PrestatsDataReport> getTumorSample() {
+    public List<BaseDataReport> getTumorSample() {
         return tumorSample;
     }
 
     @NotNull
-    public List<PrestatsDataReport> getReferenceSample() {
+    public List<BaseDataReport> getReferenceSample() {
         return referenceSample;
     }
 

@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
+import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
@@ -47,7 +48,7 @@ public class PrestatsExtractor extends BoggsExtractor {
 
     private static final String FOUND_FAILS_MSG = "NOT OK: %s has status FAIL for Patient %s";
 
-    private static final Logger LOGGER = LogManager.getLogger(ZipFileReader.class);
+    private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
 
     @NotNull
     private final ZipFileReader zipFileReader;
@@ -59,8 +60,8 @@ public class PrestatsExtractor extends BoggsExtractor {
 
     public PrestatsReport extractFromRunDirectory(@NotNull final String runDirectory)
                     throws IOException, EmptyFileException {
-        final List<PrestatsDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
-        final List<PrestatsDataReport> tumSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
+        final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
+        final List<BaseDataReport> tumSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
 
         logPrestatsReport(refSampleData);
         logPrestatsReport(tumSampleData);
@@ -71,23 +72,23 @@ public class PrestatsExtractor extends BoggsExtractor {
         return prestatsData;
     }
 
-    private List<PrestatsDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
+    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException, EmptyFileException {
         final Optional<Path> samplePath = getFilesPath(runDirectory, prefix, suffix);
         final String samplePatientId = samplePath.get().getFileName().toString();
-        final List<PrestatsDataReport> sampleData = getSummaryFilesData(samplePath.get(), samplePatientId);
-        final PrestatsDataReport sampleFastq = getFastqFilesData(samplePath.get(), samplePatientId);
+        final Path pathToCheck = new File(samplePath.get() + File.separator + QC_STATS + File.separator).toPath();
+        final List<BaseDataReport> sampleData = getSummaryFilesData(pathToCheck, samplePatientId);
+        final BaseDataReport sampleFastq = getFastqFilesData(pathToCheck, samplePatientId);
         sampleData.add(sampleFastq);
         return sampleData;
     }
 
-    private List<PrestatsDataReport> getSummaryFilesData(@NotNull final Path pathToCheck,
-                    @NotNull final String patientId) throws IOException, EmptyFileException {
+    private List<BaseDataReport> getSummaryFilesData(@NotNull final Path pathToCheck, @NotNull final String patientId)
+                    throws IOException, EmptyFileException {
 
-        final Map<PrestatsCheck, List<PrestatsDataReport>> data = extractSummaryDataFromZipFiles(pathToCheck,
-                        patientId);
+        final Map<String, List<BaseDataReport>> data = extractSummaryDataFromZipFiles(pathToCheck, patientId);
 
-        final List<PrestatsDataReport> prestatsDataReports = data.values().stream().map(prestatsDataReportList -> {
+        final List<BaseDataReport> prestatsDataReports = data.values().stream().map(prestatsDataReportList -> {
             return prestatsDataReportList.stream().min(isStatusWorse()).get();
         }).collect(toList());
         if (prestatsDataReports == null || prestatsDataReports.isEmpty()) {
@@ -97,7 +98,7 @@ public class PrestatsExtractor extends BoggsExtractor {
         return prestatsDataReports;
     }
 
-    private Map<PrestatsCheck, List<PrestatsDataReport>> extractSummaryDataFromZipFiles(final Path pathToCheck,
+    private Map<String, List<BaseDataReport>> extractSummaryDataFromZipFiles(final Path pathToCheck,
                     final String patientId) throws IOException {
 
         final List<Path> zipFiles = getAllZipFilesPaths(pathToCheck);
@@ -106,17 +107,16 @@ public class PrestatsExtractor extends BoggsExtractor {
 
         return allLines.stream().map(line -> {
             final String[] values = line.trim().split(SEPERATOR_REGEX);
-            PrestatsDataReport prestatsDataReport = null;
+            BaseDataReport prestatsDataReport = null;
             if (values.length == EXPECTED_LINE_LENGTH) {
                 final String status = values[0];
                 final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
                 if (check.isPresent()) {
-                    prestatsDataReport = new PrestatsDataReport(patientId, status, check.get());
+                    prestatsDataReport = new BaseDataReport(patientId, check.get().getDescription(), status);
                 }
             }
             return prestatsDataReport;
-        }).filter(prestatsDataReport -> prestatsDataReport != null)
-                        .collect(groupingBy(PrestatsDataReport::getCheckName));
+        }).filter(prestatsDataReport -> prestatsDataReport != null).collect(groupingBy(BaseDataReport::getCheckName));
     }
 
     private List<String> readAllLines(final List<Path> zipFiles) {
@@ -131,19 +131,17 @@ public class PrestatsExtractor extends BoggsExtractor {
     }
 
     private List<Path> getAllZipFilesPaths(final Path pathToCheck) throws IOException {
-        return Files.walk(pathToCheck)
-                        .filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)
-                                        && path.getParent().getFileName().toString().equals("QCStats"))
-                        .sorted().collect(toCollection(ArrayList<Path>::new));
+        return Files.walk(pathToCheck).filter(path -> path.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
+                        .collect(toCollection(ArrayList<Path>::new));
     }
 
-    private Comparator<PrestatsDataReport> isStatusWorse() {
-        final Comparator<PrestatsDataReport> isStatusWorse = new Comparator<PrestatsDataReport>() {
+    private Comparator<BaseDataReport> isStatusWorse() {
+        final Comparator<BaseDataReport> isStatusWorse = new Comparator<BaseDataReport>() {
+
             @Override
-            public int compare(@NotNull final PrestatsDataReport firstData,
-                            @NotNull final PrestatsDataReport secondData) {
-                final String firstStatus = firstData.getStatus();
-                final String secondStatus = secondData.getStatus();
+            public int compare(@NotNull final BaseDataReport firstData, @NotNull final BaseDataReport secondData) {
+                final String firstStatus = firstData.getValue();
+                final String secondStatus = secondData.getValue();
                 int status = ONE;
                 if (firstStatus.equals(secondStatus)) {
                     status = ZERO;
@@ -159,16 +157,17 @@ public class PrestatsExtractor extends BoggsExtractor {
 
     }
 
-    private PrestatsDataReport getFastqFilesData(@NotNull final Path pathToCheck, @NotNull final String patientId)
+    private BaseDataReport getFastqFilesData(@NotNull final Path pathToCheck, @NotNull final String patientId)
                     throws IOException, EmptyFileException {
         final Long totalSequences = sumOfTotalSequences(pathToCheck, zipFileReader);
-        PrestatsDataReport prestatsDataReport = null;
+        BaseDataReport prestatsDataReport = null;
         if (totalSequences != null) {
             String status = PASS;
             if (totalSequences < MIN_TOTAL_SQ) {
                 status = FAIL;
             }
-            prestatsDataReport = new PrestatsDataReport(patientId, status, PrestatsCheck.PRESTATS_NUMBER_OF_READS);
+            prestatsDataReport = new BaseDataReport(patientId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(),
+                            status);
         }
 
         if (prestatsDataReport == null) {
@@ -178,9 +177,9 @@ public class PrestatsExtractor extends BoggsExtractor {
         return prestatsDataReport;
     }
 
-    private void logPrestatsReport(final List<PrestatsDataReport> prestatsDataReport) {
+    private void logPrestatsReport(final List<BaseDataReport> prestatsDataReport) {
         prestatsDataReport.forEach((prestatsData) -> {
-            if (prestatsData.getStatus().equalsIgnoreCase(FAIL)) {
+            if (prestatsData.getValue().equalsIgnoreCase(FAIL)) {
                 LOGGER.info(String.format(FOUND_FAILS_MSG, prestatsData.getCheckName(), prestatsData.getPatientId()));
             }
         });

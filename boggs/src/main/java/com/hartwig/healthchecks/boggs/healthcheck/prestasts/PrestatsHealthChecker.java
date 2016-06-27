@@ -30,6 +30,7 @@ public class PrestatsHealthChecker implements HealthChecker {
     }
 
     @Override
+    @NotNull
     public BaseReport runCheck() {
 
         BaseReport prestatsReport;

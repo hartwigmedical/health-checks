@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
+import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
@@ -49,13 +49,15 @@ public class PrestatsHealthCheckerTest {
     @Test
     public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
         final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
-        final PrestatsDataReport prestatsTestDataReport = new PrestatsDataReport(DUMMY_ID, FAIL, PrestatsCheck.DUMMY);
+        final BaseDataReport prestatsTestDataReport = new BaseDataReport(DUMMY_ID, PrestatsCheck.DUMMY.getDescription(),
+                        FAIL);
         testData.addReferenceData(Arrays.asList(prestatsTestDataReport));
         testData.addTumorData(Arrays.asList(prestatsTestDataReport));
 
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 
         new Expectations() {
+
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 returns(testData);
@@ -64,10 +66,10 @@ public class PrestatsHealthCheckerTest {
 
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.PRESTATS, report.getCheckType());
-        final List<PrestatsDataReport> summaryData = ((PrestatsReport) report).getReferenceSample();
+        final List<BaseDataReport> summaryData = ((PrestatsReport) report).getReferenceSample();
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, 1, summaryData.size());
-        assertEquals(WRONG_CHECK_NAME, FAIL, summaryData.get(0).getStatus());
-        assertEquals(WRONG_CHECK_STATUS, PrestatsCheck.DUMMY, summaryData.get(0).getCheckName());
+        assertEquals(WRONG_CHECK_NAME, FAIL, summaryData.get(0).getValue());
+        assertEquals(WRONG_CHECK_STATUS, PrestatsCheck.DUMMY.getDescription(), summaryData.get(0).getCheckName());
         assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, summaryData.get(0).getPatientId());
     }
 
@@ -75,6 +77,7 @@ public class PrestatsHealthCheckerTest {
     public void verifyPrestatsHealthCheckerIOException() throws IOException, EmptyFileException {
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
+
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new IOException(DUMMY_ERROR);
@@ -93,6 +96,7 @@ public class PrestatsHealthCheckerTest {
     public void verifyPrestatsHealthCheckerEmptyFileException() throws IOException, EmptyFileException {
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
+
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new EmptyFileException(DUMMY_ERROR);

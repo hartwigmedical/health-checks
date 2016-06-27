@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsDataReport;
+import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
@@ -23,6 +23,8 @@ import mockit.Expectations;
 import mockit.Mocked;
 
 public class PrestatsExtractorTest {
+
+    private static final String WRONG_CHECK_VALUE_MSG = "Wrong Check Value";
 
     private static final String FASTQC_DATA_TXT = "fastqc_data.txt";
 
@@ -87,6 +89,7 @@ public class PrestatsExtractorTest {
         final URL runDirURL = Resources.getResource(RUNDIR);
         final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
         new Expectations() {
+
             {
                 zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
                 returns(firstRList, secondRList, thridRList, forthRList);
@@ -96,6 +99,7 @@ public class PrestatsExtractorTest {
 
                 zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
                 returns(firstTList, secondTList, thridTList, forthTList);
+
                 zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
                 returns(fastqLines, fastqLines, fastqLines, fastqLines);
 
@@ -109,6 +113,7 @@ public class PrestatsExtractorTest {
     public void extractDataEmptySummaryFile() throws IOException, EmptyFileException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         new Expectations() {
+
             {
                 zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
                 returns(emptyList, emptyList, emptyList, emptyList);
@@ -131,37 +136,37 @@ public class PrestatsExtractorTest {
         assertTumorSampleData(prestatsData.getTumorSample());
     }
 
-    private void assertRefSampleData(final List<PrestatsDataReport> sampleData) {
+    private void assertRefSampleData(final List<BaseDataReport> sampleData) {
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, sampleData.size());
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, PrestatsExtractor.FAIL,
-                        TEST_REF_ID);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.WARN,
-                        TEST_REF_ID);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(),
                         PrestatsExtractor.FAIL, TEST_REF_ID);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsExtractor.PASS,
-                        TEST_REF_ID);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription(),
+                        PrestatsExtractor.WARN, TEST_REF_ID);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription(),
+                        PrestatsExtractor.FAIL, TEST_REF_ID);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription(),
+                        PrestatsExtractor.PASS, TEST_REF_ID);
     }
 
-    private void assertTumorSampleData(final List<PrestatsDataReport> sampleData) {
+    private void assertTumorSampleData(final List<BaseDataReport> sampleData) {
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, sampleData.size());
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, PrestatsExtractor.FAIL,
-                        TEST_TUM_ID);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.WARN,
-                        TEST_TUM_ID);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(),
                         PrestatsExtractor.FAIL, TEST_TUM_ID);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsExtractor.PASS,
-                        TEST_TUM_ID);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription(),
+                        PrestatsExtractor.WARN, TEST_TUM_ID);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription(),
+                        PrestatsExtractor.FAIL, TEST_TUM_ID);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription(),
+                        PrestatsExtractor.PASS, TEST_TUM_ID);
     }
 
-    private void assertPrestatsDataReport(final List<PrestatsDataReport> sampleData, final PrestatsCheck check,
+    private void assertPrestatsDataReport(final List<BaseDataReport> sampleData, final String check,
                     final String expectedStatus, final String expectedPatientId) {
         final String actualStatus = sampleData.stream().filter(p -> p.getCheckName().equals(check)).findFirst().get()
-                        .getStatus();
+                        .getValue();
         final String externalId = sampleData.stream().filter(p -> p.getCheckName().equals(check)).findFirst().get()
                         .getPatientId();
         assertEquals(WRONG_PATIENT_ID_MSG, expectedPatientId, externalId);
-        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, expectedStatus, actualStatus);
+        assertEquals(WRONG_CHECK_VALUE_MSG, expectedStatus, actualStatus);
     }
 }

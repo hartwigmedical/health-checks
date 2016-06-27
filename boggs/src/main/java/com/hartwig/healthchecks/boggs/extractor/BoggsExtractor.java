@@ -16,6 +16,9 @@ import org.jetbrains.annotations.NotNull;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 
 public class BoggsExtractor {
+
+    protected static final String QC_STATS = "QCStats";
+
     protected static final String FILENAME = "Filename";
 
     protected static final String SEPERATOR_REGEX = "\t";
@@ -40,11 +43,15 @@ public class BoggsExtractor {
 
     protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";
 
+    private static final String SOMATIC_VARIANTS = "somaticVariants";
+
+    @NotNull
     protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException {
         final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath())
                         .filter(path -> path.getFileName().toString().startsWith(prefix)
-                                        && path.getFileName().toString().endsWith(suffix))
+                                        && path.getFileName().toString().endsWith(suffix)
+                                        && !path.toString().contains(SOMATIC_VARIANTS))
                         .findFirst();
         return filePath;
     }
@@ -67,6 +74,7 @@ public class BoggsExtractor {
         return allValues.stream().mapToLong(Long::parseLong).sum();
     }
 
+    @NotNull
     protected String getLineFromFile(@NotNull final Path path, @NotNull final String fileName,
                     @NotNull final String filter, final ZipFileReader zipFileReader) {
         String searchedLine = null;

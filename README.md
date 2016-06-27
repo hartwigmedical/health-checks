@@ -59,113 +59,155 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
+		"MAPPING": {
+			"mapping": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "mapped",
+				"value": "99.69"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "properly paired",
+				"value": "99.57"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "singletons",
+				"value": "55.0"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "with mate mapped to a different chr",
+				"value": "0.0"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "duplicates",
+				"value": "5.95"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "is all read",
+				"value": "false"
+			}],
+			"check_type": "MAPPING"
+		}
+	}, {
 		"PRESTATS": {
 			"reference_sample": [{
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_PER_BASE_SEQUENCE_CONTENT",
-				"status": "PASS"
+				"check_name": "Per sequence quality scores",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_PER_SEQUENCE_QUALITY_SCORES",
-				"status": "PASS"
+				"check_name": "Basic Statistics",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION",
-				"status": "FAIL"
+				"check_name": "Overrepresented sequences",
+				"value": "WARN"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_PER_SEQUENCE_GC_CONTENT",
-				"status": "PASS"
+				"check_name": "Per base sequence quality",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_PER_BASE_SEQUENCE_QUALITY",
-				"status": "PASS"
+				"check_name": "Per sequence GC content",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_KMER_CONTENT",
-				"status": "WARN"
+				"check_name": "Per base sequence content",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_ADAPTER_CONTENT",
-				"status": "PASS"
+				"check_name": "Sequence Duplication Levels",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_SEQUENCE_DUPLICATION_LEVELS",
-				"status": "PASS"
+				"check_name": "Adapter Content",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_BASIC_STATISTICS",
-				"status": "PASS"
+				"check_name": "Sequence Length Distribution",
+				"value": "FAIL"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_PER_BASE_N_CONTENT",
-				"status": "PASS"
+				"check_name": "Per tile sequence quality",
+				"value": "WARN"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_OVERREPRESENTED_SEQUENCES",
-				"status": "WARN"
+				"check_name": "Kmer Content",
+				"value": "WARN"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_PER_TILE_SEQUENCE_QUALITY",
-				"status": "WARN"
+				"check_name": "Per base N content",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "PRESTATS_NUMBER_OF_READS",
-				"status": "FAIL"
+				"check_name": "Total Sequences",
+				"value": "FAIL"
 			}],
 			"tumor_sample": [{
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_PER_BASE_SEQUENCE_CONTENT",
-				"status": "PASS"
+				"check_name": "Per sequence quality scores",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_PER_SEQUENCE_QUALITY_SCORES",
-				"status": "PASS"
+				"check_name": "Basic Statistics",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION",
-				"status": "FAIL"
+				"check_name": "Overrepresented sequences",
+				"value": "FAIL"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_PER_SEQUENCE_GC_CONTENT",
-				"status": "PASS"
+				"check_name": "Per base sequence quality",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_PER_BASE_SEQUENCE_QUALITY",
-				"status": "PASS"
+				"check_name": "Per sequence GC content",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_KMER_CONTENT",
-				"status": "WARN"
+				"check_name": "Per base sequence content",
+				"value": "PASS"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_ADAPTER_CONTENT",
-				"status": "FAIL"
+				"check_name": "Sequence Duplication Levels",
+				"value": "FAIL"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_SEQUENCE_DUPLICATION_LEVELS",
-				"status": "FAIL"
+				"check_name": "Adapter Content",
+				"value": "FAIL"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_BASIC_STATISTICS",
-				"status": "PASS"
+				"check_name": "Sequence Length Distribution",
+				"value": "FAIL"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_PER_BASE_N_CONTENT",
-				"status": "FAIL"
+				"check_name": "Per tile sequence quality",
+				"value": "WARN"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_OVERREPRESENTED_SEQUENCES",
-				"status": "WARN"
+				"check_name": "Kmer Content",
+				"value": "FAIL"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_PER_TILE_SEQUENCE_QUALITY",
-				"status": "WARN"
+				"check_name": "Per base N content",
+				"value": "FAIL"
 			}, {
 				"patient_id": "CPCT12345678T",
-				"check_name": "PRESTATS_NUMBER_OF_READS",
-				"status": "FAIL"
+				"check_name": "Total Sequences",
+				"value": "FAIL"
 			}],
+			"check_type": "PRESTATS"
+		}
+	}]
+}
+```
+# In Case of Error Report Snippet
+
+```
+{
+	"health_checks": [{
+		"PRESTATS": {
+			"error": "com.hartwig.healthchecks.common.exception.EmptyFileException",
+			"message": "Found empty Summary files under path -> /health-checks/boggs/src/test/resources/emptyFiles/CPCT12345678R",
 			"check_type": "PRESTATS"
 		}
 	}, {
