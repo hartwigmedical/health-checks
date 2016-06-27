@@ -15,6 +15,7 @@ import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.util.ErrorReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -22,6 +23,14 @@ import mockit.Mocked;
 public class MappingHealthCheckerTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
+
+    private static final String DUMMY_ERROR = "DUMMY_ERROR";
+
+    private static final String WRONG_ERROR_MESSAGE = "Wrong Error Message";
+
+    private static final String WRONG_ERROR = "Wrong Error";
+
+    private static final String WRONG_TYPE_MSG = "Report with wrong type";
 
     @Mocked
     private MappingExtractor dataExtractor;
@@ -62,5 +71,43 @@ public class MappingHealthCheckerTest {
         assertEquals("Dummy", ((MappingReport) report).getMapping().get(0).getPatientId());
         assertEquals(MappingCheck.MAPPING_MAPPED.getDescription(),
                         ((MappingReport) report).getMapping().get(0).getCheckName());
+    }
+
+    @Test
+    public void verifyMappingHealthCheckerIOException() throws IOException, EmptyFileException {
+        final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+        new Expectations() {
+
+            {
+                dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+                result = new IOException(DUMMY_ERROR);
+            }
+        };
+        final BaseReport report = checker.runCheck();
+        assertEquals(WRONG_TYPE_MSG, CheckType.MAPPING, report.getCheckType());
+        final String error = ((ErrorReport) report).getError();
+        final String errorMessage = ((ErrorReport) report).getMessage();
+
+        assertEquals(WRONG_ERROR, IOException.class.getName(), error);
+        assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
+    }
+
+    @Test
+    public void verifyMappingHealthCheckerEmptyFileException() throws IOException, EmptyFileException {
+        final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+        new Expectations() {
+
+            {
+                dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+                result = new EmptyFileException(DUMMY_ERROR);
+            }
+        };
+        final BaseReport report = checker.runCheck();
+        assertEquals(WRONG_TYPE_MSG, CheckType.MAPPING, report.getCheckType());
+        final String error = ((ErrorReport) report).getError();
+        final String errorMessage = ((ErrorReport) report).getMessage();
+
+        assertEquals(WRONG_ERROR, EmptyFileException.class.getName(), error);
+        assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
     }
 }
