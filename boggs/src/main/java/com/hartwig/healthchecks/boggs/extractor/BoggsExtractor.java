@@ -17,8 +17,6 @@ import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 
 public class BoggsExtractor {
 
-    private static final String SOMATIC_VARIANTS = "somaticVariants";
-
     protected static final String QC_STATS = "QCStats";
 
     protected static final String FILENAME = "Filename";
@@ -44,6 +42,8 @@ public class BoggsExtractor {
     protected static final String EMPTY_FILES_ERROR = "Found empty Summary files under path -> %s";
 
     protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";
+
+    private static final String SOMATIC_VARIANTS = "somaticVariants";
 
     @NotNull
     protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
