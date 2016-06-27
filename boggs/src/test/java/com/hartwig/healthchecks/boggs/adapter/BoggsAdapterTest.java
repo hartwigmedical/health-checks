@@ -69,17 +69,16 @@ public class BoggsAdapterTest {
     }
 
     private MappingReport getDummyMappingReport() {
-        final MappingReport mappingReport = new MappingReport(CheckType.MAPPING);
-        mappingReport.addData(new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE));
+        final BaseDataReport mappingDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
+        final MappingReport mappingReport = new MappingReport(CheckType.MAPPING, Arrays.asList(mappingDataReport),
+                        Arrays.asList(mappingDataReport));
         return mappingReport;
     }
 
     private PrestatsReport getDummyPrestatsReport() {
         final BaseDataReport prestatsDataReport = new BaseDataReport(DUMMY_ID, PrestatsCheck.DUMMY.toString(),
                         DUMMY_STATUS);
-        final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
-        testData.addReferenceData(Arrays.asList(prestatsDataReport));
-        testData.addTumorData(Arrays.asList(prestatsDataReport));
-        return testData;
+        return new PrestatsReport(CheckType.PRESTATS, Arrays.asList(prestatsDataReport),
+                        Arrays.asList(prestatsDataReport));
     }
 }

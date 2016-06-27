@@ -43,21 +43,21 @@ public class BoggsExtractor {
 
     protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";
 
-    private static final String SOMATIC_VARIANTS = "somaticVariants";
-
     @NotNull
     protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException {
         final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath())
                         .filter(path -> path.getFileName().toString().startsWith(prefix)
                                         && path.getFileName().toString().endsWith(suffix)
-                                        && !path.toString().contains(SOMATIC_VARIANTS))
+                                        && path.toString().contains(runDirectory + File.separator + prefix))
                         .findFirst();
         return filePath;
     }
 
+    @NotNull
     protected Long sumOfTotalSequences(@NotNull final Path path, final ZipFileReader zipFileReader) throws IOException {
-        final List<Path> zipFiles = Files.walk(path)
+        final Path totalSequencesPath = new File(path + File.separator + QC_STATS + File.separator).toPath();
+        final List<Path> zipFiles = Files.walk(totalSequencesPath)
                         .filter(filePath -> filePath.getFileName().toString().endsWith(ZIP_FILES_SUFFIX)).sorted()
                         .collect(toCollection(ArrayList<Path>::new));
         final List<String> allValues = zipFiles.stream().map(zipPath -> {

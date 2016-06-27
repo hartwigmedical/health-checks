@@ -34,18 +34,29 @@ Here is a sample of a run with the existing Health Checks:
 ```
 sbpltk1zffh04:health-checks wrodrigues$ cat boggs/logs/healthchecks-trace.log 
 
-[INFO ] 2016-06-03 10:23:27.123 [Test worker] MappingHealthChecker - Checking mapping health for DUMMY
-[INFO ] 2016-06-03 10:23:27.125 [Test worker] MappingHealthChecker -  Verifying AnyPath
-[INFO ] 2016-06-03 10:23:27.125 [Test worker] MappingHealthChecker -   WARN: Low mapped percentage: 38.46%
-[INFO ] 2016-06-03 10:23:27.126 [Test worker] MappingHealthChecker -   WARN: Low properly paired percentage: 0.0%
-[INFO ] 2016-06-03 10:23:27.126 [Test worker] MappingHealthChecker -   OK: Acceptable singleton percentage: 0.0%
-[INFO ] 2016-06-03 10:23:27.126 [Test worker] MappingHealthChecker -   OK: Acceptable mate mapped to different chr percentage: 0.0%
-[INFO ] 2016-06-03 10:23:27.126 [Test worker] MappingHealthChecker - Checking mapping health for DUMMY
-[INFO ] 2016-06-03 10:23:27.126 [Test worker] MappingHealthChecker -  Verifying AnyPath
-[INFO ] 2016-06-03 10:23:27.127 [Test worker] MappingHealthChecker -   WARN: Low mapped percentage: 38.46%
-[INFO ] 2016-06-03 10:23:27.127 [Test worker] MappingHealthChecker -   WARN: Low properly paired percentage: 0.0%
-[INFO ] 2016-06-03 10:23:27.127 [Test worker] MappingHealthChecker -   OK: Acceptable singleton percentage: 0.0%
-[INFO ] 2016-06-03 10:23:27.127 [Test worker] MappingHealthChecker -   OK: Acceptable mate mapped to different chr percentage: 0.0%
+[INFO ] 2016-06-27 14:53:16.381 [main] MappingExtractor - For Patient CPCT12345678R the Result for mapping health check  'mapped' is '99.69'
+[INFO ] 2016-06-27 14:53:16.384 [main] MappingExtractor - For Patient CPCT12345678R the Result for mapping health check  'properly paired' is '99.57'
+[INFO ] 2016-06-27 14:53:16.386 [main] MappingExtractor - For Patient CPCT12345678R the Result for mapping health check  'singletons' is '55.0'
+[INFO ] 2016-06-27 14:53:16.386 [main] MappingExtractor - For Patient CPCT12345678R the Result for mapping health check  'with mate mapped to a different chr' is '0.0'
+[INFO ] 2016-06-27 14:53:16.386 [main] MappingExtractor - For Patient CPCT12345678R the Result for mapping health check  'duplicates' is '5.95'
+[INFO ] 2016-06-27 14:53:16.387 [main] MappingExtractor - For Patient CPCT12345678R the Result for mapping health check  'is all read' is 'false'
+[INFO ] 2016-06-27 14:53:16.424 [main] MappingExtractor - For Patient CPCT12345678T the Result for mapping health check  'mapped' is '99.69'
+[INFO ] 2016-06-27 14:53:16.424 [main] MappingExtractor - For Patient CPCT12345678T the Result for mapping health check  'properly paired' is '99.57'
+[INFO ] 2016-06-27 14:53:16.425 [main] MappingExtractor - For Patient CPCT12345678T the Result for mapping health check  'singletons' is '55.0'
+[INFO ] 2016-06-27 14:53:16.425 [main] MappingExtractor - For Patient CPCT12345678T the Result for mapping health check  'with mate mapped to a different chr' is '0.0'
+[INFO ] 2016-06-27 14:53:16.426 [main] MappingExtractor - For Patient CPCT12345678T the Result for mapping health check  'duplicates' is '5.95'
+[INFO ] 2016-06-27 14:53:16.427 [main] MappingExtractor - For Patient CPCT12345678T the Result for mapping health check  'is all read' is 'false'
+[INFO ] 2016-06-27 14:53:16.464 [main] PrestatsExtractor - NOT OK: Sequence Length Distribution has status FAIL for Patient CPCT12345678R
+[INFO ] 2016-06-27 14:53:16.464 [main] PrestatsExtractor - NOT OK: Total Sequences has status FAIL for Patient CPCT12345678R
+[INFO ] 2016-06-27 14:53:16.484 [main] PrestatsExtractor - NOT OK: Overrepresented sequences has status FAIL for Patient CPCT12345678T
+[INFO ] 2016-06-27 14:53:16.484 [main] PrestatsExtractor - NOT OK: Sequence Duplication Levels has status FAIL for Patient CPCT12345678T
+[INFO ] 2016-06-27 14:53:16.485 [main] PrestatsExtractor - NOT OK: Adapter Content has status FAIL for Patient CPCT12345678T
+[INFO ] 2016-06-27 14:53:16.485 [main] PrestatsExtractor - NOT OK: Sequence Length Distribution has status FAIL for Patient CPCT12345678T
+[INFO ] 2016-06-27 14:53:16.485 [main] PrestatsExtractor - NOT OK: Kmer Content has status FAIL for Patient CPCT12345678T
+[INFO ] 2016-06-27 14:53:16.485 [main] PrestatsExtractor - NOT OK: Per base N content has status FAIL for Patient CPCT12345678T
+[INFO ] 2016-06-27 14:53:16.485 [main] PrestatsExtractor - NOT OK: Total Sequences has status FAIL for Patient CPCT12345678T
+[INFO ] 2016-06-27 14:53:16.511 [main] HealthChecksApplication - Report generated with following name -> /tmp/health-checks_1467031996501.json
+
 ```
 
 # Reports
@@ -60,7 +71,7 @@ The location of the reports can be changed via the ```config.properties``` file 
 {
 	"health_checks": [{
 		"MAPPING": {
-			"mapping": [{
+			"reference_sample": [{
 				"patient_id": "CPCT12345678R",
 				"check_name": "mapped",
 				"value": "99.69"
@@ -82,6 +93,31 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"value": "5.95"
 			}, {
 				"patient_id": "CPCT12345678R",
+				"check_name": "is all read",
+				"value": "false"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "mapped",
+				"value": "99.69"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "properly paired",
+				"value": "99.57"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "singletons",
+				"value": "55.0"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "with mate mapped to a different chr",
+				"value": "0.0"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "duplicates",
+				"value": "5.95"
+			}, {
+				"patient_id": "CPCT12345678T",
 				"check_name": "is all read",
 				"value": "false"
 			}],
@@ -205,51 +241,64 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
+		"MAPPING": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "mapped",
+				"value": "99.69"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "properly paired",
+				"value": "99.57"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "singletons",
+				"value": "55.0"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "with mate mapped to a different chr",
+				"value": "0.0"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "duplicates",
+				"value": "5.95"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "is all read",
+				"value": "false"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "mapped",
+				"value": "99.69"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "properly paired",
+				"value": "99.57"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "singletons",
+				"value": "55.0"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "with mate mapped to a different chr",
+				"value": "0.0"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "duplicates",
+				"value": "5.95"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "is all read",
+				"value": "false"
+			}],
+			"check_type": "MAPPING"
+		}
+	}, {
 		"PRESTATS": {
 			"error": "com.hartwig.healthchecks.common.exception.EmptyFileException",
 			"message": "Found empty Summary files under path -> /health-checks/boggs/src/test/resources/emptyFiles/CPCT12345678R",
 			"check_type": "PRESTATS"
-		}
-	}, {
-		"MAPPING": {
-			"external_id": "CPCT12345678R",
-			"total_sequences": "36809",
-			"mapping_data_report": {
-				"mapped_percentage": 99.69,
-				"properly_paired_percentage": 99.57,
-				"singleton_percentage": 55.0,
-				"mate_mapped_to_different_chr_percentage": 0.0,
-				"proportion_of_duplicate_read": 5.95,
-				"is_all_reads_present": false
-			},
-			"check_type": "MAPPING"
-		}
-	}]
-}
-```
-# In Case of Error Report Snippet
-
-```
-{
-	"health_checks": [{
-		"PRESTATS": {
-			"error": "com.hartwig.healthchecks.common.exception.EmptyFileException",
-			"message": "Found empty Summary files under path -> /health-checks/boggs/src/test/resources/emptyFiles/CPCT12345678R",
-			"check_type": "PRESTATS"
-		}
-	}, {
-		"MAPPING": {
-			"external_id": "CPCT12345678R",
-			"total_sequences": "36809",
-			"mapping_data_report": {
-				"mapped_percentage": 99.69,
-				"properly_paired_percentage": 99.57,
-				"singleton_percentage": 55.0,
-				"mate_mapped_to_different_chr_percentage": 0.0,
-				"proportion_of_duplicate_read": 5.95,
-				"is_all_reads_present": false
-			},
-			"check_type": "MAPPING"
 		}
 	}]
 }

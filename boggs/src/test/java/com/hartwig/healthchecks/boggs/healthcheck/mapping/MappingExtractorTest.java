@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,15 +38,12 @@ public class MappingExtractorTest {
 
     private List<String> fastqLines;
 
-    private List<String> emptyList;
-
     @Mocked
     private ZipFileReader zipFileReader;
 
     @Before
     public void setUp() {
         fastqLines = TestZipFileFactory.getFastqLines();
-        emptyList = new ArrayList<>();
     }
 
     @Mocked
@@ -64,38 +60,28 @@ public class MappingExtractorTest {
             {
                 zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
                 returns(fastqLines, fastqLines, fastqLines, fastqLines);
-
                 flagstatParser.parse(anyString);
+                returns(dummyData());
 
-                final FlagStats total = new FlagStats(FlagStatsType.TOTAL_INDEX, "dummy", 17940d);
-                final FlagStats secondary = new FlagStats(FlagStatsType.SECONDARY_INDEX, "dummy", 20d);
-                final FlagStats supplementary = new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, "dummy", 0d);
-                final FlagStats duplicate = new FlagStats(FlagStatsType.DUPLICATES_INDEX, "dummy", 1068d);
-                final FlagStats mapped = new FlagStats(FlagStatsType.MAPPED_INDEX, "dummy", 17885d);
-                final FlagStats paired = new FlagStats(FlagStatsType.PAIRED_IN_SEQ_INDEX, "dummy", 17920d);
-                final FlagStats read1 = new FlagStats(FlagStatsType.READ_1_INDEX, "dummy", 8960d);
-                final FlagStats read2 = new FlagStats(FlagStatsType.READ_2_INDEX, "dummy", 8960d);
-                final FlagStats proper = new FlagStats(FlagStatsType.PROPERLY_PAIRED_INDEX, "dummy", 17808d);
-                final FlagStats itself = new FlagStats(FlagStatsType.ITSELF_AND_MATE_INDEX, "dummy", 17808d);
-                final FlagStats singleton = new FlagStats(FlagStatsType.SINGELTONS_INDEX, "dummy", 55d);
-                final FlagStats mateMapped = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_INDEX, "dummy", 0d);
-                final FlagStats q5Index = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_Q5_INDEX, "dummy", 0d);
-
-                final List<FlagStats> passedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped,
-                                paired, read1, read2, proper, itself, singleton, mateMapped, q5Index);
-                final List<FlagStats> failedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped,
-                                paired, read1, read2, proper, itself, singleton, mateMapped, q5Index);
-
-                final FlagStatData flagStatData = new FlagStatData(path, passedStats, failedStats);
-                returns(flagStatData);
+                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
+                returns(fastqLines, fastqLines, fastqLines, fastqLines);
+                flagstatParser.parse(anyString);
+                returns(dummyData());
             }
         };
 
         final MappingReport mappingReport = extractor.extractFromRunDirectory(path);
         assertNotNull("We should have data", mappingReport);
 
-        final List<BaseDataReport> mapping = mappingReport.getMapping();
+        final List<BaseDataReport> referenceSample = mappingReport.getReferenceSample();
+        assetMappingData(referenceSample);
 
+        final List<BaseDataReport> tumorSample = mappingReport.getTumorSample();
+        assetMappingData(tumorSample);
+
+    }
+
+    private void assetMappingData(final List<BaseDataReport> mapping) {
         final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_MAPPED);
         assertEquals("99.69", mappedData.getValue());
 
@@ -135,5 +121,30 @@ public class MappingExtractorTest {
         return mapping.stream().filter(baseDataReport -> {
             return baseDataReport.getCheckName().equals(check.getDescription());
         }).findFirst().get();
+    }
+
+    private FlagStatData dummyData() throws IOException, EmptyFileException {
+
+        final FlagStats total = new FlagStats(FlagStatsType.TOTAL_INDEX, "dummy", 17940d);
+        final FlagStats secondary = new FlagStats(FlagStatsType.SECONDARY_INDEX, "dummy", 20d);
+        final FlagStats supplementary = new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, "dummy", 0d);
+        final FlagStats duplicate = new FlagStats(FlagStatsType.DUPLICATES_INDEX, "dummy", 1068d);
+        final FlagStats mapped = new FlagStats(FlagStatsType.MAPPED_INDEX, "dummy", 17885d);
+        final FlagStats paired = new FlagStats(FlagStatsType.PAIRED_IN_SEQ_INDEX, "dummy", 17920d);
+        final FlagStats read1 = new FlagStats(FlagStatsType.READ_1_INDEX, "dummy", 8960d);
+        final FlagStats read2 = new FlagStats(FlagStatsType.READ_2_INDEX, "dummy", 8960d);
+        final FlagStats proper = new FlagStats(FlagStatsType.PROPERLY_PAIRED_INDEX, "dummy", 17808d);
+        final FlagStats itself = new FlagStats(FlagStatsType.ITSELF_AND_MATE_INDEX, "dummy", 17808d);
+        final FlagStats singleton = new FlagStats(FlagStatsType.SINGELTONS_INDEX, "dummy", 55d);
+        final FlagStats mateMapped = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_INDEX, "dummy", 0d);
+        final FlagStats q5Index = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_Q5_INDEX, "dummy", 0d);
+
+        final List<FlagStats> passedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped, paired,
+                        read1, read2, proper, itself, singleton, mateMapped, q5Index);
+        final List<FlagStats> failedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped, paired,
+                        read1, read2, proper, itself, singleton, mateMapped, q5Index);
+
+        final FlagStatData flagStatData = new FlagStatData(passedStats, failedStats);
+        return flagStatData;
     }
 }

@@ -124,6 +124,24 @@ public class PrestatsExtractorTest {
         extractor.extractFromRunDirectory(runDirURL.getPath().toString());
     }
 
+    @Test(expected = EmptyFileException.class)
+    public void extractDataEmptyFastqFile() throws IOException, EmptyFileException {
+        final URL runDirURL = Resources.getResource(RUNDIR);
+        new Expectations() {
+
+            {
+                zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
+                returns(firstRList, secondRList, thridRList, forthRList);
+
+                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
+                returns(emptyList, emptyList, emptyList, emptyList);
+
+            }
+        };
+        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
+        extractor.extractFromRunDirectory(runDirURL.getPath().toString());
+    }
+
     @Test(expected = NoSuchFileException.class)
     public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
         final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);

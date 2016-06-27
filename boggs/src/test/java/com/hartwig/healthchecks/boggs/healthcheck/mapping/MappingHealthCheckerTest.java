@@ -35,24 +35,6 @@ public class MappingHealthCheckerTest {
     @Mocked
     private MappingExtractor dataExtractor;
 
-    @NotNull
-    private static MappingReport dummyData() {
-
-        final BaseDataReport mappedData = new BaseDataReport("Dummy", MappingCheck.MAPPING_MAPPED.getDescription(),
-                        "0.0");
-        final BaseDataReport duplicateData = new BaseDataReport("Dummy",
-                        MappingCheck.MAPPING_DUPLIVATES.getDescription(), "0.0");
-        final BaseDataReport properlyData = new BaseDataReport("Dummy",
-                        MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(), "0.0");
-
-        final List<BaseDataReport> reports = Arrays.asList(mappedData, duplicateData, properlyData);
-
-        final MappingReport mappingReport = new MappingReport(CheckType.MAPPING);
-        mappingReport.addAll(reports);
-
-        return mappingReport;
-    }
-
     @Test
     public void verifyMappingHealthChecker() throws IOException, EmptyFileException {
 
@@ -68,9 +50,9 @@ public class MappingHealthCheckerTest {
         final BaseReport report = checker.runCheck();
 
         assertEquals("Report with wrong type", CheckType.MAPPING, report.getCheckType());
-        assertEquals("Dummy", ((MappingReport) report).getMapping().get(0).getPatientId());
+        assertEquals("Dummy", ((MappingReport) report).getReferenceSample().get(0).getPatientId());
         assertEquals(MappingCheck.MAPPING_MAPPED.getDescription(),
-                        ((MappingReport) report).getMapping().get(0).getCheckName());
+                        ((MappingReport) report).getReferenceSample().get(0).getCheckName());
     }
 
     @Test
@@ -109,5 +91,26 @@ public class MappingHealthCheckerTest {
 
         assertEquals(WRONG_ERROR, EmptyFileException.class.getName(), error);
         assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
+    }
+
+    @NotNull
+    private static MappingReport dummyData() {
+
+        final List<BaseDataReport> reports = createDummyBaseData();
+        final MappingReport mappingReport = new MappingReport(CheckType.MAPPING, reports, reports);
+        return mappingReport;
+    }
+
+    @NotNull
+    private static List<BaseDataReport> createDummyBaseData() {
+        final BaseDataReport mappedData = new BaseDataReport("Dummy", MappingCheck.MAPPING_MAPPED.getDescription(),
+                        "0.0");
+        final BaseDataReport duplicateData = new BaseDataReport("Dummy",
+                        MappingCheck.MAPPING_DUPLIVATES.getDescription(), "0.0");
+        final BaseDataReport properlyData = new BaseDataReport("Dummy",
+                        MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(), "0.0");
+
+        final List<BaseDataReport> reports = Arrays.asList(mappedData, duplicateData, properlyData);
+        return reports;
     }
 }

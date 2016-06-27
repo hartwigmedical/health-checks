@@ -48,11 +48,11 @@ public class PrestatsHealthCheckerTest {
 
     @Test
     public void verifyPrestatsHealthChecker() throws IOException, EmptyFileException {
-        final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS);
         final BaseDataReport prestatsTestDataReport = new BaseDataReport(DUMMY_ID, PrestatsCheck.DUMMY.getDescription(),
                         FAIL);
-        testData.addReferenceData(Arrays.asList(prestatsTestDataReport));
-        testData.addTumorData(Arrays.asList(prestatsTestDataReport));
+
+        final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS, Arrays.asList(prestatsTestDataReport),
+                        Arrays.asList(prestatsTestDataReport));
 
         final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 

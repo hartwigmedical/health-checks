@@ -7,24 +7,14 @@ import org.jetbrains.annotations.NotNull;
 public class FlagStatData {
 
     @NotNull
-    private final String path;
-
-    @NotNull
     private final List<FlagStats> passedStats;
 
     @NotNull
     private final List<FlagStats> failedStats;
 
-    public FlagStatData(@NotNull final String path, @NotNull final List<FlagStats> passedStats,
-            @NotNull final List<FlagStats> failedStats) {
-        this.path = path;
+    public FlagStatData(@NotNull final List<FlagStats> passedStats, @NotNull final List<FlagStats> failedStats) {
         this.passedStats = passedStats;
         this.failedStats = failedStats;
-    }
-
-    @NotNull
-    public String getPath() {
-        return path;
     }
 
     @NotNull
@@ -39,10 +29,6 @@ public class FlagStatData {
 
     @Override
     public String toString() {
-        return "FlagStatData{"
-                + "path='" + path + '\''
-                + ", passedStats=" + passedStats
-                + ", failedStats=" + failedStats
-                + '}';
+        return "FlagStatData [passedStats=" + passedStats + ", failedStats=" + failedStats + "]";
     }
 }

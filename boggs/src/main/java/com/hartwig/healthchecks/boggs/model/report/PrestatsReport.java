@@ -1,6 +1,5 @@
 package com.hartwig.healthchecks.boggs.model.report;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,21 +12,16 @@ public class PrestatsReport extends BaseReport {
     private static final long serialVersionUID = 3588650481644358694L;
 
     @NotNull
-    private final List<BaseDataReport> referenceSample = new ArrayList<>();
+    private final List<BaseDataReport> referenceSample;
 
     @NotNull
-    private final List<BaseDataReport> tumorSample = new ArrayList<>();
+    private final List<BaseDataReport> tumorSample;
 
-    public PrestatsReport(@NotNull final CheckType checkType) {
+    public PrestatsReport(final CheckType checkType, final List<BaseDataReport> referenceSample,
+                    final List<BaseDataReport> tumorSample) {
         super(checkType);
-    }
-
-    public void addReferenceData(@NotNull final List<BaseDataReport> prestatsDataReport) {
-        referenceSample.addAll(prestatsDataReport);
-    }
-
-    public void addTumorData(@NotNull final List<BaseDataReport> prestatsDataReport) {
-        tumorSample.addAll(prestatsDataReport);
+        this.referenceSample = referenceSample;
+        this.tumorSample = tumorSample;
     }
 
     @NotNull
