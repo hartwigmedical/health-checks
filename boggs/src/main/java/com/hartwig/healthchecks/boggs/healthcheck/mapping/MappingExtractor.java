@@ -53,22 +53,27 @@ public class MappingExtractor extends BoggsExtractor {
     @NotNull
     public MappingReport extractFromRunDirectory(@NotNull final String runDirectory)
                     throws IOException, EmptyFileException {
+        final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
+        final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
 
-        final Optional<Path> sampleFile = getFilesPath(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
-        final String externalId = sampleFile.get().getFileName().toString();
-        final Path totalSequencesPath = new File(sampleFile.get() + File.separator + QC_STATS + File.separator)
-                        .toPath();
-        final Long totalSequences = sumOfTotalSequences(totalSequencesPath, zipFileReader);
-        final List<BaseDataReport> mapping = getFlagStatsData(externalId, sampleFile.get(), totalSequences.toString());
+        return new MappingReport(CheckType.MAPPING, refSampleData, tumorSampleData);
+    }
 
-        mapping.forEach(mappingReport -> {
-            LOGGER.info(String.format("Result for mapping health check '%s' is '%s'", mappingReport.getCheckName(),
-                            mappingReport.getValue()));
+    @NotNull
+    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
+                    @NotNull final String suffix) throws IOException, EmptyFileException {
+        final Optional<Path> sampleFile = getFilesPath(runDirectory, prefix, suffix);
+
+        final String patientId = sampleFile.get().getFileName().toString();
+        final Long totalSequences = sumOfTotalSequences(sampleFile.get(), zipFileReader);
+        final List<BaseDataReport> mappingChecks = getFlagStatsData(patientId, sampleFile.get(),
+                        totalSequences.toString());
+
+        mappingChecks.forEach(mappingReport -> {
+            LOGGER.info(String.format("For Patient %s the Result for mapping health check  '%s' is '%s'", patientId,
+                            mappingReport.getCheckName(), mappingReport.getValue()));
         });
-
-        final MappingReport report = new MappingReport(CheckType.MAPPING);
-        report.addAll(mapping);
-        return report;
+        return mappingChecks;
     }
 
     @NotNull
@@ -76,7 +81,7 @@ public class MappingExtractor extends BoggsExtractor {
         return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
     }
 
-    private List<BaseDataReport> getFlagStatsData(@NotNull final String externalId, @NotNull final Path runDirPath,
+    private List<BaseDataReport> getFlagStatsData(@NotNull final String patientId, @NotNull final Path runDirPath,
                     @NotNull final String totalSequences) throws IOException, EmptyFileException {
 
         final FlagStatData flagstatData = parseFlagStatFile(runDirPath);
@@ -84,22 +89,22 @@ public class MappingExtractor extends BoggsExtractor {
         final List<BaseDataReport> mappingDataReports = new ArrayList<>();
         final List<FlagStats> passed = flagstatData.getPassedStats();
 
-        final BaseDataReport mappedDataReport = generateMappedDataReport(externalId, passed);
+        final BaseDataReport mappedDataReport = generateMappedDataReport(patientId, passed);
         mappingDataReports.add(mappedDataReport);
 
-        final BaseDataReport properDataReport = generateProperDataReport(externalId, passed);
+        final BaseDataReport properDataReport = generateProperDataReport(patientId, passed);
         mappingDataReports.add(properDataReport);
 
-        final BaseDataReport singletonDataReport = generateSingletonDataReport(externalId, passed);
+        final BaseDataReport singletonDataReport = generateSingletonDataReport(patientId, passed);
         mappingDataReports.add(singletonDataReport);
 
-        final BaseDataReport mateMappedDataReport = generateMateMappedDataReport(externalId, passed);
+        final BaseDataReport mateMappedDataReport = generateMateMappedDataReport(patientId, passed);
         mappingDataReports.add(mateMappedDataReport);
 
-        final BaseDataReport duplicateDataReport = generateDuplicateDataReport(externalId, passed);
+        final BaseDataReport duplicateDataReport = generateDuplicateDataReport(patientId, passed);
         mappingDataReports.add(duplicateDataReport);
 
-        final BaseDataReport isAllReadDataReport = generateIsAllReadDataReport(externalId, totalSequences, passed);
+        final BaseDataReport isAllReadDataReport = generateIsAllReadDataReport(patientId, totalSequences, passed);
         mappingDataReports.add(isAllReadDataReport);
 
         return mappingDataReports;
@@ -125,7 +130,7 @@ public class MappingExtractor extends BoggsExtractor {
     }
 
     @NotNull
-    private BaseDataReport generateMappedDataReport(@NotNull final String externalId,
+    private BaseDataReport generateMappedDataReport(@NotNull final String patientId,
                     @NotNull final List<FlagStats> passed) {
 
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
@@ -134,14 +139,14 @@ public class MappingExtractor extends BoggsExtractor {
         final double mappedPercentage = toPercentage(
                         mappedStatCalc.calculate(mappedStat.getValue(), totalStat.getValue()));
 
-        final BaseDataReport mappedDataReport = new BaseDataReport(externalId,
+        final BaseDataReport mappedDataReport = new BaseDataReport(patientId,
                         MappingCheck.MAPPING_MAPPED.getDescription(), String.valueOf(mappedPercentage));
 
         return mappedDataReport;
     }
 
     @NotNull
-    private BaseDataReport generateProperDataReport(@NotNull final String externalId,
+    private BaseDataReport generateProperDataReport(@NotNull final String patientId,
                     @NotNull final List<FlagStats> passed) {
 
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
@@ -150,7 +155,7 @@ public class MappingExtractor extends BoggsExtractor {
         final double properlyPairedPercentage = toPercentage(
                         properStatCalc.calculate(properPaired.getValue(), mappedStat.getValue()));
 
-        final BaseDataReport properReport = new BaseDataReport(externalId,
+        final BaseDataReport properReport = new BaseDataReport(patientId,
                         MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(),
                         String.valueOf(properlyPairedPercentage));
 
@@ -158,26 +163,26 @@ public class MappingExtractor extends BoggsExtractor {
     }
 
     @NotNull
-    private BaseDataReport generateSingletonDataReport(@NotNull final String externalId,
+    private BaseDataReport generateSingletonDataReport(@NotNull final String patientId,
                     @NotNull final List<FlagStats> passed) {
 
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGELTONS_INDEX.getIndex());
         final double singletonPercentage = singletonStat.getValue();
 
-        final BaseDataReport singletonReport = new BaseDataReport(externalId,
+        final BaseDataReport singletonReport = new BaseDataReport(patientId,
                         MappingCheck.MAPPING_SINGLETON.getDescription(), String.valueOf(singletonPercentage));
 
         return singletonReport;
     }
 
     @NotNull
-    private BaseDataReport generateMateMappedDataReport(@NotNull final String externalId,
+    private BaseDataReport generateMateMappedDataReport(@NotNull final String patientId,
                     @NotNull final List<FlagStats> passed) {
 
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
         final double mateMappedDiffChrPercentage = diffPercStat.getValue();
 
-        final BaseDataReport mateMappedDiffReport = new BaseDataReport(externalId,
+        final BaseDataReport mateMappedDiffReport = new BaseDataReport(patientId,
                         MappingCheck.MAPPING_MATE_MAPPED_DIFFERENT_CHR.getDescription(),
                         String.valueOf(mateMappedDiffChrPercentage));
 
@@ -185,7 +190,7 @@ public class MappingExtractor extends BoggsExtractor {
     }
 
     @NotNull
-    private BaseDataReport generateDuplicateDataReport(@NotNull final String externalId,
+    private BaseDataReport generateDuplicateDataReport(@NotNull final String patientId,
                     @NotNull final List<FlagStats> passed) {
 
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
@@ -194,14 +199,14 @@ public class MappingExtractor extends BoggsExtractor {
         final double proportionOfDuplicateRead = toPercentage(
                         duplicateStatCalc.calculate(duplicateStat.getValue(), totalStat.getValue()));
 
-        final BaseDataReport duplicateReport = new BaseDataReport(externalId,
+        final BaseDataReport duplicateReport = new BaseDataReport(patientId,
                         MappingCheck.MAPPING_DUPLIVATES.getDescription(), String.valueOf(proportionOfDuplicateRead));
 
         return duplicateReport;
     }
 
     @NotNull
-    private BaseDataReport generateIsAllReadDataReport(@NotNull final String externalId,
+    private BaseDataReport generateIsAllReadDataReport(@NotNull final String patientId,
                     @NotNull final String totalSequences, @NotNull final List<FlagStats> passed) {
 
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
@@ -209,7 +214,7 @@ public class MappingExtractor extends BoggsExtractor {
         final boolean isAllReadsPresent = totalStat.getValue() == Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE
                         + secondaryStat.getValue();
 
-        final BaseDataReport isAllReadReport = new BaseDataReport(externalId,
+        final BaseDataReport isAllReadReport = new BaseDataReport(patientId,
                         MappingCheck.MAPPING_IS_ALL_READ.getDescription(), String.valueOf(isAllReadsPresent));
 
         return isAllReadReport;

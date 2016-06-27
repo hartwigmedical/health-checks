@@ -15,6 +15,8 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class SambambaFlagStatParserTest {
 
+    private static final String DID_NOT_GET_THE_EXPECTED_VALUE = "Did not get the expected value.";
+
     @Test
     public void canParseExampleFile() throws IOException, EmptyFileException {
         final URL exampleFlagStatURL = Resources
@@ -24,16 +26,8 @@ public class SambambaFlagStatParserTest {
         final FlagStatParser parser = new SambambaFlagStatParser();
         final FlagStatData flagStatData = parser.parse(exampleFlagStatFile);
 
-        final List<FlagStats> passedStats = flagStatData.getPassedStats();
-
-        assertEquals("Did not get the expected value.", 13, passedStats.size());
-
-        final FlagStats passedFlagStat = passedStats.stream()
-                        .filter(flagStats -> flagStats.getFlagStatsType() == FlagStatsType.TOTAL_INDEX).findFirst()
-                        .get();
-
-        assertNotNull(passedFlagStat);
-        assertEquals(0.0d, passedFlagStat.getValue(), 0.0d);
+        assertFlagStatData(flagStatData.getPassedStats(), 13, 0.0d);
+        assertFlagStatData(flagStatData.getFailedStats(), 13, 20.0d);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -43,5 +37,16 @@ public class SambambaFlagStatParserTest {
         final String exampleFlagStatFile = exampleFlagStatURL.getPath();
         final FlagStatParser parser = new SambambaFlagStatParser();
         parser.parse(exampleFlagStatFile);
+    }
+
+    private void assertFlagStatData(final List<FlagStats> flagStat, final int size, final double expectedTotalIndex) {
+        assertEquals(DID_NOT_GET_THE_EXPECTED_VALUE, size, flagStat.size());
+
+        final FlagStats passedFlagStat = flagStat.stream()
+                        .filter(flagStats -> flagStats.getFlagStatsType() == FlagStatsType.TOTAL_INDEX).findFirst()
+                        .get();
+
+        assertNotNull(passedFlagStat);
+        assertEquals(expectedTotalIndex, passedFlagStat.getValue(), 0.0d);
     }
 }
