@@ -6,29 +6,49 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
+import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
 import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
+import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
 
 public class MappingExtractorTest {
+
+    private static final String FASTQC_DATA_TXT = "fastqc_data.txt";
+
     private static final String EMPTY_FILES = "emptyFiles";
 
     private static final String RUNDIR = "rundir";
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
+
+    private List<String> fastqLines;
+
+    private List<String> emptyList;
+
+    @Mocked
+    private ZipFileReader zipFileReader;
+
+    @Before
+    public void setUp() {
+        fastqLines = TestZipFileFactory.getFastqLines();
+        emptyList = new ArrayList<>();
+    }
 
     @Mocked
     private FlagStatParser flagstatParser;
@@ -37,15 +57,19 @@ public class MappingExtractorTest {
     public void extractData() throws IOException, EmptyFileException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         final String path = runDirURL.getPath();
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser);
 
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
         new Expectations() {
+
             {
+                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
+                returns(fastqLines, fastqLines, fastqLines, fastqLines);
+
                 flagstatParser.parse(anyString);
 
                 final FlagStats total = new FlagStats(FlagStatsType.TOTAL_INDEX, "dummy", 17940d);
                 final FlagStats secondary = new FlagStats(FlagStatsType.SECONDARY_INDEX, "dummy", 20d);
-                final FlagStats supplementary= new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, "dummy", 0d);
+                final FlagStats supplementary = new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, "dummy", 0d);
                 final FlagStats duplicate = new FlagStats(FlagStatsType.DUPLICATES_INDEX, "dummy", 1068d);
                 final FlagStats mapped = new FlagStats(FlagStatsType.MAPPED_INDEX, "dummy", 17885d);
                 final FlagStats paired = new FlagStats(FlagStatsType.PAIRED_IN_SEQ_INDEX, "dummy", 17920d);
@@ -57,10 +81,10 @@ public class MappingExtractorTest {
                 final FlagStats mateMapped = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_INDEX, "dummy", 0d);
                 final FlagStats q5Index = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_Q5_INDEX, "dummy", 0d);
 
-                final List<FlagStats> passedStats = Arrays.asList(total, secondary, supplementary, duplicate,
-                        mapped, paired, read1, read2, proper, itself, singleton, mateMapped, q5Index);
-                final List<FlagStats> failedStats = Arrays.asList(total, secondary, supplementary, duplicate,
-                        mapped, paired, read1, read2, proper, itself, singleton, mateMapped, q5Index);
+                final List<FlagStats> passedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped,
+                                paired, read1, read2, proper, itself, singleton, mateMapped, q5Index);
+                final List<FlagStats> failedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped,
+                                paired, read1, read2, proper, itself, singleton, mateMapped, q5Index);
 
                 final FlagStatData flagStatData = new FlagStatData(path, passedStats, failedStats);
                 returns(flagStatData);
@@ -70,30 +94,30 @@ public class MappingExtractorTest {
         final MappingReport mappingReport = extractor.extractFromRunDirectory(path);
         assertNotNull("We should have data", mappingReport);
 
-        List<BaseDataReport> mapping = mappingReport.getMapping();
+        final List<BaseDataReport> mapping = mappingReport.getMapping();
 
-        BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_MAPPED);
+        final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_MAPPED);
         assertEquals("99.69", mappedData.getValue());
 
-        BaseDataReport mateData = extractReportData(mapping, MappingCheck.MAPPING_MATE_MAPPED_DIFFERENT_CHR);
+        final BaseDataReport mateData = extractReportData(mapping, MappingCheck.MAPPING_MATE_MAPPED_DIFFERENT_CHR);
         assertEquals("0.0", mateData.getValue());
 
-        BaseDataReport properData = extractReportData(mapping, MappingCheck.MAPPING_PROPERLY_PAIRED);
+        final BaseDataReport properData = extractReportData(mapping, MappingCheck.MAPPING_PROPERLY_PAIRED);
         assertEquals("99.57", properData.getValue());
 
-        BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_SINGLETON);
+        final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_SINGLETON);
         assertEquals("55.0", singletonData.getValue());
 
-        BaseDataReport duplicateData = extractReportData(mapping, MappingCheck.MAPPING_DUPLIVATES);
+        final BaseDataReport duplicateData = extractReportData(mapping, MappingCheck.MAPPING_DUPLIVATES);
         assertEquals("5.95", duplicateData.getValue());
 
-        BaseDataReport isAllRead = extractReportData(mapping, MappingCheck.MAPPING_IS_ALL_READ);
+        final BaseDataReport isAllRead = extractReportData(mapping, MappingCheck.MAPPING_IS_ALL_READ);
         assertEquals("false", isAllRead.getValue());
     }
 
     @Test(expected = NoSuchFileException.class)
     public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }
 
@@ -101,18 +125,15 @@ public class MappingExtractorTest {
     public void extractDataEmptyFile() throws IOException, EmptyFileException {
         final URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
         final String path = exampleFlagStatURL.getPath();
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
         extractor.extractFromRunDirectory(path);
     }
 
     private BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
-            @NotNull final MappingCheck check) {
+                    @NotNull final MappingCheck check) {
 
-        return mapping.stream()
-                .filter(baseDataReport -> {
-                    return baseDataReport.getCheckName().equals(check.getDescription());
-                })
-                .findFirst()
-                .get();
+        return mapping.stream().filter(baseDataReport -> {
+            return baseDataReport.getCheckName().equals(check.getDescription());
+        }).findFirst().get();
     }
 }

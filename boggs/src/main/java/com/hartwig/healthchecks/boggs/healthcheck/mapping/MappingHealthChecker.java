@@ -1,19 +1,20 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import java.io.IOException;
-import java.util.List;
-
-import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
-import com.hartwig.healthchecks.boggs.model.report.MappingReport;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import com.hartwig.healthchecks.common.util.BaseReport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.util.ErrorReport;
+
 public class MappingHealthChecker implements HealthChecker {
+
+    protected static final String ERROR_MSG = "Got An Exception with message: %s";
 
     private static final Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
 
@@ -28,15 +29,15 @@ public class MappingHealthChecker implements HealthChecker {
 
     @Override
     @NotNull
-    public BaseReport runCheck() throws IOException, EmptyFileException {
-        final MappingReport mappingReport = dataExtractor.extractFromRunDirectory(runDirectory);
-        final List<BaseDataReport> mapping = mappingReport.getMapping();
-
-        mapping.forEach(report -> {
-            LOGGER.info(String.format("Result for mapping health check '%s' is '%s'",
-                    report.getCheckName(), report.getValue()));
-        });
-
+    public BaseReport runCheck() {
+        BaseReport mappingReport;
+        try {
+            mappingReport = dataExtractor.extractFromRunDirectory(runDirectory);
+        } catch (IOException | EmptyFileException exception) {
+            LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
+            mappingReport = new ErrorReport(CheckType.MAPPING, exception.getClass().getName(), exception.getMessage());
+        }
         return mappingReport;
     }
+
 }
