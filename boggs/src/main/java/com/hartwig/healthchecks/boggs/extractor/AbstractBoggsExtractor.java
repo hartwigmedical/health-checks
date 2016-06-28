@@ -27,17 +27,6 @@ public abstract class AbstractBoggsExtractor extends AbstractDataExtractor {
     protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
 
     @NotNull
-    protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
-                    @NotNull final String suffix) throws IOException {
-        final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath())
-                        .filter(path -> path.getFileName().toString().startsWith(prefix)
-                                        && path.getFileName().toString().endsWith(suffix)
-                                        && path.toString().contains(runDirectory + File.separator + prefix))
-                        .findFirst();
-        return filePath;
-    }
-
-    @NotNull
     protected Long sumOfTotalSequences(@NotNull final Path path, final ZipFileReader zipFileReader) throws IOException {
         final Path totalSequencesPath = new File(path + File.separator + QC_STATS + File.separator).toPath();
         final List<Path> zipFiles = Files.walk(totalSequencesPath)

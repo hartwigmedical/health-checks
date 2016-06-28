@@ -1,5 +1,13 @@
 package com.hartwig.healthchecks.common.extractor;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
+
+import org.jetbrains.annotations.NotNull;
+
 public abstract class AbstractDataExtractor implements DataExtractor {
 
     public static final String PASS = "PASS";
@@ -39,4 +47,15 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected static final Double HUNDRED_FACTOR = 100D;
 
     protected static final Integer DOUBLE_SEQUENCE = 2;
+
+    @NotNull
+    protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
+                    @NotNull final String suffix) throws IOException {
+        return Files.walk(new File(runDirectory).toPath())
+                        .filter(path -> path.getFileName().toString().startsWith(prefix)
+                                        && path.getFileName().toString().endsWith(suffix)
+                                        && path.toString().contains(runDirectory + File.separator + prefix))
+                        .findFirst();
+    }
+
 }
