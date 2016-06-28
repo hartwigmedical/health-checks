@@ -98,7 +98,7 @@ public class HealthChecksApplication {
         final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
         final Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
 
-        Observable<HealthCheckAdapter> adapterObservable =  Observable.from(adapters)
+        final Observable<HealthCheckAdapter> adapterObservable =  Observable.from(adapters)
                 .subscribeOn(Schedulers.io());
 
         BlockingObservable.from(adapterObservable)
