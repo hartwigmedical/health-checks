@@ -1,6 +1,5 @@
 package com.hartwig.healthchecks;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -54,10 +53,13 @@ public class HealthChecksApplication {
      * To Run Healthchecks over files in a dir
      *
      * @param args
+     *            - Arguments on how to run the healtchecks should contain:
+     *            rundir [run-directory] checktype boggs.
      * @throws ParseException
-     * @throws IOException
+     *             - In case commandline's arguments could not be parsed.
+     *
      */
-    public static void main(final String... args) throws ParseException, IOException {
+    public static void main(final String... args) throws ParseException {
         final Options options = createOptions();
         final CommandLine cmd = createCommandLine(options, args);
 
