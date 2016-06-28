@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -22,10 +23,6 @@ public class MappingReport extends BaseReport {
         super(checkType);
         this.referenceSample = referenceSample;
         this.tumorSample = tumorSample;
-    }
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
     }
 
     public List<BaseDataReport> getReferenceSample() {

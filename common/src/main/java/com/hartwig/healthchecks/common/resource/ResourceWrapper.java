@@ -12,5 +12,4 @@ import com.hartwig.healthchecks.common.util.CheckCategory;
 public @interface ResourceWrapper {
 
     CheckCategory type();
-
 }

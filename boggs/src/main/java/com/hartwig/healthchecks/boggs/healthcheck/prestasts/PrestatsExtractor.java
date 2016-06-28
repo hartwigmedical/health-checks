@@ -20,15 +20,13 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
-import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
-
-    private static final double ZERO_DOUBLE_VALUE = 0.0d;
 
     protected static final String PASS = "PASS";
 
@@ -37,6 +35,8 @@ public class PrestatsExtractor extends BoggsExtractor {
     protected static final String FAIL = "FAIL";
 
     protected static final String SUMMARY_FILE_NAME = "summary.txt";
+
+    private static final double ZERO_DOUBLE_VALUE = 0.0d;
 
     private static final int EXPECTED_LINE_LENGTH = 3;
 
@@ -152,7 +152,6 @@ public class PrestatsExtractor extends BoggsExtractor {
             }
         };
         return isStatusWorse;
-
     }
 
     @NotNull

@@ -103,7 +103,6 @@ public class HealthChecksApplication {
 
         Observable.from(adapters).subscribeOn(Schedulers.io()).subscribe((adapter) -> adapter.runCheck(runDirectory),
                         (error) -> LOGGER.error(error.getMessage()), () -> {
-
                             try {
                                 final Optional<String> fileName = JsonReport.getInstance().generateReport();
                                 LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));

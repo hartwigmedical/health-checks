@@ -24,10 +24,8 @@ public enum MappingCheck {
     }
 
     public static Optional<MappingCheck> getByDescription(@NotNull final String description) {
-        return Arrays.asList(MappingCheck.values())
-                .stream()
-                .filter(mappingcheck -> mappingcheck.description.equalsIgnoreCase(description))
-                .findFirst();
+        return Arrays.asList(MappingCheck.values()).stream()
+                        .filter(mappingcheck -> mappingcheck.description.equalsIgnoreCase(description)).findFirst();
     }
 
     public String getDescription() {

@@ -17,10 +17,10 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.boggs.healthcheck.function.DivisionOperator;
-import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
 public class MappingExtractor extends BoggsExtractor {
@@ -174,11 +174,11 @@ public class MappingExtractor extends BoggsExtractor {
                     @NotNull final List<FlagStats> passed) {
 
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
-        final double mateMappedDiffChrPercentage = diffPercStat.getValue();
+        final double mateMappedDiffChrPerc = diffPercStat.getValue();
 
         final BaseDataReport mateMappedDiffReport = new BaseDataReport(patientId,
                         MappingCheck.MAPPING_MATE_MAPPED_DIFFERENT_CHR.getDescription(),
-                        String.valueOf(mateMappedDiffChrPercentage));
+                        String.valueOf(mateMappedDiffChrPerc));
 
         return mateMappedDiffReport;
     }
