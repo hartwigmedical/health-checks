@@ -31,20 +31,20 @@ public final class JsonReport implements Report {
 
     private static final Logger LOGGER = LogManager.getLogger(Report.class);
 
-    private static JsonReport instance = new JsonReport();
+    private static final JsonReport INSTANCE = new JsonReport();
 
-    private final Map<CheckType, BaseReport> healthChecks = new ConcurrentHashMap<>();
+    private static final Map<CheckType, BaseReport> HEALTH_CHECKS = new ConcurrentHashMap<>();
 
     private JsonReport() {
     }
 
     public static JsonReport getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
     public void addReportData(@NotNull final BaseReport reportData) {
-        healthChecks.putIfAbsent(reportData.getCheckType(), reportData);
+        HEALTH_CHECKS.putIfAbsent(reportData.getCheckType(), reportData);
     }
 
     @NotNull
@@ -52,7 +52,7 @@ public final class JsonReport implements Report {
     public Optional<String> generateReport() throws GenerateReportException {
         final JsonArray reportArray = new JsonArray();
 
-        healthChecks.forEach((checkType, baseReport) -> {
+        HEALTH_CHECKS.forEach((checkType, baseReport) -> {
             final JsonElement configJson = GSON.toJsonTree(baseReport);
 
             final JsonObject element = new JsonObject();

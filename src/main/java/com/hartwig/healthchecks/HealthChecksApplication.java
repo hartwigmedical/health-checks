@@ -22,6 +22,7 @@ import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 
 import rx.Observable;
+import rx.observables.BlockingObservable;
 import rx.schedulers.Schedulers;
 
 public class HealthChecksApplication {
@@ -77,8 +78,10 @@ public class HealthChecksApplication {
     }
 
     public void processHealthChecks() {
-        if (checkType.equals(ALL_CHECKS)) {
-            executeAllcheck(runDirectory);
+        LOGGER.info(String.format("Check yype sent via command line -> %s", ALL_CHECKS));
+
+        if (checkType.equalsIgnoreCase(ALL_CHECKS)) {
+            executeAllChecks(runDirectory);
         } else {
             final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
             try {
@@ -87,29 +90,31 @@ public class HealthChecksApplication {
             } catch (final NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
-        }
-
-        try {
-            final Optional<String> fileName = JsonReport.getInstance().generateReport();
-            LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
-        } catch (final GenerateReportException e) {
-            LOGGER.log(Level.ERROR, e.getMessage());
+            generateReport();
         }
     }
 
-    protected void executeAllcheck(@NotNull final String runDirectory) {
+    protected void executeAllChecks(@NotNull final String runDirectory) {
         final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
         final Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
 
-        Observable.from(adapters).subscribeOn(Schedulers.io()).subscribe((adapter) -> adapter.runCheck(runDirectory),
-                        (error) -> LOGGER.error(error.getMessage()), () -> {
-                            try {
-                                final Optional<String> fileName = JsonReport.getInstance().generateReport();
-                                LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
-                            } catch (final GenerateReportException e) {
-                                LOGGER.log(Level.ERROR, e.getMessage());
-                            }
-                        });
+        final Observable<HealthCheckAdapter> adapterObservable =  Observable.from(adapters)
+                .subscribeOn(Schedulers.io());
 
+        BlockingObservable.from(adapterObservable)
+                .subscribe(
+                        adapter -> adapter.runCheck(runDirectory),
+                        (error) -> LOGGER.error(error.getMessage()),
+                        () -> generateReport()
+                );
+    }
+
+    private void generateReport() {
+        try {
+            final Optional<String> fileName = JsonReport.getInstance().generateReport();
+            LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
+        } catch (GenerateReportException e) {
+            LOGGER.log(Level.ERROR, e.getMessage());
+        }
     }
 }
