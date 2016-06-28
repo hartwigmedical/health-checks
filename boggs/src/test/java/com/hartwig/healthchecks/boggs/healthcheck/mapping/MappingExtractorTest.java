@@ -22,6 +22,8 @@ import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -70,13 +72,14 @@ public class MappingExtractorTest {
             }
         };
 
-        final MappingReport mappingReport = extractor.extractFromRunDirectory(path);
+        final BaseReport mappingReport = extractor.extractFromRunDirectory(path);
         assertNotNull("We should have data", mappingReport);
+        assertEquals("Report with wrong type", CheckType.MAPPING, mappingReport.getCheckType());
 
-        final List<BaseDataReport> referenceSample = mappingReport.getReferenceSample();
+        final List<BaseDataReport> referenceSample = ((MappingReport) mappingReport).getReferenceSample();
         assetMappingData(referenceSample);
 
-        final List<BaseDataReport> tumorSample = mappingReport.getTumorSample();
+        final List<BaseDataReport> tumorSample = ((MappingReport) mappingReport).getTumorSample();
         assetMappingData(tumorSample);
 
     }

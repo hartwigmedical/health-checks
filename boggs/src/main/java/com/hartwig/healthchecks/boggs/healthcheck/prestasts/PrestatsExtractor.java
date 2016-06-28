@@ -24,27 +24,14 @@ import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
 public class PrestatsExtractor extends BoggsExtractor {
 
-    protected static final String PASS = "PASS";
-
-    protected static final String WARN = "WARN";
-
-    protected static final String FAIL = "FAIL";
-
     protected static final String SUMMARY_FILE_NAME = "summary.txt";
 
-    private static final double ZERO_DOUBLE_VALUE = 0.0d;
-
     private static final int EXPECTED_LINE_LENGTH = 3;
-
-    private static final int ONE = 1;
-
-    private static final int NEGATIVE_ONE = -1;
-
-    private static final int ZERO = 0;
 
     private static final long MIN_TOTAL_SQ = 85000000L;
 
@@ -60,8 +47,9 @@ public class PrestatsExtractor extends BoggsExtractor {
         this.zipFileReader = zipFileReader;
     }
 
+    @Override
     @NotNull
-    public PrestatsReport extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
                     throws IOException, EmptyFileException {
         final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
@@ -92,8 +80,8 @@ public class PrestatsExtractor extends BoggsExtractor {
             return prestatsDataReportList.stream().min(isStatusWorse()).get();
         }).collect(toList());
         if (prestatsDataReports == null || prestatsDataReports.isEmpty()) {
-            LOGGER.error(String.format(EMPTY_FILES_ERROR, path));
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, path));
+            LOGGER.error(String.format(EMPTY_FILES_ERROR, SUMMARY_FILE_NAME, path));
+            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, SUMMARY_FILE_NAME, path));
         }
         return prestatsDataReports;
     }
@@ -159,8 +147,9 @@ public class PrestatsExtractor extends BoggsExtractor {
                     throws IOException, EmptyFileException {
         final Long totalSequences = sumOfTotalSequences(pathToCheck, zipFileReader);
         if (totalSequences == ZERO_DOUBLE_VALUE) {
-            LOGGER.error(String.format(EMPTY_FILES_ERROR, pathToCheck));
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, pathToCheck));
+            final String errorMessage = String.format(EMPTY_FILES_ERROR, FASTQC_DATA_FILE_NAME, pathToCheck);
+            LOGGER.error(errorMessage);
+            throw new EmptyFileException(errorMessage);
         }
         String status = PASS;
         if (totalSequences < MIN_TOTAL_SQ) {

@@ -12,6 +12,8 @@ import org.junit.Test;
 
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.util.BaseReport;
+import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.smitty.reader.KinshipReader;
 import com.hartwig.healthchecks.smitty.report.KinshipReport;
 
@@ -58,10 +60,11 @@ public class KinshipExtractorTest {
 
             }
         };
-        final KinshipReport kinshipReport = kinshipExtractor.extractFromRunDirectory("Test");
+        final BaseReport kinshipReport = kinshipExtractor.extractFromRunDirectory("Test");
+        assertEquals("Report with wrong type", CheckType.KINSHIP, kinshipReport.getCheckType());
+
         assertNotNull(SHOULD_NOT_BE_NULL, kinshipReport);
-        assertEquals(WRONG_LIST_SIZE, 3, kinshipReport.getKnishipData().size());
-        assertKinshipData(kinshipReport, PATIENT_ID, EXPECTED_VALUE);
+        assertKinshipData((KinshipReport) kinshipReport, PATIENT_ID, EXPECTED_VALUE);
 
     }
 
@@ -93,6 +96,7 @@ public class KinshipExtractorTest {
 
     private void assertKinshipData(final KinshipReport kinshipReport, final String patientId,
                     final String expectedValue) {
+        assertEquals(WRONG_LIST_SIZE, 3, kinshipReport.getKnishipData().size());
         final BaseDataReport baseDataReport = kinshipReport.getKnishipData().stream()
                         .filter(baseData -> baseData.getPatientId().equals(patientId)).findFirst().get();
         assertEquals("Wrong Data", expectedValue, baseDataReport.getValue());
