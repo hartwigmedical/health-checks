@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import com.hartwig.healthchecks.common.extractor.BaseDataExtractor;
+import com.hartwig.healthchecks.common.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.smitty.reader.KinshipReader;
 import com.hartwig.healthchecks.smitty.report.KinshipReport;
 
-public class KinshipExtractor extends BaseDataExtractor {
+public class KinshipExtractor extends AbstractDataExtractor {
 
     private static final int PATIENT_ID_INDEX = 0;
 

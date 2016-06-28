@@ -14,9 +14,9 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
-import com.hartwig.healthchecks.common.extractor.BaseDataExtractor;
+import com.hartwig.healthchecks.common.extractor.AbstractDataExtractor;
 
-public abstract class BoggsExtractor extends BaseDataExtractor {
+public abstract class AbstractBoggsExtractor extends AbstractDataExtractor {
 
     protected static final String QC_STATS = "QCStats";
 

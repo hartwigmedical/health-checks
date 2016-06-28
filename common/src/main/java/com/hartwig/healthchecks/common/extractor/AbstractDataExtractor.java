@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.common.extractor;
 
-public abstract class BaseDataExtractor implements DataExtractor {
+public abstract class AbstractDataExtractor implements DataExtractor {
 
     public static final String PASS = "PASS";
 

@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
+import com.hartwig.healthchecks.boggs.extractor.AbstractBoggsExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
@@ -24,7 +24,7 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
-public class MappingExtractor extends BoggsExtractor {
+public class MappingExtractor extends AbstractBoggsExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(MappingExtractor.class);
 
