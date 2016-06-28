@@ -25,30 +25,31 @@ public class KinshipReaderTest {
 
     private static final String NO_FILE_DIR = "empty";
 
+    private static final int EXPECTED_NUM_LINES = 4;
+
     @Test
     public void readKinship() throws IOException {
-        final URL exampleFlagStatURL = Resources.getResource(TEST_DIR);
+        final URL testPath = Resources.getResource(TEST_DIR);
         final KinshipReader kinshipReader = new KinshipReader();
-        final List<String> readLines = kinshipReader.readLinesFromKinship(exampleFlagStatURL.getPath());
+        final List<String> readLines = kinshipReader.readLinesFromKinship(testPath.getPath());
         assertNotNull(NOT_NULL, readLines);
-        final int EXPECTED_NUM_LINES = 4;
         assertEquals(WRONG_NUM_LINES, EXPECTED_NUM_LINES, readLines.size());
     }
 
     @Test
     public void readEmptyKinship() throws IOException {
-        final URL exampleFlagStatURL = Resources.getResource(EMPTY_DIR);
+        final URL testPath = Resources.getResource(EMPTY_DIR);
         final KinshipReader kinshipReader = new KinshipReader();
-        final List<String> readLines = kinshipReader.readLinesFromKinship(exampleFlagStatURL.getPath());
+        final List<String> readLines = kinshipReader.readLinesFromKinship(testPath.getPath());
         assertNotNull(NOT_NULL, readLines);
         assertEquals(NOT_NULL, 0, readLines.size());
     }
 
     @Test(expected = FileNotFoundException.class)
     public void readNoKinship() throws IOException {
-        final URL exampleFlagStatURL = Resources.getResource(NO_FILE_DIR);
+        final URL testPath = Resources.getResource(NO_FILE_DIR);
         final KinshipReader kinshipReader = new KinshipReader();
-        kinshipReader.readLinesFromKinship(exampleFlagStatURL.getPath());
+        kinshipReader.readLinesFromKinship(testPath.getPath());
     }
 
     @Test(expected = NoSuchFileException.class)
