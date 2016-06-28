@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,10 +21,6 @@ import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 public final class JsonReport implements Report {
 
@@ -73,8 +73,10 @@ public final class JsonReport implements Report {
             fileWriter.write(GSON.toJson(reportJson));
             fileWriter.flush();
         } catch (final IOException e) {
-            LOGGER.error(String.format("Error occurred whilst generating reports. Error -> %s", e.getMessage()));
-            throw new GenerateReportException(e.getMessage());
+            final String errorMessage = String.format("Error occurred whilst generating reports. Error -> %s",
+                            e.getMessage());
+            LOGGER.error(errorMessage);
+            throw new GenerateReportException(errorMessage);
         }
         return Optional.ofNullable(fileName);
     }
