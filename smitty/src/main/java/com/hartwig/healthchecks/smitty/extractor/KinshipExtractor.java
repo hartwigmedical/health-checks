@@ -27,6 +27,7 @@ public class KinshipExtractor extends AbstractDataExtractor {
     private final KinshipReader kinshipReader;
 
     public KinshipExtractor(final KinshipReader kinshipReader) {
+        super();
         this.kinshipReader = kinshipReader;
     }
 

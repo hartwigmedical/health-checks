@@ -25,6 +25,10 @@ import rx.Observable;
 import rx.observables.BlockingObservable;
 import rx.schedulers.Schedulers;
 
+/**
+ * @author nhazaa
+ *
+ */
 public class HealthChecksApplication {
 
     private static final String REPORT_GENERATED_MSG = "Report generated with following name -> %s";
@@ -46,6 +50,13 @@ public class HealthChecksApplication {
         this.checkType = checkType;
     }
 
+    /**
+     * To Run Healthchecks over files in a dir
+     *
+     * @param args
+     * @throws ParseException
+     * @throws IOException
+     */
     public static void main(final String... args) throws ParseException, IOException {
         final Options options = createOptions();
         final CommandLine cmd = createCommandLine(options, args);
@@ -98,22 +109,17 @@ public class HealthChecksApplication {
         final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
         final Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
 
-        final Observable<HealthCheckAdapter> adapterObservable =  Observable.from(adapters)
-                .subscribeOn(Schedulers.io());
+        final Observable<HealthCheckAdapter> adapterObservable = Observable.from(adapters).subscribeOn(Schedulers.io());
 
-        BlockingObservable.from(adapterObservable)
-                .subscribe(
-                        adapter -> adapter.runCheck(runDirectory),
-                        (error) -> LOGGER.error(error.getMessage()),
-                        () -> generateReport()
-                );
+        BlockingObservable.from(adapterObservable).subscribe(adapter -> adapter.runCheck(runDirectory),
+                        (error) -> LOGGER.error(error.getMessage()), () -> generateReport());
     }
 
     private void generateReport() {
         try {
             final Optional<String> fileName = JsonReport.getInstance().generateReport();
             LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
-        } catch (GenerateReportException e) {
+        } catch (final GenerateReportException e) {
             LOGGER.log(Level.ERROR, e.getMessage());
         }
     }
