@@ -14,10 +14,10 @@ import org.junit.Test;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
-import com.hartwig.healthchecks.boggs.model.report.BaseDataReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.report.BaseDataReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
