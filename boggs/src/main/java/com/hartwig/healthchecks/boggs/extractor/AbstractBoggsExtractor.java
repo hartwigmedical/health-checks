@@ -14,45 +14,17 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
+import com.hartwig.healthchecks.common.extractor.AbstractDataExtractor;
 
-public class BoggsExtractor {
+public abstract class AbstractBoggsExtractor extends AbstractDataExtractor {
 
     protected static final String QC_STATS = "QCStats";
-
-    protected static final String FILENAME = "Filename";
-
-    protected static final String SEPERATOR_REGEX = "\t";
 
     protected static final String TOTAL_SEQUENCES = "Total Sequences";
 
     protected static final String MAPPING = "mapping";
 
     protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
-
-    protected static final String ZIP_FILES_SUFFIX = ".zip";
-
-    protected static final String FILE_NOT_FOUND = "File %s was not found";
-
-    protected static final String SAMPLE_PREFIX = "CPCT";
-
-    protected static final String REF_SAMPLE_SUFFIX = "R";
-
-    protected static final String TUM_SAMPLE_SUFFIX = "T";
-
-    protected static final String EMPTY_FILES_ERROR = "Found empty Summary files under path -> %s";
-
-    protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";
-
-    @NotNull
-    protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
-                    @NotNull final String suffix) throws IOException {
-        final Optional<Path> filePath = Files.walk(new File(runDirectory).toPath())
-                        .filter(path -> path.getFileName().toString().startsWith(prefix)
-                                        && path.getFileName().toString().endsWith(suffix)
-                                        && path.toString().contains(runDirectory + File.separator + prefix))
-                        .findFirst();
-        return filePath;
-    }
 
     @NotNull
     protected Long sumOfTotalSequences(@NotNull final Path path, final ZipFileReader zipFileReader) throws IOException {

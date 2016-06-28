@@ -7,30 +7,22 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.smitty.reader.KinshipReader;
 import com.hartwig.healthchecks.smitty.report.KinshipReport;
 
-public class KinshipExtractor {
-
-    private static final String FAIL = "FAIL";
-
-    private static final String PASS = "PASS";
+public class KinshipExtractor extends AbstractDataExtractor {
 
     private static final int PATIENT_ID_INDEX = 0;
 
     private static final int KINSHIP_INDEX = 7;
 
-    private static final int FIRST_LINE = 1;
-
     private static final double MIN_VALUE = 0.46d;
 
     private static final String KINSHIP_TEST = "KINSHIP_TEST";
-
-    protected static final String SEPERATOR_REGEX = "\t";
-
-    private static final String EMPTY_FILE_ERROR = "Kinship file was found empty in path %s";
 
     private final KinshipReader kinshipReader;
 
@@ -38,15 +30,16 @@ public class KinshipExtractor {
         this.kinshipReader = kinshipReader;
     }
 
+    @Override
     @NotNull
-    public KinshipReport extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
                     throws IOException, EmptyFileException {
         final List<String> kinshipLines = kinshipReader.readLinesFromKinship(runDirectory);
         if (kinshipLines.isEmpty()) {
-            throw new EmptyFileException(String.format(EMPTY_FILE_ERROR, runDirectory));
+            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, KINSHIP_TEST, runDirectory));
         }
 
-        final List<BaseDataReport> baseDataReports = kinshipLines.stream().skip(FIRST_LINE).map(line -> {
+        final List<BaseDataReport> baseDataReports = kinshipLines.stream().skip(ONE).map(line -> {
             final String[] values = line.split(SEPERATOR_REGEX);
             String checkStatus = PASS;
             if (Double.parseDouble(values[KINSHIP_INDEX]) < MIN_VALUE) {

@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.boggs.extractor.BoggsExtractor;
+import com.hartwig.healthchecks.boggs.extractor.AbstractBoggsExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
@@ -21,21 +21,14 @@ import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
-public class MappingExtractor extends BoggsExtractor {
+public class MappingExtractor extends AbstractBoggsExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(MappingExtractor.class);
 
     private static final Long MILLIS_FACTOR = 10000L;
-
-    private static final Double HUNDRED_FACTOR = 100D;
-
-    private static final Integer DOUBLE_SEQUENCE = 2;
-
-    private static final String REALIGN = "realign";
-
-    private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
     @NotNull
     private final FlagStatParser flagstatParser;
@@ -49,8 +42,9 @@ public class MappingExtractor extends BoggsExtractor {
         this.zipFileReader = zipFileReader;
     }
 
+    @Override
     @NotNull
-    public MappingReport extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
                     throws IOException, EmptyFileException {
         final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
@@ -118,7 +112,7 @@ public class MappingExtractor extends BoggsExtractor {
                         .findFirst();
         final FlagStatData flagstatData = flagstatParser.parse(filePath.get().toString());
         if (flagstatData == null) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, runDirPath.toString()));
+            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, FLAGSTAT_SUFFIX, runDirPath.toString()));
         }
         return flagstatData;
     }
