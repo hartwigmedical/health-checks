@@ -4,12 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
-import com.hartwig.healthchecks.common.exception.GenerateReportException;
-import com.hartwig.healthchecks.common.exception.NotFoundException;
-import com.hartwig.healthchecks.common.report.JsonReport;
-import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -20,6 +14,12 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.exception.GenerateReportException;
+import com.hartwig.healthchecks.common.exception.NotFoundException;
+import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -71,7 +71,7 @@ public class HealthChecksApplication {
 
     @NotNull
     private static CommandLine createCommandLine(@NotNull final Options options, @NotNull final String... args)
-            throws ParseException {
+                    throws ParseException {
         final CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);
     }
@@ -84,7 +84,7 @@ public class HealthChecksApplication {
             try {
                 final HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
                 healthCheckAdapter.runCheck(runDirectory);
-            } catch (NotFoundException e) {
+            } catch (final NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
         }
@@ -92,7 +92,7 @@ public class HealthChecksApplication {
         try {
             final Optional<String> fileName = JsonReport.getInstance().generateReport();
             LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
-        } catch (GenerateReportException e) {
+        } catch (final GenerateReportException e) {
             LOGGER.log(Level.ERROR, e.getMessage());
         }
     }
@@ -102,15 +102,15 @@ public class HealthChecksApplication {
         final Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
 
         Observable.from(adapters).subscribeOn(Schedulers.io()).subscribe((adapter) -> adapter.runCheck(runDirectory),
-                (error) -> LOGGER.error(error.getMessage()), () -> {
+                        (error) -> LOGGER.error(error.getMessage()), () -> {
 
-                    try {
-                        final Optional<String> fileName = JsonReport.getInstance().generateReport();
-                        LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
-                    } catch (GenerateReportException e) {
-                        LOGGER.log(Level.ERROR, e.getMessage());
-                    }
-                });
+                            try {
+                                final Optional<String> fileName = JsonReport.getInstance().generateReport();
+                                LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
+                            } catch (final GenerateReportException e) {
+                                LOGGER.log(Level.ERROR, e.getMessage());
+                            }
+                        });
 
     }
 }

@@ -79,6 +79,7 @@ coveralls {
 dependencies {
     compile project(":common")
     compile project(":boggs")
+    compile project(":smitty")
 }
 
 task wrapper(type: Wrapper) {

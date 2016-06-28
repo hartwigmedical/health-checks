@@ -8,4 +8,5 @@ public interface DivisionOperator extends Calculable {
     static DivisionOperator apply() {
         return (left, right) -> left / right;
     }
+
 }
