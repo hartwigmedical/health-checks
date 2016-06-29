@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.healthcheck.mapping;
+package com.hartwig.healthchecks.smitty.check;
 
 import java.io.IOException;
 
@@ -13,17 +13,19 @@ import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
 
-public class MappingHealthChecker implements HealthChecker {
+public class KinshipHealthChecker implements HealthChecker {
 
     protected static final String ERROR_MSG = "Got An Exception with message: %s";
 
-    private static final Logger LOGGER = LogManager.getLogger(MappingHealthChecker.class);
+    private static final Logger LOGGER = LogManager.getLogger(KinshipHealthChecker.class);
 
+    @NotNull
     private final String runDirectory;
 
+    @NotNull
     private final DataExtractor dataExtractor;
 
-    public MappingHealthChecker(@NotNull final String runDirectory, @NotNull final DataExtractor dataExtractor) {
+    public KinshipHealthChecker(@NotNull final String runDirectory, @NotNull final DataExtractor dataExtractor) {
         this.runDirectory = runDirectory;
         this.dataExtractor = dataExtractor;
     }
@@ -31,14 +33,15 @@ public class MappingHealthChecker implements HealthChecker {
     @Override
     @NotNull
     public BaseReport runCheck() {
-        BaseReport mappingReport;
+
+        BaseReport kinshipReport;
         try {
-            mappingReport = dataExtractor.extractFromRunDirectory(runDirectory);
+            kinshipReport = dataExtractor.extractFromRunDirectory(runDirectory);
         } catch (IOException | HealthChecksException exception) {
             LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
-            mappingReport = new ErrorReport(CheckType.MAPPING, exception.getClass().getName(), exception.getMessage());
+            kinshipReport = new ErrorReport(CheckType.KINSHIP, exception.getClass().getName(), exception.getMessage());
         }
-        return mappingReport;
+        return kinshipReport;
     }
 
 }

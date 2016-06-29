@@ -23,6 +23,7 @@ import com.hartwig.healthchecks.boggs.extractor.AbstractBoggsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
@@ -50,7 +51,7 @@ public class PrestatsExtractor extends AbstractBoggsExtractor {
     @Override
     @NotNull
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
-                    throws IOException, EmptyFileException {
+                    throws IOException, HealthChecksException {
         final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
 
@@ -65,7 +66,7 @@ public class PrestatsExtractor extends AbstractBoggsExtractor {
         final List<BaseDataReport> sampleData = getSummaryFilesData(samplePath.get(), samplePatientId);
         final BaseDataReport sampleFastq = getFastqFilesData(samplePath.get(), samplePatientId);
         sampleData.add(sampleFastq);
-        logPrestatsReport(sampleData);
+        logBaseDataReports(sampleData);
         return sampleData;
     }
 
@@ -156,13 +157,5 @@ public class PrestatsExtractor extends AbstractBoggsExtractor {
             status = FAIL;
         }
         return new BaseDataReport(patientId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(), status);
-    }
-
-    private void logPrestatsReport(final List<BaseDataReport> prestatsDataReport) {
-        prestatsDataReport.forEach((prestatsData) -> {
-            if (prestatsData.getValue().equalsIgnoreCase(FAIL)) {
-                LOGGER.info(String.format(FOUND_FAILS_MSG, prestatsData.getCheckName(), prestatsData.getPatientId()));
-            }
-        });
     }
 }

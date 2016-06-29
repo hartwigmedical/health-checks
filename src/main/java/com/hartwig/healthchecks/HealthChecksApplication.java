@@ -24,11 +24,13 @@ import rx.Observable;
 import rx.observables.BlockingObservable;
 import rx.schedulers.Schedulers;
 
-/**
- * @author nhazaa
- *
- */
 public class HealthChecksApplication {
+
+    private static final String CHECK_TYPE_ARGS_DESC = "The type of check to b executed for a single run";
+
+    private static final String RUN_DIR_ARG_DESC = "The path containing the data for a single run";
+
+    private static final String CHECK_TYPE_MSG = "Check type sent via command line -> %s";
 
     private static final String REPORT_GENERATED_MSG = "Report generated with following name -> %s";
 
@@ -78,8 +80,8 @@ public class HealthChecksApplication {
     @NotNull
     private static Options createOptions() {
         final Options options = new Options();
-        options.addOption(RUN_DIRECTORY, true, "The path containing the data for a single run");
-        options.addOption(CHECK_TYPE, true, "The type of check to b executed for a single run");
+        options.addOption(RUN_DIRECTORY, true, RUN_DIR_ARG_DESC);
+        options.addOption(CHECK_TYPE, true, CHECK_TYPE_ARGS_DESC);
         return options;
     }
 
@@ -91,7 +93,7 @@ public class HealthChecksApplication {
     }
 
     public void processHealthChecks() {
-        LOGGER.info(String.format("Check yype sent via command line -> %s", ALL_CHECKS));
+        LOGGER.info(String.format(CHECK_TYPE_MSG, ALL_CHECKS));
 
         if (checkType.equalsIgnoreCase(ALL_CHECKS)) {
             executeAllChecks(runDirectory);

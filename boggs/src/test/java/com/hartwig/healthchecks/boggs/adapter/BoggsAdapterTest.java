@@ -2,19 +2,16 @@ package com.hartwig.healthchecks.boggs.adapter;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
-import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsHealthChecker;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
@@ -35,14 +32,14 @@ public class BoggsAdapterTest {
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     @Test
-    public void verifyAdapterRunning() throws IOException, EmptyFileException {
+    public void verifyAdapterRunning() {
         final MappingReport dummyMappingReport = getDummyMappingReport();
         final PrestatsReport dummyPrestatsReport = getDummyPrestatsReport();
 
         new MockUp<MappingHealthChecker>() {
 
             @Mock
-            void $init(final String runDir, final MappingExtractor extractor) {
+            void $init(final String runDir, final DataExtractor extractor) {
                 assertEquals(runDir, DUMMY_RUN_DIR);
             }
 
@@ -54,7 +51,7 @@ public class BoggsAdapterTest {
         new MockUp<PrestatsHealthChecker>() {
 
             @Mock
-            void $init(final String runDir, final PrestatsExtractor extractor) {
+            void $init(final String runDir, final DataExtractor extractor) {
                 assertEquals(runDir, DUMMY_RUN_DIR);
             }
 

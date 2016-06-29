@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.common.exception;
 
 import org.jetbrains.annotations.NotNull;
 
-public class GenerateReportException extends Exception {
+public class GenerateReportException extends HealthChecksException {
 
     private static final long serialVersionUID = 7343366902433673704L;
 
