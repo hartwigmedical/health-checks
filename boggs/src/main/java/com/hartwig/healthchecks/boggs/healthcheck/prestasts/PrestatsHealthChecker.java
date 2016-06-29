@@ -7,7 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
@@ -22,9 +23,9 @@ public class PrestatsHealthChecker implements HealthChecker {
     private final String runDirectory;
 
     @NotNull
-    private final PrestatsExtractor dataExtractor;
+    private final DataExtractor dataExtractor;
 
-    public PrestatsHealthChecker(@NotNull final String runDirectory, @NotNull final PrestatsExtractor dataExtractor) {
+    public PrestatsHealthChecker(@NotNull final String runDirectory, @NotNull final DataExtractor dataExtractor) {
         this.runDirectory = runDirectory;
         this.dataExtractor = dataExtractor;
     }
@@ -36,7 +37,7 @@ public class PrestatsHealthChecker implements HealthChecker {
         BaseReport prestatsReport;
         try {
             prestatsReport = dataExtractor.extractFromRunDirectory(runDirectory);
-        } catch (IOException | EmptyFileException exception) {
+        } catch (IOException | HealthChecksException exception) {
             LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
             prestatsReport = new ErrorReport(CheckType.PRESTATS, exception.getClass().getName(),
                             exception.getMessage());

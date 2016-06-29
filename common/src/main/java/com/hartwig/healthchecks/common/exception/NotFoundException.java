@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.common.exception;
 
 import org.jetbrains.annotations.NotNull;
 
-public class NotFoundException extends Exception {
+public class NotFoundException extends HealthChecksException {
 
     private static final long serialVersionUID = 6625914789247983088L;
 

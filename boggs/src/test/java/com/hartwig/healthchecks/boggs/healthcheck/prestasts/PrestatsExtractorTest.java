@@ -17,6 +17,7 @@ import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -88,7 +89,7 @@ public class PrestatsExtractorTest {
     }
 
     @Test
-    public void canProcessRunDirectoryStructure() throws IOException, EmptyFileException {
+    public void canProcessRunDirectoryStructure() throws IOException, HealthChecksException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
         new Expectations() {
@@ -113,7 +114,7 @@ public class PrestatsExtractorTest {
     }
 
     @Test(expected = EmptyFileException.class)
-    public void extractDataEmptySummaryFile() throws IOException, EmptyFileException {
+    public void extractDataEmptySummaryFile() throws IOException, HealthChecksException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         new Expectations() {
 
@@ -128,7 +129,7 @@ public class PrestatsExtractorTest {
     }
 
     @Test(expected = EmptyFileException.class)
-    public void extractDataEmptyFastqFile() throws IOException, EmptyFileException {
+    public void extractDataEmptyFastqFile() throws IOException, HealthChecksException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         new Expectations() {
 
@@ -146,7 +147,7 @@ public class PrestatsExtractorTest {
     }
 
     @Test(expected = NoSuchFileException.class)
-    public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
+    public void extractDataNoneExistingDir() throws IOException, HealthChecksException {
         final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }

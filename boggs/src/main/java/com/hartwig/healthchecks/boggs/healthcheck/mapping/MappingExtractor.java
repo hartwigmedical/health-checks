@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.extractor.AbstractBoggsExtractor;
@@ -20,13 +18,12 @@ import com.hartwig.healthchecks.boggs.healthcheck.function.DivisionOperator;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
 public class MappingExtractor extends AbstractBoggsExtractor {
-
-    private static final Logger LOGGER = LogManager.getLogger(MappingExtractor.class);
 
     private static final Long MILLIS_FACTOR = 10000L;
 
@@ -45,7 +42,7 @@ public class MappingExtractor extends AbstractBoggsExtractor {
     @Override
     @NotNull
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
-                    throws IOException, EmptyFileException {
+                    throws IOException, HealthChecksException {
         final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
 
@@ -62,10 +59,7 @@ public class MappingExtractor extends AbstractBoggsExtractor {
         final List<BaseDataReport> mappingChecks = getFlagStatsData(patientId, sampleFile.get(),
                         totalSequences.toString());
 
-        mappingChecks.forEach(mappingReport -> {
-            LOGGER.info(String.format("For Patient %s the Result for mapping health check  '%s' is '%s'", patientId,
-                            mappingReport.getCheckName(), mappingReport.getValue()));
-        });
+        logBaseDataReports(mappingChecks);
         return mappingChecks;
     }
 

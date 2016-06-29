@@ -124,6 +124,19 @@ The location of the reports can be changed via the ```config.properties``` file 
 			"check_type": "MAPPING"
 		}
 	}, {
+		"KINSHIP": {
+			"patient_data": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "KINSHIP_TEST",
+				"value": "0.2155"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "KINSHIP_TEST",
+				"value": "-0.0042"
+			}],
+			"check_type": "KINSHIP"
+		}
+	}, {
 		"PRESTATS": {
 			"reference_sample": [{
 				"patient_id": "CPCT12345678R",

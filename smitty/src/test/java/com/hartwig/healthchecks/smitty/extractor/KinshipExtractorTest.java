@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
@@ -22,15 +24,31 @@ import mockit.Mocked;
 
 public class KinshipExtractorTest {
 
-    private static final String PATIENT_ID = "CPCT12345678T";
+    private static final String THIRD_LINE = "CPCT12345678T\tCPCT12345678T\tCPCT12345678TII\tCPCT12345678TII\t157\t0.146\t0.0573\t-0.0042";
 
-    private static final String EXPECTED_VALUE = "FAIL";
+    private static final String SECOND_LINE = "CPCT12345678R\tCPCT12345678R\tCPCT12345678TII\tCPCT12345678TII\t156\t0.231\t0.0128\t0.2155";
+
+    private static final String FIRST_LINE = "FID1\tID1\tFID2\tID2\tN_SNP\tHetHet\tIBS0\tKinship";
+
+    private static final String TEST_DIR = "Test";
+
+    private static final String WRONG_DATA = "Wrong Data";
+
+    private static final String PATIENT_ID_T = "CPCT12345678T";
+
+    private static final String PATIENT_ID_R = "CPCT12345678R";
+
+    private static final String EXPECTED_VALUE_R = "0.2155";
+
+    private static final String EXPECTED_VALUE_T = "-0.0042";
 
     private static final String WRONG_LIST_SIZE = "Wrong list size";
 
     private static final String SHOULD_NOT_BE_NULL = "Should Not be Null";
 
     private List<String> lines;
+
+    private List<String> malformedLines;
 
     private List<String> emptyLines;
 
@@ -41,15 +59,17 @@ public class KinshipExtractorTest {
     public void setUp() {
 
         lines = new ArrayList<>();
-        lines.add("FID1\tID1\tFID2\tID2\tN_SNP\tHetHet\tIBS0\tKinship");
-        lines.add("CPCT12345678R\tCPCT12345678R\tCPCT12345678T\tCPCT12345678T\t164\t0.274\t0.0122\t0.2705");
-        lines.add("CPCT12345678R\tCPCT12345678R\tCPCT12345678TII\tCPCT12345678TII\t156\t0.231\t0.0128\t0.2155");
-        lines.add("CPCT12345678T\tCPCT12345678T\tCPCT12345678TII\tCPCT12345678TII\t157\t0.146\t0.0573\t-0.0042");
+        lines.add(FIRST_LINE);
+        lines.add(SECOND_LINE);
+        lines.add(THIRD_LINE);
+        malformedLines = new ArrayList<>();
+        malformedLines.addAll(lines);
+        malformedLines.add(SECOND_LINE);
         emptyLines = new ArrayList<>();
     }
 
     @Test
-    public void extractDataFromKinship() throws IOException, EmptyFileException {
+    public void extractDataFromKinship() throws IOException, HealthChecksException {
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
         new Expectations() {
@@ -60,16 +80,16 @@ public class KinshipExtractorTest {
 
             }
         };
-        final BaseReport kinshipReport = kinshipExtractor.extractFromRunDirectory("Test");
+        final BaseReport kinshipReport = kinshipExtractor.extractFromRunDirectory(TEST_DIR);
         assertEquals("Report with wrong type", CheckType.KINSHIP, kinshipReport.getCheckType());
 
         assertNotNull(SHOULD_NOT_BE_NULL, kinshipReport);
-        assertKinshipData((KinshipReport) kinshipReport, PATIENT_ID, EXPECTED_VALUE);
-
+        assertKinshipData((KinshipReport) kinshipReport, PATIENT_ID_T, EXPECTED_VALUE_T);
+        assertKinshipData((KinshipReport) kinshipReport, PATIENT_ID_R, EXPECTED_VALUE_R);
     }
 
     @Test(expected = EmptyFileException.class)
-    public void extractDataFromEmptyKinship() throws IOException, EmptyFileException {
+    public void extractDataFromEmptyKinship() throws IOException, HealthChecksException {
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
         new Expectations() {
 
@@ -78,11 +98,11 @@ public class KinshipExtractorTest {
                 returns(emptyLines);
             }
         };
-        kinshipExtractor.extractFromRunDirectory("Test");
+        kinshipExtractor.extractFromRunDirectory(TEST_DIR);
     }
 
     @Test(expected = IOException.class)
-    public void extractDataFromKinshipIoException() throws IOException, EmptyFileException {
+    public void extractDataFromKinshipIoException() throws IOException, HealthChecksException {
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
         new Expectations() {
 
@@ -91,14 +111,27 @@ public class KinshipExtractorTest {
                 result = new IOException();
             }
         };
-        kinshipExtractor.extractFromRunDirectory("Test");
+        kinshipExtractor.extractFromRunDirectory(TEST_DIR);
+    }
+
+    @Test(expected = MalformedFileException.class)
+    public void extractDataFromKinshipMalformedFileException() throws IOException, HealthChecksException {
+        final KinshipExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
+        new Expectations() {
+
+            {
+                kinshipReader.readLinesFromKinship(anyString);
+                returns(malformedLines);
+            }
+        };
+        kinshipExtractor.extractFromRunDirectory(TEST_DIR);
     }
 
     private void assertKinshipData(final KinshipReport kinshipReport, final String patientId,
                     final String expectedValue) {
-        assertEquals(WRONG_LIST_SIZE, 3, kinshipReport.getKnishipData().size());
-        final BaseDataReport baseDataReport = kinshipReport.getKnishipData().stream()
+        assertEquals(WRONG_LIST_SIZE, 2, kinshipReport.getPatientData().size());
+        final BaseDataReport baseDataReport = kinshipReport.getPatientData().stream()
                         .filter(baseData -> baseData.getPatientId().equals(patientId)).findFirst().get();
-        assertEquals("Wrong Data", expectedValue, baseDataReport.getValue());
+        assertEquals(WRONG_DATA, expectedValue, baseDataReport.getValue());
     }
 }

@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
@@ -36,7 +37,7 @@ public class MappingHealthCheckerTest {
     private MappingExtractor dataExtractor;
 
     @Test
-    public void verifyMappingHealthChecker() throws IOException, EmptyFileException {
+    public void verifyMappingHealthChecker() throws IOException, HealthChecksException {
 
         final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
@@ -56,7 +57,7 @@ public class MappingHealthCheckerTest {
     }
 
     @Test
-    public void verifyMappingHealthCheckerIOException() throws IOException, EmptyFileException {
+    public void verifyMappingHealthCheckerIOException() throws IOException, HealthChecksException {
         final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
@@ -75,7 +76,7 @@ public class MappingHealthCheckerTest {
     }
 
     @Test
-    public void verifyMappingHealthCheckerEmptyFileException() throws IOException, EmptyFileException {
+    public void verifyMappingHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
         final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 

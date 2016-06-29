@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -16,11 +18,13 @@ import com.hartwig.healthchecks.smitty.report.KinshipReport;
 
 public class KinshipExtractor extends AbstractDataExtractor {
 
+    private static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s -> %s lines found was expecting %s";
+
+    private static final int EXPECTED_NUM_LINES = 3;
+
     private static final int PATIENT_ID_INDEX = 0;
 
     private static final int KINSHIP_INDEX = 7;
-
-    private static final double MIN_VALUE = 0.46d;
 
     private static final String KINSHIP_TEST = "KINSHIP_TEST";
 
@@ -34,20 +38,20 @@ public class KinshipExtractor extends AbstractDataExtractor {
     @Override
     @NotNull
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
-                    throws IOException, EmptyFileException {
+                    throws IOException, HealthChecksException {
         final List<String> kinshipLines = kinshipReader.readLinesFromKinship(runDirectory);
         if (kinshipLines.isEmpty()) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, KINSHIP_TEST, runDirectory));
         }
-
+        if (kinshipLines.size() != EXPECTED_NUM_LINES) {
+            throw new MalformedFileException(String.format(MALFORMED_FILE_MSG, KINSHIP_TEST, runDirectory,
+                            kinshipLines.size(), EXPECTED_NUM_LINES));
+        }
         final List<BaseDataReport> baseDataReports = kinshipLines.stream().skip(ONE).map(line -> {
             final String[] values = line.split(SEPERATOR_REGEX);
-            String checkStatus = PASS;
-            if (Double.parseDouble(values[KINSHIP_INDEX]) < MIN_VALUE) {
-                checkStatus = FAIL;
-            }
-            return new BaseDataReport(values[PATIENT_ID_INDEX], KINSHIP_TEST, checkStatus);
+            return new BaseDataReport(values[PATIENT_ID_INDEX], KINSHIP_TEST, values[KINSHIP_INDEX]);
         }).collect(Collectors.toList());
+        logBaseDataReports(baseDataReports);
         return new KinshipReport(CheckType.KINSHIP, baseDataReports);
     }
 }

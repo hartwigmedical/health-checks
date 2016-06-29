@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public enum CheckCategory {
 
     BOGGS,
+    SMITTY,
     DUMMY;
 
     public static Optional<CheckCategory> getByCategory(@NotNull final String typeToCheck) {

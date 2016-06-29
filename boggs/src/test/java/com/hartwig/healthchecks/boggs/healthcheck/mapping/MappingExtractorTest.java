@@ -21,6 +21,7 @@ import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
@@ -52,7 +53,7 @@ public class MappingExtractorTest {
     private FlagStatParser flagstatParser;
 
     @Test
-    public void extractData() throws IOException, EmptyFileException {
+    public void extractData() throws IOException, HealthChecksException {
         final URL runDirURL = Resources.getResource(RUNDIR);
         final String path = runDirURL.getPath();
 
@@ -105,13 +106,13 @@ public class MappingExtractorTest {
     }
 
     @Test(expected = NoSuchFileException.class)
-    public void extractDataNoneExistingDir() throws IOException, EmptyFileException {
+    public void extractDataNoneExistingDir() throws IOException, HealthChecksException {
         final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }
 
     @Test(expected = EmptyFileException.class)
-    public void extractDataEmptyFile() throws IOException, EmptyFileException {
+    public void extractDataEmptyFile() throws IOException, HealthChecksException {
         final URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
         final String path = exampleFlagStatURL.getPath();
         final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());

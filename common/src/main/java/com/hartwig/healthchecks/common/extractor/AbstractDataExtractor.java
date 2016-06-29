@@ -4,9 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.report.BaseDataReport;
 
 public abstract class AbstractDataExtractor implements DataExtractor {
 
@@ -48,6 +53,10 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     protected static final Integer DOUBLE_SEQUENCE = 2;
 
+    private static final String LOG_MSG = "Check '%s' for Patient '%s' has value '%s'";
+
+    private static final Logger LOGGER = LogManager.getLogger(AbstractDataExtractor.class);
+
     @NotNull
     protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException {
@@ -58,4 +67,11 @@ public abstract class AbstractDataExtractor implements DataExtractor {
                         .findFirst();
     }
 
+    protected void logBaseDataReports(final List<BaseDataReport> baseDataReports) {
+        baseDataReports.forEach((baseDataReport) -> {
+            LOGGER.info(String.format(LOG_MSG, baseDataReport.getCheckName(), baseDataReport.getPatientId(),
+                            baseDataReport.getValue()));
+
+        });
+    }
 }
