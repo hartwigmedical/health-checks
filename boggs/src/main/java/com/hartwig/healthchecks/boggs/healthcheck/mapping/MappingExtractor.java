@@ -52,12 +52,11 @@ public class MappingExtractor extends AbstractBoggsExtractor {
     @NotNull
     private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException, EmptyFileException {
-        final Optional<Path> sampleFile = getFilesPath(runDirectory, prefix, suffix);
+        final Path sampleFile = zipFileReader.getZipFilesPath(runDirectory, prefix, suffix);
 
-        final String patientId = sampleFile.get().getFileName().toString();
-        final Long totalSequences = sumOfTotalSequences(sampleFile.get(), zipFileReader);
-        final List<BaseDataReport> mappingChecks = getFlagStatsData(patientId, sampleFile.get(),
-                        totalSequences.toString());
+        final String patientId = sampleFile.getFileName().toString();
+        final Long totalSequences = sumOfTotalSequences(sampleFile, zipFileReader);
+        final List<BaseDataReport> mappingChecks = getFlagStatsData(patientId, sampleFile, totalSequences.toString());
 
         logBaseDataReports(mappingChecks);
         return mappingChecks;

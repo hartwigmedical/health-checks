@@ -28,13 +28,6 @@ public class TestZipFileFactory {
     };
 
     public static List<String> getFastqLines() {
-        return Arrays.asList(("##FastQC\t0.11.4, >>Basic Statistics\tpass," + " #Measure  Value, "
-                        + "Filename\tCPCT12345678R_FLOWCELL_S2_L001_R2_001_fastqc.gz, "
-                        + "File type\tConventional base calls, Encoding\tSanger / Illumina 1.9, "
-                        + "Total Sequences\t8951, " + "Sequences flagged as poor quality\t0, " + "Sequence length\t151,"
-                        + " %GC\t45, >>END_MODULE, " + ">>Per base sequence quality\tpass, "
-                        + "#Base Mean\tMedian  Lower Quartile  Upper Quartile  10th Percentile 90th Percentile,"
-                        + " 1  31.22609472743521   32.0    32.0    32.0    32.0    32.0, "
-                        + "2 31.617292225201073  32.0    32.0    32.0    32.0    32.0").split(","));
+        return Arrays.asList("Total Sequences\t8951");
     };
 }
