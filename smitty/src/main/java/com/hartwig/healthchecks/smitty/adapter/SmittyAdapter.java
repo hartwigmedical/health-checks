@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.adapter;
+package com.hartwig.healthchecks.smitty.adapter;
 
 import org.jetbrains.annotations.NotNull;
 
