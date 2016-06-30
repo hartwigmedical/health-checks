@@ -33,6 +33,8 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     protected static final String EMPTY_FILES_ERROR = "File %s was found empty in path -> %s";
 
+    protected static final String LINE_NOT_FOUND_ERROR = "File %s in path %s does not contain line with value %s";
+
     protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";
 
     protected static final String SEPERATOR_REGEX = "\t";
@@ -42,6 +44,10 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected static final Double HUNDRED_FACTOR = 100D;
 
     protected static final Integer DOUBLE_SEQUENCE = 2;
+
+    protected static final String DEDUP_SAMPLE_SUFFIX = "dedup";
+
+    protected static final String UNDER_SCORE = "_";
 
     private static final String LOG_MSG = "Check '%s' for Patient '%s' has value '%s'";
 

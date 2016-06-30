@@ -10,7 +10,8 @@ public enum CheckType {
 
     MAPPING,
     PRESTATS,
-    KINSHIP;
+    KINSHIP,
+    INSERT_SIZE;
 
     @NotNull
     public static Optional<CheckType> getByType(@NotNull final String typeToCheck) {
