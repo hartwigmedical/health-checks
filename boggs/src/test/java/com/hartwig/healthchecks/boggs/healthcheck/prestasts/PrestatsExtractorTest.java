@@ -3,16 +3,16 @@ package com.hartwig.healthchecks.boggs.healthcheck.prestasts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
@@ -48,21 +48,9 @@ public class PrestatsExtractorTest {
 
     private static final String RUNDIR = "rundir";
 
-    private List<String> firstRList;
+    private List<String> summaryDataRef;
 
-    private List<String> secondRList;
-
-    private List<String> thridRList;
-
-    private List<String> forthRList;
-
-    private List<String> firstTList;
-
-    private List<String> secondTList;
-
-    private List<String> thridTList;
-
-    private List<String> forthTList;
+    private List<String> summaryDataTum;
 
     private List<String> fastqLines;
 
@@ -73,15 +61,16 @@ public class PrestatsExtractorTest {
 
     @Before
     public void setUp() {
-        firstRList = TestZipFileFactory.getSummaryLines("L001_R1", "R", "PASS", "PASS", "PASS");
-        secondRList = TestZipFileFactory.getSummaryLines("L002_R1", "R", "WARN", "WARN", "PASS");
-        thridRList = TestZipFileFactory.getSummaryLines("L001_R2", "R", "PASS", "FAIL", "PASS");
-        forthRList = TestZipFileFactory.getSummaryLines("L002_R2", "R", "PASS", "PASS", "PASS");
-
-        firstTList = TestZipFileFactory.getSummaryLines("L001_R1", "R", "PASS", "PASS", "PASS");
-        secondTList = TestZipFileFactory.getSummaryLines("L002_R1", "R", "WARN", "WARN", "PASS");
-        thridTList = TestZipFileFactory.getSummaryLines("L001_R2", "R", "PASS", "PASS", "PASS");
-        forthTList = TestZipFileFactory.getSummaryLines("L002_R2", "R", "PASS", "FAIL", "PASS");
+        summaryDataRef = new ArrayList<>();
+        summaryDataRef.addAll(TestZipFileFactory.getSummaryLines("L001_R1", "R", "PASS", "PASS", "PASS"));
+        summaryDataRef.addAll(TestZipFileFactory.getSummaryLines("L002_R1", "R", "WARN", "WARN", "PASS"));
+        summaryDataRef.addAll(TestZipFileFactory.getSummaryLines("L001_R2", "R", "PASS", "FAIL", "PASS"));
+        summaryDataRef.addAll(TestZipFileFactory.getSummaryLines("L002_R2", "R", "PASS", "PASS", "PASS"));
+        summaryDataTum = new ArrayList<>();
+        summaryDataTum.addAll(TestZipFileFactory.getSummaryLines("L001_R1", "R", "PASS", "PASS", "PASS"));
+        summaryDataTum.addAll(TestZipFileFactory.getSummaryLines("L002_R1", "R", "WARN", "WARN", "PASS"));
+        summaryDataTum.addAll(TestZipFileFactory.getSummaryLines("L001_R2", "R", "PASS", "PASS", "PASS"));
+        summaryDataTum.addAll(TestZipFileFactory.getSummaryLines("L002_R2", "R", "PASS", "FAIL", "PASS"));
 
         fastqLines = TestZipFileFactory.getFastqLines();
 
@@ -90,64 +79,76 @@ public class PrestatsExtractorTest {
 
     @Test
     public void canProcessRunDirectoryStructure() throws IOException, HealthChecksException {
-        final URL runDirURL = Resources.getResource(RUNDIR);
         final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
         new Expectations() {
 
             {
-                zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
-                returns(firstRList, secondRList, thridRList, forthRList);
+                zipFileReader.getZipFilesPath(RUNDIR, anyString, anyString);
+                returns(new File(TEST_REF_ID).toPath());
+                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
+                returns(summaryDataRef);
 
-                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
-                returns(fastqLines, fastqLines, fastqLines, fastqLines);
+                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                returns(fastqLines);
 
-                zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
-                returns(firstTList, secondTList, thridTList, forthTList);
+                zipFileReader.getZipFilesPath(RUNDIR, anyString, anyString);
+                returns(new File(TEST_TUM_ID).toPath());
+                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
+                returns(summaryDataTum);
 
-                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
-                returns(fastqLines, fastqLines, fastqLines, fastqLines);
-
+                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                returns(fastqLines);
             }
         };
-        final BaseReport prestatsData = extractor.extractFromRunDirectory(runDirURL.getPath().toString());
+        final BaseReport prestatsData = extractor.extractFromRunDirectory(RUNDIR);
         assertPrestatsReport(prestatsData);
     }
 
     @Test(expected = EmptyFileException.class)
     public void extractDataEmptySummaryFile() throws IOException, HealthChecksException {
-        final URL runDirURL = Resources.getResource(RUNDIR);
         new Expectations() {
 
             {
-                zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
-                returns(emptyList, emptyList, emptyList, emptyList);
+                zipFileReader.getZipFilesPath(RUNDIR, anyString, anyString);
+                returns(new File(TEST_REF_ID).toPath());
+                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
+                returns(emptyList);
 
             }
         };
         final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
-        extractor.extractFromRunDirectory(runDirURL.getPath().toString());
+        extractor.extractFromRunDirectory(RUNDIR);
     }
 
     @Test(expected = EmptyFileException.class)
     public void extractDataEmptyFastqFile() throws IOException, HealthChecksException {
-        final URL runDirURL = Resources.getResource(RUNDIR);
         new Expectations() {
 
             {
-                zipFileReader.readFileFromZip(anyString, PrestatsExtractor.SUMMARY_FILE_NAME);
-                returns(firstRList, secondRList, thridRList, forthRList);
+                zipFileReader.getZipFilesPath(RUNDIR, anyString, anyString);
+                returns(new File(TEST_REF_ID).toPath());
+                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
+                returns(summaryDataRef);
 
-                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
-                returns(emptyList, emptyList, emptyList, emptyList);
+                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                returns(emptyList);
 
             }
         };
         final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
-        extractor.extractFromRunDirectory(runDirURL.getPath().toString());
+        extractor.extractFromRunDirectory(RUNDIR);
     }
 
     @Test(expected = NoSuchFileException.class)
     public void extractDataNoneExistingDir() throws IOException, HealthChecksException {
+        new Expectations() {
+
+            {
+                zipFileReader.getZipFilesPath(DUMMY_RUN_DIR, anyString, anyString);
+                result = new NoSuchFileException(DUMMY_RUN_DIR);
+
+            }
+        };
         final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }

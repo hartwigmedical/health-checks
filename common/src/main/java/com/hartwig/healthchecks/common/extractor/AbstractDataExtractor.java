@@ -1,15 +1,9 @@
 package com.hartwig.healthchecks.common.extractor;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 
@@ -28,8 +22,6 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected static final int ZERO = 0;
 
     protected static final double ZERO_DOUBLE_VALUE = 0.0d;
-
-    protected static final String ZIP_FILES_SUFFIX = ".zip";
 
     protected static final String FILE_NOT_FOUND = "File %s was not found";
 
@@ -56,16 +48,6 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     private static final String LOG_MSG = "Check '%s' for Patient '%s' has value '%s'";
 
     private static final Logger LOGGER = LogManager.getLogger(AbstractDataExtractor.class);
-
-    @NotNull
-    protected Optional<Path> getFilesPath(@NotNull final String runDirectory, @NotNull final String prefix,
-                    @NotNull final String suffix) throws IOException {
-        return Files.walk(new File(runDirectory).toPath())
-                        .filter(path -> path.getFileName().toString().startsWith(prefix)
-                                        && path.getFileName().toString().endsWith(suffix)
-                                        && path.toString().contains(runDirectory + File.separator + prefix))
-                        .findFirst();
-    }
 
     protected void logBaseDataReports(final List<BaseDataReport> baseDataReports) {
         baseDataReports.forEach((baseDataReport) -> {

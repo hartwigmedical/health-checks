@@ -3,9 +3,12 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +42,13 @@ public class MappingExtractorTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
+    private static final String TEST_REF_ID = "CPCT12345678R";
+
+    private static final String TEST_TUM_ID = "CPCT12345678T";
+
     private List<String> fastqLines;
+
+    private List<String> emptyList;
 
     @Mocked
     private ZipFileReader zipFileReader;
@@ -47,6 +56,7 @@ public class MappingExtractorTest {
     @Before
     public void setUp() {
         fastqLines = TestZipFileFactory.getFastqLines();
+        emptyList = new ArrayList<>();
     }
 
     @Mocked
@@ -55,25 +65,34 @@ public class MappingExtractorTest {
     @Test
     public void extractData() throws IOException, HealthChecksException {
         final URL runDirURL = Resources.getResource(RUNDIR);
-        final String path = runDirURL.getPath();
+        final String pathString = runDirURL.getPath();
 
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
+        final Path returnedRefPath = new File(pathString + File.separator + TEST_REF_ID).toPath();
+        final Path returnedTumPath = new File(pathString + File.separator + TEST_TUM_ID).toPath();
         new Expectations() {
 
             {
-                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
-                returns(fastqLines, fastqLines, fastqLines, fastqLines);
+                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                returns(returnedRefPath);
+                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                returns(fastqLines);
+
                 flagstatParser.parse(anyString);
                 returns(dummyData());
 
-                zipFileReader.readFileFromZip(anyString, FASTQC_DATA_TXT);
-                returns(fastqLines, fastqLines, fastqLines, fastqLines);
+                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                returns(returnedTumPath);
+                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                returns(fastqLines);
+
                 flagstatParser.parse(anyString);
                 returns(dummyData());
             }
         };
 
-        final BaseReport mappingReport = extractor.extractFromRunDirectory(path);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+
+        final BaseReport mappingReport = extractor.extractFromRunDirectory(pathString);
         assertNotNull("We should have data", mappingReport);
         assertEquals("Report with wrong type", CheckType.MAPPING, mappingReport.getCheckType());
 
@@ -83,6 +102,68 @@ public class MappingExtractorTest {
         final List<BaseDataReport> tumorSample = ((MappingReport) mappingReport).getTumorSample();
         assetMappingData(tumorSample);
 
+    }
+
+    @Test(expected = NoSuchFileException.class)
+    public void extractDataNoneExistingDir() throws IOException, HealthChecksException {
+        new Expectations() {
+
+            {
+                zipFileReader.getZipFilesPath(DUMMY_RUN_DIR, anyString, anyString);
+                result = new NoSuchFileException(anyString);
+
+            }
+        };
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+    }
+
+    @Test(expected = EmptyFileException.class)
+    public void extractDataEmptyFastQFile() throws IOException, HealthChecksException {
+        final URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
+        final String pathString = exampleFlagStatURL.getPath();
+        final Path returnedRefPath = new File(pathString + File.separator + TEST_REF_ID).toPath();
+        new Expectations() {
+
+            {
+                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                returns(returnedRefPath);
+                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                returns(emptyList);
+            }
+        };
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        extractor.extractFromRunDirectory(pathString);
+    }
+
+    @Test(expected = EmptyFileException.class)
+    public void extractDataEmptyFlagStatsFile() throws IOException, HealthChecksException {
+        final URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
+        final String pathString = exampleFlagStatURL.getPath();
+        final Path returnedRefPath = new File(pathString + File.separator + TEST_REF_ID).toPath();
+        new File(pathString + File.separator + TEST_TUM_ID).toPath();
+        new Expectations() {
+
+            {
+                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                returns(returnedRefPath);
+                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                returns(fastqLines);
+
+                flagstatParser.parse(anyString);
+                returns(null);
+            }
+        };
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        extractor.extractFromRunDirectory(pathString);
+    }
+
+    private BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
+                    @NotNull final MappingCheck check) {
+
+        return mapping.stream().filter(baseDataReport -> {
+            return baseDataReport.getCheckName().equals(check.getDescription());
+        }).findFirst().get();
     }
 
     private void assetMappingData(final List<BaseDataReport> mapping) {
@@ -103,28 +184,6 @@ public class MappingExtractorTest {
 
         final BaseDataReport isAllRead = extractReportData(mapping, MappingCheck.MAPPING_IS_ALL_READ);
         assertEquals("false", isAllRead.getValue());
-    }
-
-    @Test(expected = NoSuchFileException.class)
-    public void extractDataNoneExistingDir() throws IOException, HealthChecksException {
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
-        extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
-    }
-
-    @Test(expected = EmptyFileException.class)
-    public void extractDataEmptyFile() throws IOException, HealthChecksException {
-        final URL exampleFlagStatURL = Resources.getResource(EMPTY_FILES);
-        final String path = exampleFlagStatURL.getPath();
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, new ZipFileReader());
-        extractor.extractFromRunDirectory(path);
-    }
-
-    private BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
-                    @NotNull final MappingCheck check) {
-
-        return mapping.stream().filter(baseDataReport -> {
-            return baseDataReport.getCheckName().equals(check.getDescription());
-        }).findFirst().get();
     }
 
     private FlagStatData dummyData() throws IOException, EmptyFileException {
