@@ -6,15 +6,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
-
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.util.CheckCategory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
 
 public final class HealthChecksFlyweight {
 
@@ -24,7 +24,7 @@ public final class HealthChecksFlyweight {
 
     private static final HealthChecksFlyweight INSTANCE = new HealthChecksFlyweight();
 
-    private static final Reflections BASE = new Reflections("com.hartwig.healthchecks.boggs.adapter");
+    private static final Reflections BASE = new Reflections("com.hartwig.healthchecks");
 
     @SuppressWarnings("rawtypes")
     private static final Set<Class<? extends HealthCheckAdapter>> BASE_SET = BASE
