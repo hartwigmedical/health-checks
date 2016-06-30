@@ -25,7 +25,7 @@ public class KinshipReaderTest {
 
     private static final String NO_FILE_DIR = "empty";
 
-    private static final int EXPECTED_NUM_LINES = 3;
+    private static final int EXPECTED_NUM_LINES = 2;
 
     @Test
     public void readKinship() throws IOException {

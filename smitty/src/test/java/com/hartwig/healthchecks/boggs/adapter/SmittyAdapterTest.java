@@ -2,8 +2,6 @@ package com.hartwig.healthchecks.boggs.adapter;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 
 import com.hartwig.healthchecks.common.extractor.DataExtractor;
@@ -49,6 +47,6 @@ public class SmittyAdapterTest {
 
     private BaseReport getDummyReport() {
         final BaseDataReport baseDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
-        return new KinshipReport(CheckType.KINSHIP, Arrays.asList(baseDataReport));
+        return new KinshipReport(CheckType.KINSHIP, baseDataReport);
     }
 }

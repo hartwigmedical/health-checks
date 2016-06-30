@@ -3,8 +3,6 @@ package com.hartwig.healthchecks.smitty.check;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -40,8 +38,6 @@ public class KinshipHealthCheckerTest {
 
     private static final String WRONG_PATIENT_ID_MSG = "Wrong Patient ID";
 
-    private static final String WRONG_NUMBER_OF_CHECKS_MSG = "Wrong Number of checks";
-
     private static final String WRONG_TYPE_MSG = "Report with wrong type";
 
     private static final String DUMMY_ID = "DUMMY_ID";
@@ -55,7 +51,7 @@ public class KinshipHealthCheckerTest {
     public void verifyPrestatsHealthChecker() throws IOException, HealthChecksException {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, EXPECTED_VALUE);
 
-        final KinshipReport testData = new KinshipReport(CheckType.KINSHIP, Arrays.asList(testDataReport));
+        final KinshipReport testData = new KinshipReport(CheckType.KINSHIP, testDataReport);
 
         final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
 
@@ -69,11 +65,10 @@ public class KinshipHealthCheckerTest {
 
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
-        final List<BaseDataReport> baseDataReports = ((KinshipReport) report).getPatientData();
-        assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, 1, baseDataReports.size());
-        assertEquals(WRONG_CHECK_NAME, DUMMY_CHECK, baseDataReports.get(0).getCheckName());
-        assertEquals(WRONG_CHECK_STATUS, EXPECTED_VALUE, baseDataReports.get(0).getValue());
-        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, baseDataReports.get(0).getPatientId());
+        final BaseDataReport baseDataReports = ((KinshipReport) report).getPatientData();
+        assertEquals(WRONG_CHECK_NAME, DUMMY_CHECK, baseDataReports.getCheckName());
+        assertEquals(WRONG_CHECK_STATUS, EXPECTED_VALUE, baseDataReports.getValue());
+        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, baseDataReports.getPatientId());
     }
 
     @Test

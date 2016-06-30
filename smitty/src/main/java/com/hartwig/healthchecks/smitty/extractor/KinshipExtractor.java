@@ -2,7 +2,6 @@ package com.hartwig.healthchecks.smitty.extractor;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +19,7 @@ public class KinshipExtractor extends AbstractDataExtractor {
 
     private static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s -> %s lines found was expecting %s";
 
-    private static final int EXPECTED_NUM_LINES = 3;
+    private static final int EXPECTED_NUM_LINES = 2;
 
     private static final int PATIENT_ID_INDEX = 0;
 
@@ -47,11 +46,11 @@ public class KinshipExtractor extends AbstractDataExtractor {
             throw new MalformedFileException(String.format(MALFORMED_FILE_MSG, KINSHIP_TEST, runDirectory,
                             kinshipLines.size(), EXPECTED_NUM_LINES));
         }
-        final List<BaseDataReport> baseDataReports = kinshipLines.stream().skip(ONE).map(line -> {
+        final BaseDataReport baseDataReport = kinshipLines.stream().skip(ONE).map(line -> {
             final String[] values = line.split(SEPERATOR_REGEX);
             return new BaseDataReport(values[PATIENT_ID_INDEX], KINSHIP_TEST, values[KINSHIP_INDEX]);
-        }).collect(Collectors.toList());
-        logBaseDataReports(baseDataReports);
-        return new KinshipReport(CheckType.KINSHIP, baseDataReports);
+        }).findFirst().get();
+        logBaseDataReport(baseDataReport);
+        return new KinshipReport(CheckType.KINSHIP, baseDataReport);
     }
 }
