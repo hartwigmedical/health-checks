@@ -80,6 +80,7 @@ dependencies {
     compile project(":common")
     compile project(":boggs")
     compile project(":smitty")
+    compile project(":flint")
 }
 
 task wrapper(type: Wrapper) {
