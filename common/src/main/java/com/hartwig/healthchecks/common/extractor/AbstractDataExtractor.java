@@ -50,7 +50,6 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected void logBaseDataReports(final List<BaseDataReport> baseDataReports) {
         baseDataReports.forEach((baseDataReport) -> {
             logBaseDataReport(baseDataReport);
-
         });
     }
 
