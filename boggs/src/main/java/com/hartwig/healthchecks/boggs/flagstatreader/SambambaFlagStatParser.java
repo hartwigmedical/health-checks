@@ -1,8 +1,9 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,14 +27,22 @@ public class SambambaFlagStatParser implements FlagStatParser {
 
     private static final int THREE = 3;
 
+    private static final String FLAGSTAT_SUFFIX = ".flagstat";
+
     @Override
     @NotNull
-    public FlagStatData parse(@NotNull final String filePath) throws IOException, EmptyFileException {
+    public FlagStatData parse(@NotNull final String flagstatPath, final String filter)
+                    throws IOException, EmptyFileException {
+        final Optional<Path> filePath = Files.walk(new File(flagstatPath).toPath())
+                        .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
+                                        && path.getFileName().toString().contains(filter))
+                        .findFirst();
+
         final int[] index = {ZERO};
         final List<FlagStats> passedStats = new ArrayList<>();
         final List<FlagStats> failedStats = new ArrayList<>();
 
-        Files.lines(Paths.get(filePath)).map(line -> {
+        Files.lines(filePath.get()).map(line -> {
             final String qcPassed = line.split(SEPERATOR_REGEX)[ZERO];
             final String qcFailed = line.split(SEPERATOR_REGEX)[TWO];
 

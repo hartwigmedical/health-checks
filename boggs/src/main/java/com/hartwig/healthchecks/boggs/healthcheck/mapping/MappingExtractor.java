@@ -2,11 +2,9 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +24,8 @@ import com.hartwig.healthchecks.common.util.CheckType;
 public class MappingExtractor extends AbstractBoggsExtractor {
 
     private static final Long MILLIS_FACTOR = 10000L;
+
+    private static final String REALIGN = "realign";
 
     @NotNull
     private final FlagStatParser flagstatParser;
@@ -70,8 +70,11 @@ public class MappingExtractor extends AbstractBoggsExtractor {
     private List<BaseDataReport> getFlagStatsData(@NotNull final String patientId, @NotNull final Path runDirPath,
                     @NotNull final String totalSequences) throws IOException, EmptyFileException {
 
-        final FlagStatData flagstatData = parseFlagStatFile(runDirPath);
-
+        final FlagStatData flagstatData = flagstatParser.parse(runDirPath + File.separator + MAPPING + File.separator,
+                        REALIGN);
+        if (flagstatData == null) {
+            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, FLAGSTAT_SUFFIX, runDirPath.toString()));
+        }
         final List<BaseDataReport> mappingDataReports = new ArrayList<>();
         final List<FlagStats> passed = flagstatData.getPassedStats();
 
@@ -94,20 +97,6 @@ public class MappingExtractor extends AbstractBoggsExtractor {
         mappingDataReports.add(isAllReadDataReport);
 
         return mappingDataReports;
-    }
-
-    @NotNull
-    private FlagStatData parseFlagStatFile(final @NotNull Path runDirPath) throws IOException, EmptyFileException {
-        final Optional<Path> filePath = Files
-                        .walk(new File(runDirPath + File.separator + MAPPING + File.separator).toPath())
-                        .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
-                                        && path.getFileName().toString().contains(REALIGN))
-                        .findFirst();
-        final FlagStatData flagstatData = flagstatParser.parse(filePath.get().toString());
-        if (flagstatData == null) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, FLAGSTAT_SUFFIX, runDirPath.toString()));
-        }
-        return flagstatData;
     }
 
     @NotNull

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.NoSuchFileException;
 import java.util.List;
 
 import org.junit.Test;
@@ -18,25 +19,29 @@ public class SambambaFlagStatParserTest {
     private static final String DID_NOT_GET_THE_EXPECTED_VALUE = "Did not get the expected value.";
 
     @Test
-    public void canParseExampleFile() throws IOException, EmptyFileException {
-        final URL exampleFlagStatURL = Resources
-                        .getResource("rundir/CPCT12345678R/mapping/CPCT12345678R_FLOWCELL_S2_L001_001.flagstat");
+    public void parseExampleFile() throws IOException, EmptyFileException {
+        final URL exampleFlagStatURL = Resources.getResource("rundir/CPCT12345678R/mapping/");
         final String exampleFlagStatFile = exampleFlagStatURL.getPath();
 
         final FlagStatParser parser = new SambambaFlagStatParser();
-        final FlagStatData flagStatData = parser.parse(exampleFlagStatFile);
+        final FlagStatData flagStatData = parser.parse(exampleFlagStatFile, "realign");
 
-        assertFlagStatData(flagStatData.getPassedStats(), 13, 0.0d);
-        assertFlagStatData(flagStatData.getFailedStats(), 13, 20.0d);
+        assertFlagStatData(flagStatData.getPassedStats(), 13, 17940.0d);
+        assertFlagStatData(flagStatData.getFailedStats(), 13, 0.0d);
     }
 
     @Test(expected = EmptyFileException.class)
-    public void canParseEmptyFile() throws IOException, EmptyFileException {
-        final URL exampleFlagStatURL = Resources
-                        .getResource("emptyFiles/CPCT12345678R/mapping/CPCT12345678R_FLOWCELL_S2_L001_001.flagstat");
+    public void parseEmptyFile() throws IOException, EmptyFileException {
+        final URL exampleFlagStatURL = Resources.getResource("emptyFiles/CPCT12345678R/mapping/");
         final String exampleFlagStatFile = exampleFlagStatURL.getPath();
         final FlagStatParser parser = new SambambaFlagStatParser();
-        parser.parse(exampleFlagStatFile);
+        parser.parse(exampleFlagStatFile, "realign");
+    }
+
+    @Test(expected = NoSuchFileException.class)
+    public void parseFileNotFound() throws IOException, EmptyFileException {
+        final FlagStatParser parser = new SambambaFlagStatParser();
+        parser.parse("bla/CPCT12345678R/mapping/", "realign");
     }
 
     private void assertFlagStatData(final List<FlagStats> flagStat, final int size, final double expectedTotalIndex) {
