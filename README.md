@@ -124,19 +124,6 @@ The location of the reports can be changed via the ```config.properties``` file 
 			"check_type": "MAPPING"
 		}
 	}, {
-		"KINSHIP": {
-			"patient_data": [{
-				"patient_id": "CPCT12345678R",
-				"check_name": "KINSHIP_TEST",
-				"value": "0.2155"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "KINSHIP_TEST",
-				"value": "-0.0042"
-			}],
-			"check_type": "KINSHIP"
-		}
-	}, {
 		"PRESTATS": {
 			"reference_sample": [{
 				"patient_id": "CPCT12345678R",
@@ -245,6 +232,29 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"value": "FAIL"
 			}],
 			"check_type": "PRESTATS"
+		}
+	}, {
+		"INSERT_SIZE": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_INSERT_SIZE_MEDIAN",
+				"value": "409"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_INSERT_SIZE_MEDIAN",
+				"value": "209"
+			}],
+			"check_type": "INSERT_SIZE"
+		}
+	}, {
+		"KINSHIP": {
+			"patient_data": {
+				"patient_id": "CPCT12345678R",
+				"check_name": "KINSHIP_TEST",
+				"value": "0.2155"
+			},
+			"check_type": "KINSHIP"
 		}
 	}]
 }
