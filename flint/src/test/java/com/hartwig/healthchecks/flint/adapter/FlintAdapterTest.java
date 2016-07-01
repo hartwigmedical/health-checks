@@ -6,5 +6,6 @@ public class FlintAdapterTest {
 
     @Test
     public void verifyAdapterRunning() {
+        // Work in progress.
     }
 }
