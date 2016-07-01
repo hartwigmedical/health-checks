@@ -3,11 +3,11 @@ package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
+import com.hartwig.healthchecks.common.function.Calculable;
+import com.hartwig.healthchecks.common.function.DivisionOperator;
+import com.hartwig.healthchecks.common.function.SingleValue;
 
-import com.hartwig.healthchecks.boggs.healthcheck.function.Calculable;
-import com.hartwig.healthchecks.boggs.healthcheck.function.DivisionOperator;
-import com.hartwig.healthchecks.boggs.healthcheck.function.SingleValue;
+import org.jetbrains.annotations.NotNull;
 
 public enum FlagStatsType {
 

@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.healthcheck.function;
+package com.hartwig.healthchecks.common.function;
 
 @FunctionalInterface
 public interface DivisionOperator extends Calculable {
