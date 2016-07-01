@@ -5,7 +5,6 @@ import org.junit.Test;
 public class FlintAdapterTest {
 
     @Test
-    public void runCheck() throws Exception {
-
+    public void verifyAdapterRunning() {
     }
 }
