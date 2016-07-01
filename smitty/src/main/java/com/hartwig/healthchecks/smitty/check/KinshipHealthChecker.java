@@ -2,10 +2,6 @@ package com.hartwig.healthchecks.smitty.check;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.extractor.DataExtractor;
@@ -13,9 +9,13 @@ import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 public class KinshipHealthChecker implements HealthChecker {
 
-    protected static final String ERROR_MSG = "Got An Exception with message: %s";
+    private  static final String ERROR_MSG = "Got An Exception with message: %s";
 
     private static final Logger LOGGER = LogManager.getLogger(KinshipHealthChecker.class);
 
