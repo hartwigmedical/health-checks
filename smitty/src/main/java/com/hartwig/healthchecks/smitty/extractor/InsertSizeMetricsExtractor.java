@@ -2,7 +2,6 @@ package com.hartwig.healthchecks.smitty.extractor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -27,10 +26,6 @@ public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
     private static final String EQUAL_REGEX = "=";
 
     private static final String BAM_EXT = "_dedup.bam";
-
-    private static final String MAPPING_INS_SZ_MED = "MAPPING_INSERT_SIZE_MEDIAN";
-
-    private static final String MEDIAN_INSERT_SIZE = "MEDIAN_INSERT_SIZE";
 
     private static final String QC_STATS = "QCStats";
 
@@ -57,14 +52,14 @@ public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
         if (lines.isEmpty()) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, suffix, runDirectory));
         }
+
         final String patientId = getPatientId(suffix, lines, INPUT);
 
-        final BaseDataReport baseDataReport = getValue(suffix, lines, MEDIAN_INSERT_SIZE, patientId);
-        logBaseDataReport(baseDataReport);
-
-        final List<BaseDataReport> baseDataReports = new ArrayList<>();
-        baseDataReports.add(baseDataReport);
-        return baseDataReports;
+        final BaseDataReport medianReport = getValue(lines, suffix, patientId,
+                        InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
+        final BaseDataReport width70PerReport = getValue(lines, suffix, patientId,
+                        InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
+        return Arrays.asList(medianReport, width70PerReport);
     }
 
     private String getPatientId(final String suffix, final List<String> lines, final String filter)
@@ -78,13 +73,20 @@ public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
         return value.substring(value.lastIndexOf(File.separator) + ONE, value.indexOf(BAM_EXT));
     }
 
-    private BaseDataReport getValue(final String suffix, final List<String> lines, final String filter,
-                    final String patientId) throws LineNotFoundException {
+    private BaseDataReport getValue(final List<String> lines, final String suffix, final String patientId,
+                    final InsertSizeMetricsCheck check) throws LineNotFoundException {
+        final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
+        final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.getName(), value);
+        logBaseDataReport(baseDataReport);
+        return baseDataReport;
+    }
+
+    private String getValueFromLine(final List<String> lines, final String suffix, final String filter,
+                    final int fieldIndex) throws LineNotFoundException {
         final Integer index = findLineIndex(suffix, lines, filter);
         final String line = lines.get(index + ONE);
-        final String[] values = line.split(SEPERATOR_REGEX);
-        final BaseDataReport baseDataReport = new BaseDataReport(patientId, MAPPING_INS_SZ_MED, values[ZERO]);
-        return baseDataReport;
+        final String[] lineValues = line.split(SEPERATOR_REGEX);
+        return lineValues[fieldIndex];
     }
 
     private Integer findLineIndex(final String suffix, final List<String> lines, final String filter)
@@ -96,5 +98,4 @@ public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
         }
         return lineNumbers.get();
     }
-
 }
