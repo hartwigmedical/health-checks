@@ -27,9 +27,7 @@ public class InsertSizeMetricsExtractorTest {
 
     private static final String WRONG_PATIENT_ID = "Wrong Patient ID";
 
-    private static final String MEDIAN_INSERT_SIZE = "MAPPING_INSERT_SIZE_MEDIAN";
-
-    private static final String DATA_LINE = "%s\t61\t19\t825\t408.556471\t99.364112\t8376\tFR\t23\t47\t69\t93\t123\t153\t195\t247\t327\t571";
+    private static final String DATA_LINE = "%s\t61\t19\t825\t408.556471\t99.364112\t8376\tFR\t23\t47\t69\t93\t123\t153\t195\t%s\t327\t571\t\t\t\t";
 
     private static final String HEADER_LINE = "MEDIAN_INSERT_SIZE\tMEDIAN_ABSOLUTE_DEVIATION\tMIN_INSERT_SIZE\t"
                     + "MAX_INSERT_SIZE\tMEAN_INSERT_SIZE\tSTANDARD_DEVIATION\tREAD_PAIRS\tPAIR_ORIENTATION\t"
@@ -62,9 +60,13 @@ public class InsertSizeMetricsExtractorTest {
 
     private static final String PATIENT_ID_T = "CPCT12345678T";
 
-    private static final String EXPECTED_VALUE_R = "409";
+    private static final String MEDIAN_INS_SZ_R = "409";
 
-    private static final String EXPECTED_VALUE_T = "309";
+    private static final String MEDIAN_INS_SZ_T = "309";
+
+    private static final String WIDTH_OF_70_PER_R = "247";
+
+    private static final String WIDTH_OF_70_PER_T = "147";
 
     private static final String SHOULD_NOT_BE_NULL = "Should Not be Null";
 
@@ -74,6 +76,8 @@ public class InsertSizeMetricsExtractorTest {
 
     private List<String> emptyLines;
 
+    private List<String> missingLines;
+
     @Mocked
     private InsertSizeMetricsReader reader;
 
@@ -81,16 +85,18 @@ public class InsertSizeMetricsExtractorTest {
     public void setUp() {
 
         String inputLine = String.format(INPUT_LINE, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R);
-        String dataLine = String.format(DATA_LINE, EXPECTED_VALUE_R);
+        String dataLine = String.format(DATA_LINE, MEDIAN_INS_SZ_R, WIDTH_OF_70_PER_R);
         refLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                         dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
         inputLine = String.format(INPUT_LINE, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T);
-        dataLine = String.format(DATA_LINE, EXPECTED_VALUE_T);
+        dataLine = String.format(DATA_LINE, MEDIAN_INS_SZ_T, WIDTH_OF_70_PER_T);
         tumLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                         dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
         emptyLines = new ArrayList<>();
+        missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
+                        dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
     }
 
     @Test
@@ -105,12 +111,7 @@ public class InsertSizeMetricsExtractorTest {
             }
         };
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
-        assertEquals("Report with wrong type", CheckType.INSERT_SIZE, report.getCheckType());
-        assertNotNull(SHOULD_NOT_BE_NULL, report);
-        assertBaseData(((InsertSizeMetricsReport) report).getReferenceSample(), PATIENT_ID_R, MEDIAN_INSERT_SIZE,
-                        EXPECTED_VALUE_R);
-        assertBaseData(((InsertSizeMetricsReport) report).getTumorSample(), PATIENT_ID_T, MEDIAN_INSERT_SIZE,
-                        EXPECTED_VALUE_T);
+        assertReport(report);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -140,13 +141,26 @@ public class InsertSizeMetricsExtractorTest {
     }
 
     @Test(expected = LineNotFoundException.class)
+    public void extractDataLineNotFoundRefExceptionFirstFile() throws IOException, HealthChecksException {
+        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(reader);
+        new Expectations() {
+
+            {
+                reader.readLines(anyString, anyString, anyString);
+                returns(missingLines);
+            }
+        };
+        extractor.extractFromRunDirectory(TEST_DIR);
+    }
+
+    @Test(expected = LineNotFoundException.class)
     public void extractDataLineNotFoundRefException() throws IOException, HealthChecksException {
         final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(reader);
         new Expectations() {
 
             {
                 reader.readLines(anyString, anyString, anyString);
-                result = new LineNotFoundException("");
+                returns(refLines, missingLines);
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);
@@ -165,6 +179,21 @@ public class InsertSizeMetricsExtractorTest {
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);
+    }
+
+    private void assertReport(final BaseReport report) {
+        assertEquals("Report with wrong type", CheckType.INSERT_SIZE, report.getCheckType());
+        assertNotNull(SHOULD_NOT_BE_NULL, report);
+        assertField(report, InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE.getName(), MEDIAN_INS_SZ_R,
+                        MEDIAN_INS_SZ_T);
+        assertField(report, InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT.getName(), WIDTH_OF_70_PER_R,
+                        WIDTH_OF_70_PER_T);
+    }
+
+    private void assertField(final BaseReport report, final String field, final String refValue,
+                    final String tumValue) {
+        assertBaseData(((InsertSizeMetricsReport) report).getReferenceSample(), PATIENT_ID_R, field, refValue);
+        assertBaseData(((InsertSizeMetricsReport) report).getTumorSample(), PATIENT_ID_T, field, tumValue);
     }
 
     private void assertBaseData(final List<BaseDataReport> reports, final String patientId, final String check,
