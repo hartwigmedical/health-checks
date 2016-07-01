@@ -20,6 +20,8 @@ import com.hartwig.healthchecks.smitty.report.InsertSizeMetricsReport;
 
 public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
 
+    private static final String INPUT = "INPUT";
+
     private static final String SPACE = " ";
 
     private static final String EQUAL_REGEX = "=";
@@ -42,7 +44,7 @@ public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
     @Override
     public BaseReport extractFromRunDirectory(final String runDirectory) throws IOException, HealthChecksException {
         final List<BaseDataReport> referenceSample = getSampleData(runDirectory, REF_SAMPLE_SUFFIX);
-        final List<BaseDataReport> tumorSample = getSampleData(runDirectory, REF_SAMPLE_SUFFIX);
+        final List<BaseDataReport> tumorSample = getSampleData(runDirectory, TUM_SAMPLE_SUFFIX);
 
         return new InsertSizeMetricsReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
     }
@@ -50,16 +52,17 @@ public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
     private List<BaseDataReport> getSampleData(final String runDirectory, final String sampleType)
                     throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
-        final List<String> lines = reader.readLines(runDirectory + File.separator + QC_STATS, SAMPLE_PREFIX, suffix);
+        final String path = runDirectory + File.separator + QC_STATS;
+        final List<String> lines = reader.readLines(path, SAMPLE_PREFIX, suffix);
         if (lines.isEmpty()) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, suffix, runDirectory));
         }
-        final String patientId = getPatientId(suffix, lines, "INPUT");
+        final String patientId = getPatientId(suffix, lines, INPUT);
+
+        final BaseDataReport baseDataReport = getValue(suffix, lines, MEDIAN_INSERT_SIZE, patientId);
+        logBaseDataReport(baseDataReport);
 
         final List<BaseDataReport> baseDataReports = new ArrayList<>();
-        final BaseDataReport baseDataReport = getValue(suffix, lines, MEDIAN_INSERT_SIZE, patientId);
-
-        logBaseDataReport(baseDataReport);
         baseDataReports.add(baseDataReport);
         return baseDataReports;
     }
@@ -87,7 +90,7 @@ public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
     private Integer findLineIndex(final String suffix, final List<String> lines, final String filter)
                     throws LineNotFoundException {
         final Optional<Integer> lineNumbers = IntStream.range(0, lines.size())
-                        .filter(index -> lines.get(index).contains(filter)).mapToObj(index -> index + ZERO).findFirst();
+                        .filter(index -> lines.get(index).contains(filter)).mapToObj(index -> index).findFirst();
         if (!lineNumbers.isPresent()) {
             throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, suffix, filter));
         }

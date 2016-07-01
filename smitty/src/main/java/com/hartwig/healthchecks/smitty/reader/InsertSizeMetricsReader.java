@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class InsertSizeMetricsReader {
 
-    private static final String INSERT_SIZE_METRICS = "insert_size_metrics";
+    private static final String INSERT_SIZE_METRICS = ".insert_size_metrics";
 
     private static final String FILE_S_NOT_FOUND_MSG = "File %s not Found in path %s";
 

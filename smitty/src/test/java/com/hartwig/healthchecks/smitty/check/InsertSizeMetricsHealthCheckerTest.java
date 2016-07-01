@@ -3,28 +3,32 @@ package com.hartwig.healthchecks.smitty.check;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.exception.MalformedFileException;
+import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
-import com.hartwig.healthchecks.smitty.extractor.KinshipExtractor;
-import com.hartwig.healthchecks.smitty.report.KinshipReport;
+import com.hartwig.healthchecks.smitty.extractor.InsertSizeMetricsExtractor;
+import com.hartwig.healthchecks.smitty.report.InsertSizeMetricsReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
 
-public class KinshipHealthCheckerTest {
+public class InsertSizeMetricsHealthCheckerTest {
 
     private static final String DUMMY_CHECK = "DUMMY_CHECK";
 
-    private static final String EXPECTED_VALUE = "0.04";
+    private static final String REF_VALUE = "409";
+
+    private static final String TUM_VALUE = "309";
 
     private static final String WRONG_ERROR_MESSAGE = "Wrong Error Message";
 
@@ -45,16 +49,12 @@ public class KinshipHealthCheckerTest {
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     @Mocked
-    private KinshipExtractor dataExtractor;
+    private InsertSizeMetricsExtractor dataExtractor;
 
     @Test
     public void verifyHealthChecker() throws IOException, HealthChecksException {
-        final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, EXPECTED_VALUE);
-
-        final KinshipReport testData = new KinshipReport(CheckType.KINSHIP, testDataReport);
-
-        final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
-
+        final BaseReport testData = createTestData();
+        final HealthChecker checker = new InsertSizeMetricsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -64,16 +64,17 @@ public class KinshipHealthCheckerTest {
         };
 
         final BaseReport report = checker.runCheck();
-        assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
-        final BaseDataReport baseDataReports = ((KinshipReport) report).getPatientData();
-        assertEquals(WRONG_CHECK_NAME, DUMMY_CHECK, baseDataReports.getCheckName());
-        assertEquals(WRONG_CHECK_STATUS, EXPECTED_VALUE, baseDataReports.getValue());
-        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, baseDataReports.getPatientId());
+        assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
+        final List<BaseDataReport> refReports = ((InsertSizeMetricsReport) report).getReferenceSample();
+        final List<BaseDataReport> tumReports = ((InsertSizeMetricsReport) report).getTumorSample();
+        assertBaseData(refReports, DUMMY_ID, DUMMY_CHECK, REF_VALUE);
+        assertBaseData(tumReports, DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
+
     }
 
     @Test
     public void verifyHealthCheckerIOException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+        final HealthChecker checker = new InsertSizeMetricsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -82,7 +83,7 @@ public class KinshipHealthCheckerTest {
             }
         };
         final BaseReport report = checker.runCheck();
-        assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
+        assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
         final String errorMessage = ((ErrorReport) report).getMessage();
 
@@ -92,7 +93,7 @@ public class KinshipHealthCheckerTest {
 
     @Test
     public void verifyHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+        final HealthChecker checker = new InsertSizeMetricsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -101,7 +102,7 @@ public class KinshipHealthCheckerTest {
             }
         };
         final BaseReport report = checker.runCheck();
-        assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
+        assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
         final String errorMessage = ((ErrorReport) report).getMessage();
 
@@ -110,21 +111,37 @@ public class KinshipHealthCheckerTest {
     }
 
     @Test
-    public void verifyHealthCheckerMalformedFileException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+    public void verifyHealthCheckerLineNotFoundException() throws IOException, HealthChecksException {
+        final HealthChecker checker = new InsertSizeMetricsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
-                result = new MalformedFileException(DUMMY_ERROR);
+                result = new LineNotFoundException(DUMMY_ERROR);
             }
         };
         final BaseReport report = checker.runCheck();
-        assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
+        assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
         final String errorMessage = ((ErrorReport) report).getMessage();
 
-        assertEquals(WRONG_ERROR, MalformedFileException.class.getName(), error);
+        assertEquals(WRONG_ERROR, LineNotFoundException.class.getName(), error);
         assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
+    }
+
+    private BaseReport createTestData() {
+        final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
+        final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
+
+        return new InsertSizeMetricsReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport),
+                        Arrays.asList(secTestDataReport));
+    }
+
+    private void assertBaseData(final List<BaseDataReport> reports, final String patientId, final String check,
+                    final String expectedValue) {
+        final BaseDataReport value = reports.stream().filter(p -> p.getCheckName().equals(check)).findFirst().get();
+        assertEquals(WRONG_CHECK_NAME, check, value.getCheckName());
+        assertEquals(WRONG_CHECK_STATUS, expectedValue, value.getValue());
+        assertEquals(WRONG_PATIENT_ID_MSG, patientId, value.getPatientId());
     }
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -28,18 +29,17 @@ public class InsertSizeMetricsExtractorTest {
 
     private static final String MEDIAN_INSERT_SIZE = "MAPPING_INSERT_SIZE_MEDIAN";
 
-    private static final String THIRD_LINE = "409\t61\t19\t825\t408.556471\t99.364112\t8376\tFR\t23\t47\t69\t93\t123\t153\t195\t247\t327\t571";
+    private static final String DATA_LINE = "%s\t61\t19\t825\t408.556471\t99.364112\t8376\tFR\t23\t47\t69\t93\t123\t153\t195\t247\t327\t571";
 
-    private static final String SECOND_LINE = "MEDIAN_INSERT_SIZE\tMEDIAN_ABSOLUTE_DEVIATION\tMIN_INSERT_SIZE\t"
+    private static final String HEADER_LINE = "MEDIAN_INSERT_SIZE\tMEDIAN_ABSOLUTE_DEVIATION\tMIN_INSERT_SIZE\t"
                     + "MAX_INSERT_SIZE\tMEAN_INSERT_SIZE\tSTANDARD_DEVIATION\tREAD_PAIRS\tPAIR_ORIENTATION\t"
                     + "WIDTH_OF_10_PERCENT\tWIDTH_OF_20_PERCENT\tWIDTH_OF_30_PERCENT\tWIDTH_OF_40_PERCENT\t"
                     + "WIDTH_OF_50_PERCENT\tWIDTH_OF_60_PERCENT\tWIDTH_OF_70_PERCENT\tWIDTH_OF_80_PERCENT\t"
                     + "WIDTH_OF_90_PERCENT\tWIDTH_OF_99_PERCENT\tSAMPLE\tLIBRARY\tREAD_GROUP";
 
     private static final String INPUT_LINE = "# picard.analysis.CollectMultipleMetrics "
-                    + "INPUT=/sample/output/cancerPanel/CPCT12345678R/mapping/CPCT12345678R_dedup.bam "
-                    + "ASSUME_SORTED=true " + "OUTPUT=/sample/output/cancerPanel/QCStats//CPCT12345678R_dedup/"
-                    + "CPCT12345678R_dedup_MultipleMetrics.txt "
+                    + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam " + "ASSUME_SORTED=true "
+                    + "OUTPUT=/sample/output/cancerPanel/QCStats//%s_dedup/" + "%s_dedup_MultipleMetrics.txt "
                     + "PROGRAM=[CollectAlignmentSummaryMetrics, CollectBaseDistributionByCycle,"
                     + " CollectInsertSizeMetrics, MeanQualityByCycle, QualityScoreDistribution, "
                     + "CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, "
@@ -60,13 +60,17 @@ public class InsertSizeMetricsExtractorTest {
 
     private static final String PATIENT_ID_R = "CPCT12345678R";
 
+    private static final String PATIENT_ID_T = "CPCT12345678T";
+
     private static final String EXPECTED_VALUE_R = "409";
+
+    private static final String EXPECTED_VALUE_T = "309";
 
     private static final String SHOULD_NOT_BE_NULL = "Should Not be Null";
 
-    private List<String> lines;
+    private List<String> refLines;
 
-    private List<String> malformedLines;
+    private List<String> tumLines;
 
     private List<String> emptyLines;
 
@@ -76,22 +80,16 @@ public class InsertSizeMetricsExtractorTest {
     @Before
     public void setUp() {
 
-        lines = new ArrayList<>();
-        lines.add(FILLING_LINE);
-        lines.add(INPUT_LINE);
-        lines.add(FILLING_LINE);
-        lines.add(FILLING_LINE);
-        lines.add(FILLING_LINE);
-        lines.add(SECOND_LINE);
-        lines.add(THIRD_LINE);
-        lines.add(FILLING_LINE);
-        lines.add(FILLING_LINE);
-        lines.add(FILLING_LINE);
-        lines.add(FILLING_LINE);
+        String inputLine = String.format(INPUT_LINE, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R);
+        String dataLine = String.format(DATA_LINE, EXPECTED_VALUE_R);
+        refLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
+                        dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
-        malformedLines = new ArrayList<>();
-        malformedLines.addAll(lines);
-        malformedLines.add(FILLING_LINE);
+        inputLine = String.format(INPUT_LINE, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T);
+        dataLine = String.format(DATA_LINE, EXPECTED_VALUE_T);
+        tumLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
+                        dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
+
         emptyLines = new ArrayList<>();
     }
 
@@ -103,7 +101,7 @@ public class InsertSizeMetricsExtractorTest {
 
             {
                 reader.readLines(anyString, anyString, anyString);
-                returns(lines, lines);
+                returns(refLines, tumLines);
             }
         };
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
@@ -111,8 +109,8 @@ public class InsertSizeMetricsExtractorTest {
         assertNotNull(SHOULD_NOT_BE_NULL, report);
         assertBaseData(((InsertSizeMetricsReport) report).getReferenceSample(), PATIENT_ID_R, MEDIAN_INSERT_SIZE,
                         EXPECTED_VALUE_R);
-        assertBaseData(((InsertSizeMetricsReport) report).getTumorSample(), PATIENT_ID_R, MEDIAN_INSERT_SIZE,
-                        EXPECTED_VALUE_R);
+        assertBaseData(((InsertSizeMetricsReport) report).getTumorSample(), PATIENT_ID_T, MEDIAN_INSERT_SIZE,
+                        EXPECTED_VALUE_T);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -161,7 +159,7 @@ public class InsertSizeMetricsExtractorTest {
 
             {
                 reader.readLines(anyString, anyString, anyString);
-                returns(lines);
+                returns(refLines);
                 reader.readLines(anyString, anyString, anyString);
                 result = new LineNotFoundException("");
             }
