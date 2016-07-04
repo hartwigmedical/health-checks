@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
