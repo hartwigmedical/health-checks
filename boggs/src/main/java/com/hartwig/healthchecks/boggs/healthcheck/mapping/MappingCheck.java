@@ -1,8 +1,5 @@
 package com.hartwig.healthchecks.boggs.healthcheck.mapping;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import org.jetbrains.annotations.NotNull;
 
 public enum MappingCheck {
@@ -17,17 +14,14 @@ public enum MappingCheck {
     MAPPING_IS_ALL_READ("is all read"),
     DUMMY("DummyCheckName");
 
+    @NotNull
     private final String description;
 
     MappingCheck(@NotNull final String description) {
         this.description = description;
     }
 
-    public static Optional<MappingCheck> getByDescription(@NotNull final String description) {
-        return Arrays.asList(MappingCheck.values()).stream()
-                        .filter(mappingcheck -> mappingcheck.description.equalsIgnoreCase(description)).findFirst();
-    }
-
+    @NotNull
     public String getDescription() {
         return description;
     }
