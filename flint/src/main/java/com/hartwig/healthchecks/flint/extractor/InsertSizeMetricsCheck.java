@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.extractor;
+package com.hartwig.healthchecks.flint.extractor;
 
 public enum InsertSizeMetricsCheck {
     MAPPING_MEDIAN_INSERT_SIZE("MAPPING_INSERT_SIZE_MEDIAN", "MEDIAN_INSERT_SIZE", 0),

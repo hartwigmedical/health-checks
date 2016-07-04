@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.extractor;
+package com.hartwig.healthchecks.flint.extractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -17,8 +17,8 @@ import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.smitty.reader.InsertSizeMetricsReader;
-import com.hartwig.healthchecks.smitty.report.InsertSizeMetricsReport;
+import com.hartwig.healthchecks.flint.reader.InsertSizeMetricsReader;
+import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 
 import mockit.Expectations;
 import mockit.Mocked;

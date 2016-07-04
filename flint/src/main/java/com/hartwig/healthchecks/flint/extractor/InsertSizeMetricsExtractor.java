@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.extractor;
+package com.hartwig.healthchecks.flint.extractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +14,8 @@ import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.smitty.reader.InsertSizeMetricsReader;
-import com.hartwig.healthchecks.smitty.report.InsertSizeMetricsReport;
+import com.hartwig.healthchecks.flint.reader.InsertSizeMetricsReader;
+import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 
 public class InsertSizeMetricsExtractor extends AbstractDataExtractor {
 

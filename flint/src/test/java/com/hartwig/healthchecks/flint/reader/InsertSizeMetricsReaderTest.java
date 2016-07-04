@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.reader;
+package com.hartwig.healthchecks.flint.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -13,6 +13,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
+import com.hartwig.healthchecks.flint.reader.InsertSizeMetricsReader;
 
 public class InsertSizeMetricsReaderTest {
 

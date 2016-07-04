@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.report;
+package com.hartwig.healthchecks.flint.report;
 
 import java.util.List;
 
