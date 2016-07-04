@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.extractor;
+package com.hartwig.healthchecks.common.io.extractor;
 
 import java.util.List;
 

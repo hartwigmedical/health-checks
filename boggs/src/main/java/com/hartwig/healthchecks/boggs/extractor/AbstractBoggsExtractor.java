@@ -10,7 +10,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
-import com.hartwig.healthchecks.common.extractor.AbstractDataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
 
 public abstract class AbstractBoggsExtractor extends AbstractDataExtractor {
 

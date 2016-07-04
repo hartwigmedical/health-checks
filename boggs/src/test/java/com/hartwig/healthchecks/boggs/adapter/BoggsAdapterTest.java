@@ -11,7 +11,7 @@ import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsHealthChecker;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
-import com.hartwig.healthchecks.common.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;

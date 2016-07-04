@@ -3,17 +3,17 @@ package com.hartwig.healthchecks.smitty.extractor;
 import java.io.IOException;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
-import com.hartwig.healthchecks.common.extractor.AbstractDataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
+import com.hartwig.healthchecks.common.io.reader.Reader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.smitty.reader.KinshipReader;
 import com.hartwig.healthchecks.smitty.report.KinshipReport;
+
+import org.jetbrains.annotations.NotNull;
 
 public class KinshipExtractor extends AbstractDataExtractor {
 
@@ -27,9 +27,11 @@ public class KinshipExtractor extends AbstractDataExtractor {
 
     private static final String KINSHIP_TEST = "KINSHIP_TEST";
 
-    private final KinshipReader kinshipReader;
+    private static final String KINSHIP = ".kinship";
 
-    public KinshipExtractor(final KinshipReader kinshipReader) {
+    private final Reader kinshipReader;
+
+    public KinshipExtractor(final Reader kinshipReader) {
         super();
         this.kinshipReader = kinshipReader;
     }
@@ -38,7 +40,7 @@ public class KinshipExtractor extends AbstractDataExtractor {
     @NotNull
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
                     throws IOException, HealthChecksException {
-        final List<String> kinshipLines = kinshipReader.readLinesFromKinship(runDirectory);
+        final List<String> kinshipLines = kinshipReader.readLines(runDirectory, KINSHIP);
         if (kinshipLines.isEmpty()) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, KINSHIP_TEST, runDirectory));
         }
