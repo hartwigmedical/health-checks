@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.check;
+package com.hartwig.healthchecks.flint.check;
 
 import java.io.IOException;
 

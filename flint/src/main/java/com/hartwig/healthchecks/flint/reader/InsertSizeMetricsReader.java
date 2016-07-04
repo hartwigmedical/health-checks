@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.reader;
+package com.hartwig.healthchecks.flint.reader;
 
 import static java.util.stream.Collectors.toList;
 

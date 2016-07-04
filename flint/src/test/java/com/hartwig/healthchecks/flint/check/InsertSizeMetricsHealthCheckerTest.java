@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.check;
+package com.hartwig.healthchecks.flint.check;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,8 +16,8 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
-import com.hartwig.healthchecks.smitty.extractor.InsertSizeMetricsExtractor;
-import com.hartwig.healthchecks.smitty.report.InsertSizeMetricsReport;
+import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
+import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -69,7 +69,6 @@ public class InsertSizeMetricsHealthCheckerTest {
         final List<BaseDataReport> tumReports = ((InsertSizeMetricsReport) report).getTumorSample();
         assertBaseData(refReports, DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         assertBaseData(tumReports, DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
-
     }
 
     @Test
