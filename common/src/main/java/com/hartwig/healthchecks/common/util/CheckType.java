@@ -5,5 +5,6 @@ public enum CheckType {
     MAPPING,
     PRESTATS,
     KINSHIP,
-    INSERT_SIZE;
+    INSERT_SIZE,
+    SUMMARY_METRICS;
 }
