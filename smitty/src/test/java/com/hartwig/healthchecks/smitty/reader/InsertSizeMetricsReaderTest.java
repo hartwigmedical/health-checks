@@ -38,6 +38,8 @@ public class InsertSizeMetricsReaderTest {
 
     private static final String REF_DED_SAMPLE_SUFFIX = "R";
 
+    private static final String TUM_DED_SAMPLE_SUFFIX = "T";
+
     private static final String DEDUP_SAMPLE_SUFFIX = "dedup";
 
     @Test
@@ -61,9 +63,17 @@ public class InsertSizeMetricsReaderTest {
     }
 
     @Test(expected = FileNotFoundException.class)
-    public void readNoFile() throws IOException {
+    public void readNoFileDir() throws IOException {
         final URL testPath = Resources.getResource(NO_FILE_DIR);
         final String suffix = REF_DED_SAMPLE_SUFFIX + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
+        final InsertSizeMetricsReader reader = new InsertSizeMetricsReader();
+        reader.readLines(testPath.getPath(), SAMPLE_PREFIX, suffix);
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void readNoFile() throws IOException {
+        final URL testPath = Resources.getResource(NO_FILE_DIR + File.separator + QC_STATS);
+        final String suffix = TUM_DED_SAMPLE_SUFFIX + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final InsertSizeMetricsReader reader = new InsertSizeMetricsReader();
         reader.readLines(testPath.getPath(), SAMPLE_PREFIX, suffix);
     }
