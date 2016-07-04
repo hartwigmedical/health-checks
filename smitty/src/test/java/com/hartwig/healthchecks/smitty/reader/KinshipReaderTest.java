@@ -9,9 +9,10 @@ import java.net.URL;
 import java.nio.file.NoSuchFileException;
 import java.util.List;
 
-import org.junit.Test;
-
 import com.google.common.io.Resources;
+import com.hartwig.healthchecks.common.io.reader.Reader;
+
+import org.junit.Test;
 
 public class KinshipReaderTest {
 
@@ -25,13 +26,16 @@ public class KinshipReaderTest {
 
     private static final String NO_FILE_DIR = "empty";
 
+    private static final String KINSHIP = ".kinship";
+
     private static final int EXPECTED_NUM_LINES = 2;
 
     @Test
     public void readKinship() throws IOException {
         final URL testPath = Resources.getResource(TEST_DIR);
-        final KinshipReader kinshipReader = new KinshipReader();
-        final List<String> readLines = kinshipReader.readLinesFromKinship(testPath.getPath());
+
+        Reader reader = Reader.build();
+        final List<String> readLines = reader.readLines(testPath.getPath(), KINSHIP);
         assertNotNull(NOT_NULL, readLines);
         assertEquals(WRONG_NUM_LINES, EXPECTED_NUM_LINES, readLines.size());
     }
@@ -39,8 +43,8 @@ public class KinshipReaderTest {
     @Test
     public void readEmptyKinship() throws IOException {
         final URL testPath = Resources.getResource(EMPTY_DIR);
-        final KinshipReader kinshipReader = new KinshipReader();
-        final List<String> readLines = kinshipReader.readLinesFromKinship(testPath.getPath());
+        Reader reader = Reader.build();
+        final List<String> readLines = reader.readLines(testPath.getPath(), KINSHIP);
         assertNotNull(NOT_NULL, readLines);
         assertEquals(NOT_NULL, 0, readLines.size());
     }
@@ -48,13 +52,14 @@ public class KinshipReaderTest {
     @Test(expected = FileNotFoundException.class)
     public void readNoKinship() throws IOException {
         final URL testPath = Resources.getResource(NO_FILE_DIR);
-        final KinshipReader kinshipReader = new KinshipReader();
-        kinshipReader.readLinesFromKinship(testPath.getPath());
+
+        Reader reader = Reader.build();
+        final List<String> readLines = reader.readLines(testPath.getPath(), KINSHIP);
     }
 
     @Test(expected = NoSuchFileException.class)
     public void readNoneExistingFolder() throws IOException {
-        final KinshipReader kinshipReader = new KinshipReader();
-        kinshipReader.readLinesFromKinship("bla");
+        Reader reader = Reader.build();
+        final List<String> readLines = reader.readLines("bla", KINSHIP);
     }
 }

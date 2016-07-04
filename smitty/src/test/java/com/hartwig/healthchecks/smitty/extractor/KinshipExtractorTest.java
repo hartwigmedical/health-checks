@@ -7,17 +7,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
+import com.hartwig.healthchecks.common.io.reader.Reader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.smitty.reader.KinshipReader;
 import com.hartwig.healthchecks.smitty.report.KinshipReport;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -45,7 +45,7 @@ public class KinshipExtractorTest {
     private List<String> emptyLines;
 
     @Mocked
-    private KinshipReader kinshipReader;
+    private Reader kinshipReader;
 
     @Before
     public void setUp() {
@@ -66,9 +66,8 @@ public class KinshipExtractorTest {
         new Expectations() {
 
             {
-                kinshipReader.readLinesFromKinship(anyString);
+                kinshipReader.readLines(anyString, anyString);
                 returns(lines);
-
             }
         };
         final BaseReport kinshipReport = kinshipExtractor.extractFromRunDirectory(TEST_DIR);
@@ -84,7 +83,7 @@ public class KinshipExtractorTest {
         new Expectations() {
 
             {
-                kinshipReader.readLinesFromKinship(anyString);
+                kinshipReader.readLines(anyString, anyString);
                 returns(emptyLines);
             }
         };
@@ -97,7 +96,7 @@ public class KinshipExtractorTest {
         new Expectations() {
 
             {
-                kinshipReader.readLinesFromKinship(anyString);
+                kinshipReader.readLines(anyString, anyString);
                 result = new IOException();
             }
         };
@@ -110,7 +109,7 @@ public class KinshipExtractorTest {
         new Expectations() {
 
             {
-                kinshipReader.readLinesFromKinship(anyString);
+                kinshipReader.readLines(anyString, anyString);
                 returns(malformedLines);
             }
         };
