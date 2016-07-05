@@ -18,13 +18,13 @@ public interface SampleReader {
     String FILE_S_NOT_FOUND_MSG = "File %s not Found in path %s";
 
     @NotNull
-    List<String> readLines(@NotNull final String path, final String extension) throws IOException;
+    List<String> readLines(@NotNull final SamplePath samplePath) throws IOException;
 
     @NotNull
-    static SampleReader build(@NotNull final String prefix, @NotNull final String suffix) {
-        return (path, extension) -> {
-            final Path filePath = findFilePath(path, prefix, suffix);
-            final Path fileToRead = findFileInPath(filePath.toString(), extension);
+    static SampleReader build() {
+        return (samplePath) -> {
+            final Path filePath = findFilePath(samplePath.getPath(), samplePath.getPrefix(), samplePath.getSuffix());
+            final Path fileToRead = findFileInPath(filePath.toString(), samplePath.getExtension());
             return Files.lines(Paths.get(fileToRead.toString())).collect(Collectors.toList());
         };
     }
