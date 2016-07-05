@@ -14,10 +14,11 @@ import org.junit.Test;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
+import com.hartwig.healthchecks.common.io.reader.SamplePath;
+import com.hartwig.healthchecks.common.io.reader.SampleReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.flint.reader.InsertSizeMetricsReader;
 import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 
 import mockit.Expectations;
@@ -79,7 +80,7 @@ public class InsertSizeMetricsExtractorTest {
     private List<String> missingLines;
 
     @Mocked
-    private InsertSizeMetricsReader reader;
+    private SampleReader reader;
 
     @Before
     public void setUp() {
@@ -106,7 +107,7 @@ public class InsertSizeMetricsExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString, anyString);
+                reader.readLines((SamplePath) any);
                 returns(refLines, tumLines);
             }
         };
@@ -120,7 +121,7 @@ public class InsertSizeMetricsExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString, anyString);
+                reader.readLines((SamplePath) any);
                 returns(emptyLines);
             }
         };
@@ -133,7 +134,7 @@ public class InsertSizeMetricsExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString, anyString);
+                reader.readLines((SamplePath) any);
                 result = new IOException();
             }
         };
@@ -146,7 +147,7 @@ public class InsertSizeMetricsExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString, anyString);
+                reader.readLines((SamplePath) any);
                 returns(missingLines);
             }
         };
@@ -159,7 +160,7 @@ public class InsertSizeMetricsExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString, anyString);
+                reader.readLines((SamplePath) any);
                 returns(refLines, missingLines);
             }
         };
@@ -172,9 +173,9 @@ public class InsertSizeMetricsExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString, anyString);
+                reader.readLines((SamplePath) any);
                 returns(refLines);
-                reader.readLines(anyString, anyString, anyString);
+                reader.readLines((SamplePath) any);
                 result = new LineNotFoundException("");
             }
         };
