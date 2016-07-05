@@ -17,9 +17,9 @@ import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 
 public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
 
-    private final SampleReader reader;
-
     private static final String INSERT_SIZE_METRICS = ".insert_size_metrics";
+
+    private final SampleReader reader;
 
     public InsertSizeMetricsExtractor(final SampleReader reader) {
         super();
