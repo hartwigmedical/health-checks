@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
+import com.hartwig.healthchecks.common.io.reader.SamplePath;
 import com.hartwig.healthchecks.common.io.reader.SampleReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -39,7 +40,10 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
                     throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
-        final List<String> lines = reader.readLines(path, AL_SUM_METRICS);
+
+        final SamplePath samplePath = new SamplePath(path, SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
+
+        final List<String> lines = reader.readLines(samplePath);
         if (lines.isEmpty()) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, suffix, runDirectory));
         }
