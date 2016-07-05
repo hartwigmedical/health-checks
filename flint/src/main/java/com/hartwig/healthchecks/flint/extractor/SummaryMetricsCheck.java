@@ -1,19 +1,16 @@
 package com.hartwig.healthchecks.flint.extractor;
 
 public enum SummaryMetricsCheck {
-    MAPPING_PF_INDEL_RATE("MAPPING_PF_INDEL_RATE", 14);
-
-    private final String name;
+    MAPPING_PF_MISMATCH_RATE(12),
+    MAPPING_PF_INDEL_RATE(14),
+    MAPPING_STRAND_BALANCE(19),
+    MAPPING_PCT_CHIMERA(20),
+    MAPPING_PCT_ADAPTER(21);
 
     private final int index;
 
-    SummaryMetricsCheck(final String name, final int index) {
-        this.name = name;
+    SummaryMetricsCheck(final int index) {
         this.index = index;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getIndex() {

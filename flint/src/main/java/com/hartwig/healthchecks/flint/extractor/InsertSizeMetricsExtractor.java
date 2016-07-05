@@ -52,7 +52,7 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     private BaseDataReport getValue(final List<String> lines, final String suffix, final String patientId,
                     final InsertSizeMetricsCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
-        final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.getName(), value);
+        final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;
     }

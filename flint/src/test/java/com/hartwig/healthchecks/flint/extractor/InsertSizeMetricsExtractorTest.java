@@ -184,9 +184,9 @@ public class InsertSizeMetricsExtractorTest {
     private void assertReport(final BaseReport report) {
         assertEquals("Report with wrong type", CheckType.INSERT_SIZE, report.getCheckType());
         assertNotNull(SHOULD_NOT_BE_NULL, report);
-        assertField(report, InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE.getName(), MEDIAN_INS_SZ_R,
+        assertField(report, InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE.toString(), MEDIAN_INS_SZ_R,
                         MEDIAN_INS_SZ_T);
-        assertField(report, InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT.getName(), WIDTH_OF_70_PER_R,
+        assertField(report, InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT.toString(), WIDTH_OF_70_PER_R,
                         WIDTH_OF_70_PER_T);
     }
 
