@@ -28,8 +28,8 @@ public interface Reader {
             if (!searchedFile.isPresent()) {
                 throw new FileNotFoundException(String.format(FILE_S_NOT_FOUND_MSG, extension, path));
             }
-            final Path kinshipFile = searchedFile.get();
-            return Files.lines(Paths.get(kinshipFile.toString())).collect(Collectors.toList());
+            final Path fileToRead = searchedFile.get();
+            return Files.lines(Paths.get(fileToRead.toString())).collect(Collectors.toList());
         };
     }
 

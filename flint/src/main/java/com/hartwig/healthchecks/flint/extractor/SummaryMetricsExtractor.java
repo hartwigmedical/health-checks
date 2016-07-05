@@ -4,21 +4,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
+import com.hartwig.healthchecks.common.io.reader.SampleReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.flint.reader.InsertSizeMetricsReader;
-import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
+import com.hartwig.healthchecks.flint.report.SummaryMetricsReport;
 
-public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
+public class SummaryMetricsExtractor extends AbstractFlintExtractor {
 
-    private final InsertSizeMetricsReader reader;
+    private static final String PAIR = "PAIR";
 
-    public InsertSizeMetricsExtractor(final InsertSizeMetricsReader reader) {
+    private static final String AL_SUM_METRICS = ".alignment_summary_metrics";
+
+    private final SampleReader reader;
+
+    public SummaryMetricsExtractor(final SampleReader reader) {
         super();
         this.reader = reader;
     }
@@ -27,41 +32,33 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     public BaseReport extractFromRunDirectory(final String runDirectory) throws IOException, HealthChecksException {
         final List<BaseDataReport> referenceSample = getSampleData(runDirectory, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSample = getSampleData(runDirectory, TUM_SAMPLE_SUFFIX);
-
-        return new InsertSizeMetricsReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
+        return new SummaryMetricsReport(CheckType.SUMMARY_METRICS, referenceSample, tumorSample);
     }
 
     private List<BaseDataReport> getSampleData(final String runDirectory, final String sampleType)
                     throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
-        final List<String> lines = reader.readLines(path, SAMPLE_PREFIX, suffix);
+        final List<String> lines = reader.readLines(path, AL_SUM_METRICS);
         if (lines.isEmpty()) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, suffix, runDirectory));
         }
-
+        final Optional<String> searchedLine = lines.stream().filter(fileLine -> fileLine.startsWith(PAIR)).findFirst();
+        if (!searchedLine.isPresent()) {
+            throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, suffix, PAIR));
+        }
         final String patientId = getPatientId(suffix, lines, INPUT);
 
-        final BaseDataReport medianReport = getValue(lines, suffix, patientId,
-                        InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
-        final BaseDataReport width70PerReport = getValue(lines, suffix, patientId,
-                        InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
-        return Arrays.asList(medianReport, width70PerReport);
+        final BaseDataReport pfIndelRate = getValue(searchedLine.get(), patientId,
+                        SummaryMetricsCheck.MAPPING_PF_INDEL_RATE);
+        return Arrays.asList(pfIndelRate);
     }
 
-    private BaseDataReport getValue(final List<String> lines, final String suffix, final String patientId,
-                    final InsertSizeMetricsCheck check) throws LineNotFoundException {
-        final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
+    private BaseDataReport getValue(final String line, final String patientId, final SummaryMetricsCheck check)
+                    throws LineNotFoundException {
+        final String value = line.split(SEPERATOR_REGEX)[check.getIndex()];
         final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.getName(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;
-    }
-
-    private String getValueFromLine(final List<String> lines, final String suffix, final String filter,
-                    final int fieldIndex) throws LineNotFoundException {
-        final Integer index = findLineIndex(suffix, lines, filter);
-        final String line = lines.get(index + ONE);
-        final String[] lineValues = line.split(SEPERATOR_REGEX);
-        return lineValues[fieldIndex];
     }
 }
