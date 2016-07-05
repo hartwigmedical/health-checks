@@ -1,22 +1,23 @@
 package com.hartwig.healthchecks.flint.adapter;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.flint.check.InsertSizeMetricsHealthChecker;
-import com.hartwig.healthchecks.flint.check.SummaryMetricsHealthChecker;
+import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
+import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
 import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 import com.hartwig.healthchecks.flint.report.SummaryMetricsReport;
 
-import mockit.Mock;
-import mockit.MockUp;
+import mockit.Mocked;
+import mockit.NonStrictExpectations;
+import mockit.Verifications;
 
 public class FlintAdapterTest {
 
@@ -31,35 +32,42 @@ public class FlintAdapterTest {
     private static final String TUM_VALUE = "309";
 
     @Test
-    public void verifyAdapterRunning() {
+    public void verifyAdapterRunning(@Mocked final HealthCheckerImpl insertSize,
+                    @Mocked final HealthCheckerImpl summaryMetric, @Mocked final JsonReport report) {
 
-        new MockUp<InsertSizeMetricsHealthChecker>() {
+        new NonStrictExpectations() {
 
-            @Mock
-            void $init(final String runDir, final DataExtractor extractor) {
-                assertEquals(runDir, DUMMY_RUN_DIR);
-            }
+            {
+                JsonReport.getInstance();
+                result = report;
+                times = 1;
 
-            @Mock(invocations = 1)
-            public BaseReport runCheck() {
-                return getInsertSizeDummyReport();
+                new HealthCheckerImpl(CheckType.INSERT_SIZE, anyString, (InsertSizeMetricsExtractor) any);
+                result = insertSize;
+                times = 1;
+                insertSize.runCheck();
+                returns(getInsertSizeDummyReport());
+                times = 1;
+
+                new HealthCheckerImpl(CheckType.SUMMARY_METRICS, anyString, (SummaryMetricsExtractor) any);
+                result = summaryMetric;
+                times = 1;
+
+                summaryMetric.runCheck();
+                returns(getSummaryMetricsDummyReport());
+                times = 1;
             }
         };
-
-        new MockUp<SummaryMetricsHealthChecker>() {
-
-            @Mock
-            void $init(final String runDir, final DataExtractor extractor) {
-                assertEquals(runDir, DUMMY_RUN_DIR);
-            }
-
-            @Mock(invocations = 1)
-            public BaseReport runCheck() {
-                return getSummaryMetricsDummyReport();
-            }
-        };
-        final FlintAdapter adapter = new FlintAdapter();
+        final HealthCheckAdapter adapter = new FlintAdapter();
         adapter.runCheck(DUMMY_RUN_DIR);
+
+        new Verifications() {
+
+            {
+                report.addReportData((BaseReport) any);
+                times = 2;
+            }
+        };
     }
 
     private BaseReport getInsertSizeDummyReport() {
@@ -74,7 +82,7 @@ public class FlintAdapterTest {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new SummaryMetricsReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport),
+        return new SummaryMetricsReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
                         Arrays.asList(secTestDataReport));
     }
 }

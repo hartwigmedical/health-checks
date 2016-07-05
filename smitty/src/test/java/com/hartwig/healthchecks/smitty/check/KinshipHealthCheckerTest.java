@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
@@ -50,11 +51,7 @@ public class KinshipHealthCheckerTest {
     @Test
     public void verifyHealthChecker() throws IOException, HealthChecksException {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, EXPECTED_VALUE);
-
         final KinshipReport testData = new KinshipReport(CheckType.KINSHIP, testDataReport);
-
-        final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
-
         new Expectations() {
 
             {
@@ -62,7 +59,7 @@ public class KinshipHealthCheckerTest {
                 returns(testData);
             }
         };
-
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.KINSHIP, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
         final BaseDataReport baseDataReports = ((KinshipReport) report).getPatientData();
@@ -73,7 +70,6 @@ public class KinshipHealthCheckerTest {
 
     @Test
     public void verifyHealthCheckerIOException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -81,6 +77,8 @@ public class KinshipHealthCheckerTest {
                 result = new IOException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.KINSHIP, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
@@ -92,7 +90,6 @@ public class KinshipHealthCheckerTest {
 
     @Test
     public void verifyHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -100,6 +97,8 @@ public class KinshipHealthCheckerTest {
                 result = new EmptyFileException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.KINSHIP, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
@@ -111,7 +110,6 @@ public class KinshipHealthCheckerTest {
 
     @Test
     public void verifyHealthCheckerMalformedFileException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new KinshipHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -119,6 +117,7 @@ public class KinshipHealthCheckerTest {
                 result = new MalformedFileException(DUMMY_ERROR);
             }
         };
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.KINSHIP, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
