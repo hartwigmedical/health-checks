@@ -15,7 +15,6 @@ import com.hartwig.healthchecks.flint.check.InsertSizeMetricsHealthChecker;
 import com.hartwig.healthchecks.flint.check.SummaryMetricsHealthChecker;
 import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
-import com.hartwig.healthchecks.flint.reader.InsertSizeMetricsReader;
 
 @ResourceWrapper(type = CheckCategory.FLINT)
 public class FlintAdapter implements HealthCheckAdapter {
@@ -24,7 +23,7 @@ public class FlintAdapter implements HealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory) {
-        final InsertSizeMetricsReader insertSizeMetricsReader = new InsertSizeMetricsReader();
+        final SampleReader insertSizeMetricsReader = SampleReader.build();
         final DataExtractor insertSizeExtractor = new InsertSizeMetricsExtractor(insertSizeMetricsReader);
         final HealthChecker insertSizeChecker = new InsertSizeMetricsHealthChecker(runDirectory, insertSizeExtractor);
         final BaseReport insertSizeReport = insertSizeChecker.runCheck();
