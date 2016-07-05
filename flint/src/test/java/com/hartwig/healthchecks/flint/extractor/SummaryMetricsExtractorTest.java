@@ -28,8 +28,8 @@ public class SummaryMetricsExtractorTest {
     private static final String WRONG_PATIENT_ID = "Wrong Patient ID";
 
     private static final String DATA_LINE = "PAIR\t17920\t17920\t1\t0\t17865\t0.996931\t"
-                    + "2678694\t17852\t2677263\t2587040\t0\t0.005024\t0.005017\t"
-                    + "%s\t151\t17810\t0.996921\t0\t0.499972\t0.000112\t0.000056\t\t\t\t";
+                    + "2678694\t17852\t2677263\t2587040\t0\t%s\t0.005017\t"
+                    + "%s\t151\t17810\t0.996921\t0\t%s\t%s\t%s\t\t\t\t";
 
     private static final String INPUT_LINE = "# picard.analysis.CollectMultipleMetrics "
                     + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam " + "ASSUME_SORTED=true "
@@ -56,13 +56,25 @@ public class SummaryMetricsExtractorTest {
 
     private static final String PATIENT_ID_T = "CPCT12345678T";
 
-    private static final String VALUE_R = "0.000161";
+    private static final String MISMATCH_VALUE_R = "0.005024";
 
-    private static final String VALUE_T = "0.000162";
+    private static final String MISMATCH_VALUE_T = "0.004024";
 
-    private static final String WIDTH_OF_70_PER_R = "247";
+    private static final String INDEL_VALUE_R = "0.000161";
 
-    private static final String WIDTH_OF_70_PER_T = "147";
+    private static final String INDEL_VALUE_T = "0.000162";
+
+    private static final String STRAND_VALUE_R = "0.499972";
+
+    private static final String STRAND_VALUE_T = "0.399972";
+
+    private static final String CHIMERA_VALUE_R = "0.000112";
+
+    private static final String CHIMERA_VALUE_T = "0.000212";
+
+    private static final String ADAPTER_VALUE_R = "0.000056";
+
+    private static final String ADAPTER_VALUE_T = "0.000036";
 
     private static final String SHOULD_NOT_BE_NULL = "Should Not be Null";
 
@@ -80,12 +92,14 @@ public class SummaryMetricsExtractorTest {
     @Before
     public void setUp() {
         String inputLine = String.format(INPUT_LINE, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R);
-        String dataLine = String.format(DATA_LINE, VALUE_R, WIDTH_OF_70_PER_R);
+        String dataLine = String.format(DATA_LINE, MISMATCH_VALUE_R, INDEL_VALUE_R, STRAND_VALUE_R, CHIMERA_VALUE_R,
+                        ADAPTER_VALUE_R);
         refLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
                         dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
         inputLine = String.format(INPUT_LINE, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T);
-        dataLine = String.format(DATA_LINE, VALUE_T, WIDTH_OF_70_PER_T);
+        dataLine = String.format(DATA_LINE, MISMATCH_VALUE_T, INDEL_VALUE_T, STRAND_VALUE_T, CHIMERA_VALUE_T,
+                        ADAPTER_VALUE_T);
         tumLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, dataLine,
                         FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
@@ -179,8 +193,12 @@ public class SummaryMetricsExtractorTest {
     private void assertReport(final BaseReport report) {
         assertEquals("Report with wrong type", CheckType.SUMMARY_METRICS, report.getCheckType());
         assertNotNull(SHOULD_NOT_BE_NULL, report);
-        assertField(report, SummaryMetricsCheck.MAPPING_PF_INDEL_RATE.getName(), VALUE_R, VALUE_T);
-
+        assertField(report, SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE.toString(), MISMATCH_VALUE_R,
+                        MISMATCH_VALUE_T);
+        assertField(report, SummaryMetricsCheck.MAPPING_PF_INDEL_RATE.toString(), INDEL_VALUE_R, INDEL_VALUE_T);
+        assertField(report, SummaryMetricsCheck.MAPPING_STRAND_BALANCE.toString(), STRAND_VALUE_R, STRAND_VALUE_T);
+        assertField(report, SummaryMetricsCheck.MAPPING_PCT_CHIMERA.toString(), CHIMERA_VALUE_R, CHIMERA_VALUE_T);
+        assertField(report, SummaryMetricsCheck.MAPPING_PCT_ADAPTER.toString(), ADAPTER_VALUE_R, ADAPTER_VALUE_T);
     }
 
     private void assertField(final BaseReport report, final String field, final String refValue,

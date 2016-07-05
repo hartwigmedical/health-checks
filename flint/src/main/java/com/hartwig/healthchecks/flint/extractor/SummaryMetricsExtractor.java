@@ -51,13 +51,21 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
 
         final BaseDataReport pfIndelRate = getValue(searchedLine.get(), patientId,
                         SummaryMetricsCheck.MAPPING_PF_INDEL_RATE);
-        return Arrays.asList(pfIndelRate);
+        final BaseDataReport pctAdapter = getValue(searchedLine.get(), patientId,
+                        SummaryMetricsCheck.MAPPING_PCT_ADAPTER);
+        final BaseDataReport pctChimeras = getValue(searchedLine.get(), patientId,
+                        SummaryMetricsCheck.MAPPING_PCT_CHIMERA);
+        final BaseDataReport pfMisMatch = getValue(searchedLine.get(), patientId,
+                        SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE);
+        final BaseDataReport strandBalance = getValue(searchedLine.get(), patientId,
+                        SummaryMetricsCheck.MAPPING_STRAND_BALANCE);
+        return Arrays.asList(pfIndelRate, pctAdapter, pctChimeras, pfMisMatch, strandBalance);
     }
 
     private BaseDataReport getValue(final String line, final String patientId, final SummaryMetricsCheck check)
                     throws LineNotFoundException {
         final String value = line.split(SEPERATOR_REGEX)[check.getIndex()];
-        final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.getName(), value);
+        final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;
     }
