@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
@@ -54,7 +55,6 @@ public class InsertSizeMetricsHealthCheckerTest {
     @Test
     public void verifyHealthChecker() throws IOException, HealthChecksException {
         final BaseReport testData = createTestData();
-        final HealthChecker checker = new InsertSizeMetricsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -63,6 +63,7 @@ public class InsertSizeMetricsHealthCheckerTest {
             }
         };
 
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.INSERT_SIZE, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
         final List<BaseDataReport> refReports = ((InsertSizeMetricsReport) report).getReferenceSample();
@@ -73,7 +74,6 @@ public class InsertSizeMetricsHealthCheckerTest {
 
     @Test
     public void verifyHealthCheckerIOException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new InsertSizeMetricsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -81,6 +81,8 @@ public class InsertSizeMetricsHealthCheckerTest {
                 result = new IOException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.INSERT_SIZE, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
@@ -92,7 +94,6 @@ public class InsertSizeMetricsHealthCheckerTest {
 
     @Test
     public void verifyHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new InsertSizeMetricsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -100,6 +101,8 @@ public class InsertSizeMetricsHealthCheckerTest {
                 result = new EmptyFileException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.INSERT_SIZE, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
@@ -111,7 +114,6 @@ public class InsertSizeMetricsHealthCheckerTest {
 
     @Test
     public void verifyHealthCheckerLineNotFoundException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new InsertSizeMetricsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -119,6 +121,8 @@ public class InsertSizeMetricsHealthCheckerTest {
                 result = new LineNotFoundException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.INSERT_SIZE, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
         final String error = ((ErrorReport) report).getError();

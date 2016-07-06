@@ -4,11 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.smitty.check.KinshipHealthChecker;
 import com.hartwig.healthchecks.smitty.report.KinshipReport;
 
 import mockit.Mock;
@@ -27,10 +28,11 @@ public class SmittyAdapterTest {
     @Test
     public void verifyAdapterRunning() {
 
-        new MockUp<KinshipHealthChecker>() {
+        new MockUp<HealthCheckerImpl>() {
 
             @Mock
-            void $init(final String runDir, final DataExtractor extractor) {
+            void $init(final CheckType checkType, final String runDir, final DataExtractor extractor) {
+                assertEquals(checkType, CheckType.KINSHIP);
                 assertEquals(runDir, DUMMY_RUN_DIR);
             }
 
@@ -39,7 +41,7 @@ public class SmittyAdapterTest {
                 return getKinshipDummyReport();
             }
         };
-        final SmittyAdapter adapter = new SmittyAdapter();
+        final HealthCheckAdapter adapter = new SmittyAdapter();
         adapter.runCheck(DUMMY_RUN_DIR);
     }
 

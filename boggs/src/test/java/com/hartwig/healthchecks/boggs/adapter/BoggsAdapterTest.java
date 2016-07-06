@@ -1,23 +1,24 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
-import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsHealthChecker;
+import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
-import mockit.Mock;
-import mockit.MockUp;
+import mockit.Mocked;
+import mockit.NonStrictExpectations;
+import mockit.Verifications;
 
 public class BoggsAdapterTest {
 
@@ -32,37 +33,42 @@ public class BoggsAdapterTest {
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     @Test
-    public void verifyAdapterRunning() {
-        final MappingReport dummyMappingReport = getDummyMappingReport();
-        final PrestatsReport dummyPrestatsReport = getDummyPrestatsReport();
+    public void verifyAdapterRunning(@Mocked final HealthCheckerImpl mapping, @Mocked final HealthCheckerImpl prestats,
+                    @Mocked final JsonReport report) {
 
-        new MockUp<MappingHealthChecker>() {
+        new NonStrictExpectations() {
 
-            @Mock
-            void $init(final String runDir, final DataExtractor extractor) {
-                assertEquals(runDir, DUMMY_RUN_DIR);
-            }
+            {
+                JsonReport.getInstance();
+                result = report;
+                times = 1;
 
-            @Mock(invocations = 1)
-            public BaseReport runCheck() {
-                return dummyMappingReport;
-            }
-        };
-        new MockUp<PrestatsHealthChecker>() {
+                new HealthCheckerImpl(CheckType.MAPPING, anyString, (MappingExtractor) any);
+                result = mapping;
+                times = 1;
+                mapping.runCheck();
+                returns(getDummyMappingReport());
+                times = 1;
 
-            @Mock
-            void $init(final String runDir, final DataExtractor extractor) {
-                assertEquals(runDir, DUMMY_RUN_DIR);
-            }
+                new HealthCheckerImpl(CheckType.PRESTATS, anyString, (PrestatsExtractor) any);
+                result = prestats;
+                times = 1;
 
-            @Mock(invocations = 1)
-            public BaseReport runCheck() {
-                return dummyPrestatsReport;
+                prestats.runCheck();
+                returns(getDummyPrestatsReport());
+                times = 1;
             }
         };
-
-        final BoggsAdapter adapter = new BoggsAdapter();
+        final HealthCheckAdapter adapter = new BoggsAdapter();
         adapter.runCheck(DUMMY_RUN_DIR);
+
+        new Verifications() {
+
+            {
+                report.addReportData((BaseReport) any);
+                times = 2;
+            }
+        };
     }
 
     private MappingReport getDummyMappingReport() {

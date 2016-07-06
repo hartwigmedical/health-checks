@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
@@ -55,7 +56,7 @@ public class PrestatsHealthCheckerTest {
         final PrestatsReport testData = new PrestatsReport(CheckType.PRESTATS, Arrays.asList(prestatsTestDataReport),
                         Arrays.asList(prestatsTestDataReport));
 
-        final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.PRESTATS, DUMMY_RUN_DIR, dataExtractor);
 
         new Expectations() {
 
@@ -76,7 +77,6 @@ public class PrestatsHealthCheckerTest {
 
     @Test
     public void verifyPrestatsHealthCheckerIOException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -84,6 +84,8 @@ public class PrestatsHealthCheckerTest {
                 result = new IOException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.PRESTATS, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.PRESTATS, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
@@ -95,7 +97,6 @@ public class PrestatsHealthCheckerTest {
 
     @Test
     public void verifyPrestatsHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new PrestatsHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -103,6 +104,8 @@ public class PrestatsHealthCheckerTest {
                 result = new EmptyFileException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.PRESTATS, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.PRESTATS, report.getCheckType());
         final String error = ((ErrorReport) report).getError();

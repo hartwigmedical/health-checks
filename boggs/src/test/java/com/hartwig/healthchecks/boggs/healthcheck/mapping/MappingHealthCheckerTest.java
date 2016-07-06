@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
@@ -39,7 +40,6 @@ public class MappingHealthCheckerTest {
     @Test
     public void verifyMappingHealthChecker() throws IOException, HealthChecksException {
 
-        final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -48,6 +48,7 @@ public class MappingHealthCheckerTest {
             }
         };
 
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.MAPPING, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
 
         assertEquals("Report with wrong type", CheckType.MAPPING, report.getCheckType());
@@ -58,7 +59,6 @@ public class MappingHealthCheckerTest {
 
     @Test
     public void verifyMappingHealthCheckerIOException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -66,6 +66,8 @@ public class MappingHealthCheckerTest {
                 result = new IOException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.MAPPING, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.MAPPING, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
@@ -77,7 +79,6 @@ public class MappingHealthCheckerTest {
 
     @Test
     public void verifyMappingHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
-        final HealthChecker checker = new MappingHealthChecker(DUMMY_RUN_DIR, dataExtractor);
         new Expectations() {
 
             {
@@ -85,6 +86,8 @@ public class MappingHealthCheckerTest {
                 result = new EmptyFileException(DUMMY_ERROR);
             }
         };
+
+        final HealthChecker checker = new HealthCheckerImpl(CheckType.MAPPING, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.MAPPING, report.getCheckType());
         final String error = ((ErrorReport) report).getError();
