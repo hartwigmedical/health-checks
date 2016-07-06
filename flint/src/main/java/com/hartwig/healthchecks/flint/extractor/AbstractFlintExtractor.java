@@ -39,4 +39,12 @@ public abstract class AbstractFlintExtractor extends AbstractDataExtractor {
         }
         return lineNumbers.get();
     }
+
+    protected String getValueFromLine(final List<String> lines, final String suffix, final String filter,
+                    final int fieldIndex) throws LineNotFoundException {
+        final Integer index = findLineIndex(suffix, lines, filter);
+        final String line = lines.get(index + ONE);
+        final String[] lineValues = line.split(SEPERATOR_REGEX);
+        return lineValues[fieldIndex];
+    }
 }

@@ -12,6 +12,7 @@ import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
+import com.hartwig.healthchecks.flint.extractor.WGSExtractor;
 import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 import com.hartwig.healthchecks.flint.report.SummaryMetricsReport;
 
@@ -33,7 +34,8 @@ public class FlintAdapterTest {
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl insertSize,
-                    @Mocked final HealthCheckerImpl summaryMetric, @Mocked final JsonReport report) {
+                    @Mocked final HealthCheckerImpl summaryMetric, @Mocked final HealthCheckerImpl coverage,
+                    @Mocked final JsonReport report) {
 
         new NonStrictExpectations() {
 
@@ -56,6 +58,14 @@ public class FlintAdapterTest {
                 summaryMetric.runCheck();
                 returns(getSummaryMetricsDummyReport());
                 times = 1;
+
+                new HealthCheckerImpl(CheckType.COVERAGE, anyString, (WGSExtractor) any);
+                result = coverage;
+                times = 1;
+
+                coverage.runCheck();
+                returns(getCoverageDummyReport());
+                times = 1;
             }
         };
         final HealthCheckAdapter adapter = new FlintAdapter();
@@ -65,7 +75,7 @@ public class FlintAdapterTest {
 
             {
                 report.addReportData((BaseReport) any);
-                times = 2;
+                times = 3;
             }
         };
     }
@@ -83,6 +93,14 @@ public class FlintAdapterTest {
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
         return new SummaryMetricsReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
+                        Arrays.asList(secTestDataReport));
+    }
+
+    private BaseReport getCoverageDummyReport() {
+        final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
+        final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
+
+        return new SummaryMetricsReport(CheckType.COVERAGE, Arrays.asList(testDataReport),
                         Arrays.asList(secTestDataReport));
     }
 }
