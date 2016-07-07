@@ -13,15 +13,15 @@ import com.hartwig.healthchecks.common.io.reader.SampleReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
+import com.hartwig.healthchecks.flint.report.CoverageReport;
 
-public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
+public class WGSExtractor extends AbstractFlintExtractor {
 
-    private static final String INSERT_SIZE_METRICS = ".insert_size_metrics";
+    private static final String WGS_EXT = "dedup_WGSMetrics.txt";
 
     private final SampleReader reader;
 
-    public InsertSizeMetricsExtractor(final SampleReader reader) {
+    public WGSExtractor(final SampleReader reader) {
         super();
         this.reader = reader;
     }
@@ -30,15 +30,14 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     public BaseReport extractFromRunDirectory(final String runDirectory) throws IOException, HealthChecksException {
         final List<BaseDataReport> referenceSample = getSampleData(runDirectory, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSample = getSampleData(runDirectory, TUM_SAMPLE_SUFFIX);
-
-        return new InsertSizeMetricsReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
+        return new CoverageReport(CheckType.COVERAGE, referenceSample, tumorSample);
     }
 
     private List<BaseDataReport> getSampleData(final String runDirectory, final String sampleType)
                     throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
-        final SamplePath samplePath = new SamplePath(path, SAMPLE_PREFIX, suffix, INSERT_SIZE_METRICS);
+        final SamplePath samplePath = new SamplePath(path, SAMPLE_PREFIX, suffix, WGS_EXT);
         final List<String> lines = reader.readLines(samplePath);
 
         if (lines.isEmpty()) {
@@ -47,19 +46,15 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
 
         final String patientId = getPatientId(suffix, lines, INPUT);
 
-        final BaseDataReport medianReport = getValue(lines, suffix, patientId,
-                        InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
-        final BaseDataReport width70PerReport = getValue(lines, suffix, patientId,
-                        InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
-        return Arrays.asList(medianReport, width70PerReport);
+        final BaseDataReport coverageMean = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_MEAN);
+        return Arrays.asList(coverageMean);
     }
 
     private BaseDataReport getValue(final List<String> lines, final String suffix, final String patientId,
-                    final InsertSizeMetricsCheck check) throws LineNotFoundException {
+                    final CoverageCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
         final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;
     }
-
 }
