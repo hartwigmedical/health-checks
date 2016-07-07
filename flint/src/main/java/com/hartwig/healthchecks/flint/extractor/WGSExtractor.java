@@ -47,7 +47,18 @@ public class WGSExtractor extends AbstractFlintExtractor {
         final String patientId = getPatientId(suffix, lines, INPUT);
 
         final BaseDataReport coverageMean = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_MEAN);
-        return Arrays.asList(coverageMean);
+        final BaseDataReport coverageMedian = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_MEDIAN);
+        final BaseDataReport coverageBaseQ = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_BASEQ);
+        final BaseDataReport coverageDupe = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_DUPE);
+        final BaseDataReport coverageMapQ = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_MAPQ);
+        final BaseDataReport coverageOvelap = getValue(lines, suffix, patientId,
+                        CoverageCheck.COVERAGE_PCT_EXC_OVERLAP);
+        final BaseDataReport coverageTotal = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_TOTAL);
+        final BaseDataReport coverageUnpaired = getValue(lines, suffix, patientId,
+                        CoverageCheck.COVERAGE_PCT_EXC_UNPAIRED);
+        final BaseDataReport coverageSD = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_SD);
+        return Arrays.asList(coverageMean, coverageMedian, coverageBaseQ, coverageDupe, coverageMapQ, coverageOvelap,
+                        coverageTotal, coverageUnpaired, coverageSD);
     }
 
     private BaseDataReport getValue(final List<String> lines, final String suffix, final String patientId,

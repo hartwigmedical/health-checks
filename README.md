@@ -316,11 +316,75 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"patient_id": "CPCT12345678R",
 				"check_name": "COVERAGE_MEAN",
 				"value": "0.000856"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_MEDIAN",
+				"value": "0"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_BASEQ",
+				"value": "0.002378"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_DUPE",
+				"value": "0.059484"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_MAPQ",
+				"value": "0.000585"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_OVERLAP",
+				"value": "0.020675"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_TOTAL",
+				"value": "0.086479"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_UNPAIRED",
+				"value": "0.002331"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_SD",
+				"value": "0.157469"
 			}],
 			"tumor_sample": [{
 				"patient_id": "CPCT12345678T",
 				"check_name": "COVERAGE_MEAN",
 				"value": "0.000856"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_MEDIAN",
+				"value": "0"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_BASEQ",
+				"value": "0.002378"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_DUPE",
+				"value": "0.059484"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_MAPQ",
+				"value": "0.000585"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_OVERLAP",
+				"value": "0.020675"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_TOTAL",
+				"value": "0.086479"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_UNPAIRED",
+				"value": "0.002331"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_SD",
+				"value": "0.157469"
 			}],
 			"check_type": "COVERAGE"
 		}

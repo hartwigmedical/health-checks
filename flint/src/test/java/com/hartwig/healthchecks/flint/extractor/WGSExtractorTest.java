@@ -28,8 +28,8 @@ public class WGSExtractorTest {
 
     private static final String WRONG_PATIENT_ID = "Wrong Patient ID";
 
-    private static final String DATA_LINE = "2858674662\t%s\t0.157469\t0\t0\t0.000585\t0.059484\t0.002331\t"
-                    + "0.002378\t0.020675\t0.001026\t0.086479\t0.000041\t0.000037\t0.00003\t0.00002\t0.00001\t0.000005\t"
+    private static final String DATA_LINE = "2858674662\t%s\t%s\t%s\t0\t%s\t%s\t%s\t"
+                    + "%s\t%s\t0.001026\t%s\t0.000041\t0.000037\t0.00003\t0.00002\t0.00001\t0.000005\t"
                     + "0.000002\t0\t0\t0\t0\t0\t0";
 
     private static final String HEADER_LINE = "GENOME_TERRITORY\tMEAN_COVERAGE\tSD_COVERAGE\tMEDIAN_COVERAGE\t"
@@ -62,13 +62,41 @@ public class WGSExtractorTest {
 
     private static final String PATIENT_ID_T = "CPCT12345678T";
 
-    private static final String COV_MEDIAN_R = "0.000856";
+    private static final String COV_MEAN_R = "0.000856";
 
-    private static final String COV_MEDIAN_T = "0.000756";
+    private static final String COV_MEAN_T = "0.000756";
 
-    private static final String WIDTH_OF_70_PER_R = "247";
+    private static final String COV_SD_R = "0.257469";
 
-    private static final String WIDTH_OF_70_PER_T = "147";
+    private static final String COV_SD_T = "0.157469";
+
+    private static final String COV_MED_R = "0";
+
+    private static final String COV_MED_T = "1";
+
+    private static final String COV_MAP_Q_R = "0.000585";
+
+    private static final String COV_MAP_Q_T = "0.000385";
+
+    private static final String COV_DUPE_R = "0.059484";
+
+    private static final String COV_DUPE_T = "0.069484";
+
+    private static final String COV_UNPAIR_R = "0.002331";
+
+    private static final String COV_UNPAIR_T = "0.003331";
+
+    private static final String COV_BASE_Q_R = "0.002378";
+
+    private static final String COV_BASE_Q_T = "0.003378";
+
+    private static final String COV_OVERLAP_R = "0.020675";
+
+    private static final String COV_OVERLAP_T = "0.030675";
+
+    private static final String COV_TOTAL_R = "0.086479";
+
+    private static final String COV_TOTAL_T = "0.096479";
 
     private static final String SHOULD_NOT_BE_NULL = "Should Not be Null";
 
@@ -87,18 +115,20 @@ public class WGSExtractorTest {
     public void setUp() {
 
         String inputLine = String.format(INPUT_LINE, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R);
-        String dataLine = String.format(DATA_LINE, COV_MEDIAN_R, WIDTH_OF_70_PER_R);
+        final String dataLine = String.format(DATA_LINE, COV_MEAN_R, COV_SD_R, COV_MED_R, COV_MAP_Q_R, COV_DUPE_R,
+                        COV_UNPAIR_R, COV_BASE_Q_R, COV_OVERLAP_R, COV_TOTAL_R);
         refLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                         dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
         inputLine = String.format(INPUT_LINE, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T);
-        dataLine = String.format(DATA_LINE, COV_MEDIAN_T, WIDTH_OF_70_PER_T);
+        final String tDataLine = String.format(DATA_LINE, COV_MEAN_T, COV_SD_T, COV_MED_T, COV_MAP_Q_T, COV_DUPE_T,
+                        COV_UNPAIR_T, COV_BASE_Q_T, COV_OVERLAP_T, COV_TOTAL_T);
         tumLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
-                        dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
+                        tDataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
         emptyLines = new ArrayList<>();
         missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
-                        dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
+                        tDataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
     }
 
     @Test
@@ -185,8 +215,15 @@ public class WGSExtractorTest {
     private void assertReport(final BaseReport report) {
         assertEquals("Report with wrong type", CheckType.COVERAGE, report.getCheckType());
         assertNotNull(SHOULD_NOT_BE_NULL, report);
-        assertField(report, CoverageCheck.COVERAGE_MEAN.name(), COV_MEDIAN_R, COV_MEDIAN_T);
-
+        assertField(report, CoverageCheck.COVERAGE_MEAN.name(), COV_MEAN_R, COV_MEAN_T);
+        assertField(report, CoverageCheck.COVERAGE_PCT_EXC_BASEQ.name(), COV_BASE_Q_R, COV_BASE_Q_T);
+        assertField(report, CoverageCheck.COVERAGE_PCT_EXC_DUPE.name(), COV_DUPE_R, COV_DUPE_T);
+        assertField(report, CoverageCheck.COVERAGE_PCT_EXC_MAPQ.name(), COV_MAP_Q_R, COV_MAP_Q_T);
+        assertField(report, CoverageCheck.COVERAGE_MEDIAN.name(), COV_MED_R, COV_MED_T);
+        assertField(report, CoverageCheck.COVERAGE_PCT_EXC_OVERLAP.name(), COV_OVERLAP_R, COV_OVERLAP_T);
+        assertField(report, CoverageCheck.COVERAGE_SD.name(), COV_SD_R, COV_SD_T);
+        assertField(report, CoverageCheck.COVERAGE_PCT_EXC_UNPAIRED.name(), COV_UNPAIR_R, COV_UNPAIR_T);
+        assertField(report, CoverageCheck.COVERAGE_PCT_EXC_TOTAL.name(), COV_TOTAL_R, COV_TOTAL_T);
     }
 
     private void assertField(final BaseReport report, final String field, final String refValue,
