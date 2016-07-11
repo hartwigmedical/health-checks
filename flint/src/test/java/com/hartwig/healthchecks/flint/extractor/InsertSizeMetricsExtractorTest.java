@@ -17,9 +17,9 @@ import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.reader.SamplePath;
 import com.hartwig.healthchecks.common.io.reader.SampleReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -193,8 +193,8 @@ public class InsertSizeMetricsExtractorTest {
 
     private void assertField(final BaseReport report, final String field, final String refValue,
                     final String tumValue) {
-        assertBaseData(((InsertSizeMetricsReport) report).getReferenceSample(), PATIENT_ID_R, field, refValue);
-        assertBaseData(((InsertSizeMetricsReport) report).getTumorSample(), PATIENT_ID_T, field, tumValue);
+        assertBaseData(((SampleReport) report).getReferenceSample(), PATIENT_ID_R, field, refValue);
+        assertBaseData(((SampleReport) report).getTumorSample(), PATIENT_ID_T, field, tumValue);
     }
 
     private void assertBaseData(final List<BaseDataReport> reports, final String patientId, final String check,

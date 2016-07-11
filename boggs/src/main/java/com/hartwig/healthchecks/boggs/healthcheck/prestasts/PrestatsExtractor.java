@@ -16,11 +16,11 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.boggs.extractor.AbstractBoggsExtractor;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -48,7 +48,7 @@ public class PrestatsExtractor extends AbstractBoggsExtractor {
                     throws IOException, HealthChecksException {
         final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
-        return new PrestatsReport(CheckType.PRESTATS, refSampleData, tumorSampleData);
+        return new SampleReport(CheckType.PRESTATS, refSampleData, tumorSampleData);
     }
 
     @NotNull

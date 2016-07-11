@@ -6,20 +6,20 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boggs.extractor.AbstractBoggsExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
-import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.function.DivisionOperator;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-
-import org.jetbrains.annotations.NotNull;
 
 public class MappingExtractor extends AbstractBoggsExtractor {
 
@@ -46,7 +46,7 @@ public class MappingExtractor extends AbstractBoggsExtractor {
         final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
 
-        return new MappingReport(CheckType.MAPPING, refSampleData, tumorSampleData);
+        return new SampleReport(CheckType.MAPPING, refSampleData, tumorSampleData);
     }
 
     @NotNull

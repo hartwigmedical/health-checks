@@ -9,9 +9,9 @@ import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.io.reader.Reader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.smitty.report.KinshipReport;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,6 +53,6 @@ public class KinshipExtractor extends AbstractDataExtractor {
             return new BaseDataReport(values[PATIENT_ID_INDEX], KINSHIP_TEST, values[KINSHIP_INDEX]);
         }).findFirst().get();
         logBaseDataReport(baseDataReport);
-        return new KinshipReport(CheckType.KINSHIP, baseDataReport);
+        return new PatientReport(CheckType.KINSHIP, baseDataReport);
     }
 }

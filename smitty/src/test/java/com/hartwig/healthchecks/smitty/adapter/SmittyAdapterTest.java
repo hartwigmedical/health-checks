@@ -8,9 +8,9 @@ import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.smitty.report.KinshipReport;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -47,6 +47,6 @@ public class SmittyAdapterTest {
 
     private BaseReport getKinshipDummyReport() {
         final BaseDataReport baseDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
-        return new KinshipReport(CheckType.KINSHIP, baseDataReport);
+        return new PatientReport(CheckType.KINSHIP, baseDataReport);
     }
 }

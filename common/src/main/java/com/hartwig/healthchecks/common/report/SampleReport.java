@@ -1,16 +1,15 @@
-package com.hartwig.healthchecks.boggs.model.report;
+package com.hartwig.healthchecks.common.report;
 
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
-public class MappingReport extends BaseReport {
+public class SampleReport extends BaseReport {
 
-    private static final long serialVersionUID = 7647060563039702736L;
+    private static final long serialVersionUID = -3227613309511119840L;
 
     @NotNull
     private final List<BaseDataReport> referenceSample;
@@ -18,7 +17,7 @@ public class MappingReport extends BaseReport {
     @NotNull
     private final List<BaseDataReport> tumorSample;
 
-    public MappingReport(final CheckType checkType, final List<BaseDataReport> referenceSample,
+    public SampleReport(final CheckType checkType, final List<BaseDataReport> referenceSample,
                     final List<BaseDataReport> tumorSample) {
         super(checkType);
         this.referenceSample = referenceSample;
@@ -35,6 +34,6 @@ public class MappingReport extends BaseReport {
 
     @Override
     public String toString() {
-        return "MappingReport [referenceSample=" + referenceSample + ", tumorSample=" + tumorSample + "]";
+        return "InsertSizeMetricsReport [referenceSample=" + referenceSample + ", tumorSample=" + tumorSample + "]";
     }
 }

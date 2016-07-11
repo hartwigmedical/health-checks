@@ -14,11 +14,11 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
-import com.hartwig.healthchecks.flint.report.SummaryMetricsReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -66,8 +66,8 @@ public class SummaryMetricsHealthCheckerTest {
         final HealthChecker checker = new HealthCheckerImpl(CheckType.SUMMARY_METRICS, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.SUMMARY_METRICS, report.getCheckType());
-        final List<BaseDataReport> refReports = ((SummaryMetricsReport) report).getReferenceSample();
-        final List<BaseDataReport> tumReports = ((SummaryMetricsReport) report).getTumorSample();
+        final List<BaseDataReport> refReports = ((SampleReport) report).getReferenceSample();
+        final List<BaseDataReport> tumReports = ((SampleReport) report).getTumorSample();
         assertBaseData(refReports, DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         assertBaseData(tumReports, DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
     }
@@ -135,7 +135,7 @@ public class SummaryMetricsHealthCheckerTest {
     private BaseReport createTestData() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
-        return new SummaryMetricsReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
+        return new SampleReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
                         Arrays.asList(secTestDataReport));
     }
 

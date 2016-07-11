@@ -19,11 +19,11 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
-import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -87,10 +87,10 @@ public class MappingExtractorTest {
         assertNotNull("We should have data", mappingReport);
         assertEquals("Report with wrong type", CheckType.MAPPING, mappingReport.getCheckType());
 
-        final List<BaseDataReport> referenceSample = ((MappingReport) mappingReport).getReferenceSample();
+        final List<BaseDataReport> referenceSample = ((SampleReport) mappingReport).getReferenceSample();
         assetMappingData(referenceSample);
 
-        final List<BaseDataReport> tumorSample = ((MappingReport) mappingReport).getTumorSample();
+        final List<BaseDataReport> tumorSample = ((SampleReport) mappingReport).getTumorSample();
         assetMappingData(tumorSample);
 
     }

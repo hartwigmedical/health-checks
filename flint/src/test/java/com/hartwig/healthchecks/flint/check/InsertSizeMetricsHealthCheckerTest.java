@@ -14,11 +14,11 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
 import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
-import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -66,8 +66,8 @@ public class InsertSizeMetricsHealthCheckerTest {
         final HealthChecker checker = new HealthCheckerImpl(CheckType.INSERT_SIZE, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.INSERT_SIZE, report.getCheckType());
-        final List<BaseDataReport> refReports = ((InsertSizeMetricsReport) report).getReferenceSample();
-        final List<BaseDataReport> tumReports = ((InsertSizeMetricsReport) report).getTumorSample();
+        final List<BaseDataReport> refReports = ((SampleReport) report).getReferenceSample();
+        final List<BaseDataReport> tumReports = ((SampleReport) report).getTumorSample();
         assertBaseData(refReports, DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         assertBaseData(tumReports, DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
     }
@@ -136,7 +136,7 @@ public class InsertSizeMetricsHealthCheckerTest {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new InsertSizeMetricsReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport),
+        return new SampleReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport),
                         Arrays.asList(secTestDataReport));
     }
 
