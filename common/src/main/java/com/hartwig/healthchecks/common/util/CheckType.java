@@ -8,5 +8,6 @@ public enum CheckType {
     INSERT_SIZE,
     SUMMARY_METRICS,
     COVERAGE,
-    SOMATIC;
+    SOMATIC,
+    SLICED;
 }

@@ -70,6 +70,28 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
+		"INSERT_SIZE": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
+				"value": "409"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
+				"value": "247"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
+				"value": "209"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
+				"value": "147"
+			}],
+			"check_type": "INSERT_SIZE"
+		}
+	}, {
 		"MAPPING": {
 			"reference_sample": [{
 				"patient_id": "CPCT12345678R",
@@ -122,83 +144,6 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"value": "false"
 			}],
 			"check_type": "MAPPING"
-		}
-	}, {
-		"SUMMARY_METRICS": {
-			"reference_sample": [{
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_PF_INDEL_RATE",
-				"value": "0.000261"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_PCT_ADAPTER",
-				"value": "0.000046"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_PCT_CHIMERA",
-				"value": "0.000212"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_PF_MISMATCH_RATE",
-				"value": "0.006024"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_STRAND_BALANCE",
-				"value": "0.399972"
-			}],
-			"tumor_sample": [{
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_PF_INDEL_RATE",
-				"value": "0.000161"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_PCT_ADAPTER",
-				"value": "0.000056"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_PCT_CHIMERA",
-				"value": "0.000112"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_PF_MISMATCH_RATE",
-				"value": "0.005024"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_STRAND_BALANCE",
-				"value": "0.499972"
-			}],
-			"check_type": "SUMMARY_METRICS"
-		}
-	}, {
-		"INSERT_SIZE": {
-			"reference_sample": [{
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
-				"value": "409"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
-				"value": "247"
-			}],
-			"tumor_sample": [{
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
-				"value": "209"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
-				"value": "147"
-			}],
-			"check_type": "INSERT_SIZE"
-		}
-	}, {
-		"KINSHIP": {
-			"patient_data": {
-				"patient_id": "CPCT12345678R",
-				"check_name": "KINSHIP_TEST",
-				"value": "0.2155"
-			},
-			"check_type": "KINSHIP"
 		}
 	}, {
 		"PRESTATS": {
@@ -309,6 +254,52 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"value": "FAIL"
 			}],
 			"check_type": "PRESTATS"
+		}
+	}, {
+		"SUMMARY_METRICS": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_PF_INDEL_RATE",
+				"value": "0.000261"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_PCT_ADAPTER",
+				"value": "0.000046"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_PCT_CHIMERA",
+				"value": "0.000212"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_PF_MISMATCH_RATE",
+				"value": "0.006024"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_STRAND_BALANCE",
+				"value": "0.399972"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_PF_INDEL_RATE",
+				"value": "0.000161"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_PCT_ADAPTER",
+				"value": "0.000056"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_PCT_CHIMERA",
+				"value": "0.000112"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_PF_MISMATCH_RATE",
+				"value": "0.005024"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_STRAND_BALANCE",
+				"value": "0.499972"
+			}],
+			"check_type": "SUMMARY_METRICS"
 		}
 	}, {
 		"COVERAGE": {
@@ -388,6 +379,15 @@ The location of the reports can be changed via the ```config.properties``` file 
 			}],
 			"check_type": "COVERAGE"
 		}
+	}, {
+		"SLICED": {
+			"patient_data": {
+				"patient_id": "CPCT12345678R",
+				"check_name": "SLICED_NUMBER_OF_VARIANTS",
+				"value": "80"
+			},
+			"check_type": "SLICED"
+		}
 	}]
 }
 ```
@@ -396,64 +396,40 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
+		"COVERAGE": {
+			"error": "java.nio.file.NoSuchFileException",
+			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile/QCStats",
+			"check_type": "COVERAGE"
+		}
+	}, {
 		"MAPPING": {
-			"reference_sample": [{
-				"patient_id": "CPCT12345678R",
-				"check_name": "mapped",
-				"value": "99.69"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "properly paired",
-				"value": "99.57"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "singletons",
-				"value": "55.0"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "with mate mapped to a different chr",
-				"value": "0.0"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "duplicates",
-				"value": "5.95"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "is all read",
-				"value": "false"
-			}],
-			"tumor_sample": [{
-				"patient_id": "CPCT12345678T",
-				"check_name": "mapped",
-				"value": "99.69"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "properly paired",
-				"value": "99.57"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "singletons",
-				"value": "55.0"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "with mate mapped to a different chr",
-				"value": "0.0"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "duplicates",
-				"value": "5.95"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "is all read",
-				"value": "false"
-			}],
+			"error": "java.nio.file.NoSuchFileException",
+			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile",
 			"check_type": "MAPPING"
 		}
 	}, {
+		"SLICED": {
+			"error": "java.nio.file.NoSuchFileException",
+			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile",
+			"check_type": "SLICED"
+		}
+	}, {
+		"SUMMARY_METRICS": {
+			"error": "java.nio.file.NoSuchFileException",
+			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile/QCStats",
+			"check_type": "SUMMARY_METRICS"
+		}
+	}, {
 		"PRESTATS": {
-			"error": "com.hartwig.healthchecks.common.exception.EmptyFileException",
-			"message": "Found empty Summary files under path -> /health-checks/boggs/src/test/resources/emptyFiles/CPCT12345678R",
+			"error": "java.nio.file.NoSuchFileException",
+			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile",
 			"check_type": "PRESTATS"
+		}
+	}, {
+		"INSERT_SIZE": {
+			"error": "java.nio.file.NoSuchFileException",
+			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile/QCStats",
+			"check_type": "INSERT_SIZE"
 		}
 	}]
 }

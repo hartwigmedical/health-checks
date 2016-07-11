@@ -1,2 +1,2 @@
 rootProject.name = 'health-checks'
-include 'common', 'boggs', 'smitty', 'flint' , 'nesbit'
+include 'common', 'boggs', 'smitty', 'flint' , 'nesbit' , 'roz' 
