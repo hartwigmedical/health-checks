@@ -51,6 +51,8 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     protected static final String UNDER_SCORE = "_";
 
+    protected static final String HASH = "#";
+
     protected static final String QC_STATS = "QCStats";
 
     private static final String LOG_MSG = "Check '%s' for Patient '%s' has value '%s'";
