@@ -9,12 +9,12 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-import com.hartwig.healthchecks.boggs.model.report.MappingReport;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.common.util.ErrorReport;
@@ -52,9 +52,9 @@ public class MappingHealthCheckerTest {
         final BaseReport report = checker.runCheck();
 
         assertEquals("Report with wrong type", CheckType.MAPPING, report.getCheckType());
-        assertEquals("Dummy", ((MappingReport) report).getReferenceSample().get(0).getPatientId());
+        assertEquals("Dummy", ((SampleReport) report).getReferenceSample().get(0).getPatientId());
         assertEquals(MappingCheck.MAPPING_MAPPED.getDescription(),
-                        ((MappingReport) report).getReferenceSample().get(0).getCheckName());
+                        ((SampleReport) report).getReferenceSample().get(0).getCheckName());
     }
 
     @Test
@@ -98,11 +98,9 @@ public class MappingHealthCheckerTest {
     }
 
     @NotNull
-    private static MappingReport dummyData() {
-
+    private static SampleReport dummyData() {
         final List<BaseDataReport> reports = createDummyBaseData();
-        final MappingReport mappingReport = new MappingReport(CheckType.MAPPING, reports, reports);
-        return mappingReport;
+        return new SampleReport(CheckType.MAPPING, reports, reports);
     }
 
     @NotNull

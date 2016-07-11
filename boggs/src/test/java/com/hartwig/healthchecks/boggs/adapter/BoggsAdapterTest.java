@@ -7,12 +7,11 @@ import org.junit.Test;
 import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
-import com.hartwig.healthchecks.boggs.model.report.MappingReport;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -71,17 +70,15 @@ public class BoggsAdapterTest {
         };
     }
 
-    private MappingReport getDummyMappingReport() {
+    private SampleReport getDummyMappingReport() {
         final BaseDataReport mappingDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
-        final MappingReport mappingReport = new MappingReport(CheckType.MAPPING, Arrays.asList(mappingDataReport),
-                        Arrays.asList(mappingDataReport));
-        return mappingReport;
+        return new SampleReport(CheckType.MAPPING, Arrays.asList(mappingDataReport), Arrays.asList(mappingDataReport));
     }
 
-    private PrestatsReport getDummyPrestatsReport() {
+    private SampleReport getDummyPrestatsReport() {
         final BaseDataReport prestatsDataReport = new BaseDataReport(DUMMY_ID, PrestatsCheck.DUMMY.toString(),
                         DUMMY_STATUS);
-        return new PrestatsReport(CheckType.PRESTATS, Arrays.asList(prestatsDataReport),
+        return new SampleReport(CheckType.PRESTATS, Arrays.asList(prestatsDataReport),
                         Arrays.asList(prestatsDataReport));
     }
 }

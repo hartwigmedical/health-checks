@@ -8,13 +8,12 @@ import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.WGSExtractor;
-import com.hartwig.healthchecks.flint.report.InsertSizeMetricsReport;
-import com.hartwig.healthchecks.flint.report.SummaryMetricsReport;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -84,15 +83,14 @@ public class FlintAdapterTest {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new InsertSizeMetricsReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport),
-                        Arrays.asList(secTestDataReport));
+        return new SampleReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport), Arrays.asList(secTestDataReport));
     }
 
     private BaseReport getSummaryMetricsDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new SummaryMetricsReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
+        return new SampleReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
                         Arrays.asList(secTestDataReport));
     }
 
@@ -100,7 +98,6 @@ public class FlintAdapterTest {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new SummaryMetricsReport(CheckType.COVERAGE, Arrays.asList(testDataReport),
-                        Arrays.asList(secTestDataReport));
+        return new SampleReport(CheckType.COVERAGE, Arrays.asList(testDataReport), Arrays.asList(secTestDataReport));
     }
 }

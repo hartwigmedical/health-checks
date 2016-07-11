@@ -11,9 +11,9 @@ import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.reader.SamplePath;
 import com.hartwig.healthchecks.common.io.reader.SampleReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.flint.report.CoverageReport;
 
 public class WGSExtractor extends AbstractFlintExtractor {
 
@@ -30,7 +30,7 @@ public class WGSExtractor extends AbstractFlintExtractor {
     public BaseReport extractFromRunDirectory(final String runDirectory) throws IOException, HealthChecksException {
         final List<BaseDataReport> referenceSample = getSampleData(runDirectory, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSample = getSampleData(runDirectory, TUM_SAMPLE_SUFFIX);
-        return new CoverageReport(CheckType.COVERAGE, referenceSample, tumorSample);
+        return new SampleReport(CheckType.COVERAGE, referenceSample, tumorSample);
     }
 
     private List<BaseDataReport> getSampleData(final String runDirectory, final String sampleType)

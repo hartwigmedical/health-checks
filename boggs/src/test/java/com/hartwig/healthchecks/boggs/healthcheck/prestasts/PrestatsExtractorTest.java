@@ -14,12 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
-import com.hartwig.healthchecks.boggs.model.report.PrestatsReport;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 
@@ -156,8 +156,8 @@ public class PrestatsExtractorTest {
     private void assertPrestatsReport(final BaseReport prestatsData) {
         assertNotNull(REPORT_SHOULD_NOT_BE_NULL, prestatsData);
         assertEquals("Report with wrong type", CheckType.PRESTATS, prestatsData.getCheckType());
-        assertRefSampleData(((PrestatsReport) prestatsData).getReferenceSample());
-        assertTumorSampleData(((PrestatsReport) prestatsData).getTumorSample());
+        assertRefSampleData(((SampleReport) prestatsData).getReferenceSample());
+        assertTumorSampleData(((SampleReport) prestatsData).getTumorSample());
     }
 
     private void assertRefSampleData(final List<BaseDataReport> sampleData) {

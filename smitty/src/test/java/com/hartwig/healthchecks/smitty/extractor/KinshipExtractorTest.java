@@ -12,9 +12,9 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.reader.Reader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.smitty.report.KinshipReport;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class KinshipExtractorTest {
         assertEquals("Report with wrong type", CheckType.KINSHIP, kinshipReport.getCheckType());
 
         assertNotNull(SHOULD_NOT_BE_NULL, kinshipReport);
-        assertKinshipData((KinshipReport) kinshipReport, PATIENT_ID_R, EXPECTED_VALUE_R);
+        assertKinshipData((PatientReport) kinshipReport, PATIENT_ID_R, EXPECTED_VALUE_R);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -116,7 +116,7 @@ public class KinshipExtractorTest {
         kinshipExtractor.extractFromRunDirectory(TEST_DIR);
     }
 
-    private void assertKinshipData(final KinshipReport kinshipReport, final String patientId,
+    private void assertKinshipData(final PatientReport kinshipReport, final String patientId,
                     final String expectedValue) {
         final BaseDataReport baseDataReport = kinshipReport.getPatientData();
         assertEquals(WRONG_DATA, expectedValue, baseDataReport.getValue());
