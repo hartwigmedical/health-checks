@@ -37,6 +37,8 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";
 
+    protected static final String HEADER_NOT_FOUND_ERROR = "File %s does not contain following headers %s";
+
     protected static final String SEPERATOR_REGEX = "\t";
 
     protected static final String FLAGSTAT_SUFFIX = ".flagstat";
