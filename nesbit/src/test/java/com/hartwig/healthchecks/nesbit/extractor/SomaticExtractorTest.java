@@ -31,7 +31,8 @@ public class SomaticExtractorTest {
                     + "c.421+95A>G||||||,C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000436443|"
                     + "protein_coding|3/26|c.421+95A>G||||||,C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|"
                     + "transcript|ENST00000402597|protein_coding|3/27|c.421+95A>G||||||,C|intron_variant|"
-                    + "MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000484594|retained_intron|3/19|n.473+95A>G||||||,"
+                    + "MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000484594|"
+                    + "retained_intron|3/19|n.473+95A>G||||||,"
                     + "C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000260943|protein_coding|"
                     + "3/18|c.418+95A>G||||||WARNING_TRANSCRIPT_INCOMPLETE,C|intron_variant|MODIFIER|ERBB4|"
                     + "ENSG00000178568|transcript|ENST00000484474|processed_transcript|2/4|n.338+95A>G||||||,"
@@ -43,9 +44,9 @@ public class SomaticExtractorTest {
                     + "CPCT12345678R.freebayes\tCPCT12345678R.mutect\tCPCT12345678T.freebayes\tCPCT12345678T.mutect\t"
                     + "NORMAL.strelka\tNORMAL.varscan\tTUMOR.strelka\tTUMOR.varscan";
 
-    private static final String HEADER_NOT_RIGHT = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t"
+    private static final String HEADER_NOT_RIGHT = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\t"
                     + "CPCT12345678R.freebayes\tCPCT12345678R.mutect\tCPCT12345678T.mutect\t"
-                    + "NORMAL.strelka\tNORMAL.varscan\tTUMOR.strelka\tTUMOR.varscan";
+                    + "NORMAL.strelka\tNORMAL.varscan\tTUMOR.strelka";
 
     private static final String FILLING_LINE = "##FILTER=<ID=str10,Description="
                     + "\"Less than 10% or more than 90% of variant supporting reads on one strand\">";
