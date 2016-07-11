@@ -82,6 +82,7 @@ dependencies {
     compile project(":boggs")
     compile project(":smitty")
     compile project(":flint")
+    compile project(":nesbit")
 }
 
 task wrapper(type: Wrapper) {

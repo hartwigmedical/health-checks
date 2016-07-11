@@ -7,5 +7,6 @@ public enum CheckType {
     KINSHIP,
     INSERT_SIZE,
     SUMMARY_METRICS,
-    COVERAGE;
+    COVERAGE,
+    SOMATIC;
 }
