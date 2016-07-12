@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
+
 @FunctionalInterface
 public interface SampleReader {
 
@@ -23,7 +25,8 @@ public interface SampleReader {
     @NotNull
     static SampleReader build() {
         return (samplePath) -> {
-            final Path filePath = findFilePath(samplePath.getPath(), samplePath.getPrefix(), samplePath.getSuffix());
+            final Path filePath = SamplePathFinder.build().findPath(samplePath.getPath(), samplePath.getPrefix(),
+                            samplePath.getSuffix());
             final Path fileToRead = findFileInPath(filePath.toString(), samplePath.getExtension());
             return Files.lines(Paths.get(fileToRead.toString())).collect(Collectors.toList());
         };
@@ -37,19 +40,5 @@ public interface SampleReader {
             throw new FileNotFoundException(String.format(FILE_S_NOT_FOUND_MSG, suffix, searchPath));
         }
         return searchedFile.get();
-    }
-
-    @NotNull
-    static Path findFilePath(@NotNull final String path, @NotNull final String prefix, @NotNull final String suffix)
-                    throws IOException {
-        final Optional<Path> fileFound = Files.walk(new File(path).toPath())
-                        .filter(filePath -> filePath.getFileName().toString().startsWith(prefix)
-                                        && filePath.getFileName().toString().endsWith(suffix)
-                                        && filePath.toString().contains(path + File.separator + prefix))
-                        .findFirst();
-        if (!fileFound.isPresent()) {
-            throw new FileNotFoundException(String.format(FILE_S_NOT_FOUND_MSG, suffix, path));
-        }
-        return fileFound.get();
     }
 }

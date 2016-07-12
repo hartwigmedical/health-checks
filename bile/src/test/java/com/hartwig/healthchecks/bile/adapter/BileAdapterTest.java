@@ -47,6 +47,6 @@ public class BileAdapterTest {
 
     private BaseReport getBaseDummyReport() {
         final BaseDataReport baseDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
-        return new PatientReport(CheckType.SLICED, baseDataReport);
+        return new PatientReport(CheckType.REALIGNER, baseDataReport);
     }
 }

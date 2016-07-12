@@ -70,28 +70,6 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
-		"INSERT_SIZE": {
-			"reference_sample": [{
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
-				"value": "409"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
-				"value": "247"
-			}],
-			"tumor_sample": [{
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
-				"value": "209"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
-				"value": "147"
-			}],
-			"check_type": "INSERT_SIZE"
-		}
-	}, {
 		"MAPPING": {
 			"reference_sample": [{
 				"patient_id": "CPCT12345678R",
@@ -144,6 +122,28 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"value": "false"
 			}],
 			"check_type": "MAPPING"
+		}
+	}, {
+		"INSERT_SIZE": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
+				"value": "409"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
+				"value": "247"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
+				"value": "209"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
+				"value": "147"
+			}],
+			"check_type": "INSERT_SIZE"
 		}
 	}, {
 		"PRESTATS": {
@@ -256,52 +256,6 @@ The location of the reports can be changed via the ```config.properties``` file 
 			"check_type": "PRESTATS"
 		}
 	}, {
-		"SUMMARY_METRICS": {
-			"reference_sample": [{
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_PF_INDEL_RATE",
-				"value": "0.000261"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_PCT_ADAPTER",
-				"value": "0.000046"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_PCT_CHIMERA",
-				"value": "0.000212"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_PF_MISMATCH_RATE",
-				"value": "0.006024"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_STRAND_BALANCE",
-				"value": "0.399972"
-			}],
-			"tumor_sample": [{
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_PF_INDEL_RATE",
-				"value": "0.000161"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_PCT_ADAPTER",
-				"value": "0.000056"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_PCT_CHIMERA",
-				"value": "0.000112"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_PF_MISMATCH_RATE",
-				"value": "0.005024"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_STRAND_BALANCE",
-				"value": "0.499972"
-			}],
-			"check_type": "SUMMARY_METRICS"
-		}
-	}, {
 		"COVERAGE": {
 			"reference_sample": [{
 				"patient_id": "CPCT12345678R",
@@ -380,6 +334,20 @@ The location of the reports can be changed via the ```config.properties``` file 
 			"check_type": "COVERAGE"
 		}
 	}, {
+		"REALIGNER": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_REALIGNER_CHANGED_ALIGNMENTS",
+				"value": "0.00101"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_REALIGNER_CHANGED_ALIGNMENTS",
+				"value": "0.00101"
+			}],
+			"check_type": "REALIGNER"
+		}
+	}, {
 		"SLICED": {
 			"patient_data": {
 				"patient_id": "CPCT12345678R",
@@ -387,6 +355,61 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"value": "80"
 			},
 			"check_type": "SLICED"
+		}
+	}, {
+		"KINSHIP": {
+			"patient_data": {
+				"patient_id": "CPCT12345678R",
+				"check_name": "KINSHIP_TEST",
+				"value": "0.2155"
+			},
+			"check_type": "KINSHIP"
+		}
+	}, {
+		"SUMMARY_METRICS": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_PF_INDEL_RATE",
+				"value": "0.000261"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_PCT_ADAPTER",
+				"value": "0.000046"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_PCT_CHIMERA",
+				"value": "0.000212"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_PF_MISMATCH_RATE",
+				"value": "0.006024"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_STRAND_BALANCE",
+				"value": "0.399972"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_PF_INDEL_RATE",
+				"value": "0.000161"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_PCT_ADAPTER",
+				"value": "0.000056"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_PCT_CHIMERA",
+				"value": "0.000112"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_PF_MISMATCH_RATE",
+				"value": "0.005024"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_STRAND_BALANCE",
+				"value": "0.499972"
+			}],
+			"check_type": "SUMMARY_METRICS"
 		}
 	}]
 }

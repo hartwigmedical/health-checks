@@ -24,7 +24,7 @@ public class SambambaFlagStatParserTest {
         final String exampleFlagStatFile = exampleFlagStatURL.getPath();
 
         final FlagStatParser parser = new SambambaFlagStatParser();
-        final FlagStatData flagStatData = parser.parse(exampleFlagStatFile, "realign");
+        final FlagStatData flagStatData = parser.parse(exampleFlagStatFile, ".realign");
 
         assertFlagStatData(flagStatData.getPassedStats(), 13, 17940.0d);
         assertFlagStatData(flagStatData.getFailedStats(), 13, 0.0d);

@@ -39,6 +39,8 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     protected static final String HEADER_NOT_FOUND_ERROR = "File %s does not contain following headers %s";
 
+    protected static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s was expecting %s in file";
+
     protected static final String SEPERATOR_REGEX = "\t";
 
     protected static final String FLAGSTAT_SUFFIX = ".flagstat";
@@ -54,6 +56,12 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected static final String HASH = "#";
 
     protected static final String QC_STATS = "QCStats";
+
+    protected static final String BIGGER_THAN = ">";
+
+    protected static final String SMALLER_THAN = "<";
+
+    protected static final String PLUS = "+";
 
     private static final String LOG_MSG = "Check '%s' for Patient '%s' has value '%s'";
 

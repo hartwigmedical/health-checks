@@ -25,7 +25,7 @@ public class MappingExtractor extends AbstractBoggsExtractor {
 
     private static final Long MILLIS_FACTOR = 10000L;
 
-    private static final String REALIGN = "realign";
+    private static final String REALIGN = ".realign";
 
     @NotNull
     private final FlagStatParser flagstatParser;
