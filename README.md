@@ -398,37 +398,37 @@ The location of the reports can be changed via the ```config.properties``` file 
 	"health_checks": [{
 		"COVERAGE": {
 			"error": "java.nio.file.NoSuchFileException",
-			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile/QCStats",
+			"message": "/health-checks/boggs/src/test/resources/emptyFile/QCStats",
 			"check_type": "COVERAGE"
 		}
 	}, {
 		"MAPPING": {
 			"error": "java.nio.file.NoSuchFileException",
-			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile",
+			"message": "/health-checks/boggs/src/test/resources/emptyFile",
 			"check_type": "MAPPING"
 		}
 	}, {
 		"SLICED": {
 			"error": "java.nio.file.NoSuchFileException",
-			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile",
+			"message": "/health-checks/boggs/src/test/resources/emptyFile",
 			"check_type": "SLICED"
 		}
 	}, {
 		"SUMMARY_METRICS": {
 			"error": "java.nio.file.NoSuchFileException",
-			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile/QCStats",
+			"message": "/health-checks/boggs/src/test/resources/emptyFile/QCStats",
 			"check_type": "SUMMARY_METRICS"
 		}
 	}, {
 		"PRESTATS": {
 			"error": "java.nio.file.NoSuchFileException",
-			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile",
+			"message": "/health-checks/boggs/src/test/resources/emptyFile",
 			"check_type": "PRESTATS"
 		}
 	}, {
 		"INSERT_SIZE": {
 			"error": "java.nio.file.NoSuchFileException",
-			"message": "/Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/emptyFile/QCStats",
+			"message": "/health-checks/boggs/src/test/resources/emptyFile/QCStats",
 			"check_type": "INSERT_SIZE"
 		}
 	}]

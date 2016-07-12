@@ -84,6 +84,7 @@ dependencies {
     compile project(":flint")
     compile project(":nesbit")
     compile project(":roz")
+    compile project(":bile")
 }
 
 task wrapper(type: Wrapper) {
