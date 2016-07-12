@@ -9,5 +9,6 @@ public enum CheckType {
     SUMMARY_METRICS,
     COVERAGE,
     SOMATIC,
-    SLICED;
+    SLICED,
+    REALIGNER;
 }
