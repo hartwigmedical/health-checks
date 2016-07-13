@@ -11,6 +11,9 @@ public enum CheckCategory {
     BOGGS,
     SMITTY,
     FLINT,
+    NESBIT,
+    ROZ,
+    BILE,
     DUMMY;
 
     public static Optional<CheckCategory> getByCategory(@NotNull final String typeToCheck) {

@@ -24,7 +24,7 @@ gradle/wrapper/gradle-wrapper.properties
 boggs/build
 build/
 classes/
-boggs/classes
+*/classes
 
 # IntelliJ IDEA
 .idea/
@@ -37,10 +37,11 @@ boggs/classes
 
 #Mac OS
 .DS_Store
-boggs/.DS_Store
+*/.DS_Store
 
 # Logs
-boggs/logs/
+logs/
+*/logs/
 
 _builds/
 _steps/

@@ -15,7 +15,7 @@ import com.hartwig.healthchecks.common.util.CheckCategory;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.roz.extractor.SlicedExtractor;
 
-@ResourceWrapper(type = CheckCategory.SMITTY)
+@ResourceWrapper(type = CheckCategory.ROZ)
 public class RozAdapter implements HealthCheckAdapter {
 
     private final Report report = JsonReport.getInstance();
