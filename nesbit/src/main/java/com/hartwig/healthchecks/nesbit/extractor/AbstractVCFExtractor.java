@@ -13,6 +13,8 @@ import com.hartwig.healthchecks.nesbit.model.VCFType;
 
 public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
 
+    protected static final String CHROM = "#CHROM";
+
     private static final int INFO_INDEX = 7;
 
     private static final int ALT_INDEX = 4;
@@ -22,8 +24,6 @@ public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
     private static final int FILTER_INDEX = 6;
 
     private final String[] neededHeaders = {"REF", "ALT", "INFO", "T", "R"};
-
-    protected static final String CHROM = "#CHROM";
 
     protected void validateHeader(final Optional<String> headerLine, final String extension)
                     throws LineNotFoundException, HeaderNotFoundException {
