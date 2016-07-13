@@ -34,6 +34,7 @@ public class SampleReport extends BaseReport {
 
     @Override
     public String toString() {
-        return "InsertSizeMetricsReport [referenceSample=" + referenceSample + ", tumorSample=" + tumorSample + "]";
+        return "SampleReport [referenceSample=" + referenceSample + ", tumorSample=" + tumorSample + "]";
     }
+
 }
