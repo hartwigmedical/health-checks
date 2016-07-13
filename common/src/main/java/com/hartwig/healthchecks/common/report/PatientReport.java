@@ -22,8 +22,7 @@ public class PatientReport extends BaseReport {
     }
 
     @Override
-    @NotNull
     public String toString() {
-        return "KinshipReport [knishipData=" + patientData + "]";
+        return "PatientReport [patientData=" + patientData + "]";
     }
 }

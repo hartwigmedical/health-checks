@@ -10,5 +10,6 @@ public enum CheckType {
     COVERAGE,
     SOMATIC,
     SLICED,
-    REALIGNER;
+    REALIGNER,
+    VARIANTS;
 }

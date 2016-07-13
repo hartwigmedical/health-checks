@@ -70,6 +70,120 @@ The location of the reports can be changed via the ```config.properties``` file 
 ```
 {
 	"health_checks": [{
+		"REALIGNER": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_REALIGNER_CHANGED_ALIGNMENTS",
+				"value": "0.00101"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_REALIGNER_CHANGED_ALIGNMENTS",
+				"value": "0.00101"
+			}],
+			"check_type": "REALIGNER"
+		}
+	}, {
+		"INSERT_SIZE": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
+				"value": "409"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
+				"value": "247"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
+				"value": "209"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
+				"value": "147"
+			}],
+			"check_type": "INSERT_SIZE"
+		}
+	}, {
+		"COVERAGE": {
+			"reference_sample": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_MEAN",
+				"value": "0.000856"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_MEDIAN",
+				"value": "0"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_BASEQ",
+				"value": "0.002378"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_DUPE",
+				"value": "0.059484"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_MAPQ",
+				"value": "0.000585"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_OVERLAP",
+				"value": "0.020675"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_TOTAL",
+				"value": "0.086479"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_PCT_EXC_UNPAIRED",
+				"value": "0.002331"
+			}, {
+				"patient_id": "CPCT12345678R",
+				"check_name": "COVERAGE_SD",
+				"value": "0.157469"
+			}],
+			"tumor_sample": [{
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_MEAN",
+				"value": "0.000856"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_MEDIAN",
+				"value": "0"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_BASEQ",
+				"value": "0.002378"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_DUPE",
+				"value": "0.059484"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_MAPQ",
+				"value": "0.000585"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_OVERLAP",
+				"value": "0.020675"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_TOTAL",
+				"value": "0.086479"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_PCT_EXC_UNPAIRED",
+				"value": "0.002331"
+			}, {
+				"patient_id": "CPCT12345678T",
+				"check_name": "COVERAGE_SD",
+				"value": "0.157469"
+			}],
+			"check_type": "COVERAGE"
+		}
+	}, {
 		"MAPPING": {
 			"reference_sample": [{
 				"patient_id": "CPCT12345678R",
@@ -124,26 +238,32 @@ The location of the reports can be changed via the ```config.properties``` file 
 			"check_type": "MAPPING"
 		}
 	}, {
-		"INSERT_SIZE": {
-			"reference_sample": [{
+		"KINSHIP": {
+			"patient_data": {
 				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
-				"value": "409"
+				"check_name": "KINSHIP_TEST",
+				"value": "0.2155"
+			},
+			"check_type": "KINSHIP"
+		}
+	}, {
+		"SLICED": {
+			"error": "java.io.FileNotFoundException",
+			"message": "File _Cosmicv76_GoNLv5_sliced.vcf not Found in path /Users/nhazaa/mydata/git_tree/work/health-checks/boggs/src/test/resources/rundir",
+			"check_type": "SLICED"
+		}
+	}, {
+		"VARIANTS": {
+			"patient_data": [{
+				"patient_id": "CPCT12345678R",
+				"check_name": "VARIANTS_GERMLINE_SNP",
+				"value": "74"
 			}, {
 				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
-				"value": "247"
+				"check_name": "VARIANTS_GERMLINE_INDELS",
+				"value": "4"
 			}],
-			"tumor_sample": [{
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_MEDIAN_INSERT_SIZE",
-				"value": "209"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_WIDTH_OF_70_PERCENT",
-				"value": "147"
-			}],
-			"check_type": "INSERT_SIZE"
+			"check_type": "VARIANTS"
 		}
 	}, {
 		"PRESTATS": {
@@ -254,116 +374,6 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"value": "FAIL"
 			}],
 			"check_type": "PRESTATS"
-		}
-	}, {
-		"COVERAGE": {
-			"reference_sample": [{
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_MEAN",
-				"value": "0.000856"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_MEDIAN",
-				"value": "0"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_PCT_EXC_BASEQ",
-				"value": "0.002378"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_PCT_EXC_DUPE",
-				"value": "0.059484"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_PCT_EXC_MAPQ",
-				"value": "0.000585"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_PCT_EXC_OVERLAP",
-				"value": "0.020675"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_PCT_EXC_TOTAL",
-				"value": "0.086479"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_PCT_EXC_UNPAIRED",
-				"value": "0.002331"
-			}, {
-				"patient_id": "CPCT12345678R",
-				"check_name": "COVERAGE_SD",
-				"value": "0.157469"
-			}],
-			"tumor_sample": [{
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_MEAN",
-				"value": "0.000856"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_MEDIAN",
-				"value": "0"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_PCT_EXC_BASEQ",
-				"value": "0.002378"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_PCT_EXC_DUPE",
-				"value": "0.059484"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_PCT_EXC_MAPQ",
-				"value": "0.000585"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_PCT_EXC_OVERLAP",
-				"value": "0.020675"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_PCT_EXC_TOTAL",
-				"value": "0.086479"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_PCT_EXC_UNPAIRED",
-				"value": "0.002331"
-			}, {
-				"patient_id": "CPCT12345678T",
-				"check_name": "COVERAGE_SD",
-				"value": "0.157469"
-			}],
-			"check_type": "COVERAGE"
-		}
-	}, {
-		"REALIGNER": {
-			"reference_sample": [{
-				"patient_id": "CPCT12345678R",
-				"check_name": "MAPPING_REALIGNER_CHANGED_ALIGNMENTS",
-				"value": "0.00101"
-			}],
-			"tumor_sample": [{
-				"patient_id": "CPCT12345678T",
-				"check_name": "MAPPING_REALIGNER_CHANGED_ALIGNMENTS",
-				"value": "0.00101"
-			}],
-			"check_type": "REALIGNER"
-		}
-	}, {
-		"SLICED": {
-			"patient_data": {
-				"patient_id": "CPCT12345678R",
-				"check_name": "SLICED_NUMBER_OF_VARIANTS",
-				"value": "80"
-			},
-			"check_type": "SLICED"
-		}
-	}, {
-		"KINSHIP": {
-			"patient_data": {
-				"patient_id": "CPCT12345678R",
-				"check_name": "KINSHIP_TEST",
-				"value": "0.2155"
-			},
-			"check_type": "KINSHIP"
 		}
 	}, {
 		"SUMMARY_METRICS": {
@@ -410,49 +420,6 @@ The location of the reports can be changed via the ```config.properties``` file 
 				"value": "0.499972"
 			}],
 			"check_type": "SUMMARY_METRICS"
-		}
-	}]
-}
-```
-# In Case of Error Report Snippet
-
-```
-{
-	"health_checks": [{
-		"COVERAGE": {
-			"error": "java.nio.file.NoSuchFileException",
-			"message": "/health-checks/boggs/src/test/resources/emptyFile/QCStats",
-			"check_type": "COVERAGE"
-		}
-	}, {
-		"MAPPING": {
-			"error": "java.nio.file.NoSuchFileException",
-			"message": "/health-checks/boggs/src/test/resources/emptyFile",
-			"check_type": "MAPPING"
-		}
-	}, {
-		"SLICED": {
-			"error": "java.nio.file.NoSuchFileException",
-			"message": "/health-checks/boggs/src/test/resources/emptyFile",
-			"check_type": "SLICED"
-		}
-	}, {
-		"SUMMARY_METRICS": {
-			"error": "java.nio.file.NoSuchFileException",
-			"message": "/health-checks/boggs/src/test/resources/emptyFile/QCStats",
-			"check_type": "SUMMARY_METRICS"
-		}
-	}, {
-		"PRESTATS": {
-			"error": "java.nio.file.NoSuchFileException",
-			"message": "/health-checks/boggs/src/test/resources/emptyFile",
-			"check_type": "PRESTATS"
-		}
-	}, {
-		"INSERT_SIZE": {
-			"error": "java.nio.file.NoSuchFileException",
-			"message": "/health-checks/boggs/src/test/resources/emptyFile/QCStats",
-			"check_type": "INSERT_SIZE"
 		}
 	}]
 }
