@@ -3,17 +3,16 @@ package com.hartwig.healthchecks.roz.extractor;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.reader.Reader;
+import com.hartwig.healthchecks.common.io.reader.FilteredReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -24,7 +23,7 @@ import mockit.Mocked;
 
 public class SlicedExtractorTest {
 
-    private static final String EXPECTED_VALUE = "5";
+    private static final String EXPECTED_VALUE = "8";
 
     private static final String WRONG_NAME = "Wrong name";
 
@@ -45,28 +44,20 @@ public class SlicedExtractorTest {
     private static final String HEADER_LINE = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
                     + "\tCPCT12345678R\tCPCT12345678T";
 
-    private static final String FILLING_LINE = "##FILTER=<ID=str10,Description="
-                    + "\"Less than 10% or more than 90% of variant supporting reads on one strand\">";
-
     private static final String TEST_DIR = "Test";
 
-    private List<String> lines;
+    private List<String> dataLines;
 
-    private List<String> emptyLines;
-
-    private List<String> missingLines;
+    private List<String> headerLines;
 
     @Mocked
-    private Reader reader;
+    private FilteredReader reader;
 
     @Before
     public void setUp() {
-        lines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE, DATA_LINE, DATA_LINE,
-                        DATA_LINE, DATA_LINE, DATA_LINE);
-
-        emptyLines = new ArrayList<>();
-        missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, DATA_LINE,
-                        DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE);
+        dataLines = Arrays.asList(DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE,
+                        DATA_LINE);
+        headerLines = Arrays.asList(HEADER_LINE);
     }
 
     @Test
@@ -76,8 +67,8 @@ public class SlicedExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
-                returns(lines);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
+                returns(headerLines, dataLines);
             }
         };
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
@@ -88,26 +79,13 @@ public class SlicedExtractorTest {
         assertEquals("Wrong value", EXPECTED_VALUE, patientData.getValue());
     }
 
-    @Test(expected = EmptyFileException.class)
-    public void extractDataFromEmptyFile() throws IOException, HealthChecksException {
-        final SlicedExtractor extractor = new SlicedExtractor(reader);
-        new Expectations() {
-
-            {
-                reader.readLines(anyString, anyString);
-                returns(emptyLines);
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
-    }
-
     @Test(expected = IOException.class)
     public void extractDataFromFileIoException() throws IOException, HealthChecksException {
         final SlicedExtractor extractor = new SlicedExtractor(reader);
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
                 result = new IOException();
             }
         };
@@ -120,8 +98,8 @@ public class SlicedExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
-                returns(missingLines);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
+                result = new LineNotFoundException("");
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);

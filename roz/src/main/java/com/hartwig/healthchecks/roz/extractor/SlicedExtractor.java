@@ -2,13 +2,12 @@ package com.hartwig.healthchecks.roz.extractor;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
-import com.hartwig.healthchecks.common.io.reader.Reader;
+import com.hartwig.healthchecks.common.io.reader.FilteredReader;
+import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
+import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -20,13 +19,11 @@ public class SlicedExtractor extends AbstractDataExtractor {
 
     private static final String SLICED_NUM_VARIANTS = "SLICED_NUMBER_OF_VARIANTS";
 
-    private static final String CHROM = "#CHROM";
-
     private static final String EXT = "_Cosmicv76_GoNLv5_sliced.vcf";
 
-    private final Reader reader;
+    private final FilteredReader reader;
 
-    public SlicedExtractor(final Reader reader) {
+    public SlicedExtractor(final FilteredReader reader) {
         super();
         this.reader = reader;
     }
@@ -39,19 +36,12 @@ public class SlicedExtractor extends AbstractDataExtractor {
     }
 
     private BaseDataReport getPatientData(final String runDirectory) throws IOException, HealthChecksException {
-        final List<String> lines = reader.readLines(runDirectory, EXT);
+        final List<String> headerLine = reader.readLines(runDirectory, EXT, new VCFHeaderLinePredicate());
 
-        if (lines.isEmpty()) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, EXT, runDirectory));
-        }
+        final String patientId = headerLine.get(0).split(SEPERATOR_REGEX)[PATIENT_ID_INDEX];
 
-        final Optional<String> headerLine = lines.stream().filter(line -> line.contains(CHROM)).findFirst();
-        if (!headerLine.isPresent()) {
-            throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, EXT, CHROM));
-        }
-
-        final String patientId = headerLine.get().split(SEPERATOR_REGEX)[PATIENT_ID_INDEX];
-        final long value = lines.stream().filter(line -> !line.startsWith(HASH)).count();
+        final long value = reader.readLines(runDirectory, EXT, new VCFDataLinePredicate()).stream()
+                        .filter(line -> !line.startsWith(HASH)).count();
         return new BaseDataReport(patientId, SLICED_NUM_VARIANTS, String.valueOf(value));
     }
 }
