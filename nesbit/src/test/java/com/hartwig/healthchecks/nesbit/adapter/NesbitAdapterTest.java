@@ -11,6 +11,7 @@ import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
 import com.hartwig.healthchecks.nesbit.extractor.VariantsExtractor;
 
 import mockit.Mocked;
@@ -28,7 +29,8 @@ public class NesbitAdapterTest {
     private static final String REF_VALUE = "409";
 
     @Test
-    public void verifyAdapterRunning(@Mocked final HealthCheckerImpl variant, @Mocked final JsonReport report) {
+    public void verifyAdapterRunning(@Mocked final HealthCheckerImpl variant, @Mocked final HealthCheckerImpl somatic,
+                    @Mocked final JsonReport report) {
 
         new NonStrictExpectations() {
 
@@ -44,6 +46,13 @@ public class NesbitAdapterTest {
                 returns(getVariantDummyReport());
                 times = 1;
 
+                new HealthCheckerImpl(CheckType.SOMATIC, anyString, (SomaticExtractor) any);
+                result = somatic;
+                times = 1;
+                variant.runCheck();
+                returns(getSomticDummyReport());
+                times = 1;
+
             }
         };
         final HealthCheckAdapter adapter = new NesbitAdapter();
@@ -53,7 +62,7 @@ public class NesbitAdapterTest {
 
             {
                 report.addReportData((BaseReport) any);
-                times = 1;
+                times = 2;
             }
         };
     }
@@ -61,5 +70,10 @@ public class NesbitAdapterTest {
     private BaseReport getVariantDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         return new PatientMultiChecksReport(CheckType.VARIANTS, Arrays.asList(testDataReport));
+    }
+
+    private BaseReport getSomticDummyReport() {
+        final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
+        return new PatientMultiChecksReport(CheckType.SOMATIC, Arrays.asList(testDataReport));
     }
 }

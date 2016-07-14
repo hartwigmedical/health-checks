@@ -79,8 +79,8 @@ public class VariantsExtractorTest {
     private static final String HEADER_LINE = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
                     + "\tCPCT12345678R\tCPCT12345678T";
 
-    private static final String HEADER_NOT_RIGHT = "#CHROM\tPOS\tID\tREF\tQUAL\tFILTER\tINFO\tFORMAT"
-                    + "\tCPCT12345678R\tCPCT12345678T";
+    private static final String HEADER_NOT_RIGHT = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
+                    + "\tCPCT12345678R";
 
     private static final String FILLING_LINE = "##FILTER=<ID=str10,Description="
                     + "\"Less than 10% or more than 90% of variant supporting reads on one strand\">";

@@ -3,7 +3,6 @@ package com.hartwig.healthchecks.nesbit.extractor;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -42,20 +41,12 @@ public class VariantsExtractor extends AbstractVCFExtractor {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, EXT, runDirectory));
         }
 
-        final Optional<String> headerLine = lines.stream().filter(line -> line.contains(CHROM)).findFirst();
-        validateHeader(headerLine, EXT);
-        final String[] headers = headerLine.get().split(SEPERATOR_REGEX);
-        final String patientId = Arrays.stream(headers)
-                        .filter(header -> header.startsWith(SAMPLE_PREFIX) && header.endsWith(REF_SAMPLE_SUFFIX))
-                        .findFirst().get();
+        final String[] headers = getHeaders(lines, EXT, Boolean.TRUE).split(SEPERATOR_REGEX);
+        final String patientId = getPatientIdFromHeader(headers, REF_SAMPLE_SUFFIX);
         final List<VCFData> vcfData = getVCFData(lines);
+        final BaseDataReport snp = getCountCheck(patientId, vcfData, VCFType.SNP, GERMLINE_SNP);
+        final BaseDataReport indels = getCountCheck(patientId, vcfData, VCFType.INDELS, GERMLINE_INDELS);
 
-        final Long snpCount = vcfData.stream().filter(data -> data.getType().equals(VCFType.SNP)).count();
-        final BaseDataReport snp = new BaseDataReport(patientId, GERMLINE_SNP, String.valueOf(snpCount));
-
-        final Long indelCount = vcfData.stream().filter(data -> data.getType().equals(VCFType.INDEL)).count();
-        final BaseDataReport indel = new BaseDataReport(patientId, GERMLINE_INDELS, String.valueOf(indelCount));
-
-        return Arrays.asList(snp, indel);
+        return Arrays.asList(snp, indels);
     }
 }

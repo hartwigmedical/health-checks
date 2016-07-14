@@ -3,19 +3,24 @@ package com.hartwig.healthchecks.nesbit.extractor;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.reader.Reader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
-import com.hartwig.healthchecks.common.report.SampleReport;
+import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.nesbit.model.VCFData;
+import com.hartwig.healthchecks.nesbit.model.VCFType;
 
 public class SomaticExtractor extends AbstractVCFExtractor {
 
-    private static final String EXT = "_Cosmicv76.vcf";
+    private static final String SOMATIC_INDELS = "VARIANTS_SOMATIC_INDELS";
+
+    private static final String SOMATIC_SNP = "VARIANTS_SOMATIC_SNP";
+
+    private static final String EXT = "_Cosmicv76_melted.vcf";
 
     private final Reader reader;
 
@@ -26,8 +31,8 @@ public class SomaticExtractor extends AbstractVCFExtractor {
 
     @Override
     public BaseReport extractFromRunDirectory(final String runDirectory) throws IOException, HealthChecksException {
-        getPatientData(runDirectory);
-        return new SampleReport(CheckType.SOMATIC, null, null);
+        final List<BaseDataReport> patientData = getPatientData(runDirectory);
+        return new PatientMultiChecksReport(CheckType.SOMATIC, patientData);
     }
 
     private List<BaseDataReport> getPatientData(final String runDirectory) throws IOException, HealthChecksException {
@@ -36,8 +41,14 @@ public class SomaticExtractor extends AbstractVCFExtractor {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, EXT, runDirectory));
         }
 
-        final Optional<String> headerLine = lines.stream().filter(line -> line.contains(CHROM)).findFirst();
-        validateHeader(headerLine, EXT);
-        return Arrays.asList(null, null);
+        final String[] headers = getHeaders(lines, EXT, Boolean.FALSE).split(SEPERATOR_REGEX);
+        final String patientId = getPatientIdFromHeader(headers, TUM_SAMPLE_SUFFIX);
+        final List<VCFData> vcfData = getVCFData(lines);
+
+        final BaseDataReport snp = getCountCheck(patientId, vcfData, VCFType.SNP, SOMATIC_SNP);
+        final BaseDataReport indels = getCountCheck(patientId, vcfData, VCFType.INDELS, SOMATIC_INDELS);
+
+        return Arrays.asList(snp, indels);
     }
+
 }
