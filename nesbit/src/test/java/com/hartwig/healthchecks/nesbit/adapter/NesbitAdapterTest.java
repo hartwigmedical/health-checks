@@ -12,7 +12,7 @@ import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
 import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
-import com.hartwig.healthchecks.nesbit.extractor.VariantsExtractor;
+import com.hartwig.healthchecks.nesbit.extractor.GermlineExtractor;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -39,7 +39,7 @@ public class NesbitAdapterTest {
                 result = report;
                 times = 1;
 
-                new HealthCheckerImpl(CheckType.VARIANTS, anyString, (VariantsExtractor) any);
+                new HealthCheckerImpl(CheckType.GERMLINE, anyString, (GermlineExtractor) any);
                 result = variant;
                 times = 1;
                 variant.runCheck();
@@ -69,7 +69,7 @@ public class NesbitAdapterTest {
 
     private BaseReport getVariantDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
-        return new PatientMultiChecksReport(CheckType.VARIANTS, Arrays.asList(testDataReport));
+        return new PatientMultiChecksReport(CheckType.GERMLINE, Arrays.asList(testDataReport));
     }
 
     private BaseReport getSomticDummyReport() {

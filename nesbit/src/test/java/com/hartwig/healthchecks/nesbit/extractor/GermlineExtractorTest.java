@@ -3,18 +3,17 @@ package com.hartwig.healthchecks.nesbit.extractor;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HeaderNotFoundException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.reader.Reader;
+import com.hartwig.healthchecks.common.io.reader.FilteredReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -23,7 +22,7 @@ import com.hartwig.healthchecks.common.util.CheckType;
 import mockit.Expectations;
 import mockit.Mocked;
 
-public class VariantsExtractorTest {
+public class GermlineExtractorTest {
 
     private static final String PASS_DATA_LINE = "2\t212812060\trs839540\t%s\t%s\t.\tPASS\tAC=1;AF=0.333;AN=3;"
                     + "ANN=C|sequence_feature|LOW|ERBB4|ENSG00000178568|topological_domain:Extracellular|"
@@ -82,9 +81,6 @@ public class VariantsExtractorTest {
     private static final String HEADER_NOT_RIGHT = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
                     + "\tCPCT12345678R";
 
-    private static final String FILLING_LINE = "##FILTER=<ID=str10,Description="
-                    + "\"Less than 10% or more than 90% of variant supporting reads on one strand\">";
-
     private static final String REF_VALUE = "CT";
 
     private static final String ALT_VALUE = "CTTTCTTT";
@@ -95,16 +91,14 @@ public class VariantsExtractorTest {
 
     private static final String GERMLINE_SNP = "VARIANTS_GERMLINE_SNP";
 
-    private List<String> lines;
+    private List<String> dataLines;
 
-    private List<String> emptyLines;
-
-    private List<String> missingLines;
+    private List<String> headerLines;
 
     private List<String> missingHeaderValue;
 
     @Mocked
-    private Reader reader;
+    private FilteredReader reader;
 
     @Before
     public void setUp() {
@@ -112,32 +106,25 @@ public class VariantsExtractorTest {
         final String twoDataLine = String.format(DOT_DATA_LINE, REF_VALUE, ALT_VALUE + "," + ALT_VALUE);
         final String threeDataLine = String.format(PASS_DATA_LINE, REF_VALUE, ALT_VALUE + "," + ALT_VALUE);
         final String fourDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE);
-
-        lines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE, oneDataLine,
-                        twoDataLine, threeDataLine, fourDataLine, OTHER_DATA_LINE, oneDataLine, twoDataLine,
+        dataLines = Arrays.asList(oneDataLine, twoDataLine, threeDataLine, fourDataLine, oneDataLine, twoDataLine,
                         threeDataLine, fourDataLine);
-
-        emptyLines = new ArrayList<>();
-        missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, oneDataLine,
-                        FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
-
-        missingHeaderValue = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
-                        HEADER_NOT_RIGHT, oneDataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
+        headerLines = Arrays.asList(HEADER_LINE);
+        missingHeaderValue = Arrays.asList(HEADER_NOT_RIGHT);
     }
 
     @Test
     public void extractData() throws IOException, HealthChecksException {
 
-        final VariantsExtractor extractor = new VariantsExtractor(reader);
+        final GermlineExtractor extractor = new GermlineExtractor(reader);
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
-                returns(lines);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
+                returns(headerLines, dataLines);
             }
         };
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
-        assertEquals("Report with wrong type", CheckType.VARIANTS, report.getCheckType());
+        assertEquals("Report with wrong type", CheckType.GERMLINE, report.getCheckType());
         final List<BaseDataReport> patientData = ((PatientMultiChecksReport) report).getPatientData();
         assertEquals("Wrong number of checks", 2, patientData.size());
         final String indels = patientData.stream().filter(data -> data.getCheckName().equals(GERMLINE_INDELS))
@@ -146,29 +133,15 @@ public class VariantsExtractorTest {
         final String snp = patientData.stream().filter(data -> data.getCheckName().equals(GERMLINE_SNP)).findFirst()
                         .get().getValue();
         assertEquals("snp value", "4", snp);
-
-    }
-
-    @Test(expected = EmptyFileException.class)
-    public void extractDataFromEmptyFile() throws IOException, HealthChecksException {
-        final VariantsExtractor extractor = new VariantsExtractor(reader);
-        new Expectations() {
-
-            {
-                reader.readLines(anyString, anyString);
-                returns(emptyLines);
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
     }
 
     @Test(expected = IOException.class)
     public void extractDataFromFileIoException() throws IOException, HealthChecksException {
-        final VariantsExtractor extractor = new VariantsExtractor(reader);
+        final GermlineExtractor extractor = new GermlineExtractor(reader);
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
                 result = new IOException();
             }
         };
@@ -177,12 +150,12 @@ public class VariantsExtractorTest {
 
     @Test(expected = LineNotFoundException.class)
     public void extractDataMissingHeader() throws IOException, HealthChecksException {
-        final VariantsExtractor extractor = new VariantsExtractor(reader);
+        final GermlineExtractor extractor = new GermlineExtractor(reader);
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
-                returns(missingLines);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
+                result = new LineNotFoundException("");
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);
@@ -190,11 +163,11 @@ public class VariantsExtractorTest {
 
     @Test(expected = HeaderNotFoundException.class)
     public void extractMissingAHeaderException() throws IOException, HealthChecksException {
-        final VariantsExtractor extractor = new VariantsExtractor(reader);
+        final GermlineExtractor extractor = new GermlineExtractor(reader);
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
                 returns(missingHeaderValue);
             }
         };

@@ -3,19 +3,18 @@ package com.hartwig.healthchecks.nesbit.extractor;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HeaderNotFoundException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.io.reader.Reader;
+import com.hartwig.healthchecks.common.io.reader.FilteredReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -71,9 +70,6 @@ public class SomaticExtractorTest {
 
     private static final String HEADER_NOT_RIGHT = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT";
 
-    private static final String FILLING_LINE = "##FILTER=<ID=str10,Description="
-                    + "\"Less than 10% or more than 90% of variant supporting reads on one strand\">";
-
     private static final String TEST_DIR = "Test";
 
     private static final String FREEBAYES = "freebayes";
@@ -92,20 +88,18 @@ public class SomaticExtractorTest {
 
     private static final String ALT_VALUE = "CTTTCTTT";
 
-    private List<String> lines;
-
-    private List<String> emptyLines;
-
-    private List<String> missingLines;
-
-    private List<String> missingHeaderValue;
-
     private static final String SOMATIC_INDELS = "VARIANTS_SOMATIC_INDELS";
 
     private static final String SOMATIC_SNP = "VARIANTS_SOMATIC_SNP";
 
+    private List<String> dataLines;
+
+    private List<String> headerLines;
+
+    private List<String> missingHeaderLines;
+
     @Mocked
-    private Reader reader;
+    private FilteredReader reader;
 
     @Before
     public void setUp() {
@@ -116,17 +110,11 @@ public class SomaticExtractorTest {
         final String fithDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE, ALL_SET);
         final String sixthDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE, ALL_SET_FILTER);
 
-        lines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE, oneDataLine,
-                        twoDataLine, threeDataLine, fourDataLine, fithDataLine, sixthDataLine, OTHER_DATA_LINE,
+        dataLines = Arrays.asList(oneDataLine, twoDataLine, threeDataLine, fourDataLine, fithDataLine, sixthDataLine,
                         oneDataLine, twoDataLine, threeDataLine, fourDataLine, fithDataLine, sixthDataLine);
 
-        emptyLines = new ArrayList<>();
-        missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, oneDataLine,
-                        twoDataLine, threeDataLine, fourDataLine, fithDataLine, sixthDataLine, OTHER_DATA_LINE);
-
-        missingHeaderValue = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
-                        HEADER_NOT_RIGHT, oneDataLine, twoDataLine, threeDataLine, fourDataLine, fithDataLine,
-                        sixthDataLine, OTHER_DATA_LINE);
+        headerLines = Arrays.asList(HEADER_LINE);
+        missingHeaderLines = Arrays.asList(HEADER_NOT_RIGHT);
     }
 
     @Test
@@ -136,8 +124,8 @@ public class SomaticExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
-                returns(lines);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
+                returns(headerLines, dataLines);
             }
         };
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
@@ -153,26 +141,13 @@ public class SomaticExtractorTest {
 
     }
 
-    @Test(expected = EmptyFileException.class)
-    public void extractDataFromEmptyFile() throws IOException, HealthChecksException {
-        final SomaticExtractor extractor = new SomaticExtractor(reader);
-        new Expectations() {
-
-            {
-                reader.readLines(anyString, anyString);
-                returns(emptyLines);
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
-    }
-
     @Test(expected = IOException.class)
     public void extractDataFromFileIoException() throws IOException, HealthChecksException {
         final SomaticExtractor extractor = new SomaticExtractor(reader);
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
                 result = new IOException();
             }
         };
@@ -185,8 +160,8 @@ public class SomaticExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
-                returns(missingLines);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
+                result = new LineNotFoundException("");
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);
@@ -198,8 +173,8 @@ public class SomaticExtractorTest {
         new Expectations() {
 
             {
-                reader.readLines(anyString, anyString);
-                returns(missingHeaderValue);
+                reader.readLines(anyString, anyString, (Predicate<String>) any);
+                returns(missingHeaderLines);
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);
