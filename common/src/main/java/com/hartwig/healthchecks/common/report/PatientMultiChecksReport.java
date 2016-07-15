@@ -19,9 +19,4 @@ public class PatientMultiChecksReport extends BaseReport {
     public List<BaseDataReport> getPatientData() {
         return patientData;
     }
-
-    @Override
-    public String toString() {
-        return "PatientMultiChecksReport [patientData=" + patientData + "]";
-    }
 }
