@@ -55,7 +55,7 @@ public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
             if (ref.length() == alt.length()) {
                 type = VCFType.SNP;
             }
-            return new VCFData(type, ref, alt, info);
+            return new VCFData(type, info);
         }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
     }
 
@@ -67,8 +67,6 @@ public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
     protected BaseDataReport getCountCheck(final String patientId, final List<VCFData> vcfData, final VCFType vcfType,
                     final String checkName) {
         final Long count = vcfData.stream().filter(data -> data.getType().equals(vcfType)).count();
-        final BaseDataReport dataReport = new BaseDataReport(patientId, checkName, String.valueOf(count));
-        logBaseDataReport(dataReport);
-        return dataReport;
+        return new BaseDataReport(patientId, checkName, String.valueOf(count));
     }
 }

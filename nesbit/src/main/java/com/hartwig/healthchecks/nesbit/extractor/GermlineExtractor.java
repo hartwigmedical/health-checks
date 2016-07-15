@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.reader.FilteredReader;
-import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
+import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
 import com.hartwig.healthchecks.common.util.BaseReport;
@@ -46,8 +46,9 @@ public class GermlineExtractor extends AbstractVCFExtractor {
         final List<VCFData> vcfData = getVCFData(lines);
         final BaseDataReport snp = getCountCheck(patientId, vcfData, VCFType.SNP, GERMLINE_SNP);
         final BaseDataReport indels = getCountCheck(patientId, vcfData, VCFType.INDELS, GERMLINE_INDELS);
-
-        return Arrays.asList(snp, indels);
+        final List<BaseDataReport> reports = Arrays.asList(snp, indels);
+        logBaseDataReports(reports);
+        return reports;
     }
 
 }
