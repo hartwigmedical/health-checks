@@ -34,10 +34,4 @@ public class BaseDataReport {
     public String getValue() {
         return value;
     }
-
-    @Override
-    public String toString() {
-        return "BaseDataReport{" + "patientId='" + patientId + '\'' + ", checkName=" + checkName + ", value='" + value
-                        + '\'' + '}';
-    }
 }

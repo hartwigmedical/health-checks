@@ -20,9 +20,4 @@ public class PatientReport extends BaseReport {
     public BaseDataReport getPatientData() {
         return patientData;
     }
-
-    @Override
-    public String toString() {
-        return "PatientReport [patientData=" + patientData + "]";
-    }
 }

@@ -26,9 +26,4 @@ public class FlagStatData {
     public List<FlagStats> getFailedStats() {
         return failedStats;
     }
-
-    @Override
-    public String toString() {
-        return "FlagStatData [passedStats=" + passedStats + ", failedStats=" + failedStats + "]";
-    }
 }

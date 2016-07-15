@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
+import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.SamplePath;
@@ -53,6 +54,8 @@ public class RealignerExtractorTest {
 
     private static final String SLICED_MAPPED = "300 + 0 mapped (99.49%:N/A)";
 
+    private static final String MAPPED_NO_PLUS = "300  0 mapped (99.49%:N/A)";
+
     private static final String SLICED_FILLER = "10 + 0 properly paired (93.18%:N/A)";
 
     private static final String TEST_DIR = "Test";
@@ -81,6 +84,8 @@ public class RealignerExtractorTest {
 
     private List<String> missingLines;
 
+    private List<String> mallformatedLines;
+
     @Mocked
     private SampleReader reader;
 
@@ -102,9 +107,13 @@ public class RealignerExtractorTest {
                         R_DIFF_LINE, DIFF_HEADER_LINE, M_DIFF_LINE, R_DIFF_LINE, DIFF_HEADER_LINE, M_DIFF_LINE,
                         R_DIFF_LINE, DIFF_HEADER_LINE, M_DIFF_LINE, R_DIFF_LINE, DIFF_HEADER_LINE, M_DIFF_LINE,
                         R_DIFF_LINE);
+
         refSlicLines = Arrays.asList(SLICED_TOTAL, SLICED_FILLER, SLICED_FILLER, SLICED_FILLER, SLICED_MAPPED,
                         SLICED_FILLER, SLICED_FILLER, SLICED_FILLER, SLICED_FILLER);
         tumSlicLines = Arrays.asList(SLICED_TOTAL, SLICED_FILLER, SLICED_FILLER, SLICED_FILLER, SLICED_MAPPED,
+                        SLICED_FILLER, SLICED_FILLER, SLICED_FILLER, SLICED_FILLER);
+
+        mallformatedLines = Arrays.asList(SLICED_TOTAL, SLICED_FILLER, SLICED_FILLER, SLICED_FILLER, MAPPED_NO_PLUS,
                         SLICED_FILLER, SLICED_FILLER, SLICED_FILLER, SLICED_FILLER);
         emptyLines = new ArrayList<>();
         missingLines = Arrays.asList(SLICED_TOTAL, SLICED_FILLER, SLICED_FILLER, SLICED_FILLER, SLICED_FILLER,
@@ -316,6 +325,22 @@ public class RealignerExtractorTest {
 
                 samplePathFinder.findPath(anyString, anyString, T_DEDUP);
                 result = new FileNotFoundException("");
+            }
+        };
+        extractor.extractFromRunDirectory(TEST_DIR);
+    }
+
+    @Test(expected = MalformedFileException.class)
+    public void extractDataLineMalformated(@Mocked final SamplePathFinder samplePathFinder,
+                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+        final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
+        new Expectations() {
+
+            {
+                samplePathFinder.findPath(anyString, anyString, R_DEDUP);
+                returns(new File(REF_PATH).toPath());
+                reader.readLines((SamplePath) any);
+                returns(refDiffLines, mallformatedLines);
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);

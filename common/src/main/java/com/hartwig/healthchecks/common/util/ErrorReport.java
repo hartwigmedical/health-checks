@@ -25,9 +25,4 @@ public class ErrorReport extends BaseReport {
     public String getMessage() {
         return message;
     }
-
-    @Override
-    public String toString() {
-        return "ErrorReport [error=" + error + ", message=" + message + "]";
-    }
 }

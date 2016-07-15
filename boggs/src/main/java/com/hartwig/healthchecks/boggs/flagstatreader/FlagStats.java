@@ -23,10 +23,4 @@ public class FlagStats {
     public Double getValue() {
         return value;
     }
-
-    @Override
-    public String toString() {
-        return "FlagStats{" + "flagStatsType=" + flagStatsType + ", checkType='" + checkType + '\'' + ", value=" + value
-                        + '}';
-    }
 }

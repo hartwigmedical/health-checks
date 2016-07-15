@@ -18,9 +18,4 @@ public class BaseReport implements Serializable {
     public CheckType getCheckType() {
         return checkType;
     }
-
-    @Override
-    public String toString() {
-        return "BaseConfig{" + "checkType=" + checkType + '}';
-    }
 }

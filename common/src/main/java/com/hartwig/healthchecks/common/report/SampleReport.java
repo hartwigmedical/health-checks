@@ -31,10 +31,4 @@ public class SampleReport extends BaseReport {
     public List<BaseDataReport> getTumorSample() {
         return tumorSample;
     }
-
-    @Override
-    public String toString() {
-        return "SampleReport [referenceSample=" + referenceSample + ", tumorSample=" + tumorSample + "]";
-    }
-
 }

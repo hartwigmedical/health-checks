@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.flint.reader;
+package com.hartwig.healthchecks.common.io.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
