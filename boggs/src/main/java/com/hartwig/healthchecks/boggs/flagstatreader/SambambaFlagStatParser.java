@@ -55,8 +55,8 @@ public class SambambaFlagStatParser implements FlagStatParser {
             final double passedValue = Double.parseDouble(array[ZERO]);
             final double failedValue = Double.parseDouble(array[ONE]);
             final Optional<FlagStatsType> statsTypeOpt = FlagStatsType.getByIndex(index[ZERO]);
-            final FlagStats passed = new FlagStats(statsTypeOpt.get(), array[TWO], passedValue);
-            final FlagStats failed = new FlagStats(statsTypeOpt.get(), array[TWO], failedValue);
+            final FlagStats passed = new FlagStats(statsTypeOpt.get(), passedValue);
+            final FlagStats failed = new FlagStats(statsTypeOpt.get(), failedValue);
             passedStats.add(passed);
             failedStats.add(failed);
             index[ZERO] += ONE;

@@ -205,19 +205,19 @@ public class MappingExtractorTest {
 
     private FlagStatData dummyData() throws IOException, EmptyFileException {
 
-        final FlagStats total = new FlagStats(FlagStatsType.TOTAL_INDEX, "dummy", 17940d);
-        final FlagStats secondary = new FlagStats(FlagStatsType.SECONDARY_INDEX, "dummy", 20d);
-        final FlagStats supplementary = new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, "dummy", 0d);
-        final FlagStats duplicate = new FlagStats(FlagStatsType.DUPLICATES_INDEX, "dummy", 1068d);
-        final FlagStats mapped = new FlagStats(FlagStatsType.MAPPED_INDEX, "dummy", 17885d);
-        final FlagStats paired = new FlagStats(FlagStatsType.PAIRED_IN_SEQ_INDEX, "dummy", 17920d);
-        final FlagStats read1 = new FlagStats(FlagStatsType.READ_1_INDEX, "dummy", 8960d);
-        final FlagStats read2 = new FlagStats(FlagStatsType.READ_2_INDEX, "dummy", 8960d);
-        final FlagStats proper = new FlagStats(FlagStatsType.PROPERLY_PAIRED_INDEX, "dummy", 17808d);
-        final FlagStats itself = new FlagStats(FlagStatsType.ITSELF_AND_MATE_INDEX, "dummy", 17808d);
-        final FlagStats singleton = new FlagStats(FlagStatsType.SINGELTONS_INDEX, "dummy", 55d);
-        final FlagStats mateMapped = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_INDEX, "dummy", 0d);
-        final FlagStats q5Index = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_Q5_INDEX, "dummy", 0d);
+        final FlagStats total = new FlagStats(FlagStatsType.TOTAL_INDEX, 17940d);
+        final FlagStats secondary = new FlagStats(FlagStatsType.SECONDARY_INDEX, 20d);
+        final FlagStats supplementary = new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, 0d);
+        final FlagStats duplicate = new FlagStats(FlagStatsType.DUPLICATES_INDEX, 1068d);
+        final FlagStats mapped = new FlagStats(FlagStatsType.MAPPED_INDEX, 17885d);
+        final FlagStats paired = new FlagStats(FlagStatsType.PAIRED_IN_SEQ_INDEX, 17920d);
+        final FlagStats read1 = new FlagStats(FlagStatsType.READ_1_INDEX, 8960d);
+        final FlagStats read2 = new FlagStats(FlagStatsType.READ_2_INDEX, 8960d);
+        final FlagStats proper = new FlagStats(FlagStatsType.PROPERLY_PAIRED_INDEX, 17808d);
+        final FlagStats itself = new FlagStats(FlagStatsType.ITSELF_AND_MATE_INDEX, 17808d);
+        final FlagStats singleton = new FlagStats(FlagStatsType.SINGELTONS_INDEX, 55d);
+        final FlagStats mateMapped = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_INDEX, 0d);
+        final FlagStats q5Index = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_Q5_INDEX, 0d);
 
         final List<FlagStats> passedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped, paired,
                         read1, read2, proper, itself, singleton, mateMapped, q5Index);

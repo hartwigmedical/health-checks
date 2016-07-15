@@ -25,6 +25,18 @@ import mockit.Mocked;
 
 public class SomaticExtractorTest {
 
+    private static final String INDELS = "INDELS";
+
+    private static final String SNP = "SNP";
+
+    private static final String PROPORTION_CHECK_LABEL = "SOMATIC_%s_PROPORTION_VARIANTS_%s_CALLERS";
+
+    private static final String SENSITIVITY_CHECK_LABEL = "SOMATIC_%s_SENSITIVITY_%s_VARIANTS_2+_CALLERS";
+
+    private static final String PRECISION_CHECK_LABEL = "SOMATIC_%s_PRECISION_%s_2+_CALLERS";
+
+    private static final String WRONG_VALUE_FOR_CHECK = "Wrong Value for check %s";
+
     private static final String DOT_DATA_LINE = "1\t14354\t.\t%s\t%s\t37.46\t.\t"
                     + "AB=0.234375;ABP=42.2325;AC=1;AF=0.250;AN=4;ANN=A|non_coding_exon_variant|MODIFIER|DDX11L1|"
                     + "ENSG00000223972|transcript|ENST00000456328|processed_transcript|3/3|n.1602C>A||||||,A|"
@@ -98,6 +110,7 @@ public class SomaticExtractorTest {
 
         headerLines = Arrays.asList(HEADER_LINE);
         missingHeaderLines = Arrays.asList(HEADER_NOT_RIGHT);
+
     }
 
     @Test
@@ -114,14 +127,16 @@ public class SomaticExtractorTest {
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
         assertEquals("Report with wrong type", CheckType.SOMATIC, report.getCheckType());
         final List<BaseDataReport> patientData = ((PatientMultiChecksReport) report).getPatientData();
-        assertEquals("Wrong number of checks", 2, patientData.size());
-        final String indels = patientData.stream().filter(data -> data.getCheckName().equals(SOMATIC_INDELS))
-                        .findFirst().get().getValue();
-        assertEquals("Indels value", "4", indels);
-        final String snp = patientData.stream().filter(data -> data.getCheckName().equals(SOMATIC_SNP)).findFirst()
-                        .get().getValue();
-        assertEquals("snp value", "8", snp);
-
+        assertEquals("Wrong number of checks", 24, patientData.size());
+        assertPatientReport(patientData, SOMATIC_INDELS, "4");
+        assertPatientReport(patientData, SOMATIC_SNP, "8");
+        assertPatientReport(patientData, String.format(SENSITIVITY_CHECK_LABEL, SNP, MUTECT.toUpperCase()), "1.0");
+        assertPatientReport(patientData, String.format(SENSITIVITY_CHECK_LABEL, INDELS, MUTECT.toUpperCase()), "NaN");
+        assertPatientReport(patientData, String.format(PRECISION_CHECK_LABEL, SNP, FREEBAYES.toUpperCase()),
+                        "0.6666666666666666");
+        assertPatientReport(patientData, String.format(PRECISION_CHECK_LABEL, INDELS, FREEBAYES.toUpperCase()), "NaN");
+        assertPatientReport(patientData, String.format(PROPORTION_CHECK_LABEL, SNP, "2"), "0.0");
+        assertPatientReport(patientData, String.format(PROPORTION_CHECK_LABEL, INDELS, "2"), "0.0");
     }
 
     @Test(expected = IOException.class)
@@ -161,5 +176,12 @@ public class SomaticExtractorTest {
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);
+    }
+
+    private void assertPatientReport(final List<BaseDataReport> patientData, final String checkName,
+                    final String expectedValue) {
+        final String check = patientData.stream().filter(data -> data.getCheckName().equals(checkName)).findFirst()
+                        .get().getValue();
+        assertEquals(String.format(WRONG_VALUE_FOR_CHECK, checkName), expectedValue, check);
     }
 }

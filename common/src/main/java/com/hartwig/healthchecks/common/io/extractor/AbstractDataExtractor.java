@@ -65,7 +65,13 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     protected static final String DOT = ".";
 
+    protected static final String EQUAL = "=";
+
     protected static final String COMMA_DELIMITER = ",";
+
+    protected static final String SEMICOLON_DELIMITER = ";";
+
+    protected static final String DASH = "-";
 
     private static final String LOG_MSG = "Check '%s' for Patient '%s' has value '%s'";
 

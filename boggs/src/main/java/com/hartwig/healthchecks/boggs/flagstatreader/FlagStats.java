@@ -6,13 +6,10 @@ public class FlagStats {
 
     private final FlagStatsType flagStatsType;
 
-    private final String checkType;
-
     private final Double value;
 
-    public FlagStats(final FlagStatsType flagStatsType, final String checkType, final Double value) {
+    public FlagStats(final FlagStatsType flagStatsType, final Double value) {
         this.flagStatsType = flagStatsType;
-        this.checkType = checkType;
         this.value = value;
     }
 
