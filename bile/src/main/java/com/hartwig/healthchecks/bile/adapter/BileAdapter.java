@@ -4,17 +4,17 @@ import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.bile.extractor.RealignerExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.CheckCategory;
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.SampleReader;
+import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckCategory;
-import com.hartwig.healthchecks.common.util.CheckType;
 
 @ResourceWrapper(type = CheckCategory.BILE)
 public class BileAdapter implements HealthCheckAdapter {

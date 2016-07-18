@@ -3,15 +3,15 @@ package com.hartwig.healthchecks.roz.extractor;
 import java.io.IOException;
 import java.util.List;
 
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.io.reader.FilteredReader;
 import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
 
 public class SlicedExtractor extends AbstractDataExtractor {
 

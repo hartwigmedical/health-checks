@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.hartwig.healthchecks.common.util.CheckCategory;
+import com.hartwig.healthchecks.common.checks.CheckCategory;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

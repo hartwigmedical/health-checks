@@ -8,9 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.common.util.ErrorReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.ErrorReport;
 
 public class HealthCheckerImpl implements HealthChecker {
 

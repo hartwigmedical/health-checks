@@ -2,8 +2,7 @@ package com.hartwig.healthchecks.common.report;
 
 import java.util.List;
 
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.checks.CheckType;
 
 public class PatientMultiChecksReport extends BaseReport {
 

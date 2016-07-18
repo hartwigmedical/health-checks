@@ -1,8 +1,10 @@
-package com.hartwig.healthchecks.common.util;
+package com.hartwig.healthchecks.common.report;
 
 import java.io.Serializable;
 
 import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.checks.CheckType;
 
 public class BaseReport implements Serializable {
 

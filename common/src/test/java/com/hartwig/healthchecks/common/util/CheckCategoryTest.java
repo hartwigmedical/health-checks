@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.hartwig.healthchecks.common.checks.CheckCategory;
+
 public class CheckCategoryTest {
 
     @Test

@@ -6,16 +6,16 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.ErrorReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.common.util.ErrorReport;
 import com.hartwig.healthchecks.smitty.extractor.KinshipExtractor;
 
 import mockit.Expectations;

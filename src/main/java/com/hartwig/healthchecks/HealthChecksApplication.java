@@ -26,6 +26,11 @@ import rx.schedulers.Schedulers;
 
 public class HealthChecksApplication {
 
+    private static final String PARSE_LOGS_DESC = "Optional - Flag to parse data/version from log files"
+                    + "- Note this is temp should be removed!";
+
+    private static final String PARSE_LOGS = "parseLogs";
+
     private static final String CHECK_TYPE_ARGS_DESC = "The type of check to b executed for a single run";
 
     private static final String RUN_DIR_ARG_DESC = "The path containing the data for a single run";
@@ -80,8 +85,11 @@ public class HealthChecksApplication {
     @NotNull
     private static Options createOptions() {
         final Options options = new Options();
+
         options.addOption(RUN_DIRECTORY, true, RUN_DIR_ARG_DESC);
         options.addOption(CHECK_TYPE, true, CHECK_TYPE_ARGS_DESC);
+        options.addOption(PARSE_LOGS, false, PARSE_LOGS_DESC);
+
         return options;
     }
 
@@ -94,7 +102,6 @@ public class HealthChecksApplication {
 
     public void processHealthChecks() {
         LOGGER.info(String.format(CHECK_TYPE_MSG, ALL_CHECKS));
-
         if (checkType.equalsIgnoreCase(ALL_CHECKS)) {
             executeAllChecks(runDirectory);
         } else {

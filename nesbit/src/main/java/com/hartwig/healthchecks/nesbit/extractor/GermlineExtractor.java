@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.reader.FilteredReader;
 import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.nesbit.model.VCFData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
