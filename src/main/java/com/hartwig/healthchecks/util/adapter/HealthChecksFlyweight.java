@@ -7,9 +7,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-import com.hartwig.healthchecks.common.util.CheckCategory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

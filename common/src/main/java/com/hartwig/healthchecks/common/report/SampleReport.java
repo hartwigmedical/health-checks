@@ -4,8 +4,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.checks.CheckType;
 
 public class SampleReport extends BaseReport {
 

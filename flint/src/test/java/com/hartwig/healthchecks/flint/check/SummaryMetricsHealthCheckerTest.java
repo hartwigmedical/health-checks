@@ -8,16 +8,16 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.ErrorReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
-import com.hartwig.healthchecks.common.util.ErrorReport;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
 
 import mockit.Expectations;

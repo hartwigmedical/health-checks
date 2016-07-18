@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.util;
+package com.hartwig.healthchecks.common.checks;
 
 import java.util.Arrays;
 import java.util.List;

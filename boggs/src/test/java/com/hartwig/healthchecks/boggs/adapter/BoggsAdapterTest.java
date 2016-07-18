@@ -8,12 +8,12 @@ import com.hartwig.healthchecks.boggs.healthcheck.mapping.MappingExtractor;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsCheck;
 import com.hartwig.healthchecks.boggs.healthcheck.prestasts.PrestatsExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;

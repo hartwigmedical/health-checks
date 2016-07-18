@@ -2,7 +2,9 @@ package com.hartwig.healthchecks.common.util;
 
 import java.util.Optional;
 
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
+import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 

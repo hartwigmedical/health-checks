@@ -15,13 +15,13 @@ import org.junit.Test;
 
 import com.hartwig.healthchecks.boggs.healthcheck.reader.TestZipFileFactory;
 import com.hartwig.healthchecks.boggs.reader.ZipFileReader;
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
 
 import mockit.Expectations;
 import mockit.Mocked;

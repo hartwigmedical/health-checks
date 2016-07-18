@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
 
 import mockit.Mock;
 import mockit.MockUp;

@@ -33,6 +33,7 @@ classes/
 .classpath
 .project
 /bin/
+*/bin/
 .settings/
 
 #Mac OS
@@ -40,8 +41,14 @@ classes/
 */.DS_Store
 
 # Logs
-logs/
-*/logs/
+/logs/
+common/logs/
+boggs/logs/
+smitty/logs/
+flint/logs/
+nesbit/logs/
+roz/logs/
+bile/logs/
 
 _builds/
 _steps/

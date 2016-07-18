@@ -5,12 +5,12 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
+import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
 import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
 import com.hartwig.healthchecks.nesbit.extractor.GermlineExtractor;
 

@@ -2,8 +2,7 @@ package com.hartwig.healthchecks.common.report;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.common.util.BaseReport;
-import com.hartwig.healthchecks.common.util.CheckType;
+import com.hartwig.healthchecks.common.checks.CheckType;
 
 public class PatientReport extends BaseReport {
 
