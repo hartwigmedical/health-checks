@@ -33,7 +33,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
 
     private static final String PRECISION_CHECK_LABEL = "SOMATIC_%s_PRECISION_%s_2+_CALLERS";
 
-    private static final List<Integer> CALLERS_COUNT = Arrays.asList(1, 2, 3);
+    private static final List<Integer> CALLERS_COUNT = Arrays.asList(1, 2, 3, 4);
 
     private static final List<String> CALLERS = Arrays.asList("mutect", "varscan", "strelka", "freebayes");
 
@@ -65,6 +65,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         final List<BaseDataReport> reports = new ArrayList<>();
         reports.addAll(getTypeChecks(vcfData, patientId, VCFType.SNP));
         reports.addAll(getTypeChecks(vcfData, patientId, VCFType.INDELS));
+
         logBaseDataReports(reports);
         return reports;
     }
@@ -117,7 +118,10 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         final List<VCFSomaticSetData> callerSets = getSetsForCaller(vcfSomaticSetData, caller);
         final List<VCFSomaticSetData> callerSetsPerCallersCount = getSetForCallerWithMoreThanOneCaller(callerSets,
                         caller);
-        final double precision = (double) callerSetsPerCallersCount.size() / callerSets.size();
+        double precision = ZERO_DOUBLE_VALUE;
+        if (!callerSetsPerCallersCount.isEmpty() && !callerSets.isEmpty()) {
+            precision = (double) callerSetsPerCallersCount.size() / callerSets.size();
+        }
         return new BaseDataReport(patientId,
                         String.format(PRECISION_CHECK_LABEL, vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
                         String.valueOf(precision));
@@ -129,7 +133,10 @@ public class SomaticExtractor extends AbstractVCFExtractor {
                         vcfSomaticSetData, caller);
         final List<VCFSomaticSetData> setsPerCount = getSetsFilteredByCount(vcfSomaticSetData,
                         isTotalCallersCountMoreThan(ONE));
-        final double sensitivity = (double) callerSetsPerCallersCount.size() / setsPerCount.size();
+        double sensitivity = ZERO_DOUBLE_VALUE;
+        if (!callerSetsPerCallersCount.isEmpty() && !setsPerCount.isEmpty()) {
+            sensitivity = (double) callerSetsPerCallersCount.size() / setsPerCount.size();
+        }
         return new BaseDataReport(patientId,
                         String.format(SENSITIVITY_CHECK_LABEL, vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
                         String.valueOf(sensitivity));
@@ -139,7 +146,11 @@ public class SomaticExtractor extends AbstractVCFExtractor {
                     final VCFType vcfType, final int count) {
         final List<VCFSomaticSetData> setsPerCount = getSetsFilteredByCount(vcfSomaticSetData,
                         isTotalCallersCountEqual(count));
-        final double proportion = (double) setsPerCount.size() / vcfSomaticSetData.size();
+        double proportion = ZERO_DOUBLE_VALUE;
+        if (!setsPerCount.isEmpty() && !vcfSomaticSetData.isEmpty()) {
+            proportion = setsPerCount.size() / vcfSomaticSetData.size();
+        }
+
         return new BaseDataReport(patientId,
                         String.format(PROPORTION_CHECK_LABEL, vcfType.name(), String.valueOf(count)),
                         String.valueOf(proportion));

@@ -102,7 +102,7 @@ public class SomaticExtractorTest {
         final String twoDataLine = String.format(DOT_DATA_LINE, REF_VALUE, ALT_VALUE + "," + ALT_VALUE, MUTECT);
         final String threeDataLine = String.format(PASS_DATA_LINE, REF_VALUE, ALT_VALUE + "," + ALT_VALUE, STRELKA);
         final String fourDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE, VARSCAN);
-        final String fithDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE, ALL_SET);
+        final String fithDataLine = String.format(PASS_DATA_LINE, REF_VALUE, REF_VALUE, ALL_SET);
         final String sixthDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE, ALL_SET_FILTER);
 
         dataLines = Arrays.asList(oneDataLine, twoDataLine, threeDataLine, fourDataLine, fithDataLine, sixthDataLine,
@@ -127,16 +127,19 @@ public class SomaticExtractorTest {
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
         assertEquals("Report with wrong type", CheckType.SOMATIC, report.getCheckType());
         final List<BaseDataReport> patientData = ((PatientMultiChecksReport) report).getPatientData();
-        assertEquals("Wrong number of checks", 24, patientData.size());
+        assertEquals("Wrong number of checks", 26, patientData.size());
         assertPatientReport(patientData, SOMATIC_INDELS, "4");
         assertPatientReport(patientData, SOMATIC_SNP, "8");
         assertPatientReport(patientData, String.format(SENSITIVITY_CHECK_LABEL, SNP, MUTECT.toUpperCase()), "1.0");
-        assertPatientReport(patientData, String.format(SENSITIVITY_CHECK_LABEL, INDELS, MUTECT.toUpperCase()), "NaN");
+        assertPatientReport(patientData, String.format(SENSITIVITY_CHECK_LABEL, INDELS, MUTECT.toUpperCase()), "0.0");
         assertPatientReport(patientData, String.format(PRECISION_CHECK_LABEL, SNP, FREEBAYES.toUpperCase()),
                         "0.6666666666666666");
-        assertPatientReport(patientData, String.format(PRECISION_CHECK_LABEL, INDELS, FREEBAYES.toUpperCase()), "NaN");
+        assertPatientReport(patientData, String.format(PRECISION_CHECK_LABEL, INDELS, FREEBAYES.toUpperCase()), "0.0");
         assertPatientReport(patientData, String.format(PROPORTION_CHECK_LABEL, SNP, "2"), "0.0");
         assertPatientReport(patientData, String.format(PROPORTION_CHECK_LABEL, INDELS, "2"), "0.0");
+
+        assertPatientReport(patientData, String.format(PROPORTION_CHECK_LABEL, SNP, "4"), "0.0");
+
     }
 
     @Test(expected = IOException.class)
