@@ -3,6 +3,7 @@ package com.hartwig.healthchecks.common.report;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,11 +18,33 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
+import com.hartwig.healthchecks.common.io.reader.LineReader;
+import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
+import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 public final class JsonReport implements Report {
+
+    private static final String METADATA_ERR_MSG = "Error occurred whilst extracting metada."
+                    + "Will continue with report generation anyway. Error -> %s ";
+
+    private static final String ERROR_GENERATING_REPORT = "Error occurred whilst generating reports. Error -> %s";
+
+    private static final String PIPE_LINE_VERSION = "PipeLineVersion";
+
+    private static final String RUN_DATE = "RunDate";
+
+    private static final String TRUE = "1";
+
+    private static final String REPORT_DIR = "report.dir";
+
+    private static final String PARSE_LOGS = "parse.logs";
 
     private static final String REPORT_NAME = "health-checks_%s.json";
 
@@ -48,8 +71,18 @@ public final class JsonReport implements Report {
 
     @NotNull
     @Override
-    public Optional<String> generateReport() throws GenerateReportException {
+    public Optional<String> generateReport(final String runDirectory) throws GenerateReportException {
         final JsonArray reportArray = new JsonArray();
+        final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
+
+        final String parseLogs = propertiesUtil.getProperty(PARSE_LOGS);
+
+        if (parseLogs != null && parseLogs.equals(TRUE)) {
+            final JsonObject element = getMetadata(runDirectory);
+            if (element != null) {
+                reportArray.add(element);
+            }
+        }
 
         HEALTH_CHECKS.forEach((checkType, baseReport) -> {
             final JsonElement configJson = GSON.toJsonTree(baseReport);
@@ -60,9 +93,7 @@ public final class JsonReport implements Report {
             reportArray.add(element);
         });
 
-        final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
-
-        final String reportDir = propertiesUtil.getProperty("report.dir");
+        final String reportDir = propertiesUtil.getProperty(REPORT_DIR);
         final String fileName = String.format("%s/%s", reportDir,
                         String.format(REPORT_NAME, System.currentTimeMillis()));
 
@@ -72,11 +103,29 @@ public final class JsonReport implements Report {
             fileWriter.write(GSON.toJson(reportJson));
             fileWriter.flush();
         } catch (final IOException e) {
-            final String errorMessage = String.format("Error occurred whilst generating reports. Error -> %s",
-                            e.getMessage());
-            LOGGER.error(errorMessage);
-            throw new GenerateReportException(errorMessage);
+            LOGGER.error(String.format(ERROR_GENERATING_REPORT, e.getMessage()));
+            throw (GenerateReportException) new GenerateReportException(e.getMessage()).initCause(e);
         }
         return Optional.ofNullable(fileName);
+    }
+
+    private JsonObject getMetadata(final String runDirectory) {
+        JsonObject element = null;
+
+        try {
+            final MetadataExtractor metadataExtractor = new MetadataExtractor(PathRegexFinder.build(),
+                            LineReader.build());
+            final ReportMetadata reportMetadata = metadataExtractor.extractMetadata(runDirectory);
+            final JsonParser parser = new JsonParser();
+            final JsonReader dateReader = new JsonReader(new StringReader(reportMetadata.getDate()));
+            dateReader.setLenient(true);
+            element = new JsonObject();
+            element.add(RUN_DATE, parser.parse(dateReader));
+            element.add(PIPE_LINE_VERSION, parser.parse(reportMetadata.getPipelineVersion()));
+        } catch (IOException | HealthChecksException e) {
+            LOGGER.error(String.format(METADATA_ERR_MSG, e.getMessage()));
+        }
+
+        return element;
     }
 }

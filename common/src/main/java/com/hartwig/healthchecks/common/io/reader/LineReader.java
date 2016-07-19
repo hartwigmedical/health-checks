@@ -12,25 +12,23 @@ import org.jetbrains.annotations.NotNull;
 
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.path.PathFinder;
 
 @FunctionalInterface
-public interface FilteredReader {
+public interface LineReader {
 
     String LINE_NOT_FOUND_ERROR = "File %s does not contain lines with value %s";
 
     @NotNull
-    List<String> readLines(@NotNull final String path, @NotNull String extension, @NotNull Predicate<String> filter)
+    List<String> readLines(@NotNull final Path filePath, @NotNull Predicate<String> filter)
                     throws IOException, HealthChecksException;
 
     @NotNull
-    static FilteredReader build() {
-        return (path, extension, filter) -> {
-            final Path fileToRead = PathFinder.build().findPath(path, extension);
-            final List<String> searchedLines = Files.lines(Paths.get(fileToRead.toString())).filter(filter)
+    static LineReader build() {
+        return (filePath, filter) -> {
+            final List<String> searchedLines = Files.lines(Paths.get(filePath.toString())).filter(filter)
                             .collect(Collectors.toList());
             if (searchedLines.isEmpty()) {
-                throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, extension, filter.toString()));
+                throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, filePath, filter.toString()));
             }
             return searchedLines;
         };

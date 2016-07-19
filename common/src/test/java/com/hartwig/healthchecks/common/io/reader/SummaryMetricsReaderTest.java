@@ -13,7 +13,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
-import com.hartwig.healthchecks.common.io.reader.SamplePath;
+import com.hartwig.healthchecks.common.io.path.SamplePath;
 import com.hartwig.healthchecks.common.io.reader.SampleReader;
 
 public class SummaryMetricsReaderTest {

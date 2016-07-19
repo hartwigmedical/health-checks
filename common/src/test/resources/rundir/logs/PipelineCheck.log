@@ -1,0 +1,25 @@
+Check and cleanup for run: 160601_HMFreg0055_FR10306057_FR10306058_CPCT12345678 
+Pipeline version: v1.7
+ 
+
+Sample: CPCT12345678R
+	 PreStats: done 
+	 Mapping: done 
+	 Indel realignment: done 
+
+Sample: CPCT12345678T
+	 PreStats: done 
+	 Mapping: done 
+	 Indel realignment: done 
+
+PostStats: done 
+Variant caller: done 
+Somatic variants:
+	 CPCT12345678R_CPCT12345678T: done 
+Copy number analysis:
+	 CPCT12345678R_CPCT12345678T: done 
+Variant filter: done 
+Variant annotation: done 
+VCF Utils: done 
+
+The pipeline completed successfully. The md5sum file will be created.

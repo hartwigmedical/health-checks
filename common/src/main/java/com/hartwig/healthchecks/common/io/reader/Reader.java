@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.common.io.path.PathFinder;
+import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 
 @FunctionalInterface
 public interface Reader {
@@ -22,7 +22,7 @@ public interface Reader {
     @NotNull
     static Reader build() {
         return (path, extension) -> {
-            final Path fileToRead = PathFinder.build().findPath(path, extension);
+            final Path fileToRead = PathExtensionFinder.build().findPath(path, extension);
             return Files.lines(Paths.get(fileToRead.toString())).collect(Collectors.toList());
         };
     }

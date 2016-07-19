@@ -26,11 +26,6 @@ import rx.schedulers.Schedulers;
 
 public class HealthChecksApplication {
 
-    private static final String PARSE_LOGS_DESC = "Optional - Flag to parse data/version from log files"
-                    + "- Note this is temp should be removed!";
-
-    private static final String PARSE_LOGS = "parseLogs";
-
     private static final String CHECK_TYPE_ARGS_DESC = "The type of check to b executed for a single run";
 
     private static final String RUN_DIR_ARG_DESC = "The path containing the data for a single run";
@@ -88,7 +83,6 @@ public class HealthChecksApplication {
 
         options.addOption(RUN_DIRECTORY, true, RUN_DIR_ARG_DESC);
         options.addOption(CHECK_TYPE, true, CHECK_TYPE_ARGS_DESC);
-        options.addOption(PARSE_LOGS, false, PARSE_LOGS_DESC);
 
         return options;
     }
@@ -128,7 +122,7 @@ public class HealthChecksApplication {
 
     private void generateReport() {
         try {
-            final Optional<String> fileName = JsonReport.getInstance().generateReport();
+            final Optional<String> fileName = JsonReport.getInstance().generateReport(runDirectory);
             LOGGER.info(String.format(REPORT_GENERATED_MSG, fileName.get()));
         } catch (final GenerateReportException e) {
             LOGGER.log(Level.ERROR, e.getMessage());
