@@ -1,0 +1,6 @@
+group 'com.hartwig.healthchecks.boo'
+version '1.0.0-SNAPSHOT'
+
+dependencies {
+    compile project(":common")
+}

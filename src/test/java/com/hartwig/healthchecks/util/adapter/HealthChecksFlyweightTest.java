@@ -3,17 +3,20 @@ package com.hartwig.healthchecks.util.adapter;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+
 import com.hartwig.healthchecks.boggs.adapter.BoggsAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 
-import org.junit.Test;
-
 public class HealthChecksFlyweightTest {
 
     private static final String WRONG_TYPE_MSG = "Wrong Type fo Adapter";
+
     private static final String BOGGS = "boggs";
+
     private static final String NOT_NULL_MSG = "healthChecksFlyweight should not be null";
+
     private static final String DUMMY_TYPE = "bla";
 
     @Test
