@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.FlagStatsType;
+import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class SambambaFlagStatParser implements FlagStatParser {

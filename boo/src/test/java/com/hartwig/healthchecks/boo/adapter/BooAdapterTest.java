@@ -1,10 +1,12 @@
-package com.hartwig.healthchecks.boggs.adapter;
+package com.hartwig.healthchecks.boo.adapter;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
+import com.hartwig.healthchecks.boo.adapter.BooAdapter;
+import com.hartwig.healthchecks.boo.extractor.PrestatsCheck;
+import com.hartwig.healthchecks.boo.extractor.PrestatsExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
@@ -17,7 +19,7 @@ import mockit.Mocked;
 import mockit.NonStrictExpectations;
 import mockit.Verifications;
 
-public class BoggsAdapterTest {
+public class BooAdapterTest {
 
     private static final String DUMMY_VALUE = "1.0d";
 
@@ -30,7 +32,7 @@ public class BoggsAdapterTest {
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     @Test
-    public void verifyAdapterRunning(@Mocked final HealthCheckerImpl mapping, @Mocked final JsonReport report) {
+    public void verifyAdapterRunning(@Mocked final HealthCheckerImpl prestats, @Mocked final JsonReport report) {
 
         new NonStrictExpectations() {
 
@@ -39,15 +41,16 @@ public class BoggsAdapterTest {
                 result = report;
                 times = 1;
 
-                new HealthCheckerImpl(CheckType.MAPPING, anyString, (MappingExtractor) any);
-                result = mapping;
+                new HealthCheckerImpl(CheckType.PRESTATS, anyString, (PrestatsExtractor) any);
+                result = prestats;
                 times = 1;
-                mapping.runCheck();
-                returns(getDummyMappingReport());
+
+                prestats.runCheck();
+                returns(getDummyPrestatsReport());
                 times = 1;
             }
         };
-        final HealthCheckAdapter adapter = new BoggsAdapter();
+        final HealthCheckAdapter adapter = new BooAdapter();
         adapter.runCheck(DUMMY_RUN_DIR);
 
         new Verifications() {
@@ -59,9 +62,10 @@ public class BoggsAdapterTest {
         };
     }
 
-    private SampleReport getDummyMappingReport() {
-        final BaseDataReport mappingDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
-        return new SampleReport(CheckType.MAPPING, Arrays.asList(mappingDataReport), Arrays.asList(mappingDataReport));
+    private SampleReport getDummyPrestatsReport() {
+        final BaseDataReport prestatsDataReport = new BaseDataReport(DUMMY_ID, PrestatsCheck.DUMMY.toString(),
+                        DUMMY_STATUS);
+        return new SampleReport(CheckType.PRESTATS, Arrays.asList(prestatsDataReport),
+                        Arrays.asList(prestatsDataReport));
     }
-
 }

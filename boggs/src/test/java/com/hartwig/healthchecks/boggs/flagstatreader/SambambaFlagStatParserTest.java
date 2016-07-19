@@ -11,7 +11,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.FlagStatsType;
+import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class SambambaFlagStatParserTest {

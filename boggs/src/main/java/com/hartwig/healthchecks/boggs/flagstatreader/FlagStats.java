@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
-import com.hartwig.healthchecks.boggs.healthcheck.mapping.FlagStatsType;
+import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
 
 public class FlagStats {
 

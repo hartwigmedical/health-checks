@@ -1,9 +1,8 @@
-package com.hartwig.healthchecks.boggs.adapter;
+package com.hartwig.healthchecks.boo.adapter;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
-import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
+import com.hartwig.healthchecks.boo.extractor.PrestatsExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
@@ -15,18 +14,19 @@ import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 
-@ResourceWrapper(type = CheckCategory.BOGGS)
-public class BoggsAdapter implements HealthCheckAdapter {
+@ResourceWrapper(type = CheckCategory.BOO)
+public class BooAdapter implements HealthCheckAdapter {
 
     private final Report report = JsonReport.getInstance();
 
     @Override
     public void runCheck(@NotNull final String runDirectory) {
         final ZipFileReader zipFileReader = new ZipFileReader();
-        final MappingExtractor mappingExtractor = new MappingExtractor(new SambambaFlagStatParser(), zipFileReader);
-        final HealthChecker mappingHealthChecker = new HealthCheckerImpl(CheckType.MAPPING, runDirectory,
-                        mappingExtractor);
-        final BaseReport mapping = mappingHealthChecker.runCheck();
-        report.addReportData(mapping);
+        final PrestatsExtractor prestatsExtractor = new PrestatsExtractor(zipFileReader);
+        final HealthChecker prestastHealthChecker = new HealthCheckerImpl(CheckType.PRESTATS, runDirectory,
+                        prestatsExtractor);
+        final BaseReport prestats = prestastHealthChecker.runCheck();
+        report.addReportData(prestats);
+
     }
 }
