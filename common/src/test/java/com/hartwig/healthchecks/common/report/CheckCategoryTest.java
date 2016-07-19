@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.util;
+package com.hartwig.healthchecks.common.report;
 
 import java.util.Optional;
 

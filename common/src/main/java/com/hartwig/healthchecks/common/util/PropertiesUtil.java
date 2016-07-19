@@ -9,6 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PropertiesUtil {
 
+    private static final String CONFIG_FILE = "config.properties";
+
+    private static final String ERROR_LOADING_PROPERTIES = "Error loading properties. Error -> %s";
+
     private static final Logger LOGGER = LogManager.getLogger(PropertiesUtil.class);
 
     private static PropertiesUtil instance = new PropertiesUtil();
@@ -17,9 +21,9 @@ public final class PropertiesUtil {
 
     static {
         try {
-            properties.load(ClassLoader.getSystemResourceAsStream("config.properties"));
+            properties.load(ClassLoader.getSystemResourceAsStream(CONFIG_FILE));
         } catch (IOException e) {
-            LOGGER.error(String.format("Error loading properties. Error -> %s", e.getMessage()));
+            LOGGER.error(String.format(ERROR_LOADING_PROPERTIES, e.getMessage()));
         }
     }
 

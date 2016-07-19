@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.reader.FilteredReader;
+import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
@@ -23,9 +23,9 @@ public class GermlineExtractor extends AbstractVCFExtractor {
 
     private static final String EXT = "_Cosmicv76_GoNLv5.vcf";
 
-    private final FilteredReader reader;
+    private final ExtensionLineReader reader;
 
-    public GermlineExtractor(final FilteredReader reader) {
+    public GermlineExtractor(final ExtensionLineReader reader) {
         super();
         this.reader = reader;
     }

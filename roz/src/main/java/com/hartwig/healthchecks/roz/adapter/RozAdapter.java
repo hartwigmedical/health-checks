@@ -8,7 +8,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.io.reader.FilteredReader;
+import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
@@ -22,7 +22,7 @@ public class RozAdapter implements HealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory) {
-        final FilteredReader reader = FilteredReader.build();
+        final ExtensionLineReader reader = ExtensionLineReader.build();
         final DataExtractor extractor = new SlicedExtractor(reader);
         final HealthChecker healthcheck = new HealthCheckerImpl(CheckType.SLICED, runDirectory, extractor);
         final BaseReport baseReport = healthcheck.runCheck();

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.common.io.path.SamplePath;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 
 @FunctionalInterface

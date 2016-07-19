@@ -14,7 +14,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HeaderNotFoundException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.reader.FilteredReader;
+import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
@@ -81,7 +81,7 @@ public class GermlineExtractorTest {
     private List<String> missingHeaderValue;
 
     @Mocked
-    private FilteredReader reader;
+    private ExtensionLineReader reader;
 
     @Before
     public void setUp() {
