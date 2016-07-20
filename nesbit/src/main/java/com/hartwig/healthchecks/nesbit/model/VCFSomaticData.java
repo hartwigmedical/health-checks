@@ -1,12 +1,12 @@
 package com.hartwig.healthchecks.nesbit.model;
 
-public class VCFData {
+public class VCFSomaticData {
 
     private final String info;
 
     private final VCFType type;
 
-    public VCFData(final VCFType type, final String info) {
+    public VCFSomaticData(final VCFType type, final String info) {
         super();
         this.type = type;
         this.info = info;

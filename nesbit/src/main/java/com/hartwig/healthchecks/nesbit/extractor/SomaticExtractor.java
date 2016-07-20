@@ -1,5 +1,8 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
+import static com.hartwig.healthchecks.nesbit.extractor.AbstractVCFExtractor.ALT_INDEX;
+import static com.hartwig.healthchecks.nesbit.extractor.AbstractVCFExtractor.REF_INDEX;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +20,7 @@ import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
-import com.hartwig.healthchecks.nesbit.model.VCFData;
+import com.hartwig.healthchecks.nesbit.model.VCFSomaticData;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticSetData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
@@ -60,7 +63,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         final String patientId = getPatientIdFromHeader(headers, TUM_SAMPLE_SUFFIX);
 
         final List<String> lines = reader.readLines(runDirectory, EXT, new VCFPassDataLinePredicate());
-        final List<VCFData> vcfData = getVCFData(lines);
+        final List<VCFSomaticData> vcfData = getVCFSomaticData(lines);
 
         final List<BaseDataReport> reports = new ArrayList<>();
         reports.addAll(getTypeChecks(vcfData, patientId, VCFType.SNP));
@@ -70,9 +73,9 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         return reports;
     }
 
-    private List<BaseDataReport> getTypeChecks(final List<VCFData> vcfData, final String patientId,
+    private List<BaseDataReport> getTypeChecks(final List<VCFSomaticData> vcfData, final String patientId,
                     final VCFType vcfType) {
-        final BaseDataReport countReport = getCountCheck(patientId, vcfData, vcfType,
+        final BaseDataReport countReport = getSomaticVariantCount(patientId, vcfData, vcfType,
                         String.format(SOMATIC_TYPE_LABEL, vcfType.name()));
         final List<BaseDataReport> reports = new ArrayList<>();
         reports.add(countReport);
@@ -94,7 +97,22 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         return reports;
     }
 
-    private List<VCFSomaticSetData> getSetDataForType(final List<VCFData> vcfData, final VCFType vcfType) {
+    private List<VCFSomaticData> getVCFSomaticData(final List<String> lines) {
+        return lines.stream().map(line -> {
+            final String[] values = line.split(SEPERATOR_REGEX);
+            final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
+            final String info = values[INFO_INDEX];
+            return new VCFSomaticData(type, info);
+        }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
+    }
+
+    protected BaseDataReport getSomaticVariantCount(final String patientId, final List<VCFSomaticData> vcfData,
+                    final VCFType vcfType, final String checkName) {
+        final Long count = vcfData.stream().filter(data -> data.getType().equals(vcfType)).count();
+        return new BaseDataReport(patientId, checkName, String.valueOf(count));
+    }
+
+    private List<VCFSomaticSetData> getSetDataForType(final List<VCFSomaticData> vcfData, final VCFType vcfType) {
         return vcfData.stream().filter(vcf -> vcf.getType().equals(vcfType)).map(vcf -> {
             VCFSomaticSetData vcfSomaticSetData = null;
             final String setValue = Arrays.stream(vcf.getInfo().split(SEMICOLON_DELIMITER))
@@ -182,5 +200,4 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     private static Predicate<VCFSomaticSetData> isTotalCallersCountEqual(final int count) {
         return vcfSomaticSet -> vcfSomaticSet.getTotalCallerCount() == count;
     }
-
 }

@@ -49,6 +49,7 @@ flint/logs/
 nesbit/logs/
 roz/logs/
 bile/logs/
+boo/logs/
 
 _builds/
 _steps/
