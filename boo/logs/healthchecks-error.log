@@ -30,3 +30,7 @@
 [ERROR] 2016-07-20 12:30:16.434 [Test worker] PrestatsExtractor - File summary.txt was found empty in path -> CPCT12345678R/QCStats
 [ERROR] 2016-07-20 12:30:16.548 [Test worker] HealthCheckerImpl - Got An Exception with message: DUMMY_ERROR
 [ERROR] 2016-07-20 12:30:16.553 [Test worker] HealthCheckerImpl - Got An Exception with message: DUMMY_ERROR
+[ERROR] 2016-07-20 12:48:41.548 [Test worker] PrestatsExtractor - File fastqc_data.txt was found empty in path -> CPCT12345678R
+[ERROR] 2016-07-20 12:48:41.556 [Test worker] PrestatsExtractor - File summary.txt was found empty in path -> CPCT12345678R/QCStats
+[ERROR] 2016-07-20 12:48:41.663 [Test worker] HealthCheckerImpl - Got An Exception with message: DUMMY_ERROR
+[ERROR] 2016-07-20 12:48:41.668 [Test worker] HealthCheckerImpl - Got An Exception with message: DUMMY_ERROR

@@ -238,3 +238,33 @@
 [INFO ] 2016-07-20 12:30:16.457 [Test worker] AbstractDataExtractor - Check 'Total Sequences' for Patient 'CPCT12345678T' has value 'FAIL'
 [ERROR] 2016-07-20 12:30:16.548 [Test worker] HealthCheckerImpl - Got An Exception with message: DUMMY_ERROR
 [ERROR] 2016-07-20 12:30:16.553 [Test worker] HealthCheckerImpl - Got An Exception with message: DUMMY_ERROR
+[ERROR] 2016-07-20 12:48:41.548 [Test worker] PrestatsExtractor - File fastqc_data.txt was found empty in path -> CPCT12345678R
+[ERROR] 2016-07-20 12:48:41.556 [Test worker] PrestatsExtractor - File summary.txt was found empty in path -> CPCT12345678R/QCStats
+[INFO ] 2016-07-20 12:48:41.563 [Test worker] AbstractDataExtractor - Check 'Per sequence quality scores' for Patient 'CPCT12345678R' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.565 [Test worker] AbstractDataExtractor - Check 'Basic Statistics' for Patient 'CPCT12345678R' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.565 [Test worker] AbstractDataExtractor - Check 'Overrepresented sequences' for Patient 'CPCT12345678R' has value 'WARN'
+[INFO ] 2016-07-20 12:48:41.565 [Test worker] AbstractDataExtractor - Check 'Per base sequence quality' for Patient 'CPCT12345678R' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.566 [Test worker] AbstractDataExtractor - Check 'Per sequence GC content' for Patient 'CPCT12345678R' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.566 [Test worker] AbstractDataExtractor - Check 'Per base sequence content' for Patient 'CPCT12345678R' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.566 [Test worker] AbstractDataExtractor - Check 'Sequence Duplication Levels' for Patient 'CPCT12345678R' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.567 [Test worker] AbstractDataExtractor - Check 'Adapter Content' for Patient 'CPCT12345678R' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.567 [Test worker] AbstractDataExtractor - Check 'Sequence Length Distribution' for Patient 'CPCT12345678R' has value 'FAIL'
+[INFO ] 2016-07-20 12:48:41.567 [Test worker] AbstractDataExtractor - Check 'Per tile sequence quality' for Patient 'CPCT12345678R' has value 'WARN'
+[INFO ] 2016-07-20 12:48:41.568 [Test worker] AbstractDataExtractor - Check 'Kmer Content' for Patient 'CPCT12345678R' has value 'WARN'
+[INFO ] 2016-07-20 12:48:41.568 [Test worker] AbstractDataExtractor - Check 'Per base N content' for Patient 'CPCT12345678R' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.569 [Test worker] AbstractDataExtractor - Check 'Total Sequences' for Patient 'CPCT12345678R' has value 'FAIL'
+[INFO ] 2016-07-20 12:48:41.570 [Test worker] AbstractDataExtractor - Check 'Per sequence quality scores' for Patient 'CPCT12345678T' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.571 [Test worker] AbstractDataExtractor - Check 'Basic Statistics' for Patient 'CPCT12345678T' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.571 [Test worker] AbstractDataExtractor - Check 'Overrepresented sequences' for Patient 'CPCT12345678T' has value 'WARN'
+[INFO ] 2016-07-20 12:48:41.571 [Test worker] AbstractDataExtractor - Check 'Per base sequence quality' for Patient 'CPCT12345678T' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.571 [Test worker] AbstractDataExtractor - Check 'Per sequence GC content' for Patient 'CPCT12345678T' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.572 [Test worker] AbstractDataExtractor - Check 'Per base sequence content' for Patient 'CPCT12345678T' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.572 [Test worker] AbstractDataExtractor - Check 'Sequence Duplication Levels' for Patient 'CPCT12345678T' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.572 [Test worker] AbstractDataExtractor - Check 'Adapter Content' for Patient 'CPCT12345678T' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.573 [Test worker] AbstractDataExtractor - Check 'Sequence Length Distribution' for Patient 'CPCT12345678T' has value 'FAIL'
+[INFO ] 2016-07-20 12:48:41.573 [Test worker] AbstractDataExtractor - Check 'Per tile sequence quality' for Patient 'CPCT12345678T' has value 'WARN'
+[INFO ] 2016-07-20 12:48:41.574 [Test worker] AbstractDataExtractor - Check 'Kmer Content' for Patient 'CPCT12345678T' has value 'WARN'
+[INFO ] 2016-07-20 12:48:41.574 [Test worker] AbstractDataExtractor - Check 'Per base N content' for Patient 'CPCT12345678T' has value 'PASS'
+[INFO ] 2016-07-20 12:48:41.574 [Test worker] AbstractDataExtractor - Check 'Total Sequences' for Patient 'CPCT12345678T' has value 'FAIL'
+[ERROR] 2016-07-20 12:48:41.663 [Test worker] HealthCheckerImpl - Got An Exception with message: DUMMY_ERROR
+[ERROR] 2016-07-20 12:48:41.668 [Test worker] HealthCheckerImpl - Got An Exception with message: DUMMY_ERROR

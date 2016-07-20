@@ -18,9 +18,9 @@ public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
 
     protected static final int INFO_INDEX = 7;
 
-    private static final int ALT_INDEX = 4;
+    protected static final int ALT_INDEX = 4;
 
-    private static final int REF_INDEX = 3;
+    protected static final int REF_INDEX = 3;
 
     private final String[] neededHeaders = {"FILTER", "REF", "ALT", "INFO", "(CPCT)(\\d+)(T)"};
 
@@ -52,9 +52,7 @@ public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
                         .findFirst().get();
     }
 
-    protected VCFType getVCFType(final String[] values) {
-        final String ref = values[REF_INDEX];
-        final String alt = values[ALT_INDEX];
+    protected VCFType getVCFType(final String ref, final String alt) {
         VCFType type = VCFType.INDELS;
         if (ref.length() == alt.length()) {
             type = VCFType.SNP;

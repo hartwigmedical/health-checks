@@ -1,5 +1,8 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
+import static com.hartwig.healthchecks.nesbit.extractor.AbstractVCFExtractor.ALT_INDEX;
+import static com.hartwig.healthchecks.nesbit.extractor.AbstractVCFExtractor.REF_INDEX;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,7 +100,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     private List<VCFSomaticData> getVCFSomaticData(final List<String> lines) {
         return lines.stream().map(line -> {
             final String[] values = line.split(SEPERATOR_REGEX);
-            final VCFType type = getVCFType(values);
+            final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
             final String info = values[INFO_INDEX];
             return new VCFSomaticData(type, info);
         }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
