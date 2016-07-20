@@ -8,13 +8,15 @@ import java.util.stream.Stream;
 import com.hartwig.healthchecks.common.exception.HeaderNotFoundException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
-import com.hartwig.healthchecks.nesbit.model.VCFData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
 public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
 
-    private static final int INFO_INDEX = 7;
+    protected static final int PATIENT_TUM_INDEX = 10;
+
+    protected static final int PATIENT_REF_INDEX = 9;
+
+    protected static final int INFO_INDEX = 7;
 
     private static final int ALT_INDEX = 4;
 
@@ -45,28 +47,18 @@ public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
         return headers;
     }
 
-    protected List<VCFData> getVCFData(final List<String> lines) {
-        return lines.stream().map(line -> {
-            final String[] values = line.split(SEPERATOR_REGEX);
-            final String ref = values[REF_INDEX];
-            final String alt = values[ALT_INDEX];
-            final String info = values[INFO_INDEX];
-            VCFType type = VCFType.INDELS;
-            if (ref.length() == alt.length()) {
-                type = VCFType.SNP;
-            }
-            return new VCFData(type, info);
-        }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
-    }
-
     protected String getPatientIdFromHeader(final String[] headers, final String suffix) {
         return Arrays.stream(headers).filter(header -> header.startsWith(SAMPLE_PREFIX) && header.endsWith(suffix))
                         .findFirst().get();
     }
 
-    protected BaseDataReport getCountCheck(final String patientId, final List<VCFData> vcfData, final VCFType vcfType,
-                    final String checkName) {
-        final Long count = vcfData.stream().filter(data -> data.getType().equals(vcfType)).count();
-        return new BaseDataReport(patientId, checkName, String.valueOf(count));
+    protected VCFType getVCFType(final String[] values) {
+        final String ref = values[REF_INDEX];
+        final String alt = values[ALT_INDEX];
+        VCFType type = VCFType.INDELS;
+        if (ref.length() == alt.length()) {
+            type = VCFType.SNP;
+        }
+        return type;
     }
 }

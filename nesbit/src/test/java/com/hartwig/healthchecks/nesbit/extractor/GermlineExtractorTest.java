@@ -17,52 +17,30 @@ import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
+import com.hartwig.healthchecks.common.report.SampleReport;
 
 import mockit.Expectations;
 import mockit.Mocked;
 
 public class GermlineExtractorTest {
 
-    private static final String PASS_DATA_LINE = "2\t212812060\trs839540\t%s\t%s\t.\tPASS\tAC=1;AF=0.333;AN=3;"
-                    + "ANN=C|sequence_feature|LOW|ERBB4|ENSG00000178568|topological_domain:Extracellular|"
-                    + "ENST00000342788|protein_coding||c.421+95A>G||||||,C|sequence_feature|LOW|ERBB4|ENSG00000178568|"
-                    + "topological_domain:Extracellular|ENST00000436443|protein_coding||c.421+95A>G||||||,C|"
-                    + "intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000342788|protein_coding|3/27|"
-                    + "c.421+95A>G||||||,C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000436443|"
-                    + "protein_coding|3/26|c.421+95A>G||||||,C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|"
-                    + "transcript|ENST00000402597|protein_coding|3/27|c.421+95A>G||||||,C|intron_variant|"
-                    + "MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000484594|"
-                    + "retained_intron|3/19|n.473+95A>G||||||,"
-                    + "C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000260943|protein_coding|"
-                    + "3/18|c.418+95A>G||||||WARNING_TRANSCRIPT_INCOMPLETE,C|intron_variant|MODIFIER|ERBB4|"
-                    + "ENSG00000178568|transcript|ENST00000484474|processed_transcript|2/4|n.338+95A>G||||||,"
-                    + "C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000435846|protein_coding|"
-                    + "3/4|c.244+95A>G||||||WARNING_TRANSCRIPT_INCOMPLETE;DB;SOMATIC;VT=SNP;set=mutect"
-                    + "\tGT:AD:BQ:DP:FA:SS\t./.\t0:25,0:.:25:0.00:0\t./.\t0/1:5,13:40:18:0.722:2\t./. ./. ./. ./.";
+    private static final String PASS_DATA_LINE = "1\t10329\trs150969722\t%s\t%s\t76.71\tPASS\t"
+                    + "AC=2;AF=1.00;AN=2;DB;DP=782;FS=0.000;MLEAC=2;MLEAF=1.00;MQ=23.61;QD=25.57;SOR=1.179\t"
+                    + "GT:AD:DP:GQ:PL\t%s\t%s";
 
-    private static final String DOT_DATA_LINE = "2\t212812060\trs839540\t%s\t%s\t.\t.\t" + "AC=1;AF=0.333;AN=3;"
-                    + "ANN=C|sequence_feature|LOW|ERBB4|ENSG00000178568|topological_domain:Extracellular|"
-                    + "ENST00000342788|protein_coding||c.421+95A>G||||||,C|sequence_feature|LOW|ERBB4|ENSG00000178568|"
-                    + "topological_domain:Extracellular|ENST00000436443|protein_coding||c.421+95A>G||||||,C|"
-                    + "intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000342788|protein_coding|3/27|"
-                    + "c.421+95A>G||||||,C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000436443|"
-                    + "protein_coding|3/26|c.421+95A>G||||||,C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|"
-                    + "transcript|ENST00000402597|protein_coding|3/27|c.421+95A>G||||||,C|intron_variant|"
-                    + "MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000484594|"
-                    + "retained_intron|3/19|n.473+95A>G||||||,"
-                    + "C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000260943|protein_coding|"
-                    + "3/18|c.418+95A>G||||||WARNING_TRANSCRIPT_INCOMPLETE,C|intron_variant|MODIFIER|ERBB4|"
-                    + "ENSG00000178568|transcript|ENST00000484474|processed_transcript|2/4|n.338+95A>G||||||,"
-                    + "C|intron_variant|MODIFIER|ERBB4|ENSG00000178568|transcript|ENST00000435846|protein_coding|"
-                    + "3/4|c.244+95A>G||||||WARNING_TRANSCRIPT_INCOMPLETE;DB;SOMATIC;VT=SNP;set=mutect"
-                    + "\tGT:AD:BQ:DP:FA:SS\t./.\t0:25,0:.:25:0.00:0\t./.\t0/1:5,13:40:18:0.722:2\t./. ./. ./. ./.";
+    private static final String DOT_DATA_LINE = "1\t10329\trs150969722\t%s\t%s\t76.71\t.\t"
+                    + "AC=2;AF=1.00;AN=2;DB;DP=782;FS=0.000;MLEAC=2;MLEAF=1.00;MQ=23.61;QD=25.57;SOR=1.179\t"
+                    + "GT:AD:DP:GQ:PL\t%s\t%s";
 
     private static final String HEADER_LINE = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
                     + "\tCPCT12345678R\tCPCT12345678T";
 
     private static final String HEADER_NOT_RIGHT = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
                     + "\tCPCT12345678R";
+
+    private static final String NOT_VARIANT = "./.:773,0:773";
+
+    private static final String VARIANT = "1/1:0,3:3:9:103,9,0";
 
     private static final String REF_VALUE = "CT";
 
@@ -85,10 +63,12 @@ public class GermlineExtractorTest {
 
     @Before
     public void setUp() {
-        final String oneDataLine = String.format(PASS_DATA_LINE, REF_VALUE, REF_VALUE);
-        final String twoDataLine = String.format(DOT_DATA_LINE, REF_VALUE, ALT_VALUE + "," + ALT_VALUE);
-        final String threeDataLine = String.format(PASS_DATA_LINE, REF_VALUE, ALT_VALUE + "," + ALT_VALUE);
-        final String fourDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE);
+        final String oneDataLine = String.format(PASS_DATA_LINE, REF_VALUE, REF_VALUE, VARIANT, NOT_VARIANT);
+        final String twoDataLine = String.format(DOT_DATA_LINE, REF_VALUE, ALT_VALUE + "," + ALT_VALUE, VARIANT,
+                        VARIANT);
+        final String threeDataLine = String.format(PASS_DATA_LINE, REF_VALUE, ALT_VALUE + "," + ALT_VALUE, VARIANT,
+                        NOT_VARIANT);
+        final String fourDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE, NOT_VARIANT, VARIANT);
         dataLines = Arrays.asList(oneDataLine, twoDataLine, threeDataLine, fourDataLine, oneDataLine, twoDataLine,
                         threeDataLine, fourDataLine);
         headerLines = Arrays.asList(HEADER_LINE);
@@ -108,14 +88,23 @@ public class GermlineExtractorTest {
         };
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
         assertEquals("Report with wrong type", CheckType.GERMLINE, report.getCheckType());
-        final List<BaseDataReport> patientData = ((PatientMultiChecksReport) report).getPatientData();
-        assertEquals("Wrong number of checks", 2, patientData.size());
-        final String indels = patientData.stream().filter(data -> data.getCheckName().equals(GERMLINE_INDELS))
+        final List<BaseDataReport> refData = ((SampleReport) report).getReferenceSample();
+        final List<BaseDataReport> tumData = ((SampleReport) report).getTumorSample();
+
+        assertSampleData(refData, "2", "4");
+        assertSampleData(tumData, "2", "2");
+
+    }
+
+    private void assertSampleData(final List<BaseDataReport> sampleData, final String expectedCountSNP,
+                    final String expectedCountIndels) {
+        assertEquals("Wrong number of checks", 2, sampleData.size());
+        final String indels = sampleData.stream().filter(data -> data.getCheckName().equals(GERMLINE_INDELS))
                         .findFirst().get().getValue();
-        assertEquals("Indels value", "4", indels);
-        final String snp = patientData.stream().filter(data -> data.getCheckName().equals(GERMLINE_SNP)).findFirst()
+        assertEquals("Indels value", expectedCountIndels, indels);
+        final String snp = sampleData.stream().filter(data -> data.getCheckName().equals(GERMLINE_SNP)).findFirst()
                         .get().getValue();
-        assertEquals("snp value", "4", snp);
+        assertEquals("snp value", expectedCountSNP, snp);
     }
 
     @Test(expected = IOException.class)
@@ -151,7 +140,7 @@ public class GermlineExtractorTest {
 
             {
                 reader.readLines(anyString, anyString, (Predicate<String>) any);
-                returns(missingHeaderValue);
+                returns(missingHeaderValue, dataLines);
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);

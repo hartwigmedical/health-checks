@@ -19,6 +19,7 @@ import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
+import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
 
 import mockit.Expectations;
 import mockit.Mocked;
