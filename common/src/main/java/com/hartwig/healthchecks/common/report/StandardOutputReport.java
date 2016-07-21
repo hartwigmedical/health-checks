@@ -9,7 +9,7 @@ import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class StandardOutputReport extends JsonBaseReport {
+public final class StandardOutputReport extends AbstractJsonBaseReport {
 
     private static final StandardOutputReport INSTANCE = new StandardOutputReport();
 

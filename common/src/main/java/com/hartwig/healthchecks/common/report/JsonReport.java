@@ -15,7 +15,7 @@ import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class JsonReport extends JsonBaseReport {
+public final class JsonReport extends AbstractJsonBaseReport {
 
     private static final String REPORT_DIR = "report.dir";
 

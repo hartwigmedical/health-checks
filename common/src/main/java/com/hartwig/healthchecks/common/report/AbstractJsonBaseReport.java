@@ -22,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class JsonBaseReport implements Report {
+public abstract class AbstractJsonBaseReport implements Report {
 
     protected static final String METADATA_ERR_MSG = "Error occurred whilst extracting metada."
                     + "Will continue with report generation anyway. Error -> %s ";
