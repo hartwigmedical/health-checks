@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
@@ -53,14 +52,7 @@ public final class JsonReport extends JsonBaseReport {
             }
         }
 
-        HEALTH_CHECKS.forEach((checkType, baseReport) -> {
-            final JsonElement configJson = GSON.toJsonTree(baseReport);
-
-            final JsonObject element = new JsonObject();
-            element.add(checkType.toString(), configJson);
-
-            reportArray.add(element);
-        });
+        computeElements(reportArray);
 
         final String reportDir = propertiesUtil.getProperty(REPORT_DIR);
         final String fileName = String.format("%s/%s", reportDir,

@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.hartwig.healthchecks.common.checks.CheckType;
@@ -63,5 +65,16 @@ public abstract class JsonBaseReport implements Report {
         }
 
         return element;
+    }
+
+    protected void computeElements(@NotNull final JsonArray reportArray) {
+        HEALTH_CHECKS.forEach((checkType, baseReport) -> {
+            final JsonElement configJson = GSON.toJsonTree(baseReport);
+
+            final JsonObject element = new JsonObject();
+            element.add(checkType.toString(), configJson);
+
+            reportArray.add(element);
+        });
     }
 }

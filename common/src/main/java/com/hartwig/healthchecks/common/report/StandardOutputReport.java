@@ -3,7 +3,6 @@ package com.hartwig.healthchecks.common.report;
 import java.util.Optional;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
@@ -41,14 +40,7 @@ public final class StandardOutputReport extends JsonBaseReport {
             }
         }
 
-        HEALTH_CHECKS.forEach((checkType, baseReport) -> {
-            final JsonElement configJson = GSON.toJsonTree(baseReport);
-
-            final JsonObject element = new JsonObject();
-            element.add(checkType.toString(), configJson);
-
-            reportArray.add(element);
-        });
+        computeElements(reportArray);
 
         final JsonObject reportJson = new JsonObject();
         reportJson.add("health_checks", reportArray);
