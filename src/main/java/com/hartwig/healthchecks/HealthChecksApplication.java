@@ -1,5 +1,6 @@
 package com.hartwig.healthchecks;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -65,14 +66,16 @@ public class HealthChecksApplication {
         final Options options = createOptions();
         final CommandLine cmd = createCommandLine(options, args);
 
-        final String runDirectory = cmd.getOptionValue(RUN_DIRECTORY);
+        String runDirectory = cmd.getOptionValue(RUN_DIRECTORY);
         final String checkType = cmd.getOptionValue(CHECK_TYPE);
 
         if (runDirectory == null || checkType == null) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Health-Checks", options);
         }
-
+        if (runDirectory.endsWith(File.separator)) {
+            runDirectory = runDirectory.substring(0, runDirectory.length() - 1);
+        }
         final HealthChecksApplication healthChecksApplication = new HealthChecksApplication(runDirectory, checkType);
         healthChecksApplication.processHealthChecks();
     }
