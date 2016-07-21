@@ -31,7 +31,7 @@ public class PathRegexFinderTest {
     @Test
     public void findPathRunLog() throws IOException {
         final URL testPath = Resources.getResource(TEST_DIR);
-        final Path path = PathRegexFinder.build().findPath(testPath.getPath(), REGEX);
+        final Path path = PathRegexFinder.build().findPath(testPath.getPath(), TEST_DIR);
         assertNotNull(NOT_NULL, path);
     }
 
