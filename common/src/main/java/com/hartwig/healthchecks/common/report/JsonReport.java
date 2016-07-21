@@ -3,7 +3,6 @@ package com.hartwig.healthchecks.common.report;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +18,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -117,10 +115,8 @@ public final class JsonReport implements Report {
                             LineReader.build());
             final ReportMetadata reportMetadata = metadataExtractor.extractMetadata(runDirectory);
             final JsonParser parser = new JsonParser();
-            final JsonReader dateReader = new JsonReader(new StringReader(reportMetadata.getDate()));
-            dateReader.setLenient(true);
             element = new JsonObject();
-            element.add(RUN_DATE, parser.parse(dateReader));
+            element.add(RUN_DATE, parser.parse(reportMetadata.getDate()));
             element.add(PIPE_LINE_VERSION, parser.parse(reportMetadata.getPipelineVersion()));
         } catch (IOException | HealthChecksException e) {
             LOGGER.error(String.format(METADATA_ERR_MSG, e.getMessage()));

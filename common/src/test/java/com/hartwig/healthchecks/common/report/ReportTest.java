@@ -27,7 +27,7 @@ public class ReportTest {
 
     private static final String SOME_VERSION = "v1.7";
 
-    private static final String SOME_DATE = "Sat Jul 9 15:41:42 CEST 2016";
+    private static final String SOME_DATE = "2016-Jul-09T15.41.42";
 
     private static final String TMP_DIR = "/tmp";
 
