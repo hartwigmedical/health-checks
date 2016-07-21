@@ -13,7 +13,7 @@ plugins {
 }
 
 group 'com.hartwig.healthchecks'
-version '1.0.0-SNAPSHOT'
+version '1.0.1-SNAPSHOT'
 
 apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
