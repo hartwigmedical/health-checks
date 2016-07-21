@@ -1,5 +1,6 @@
 package com.hartwig.healthchecks.common.report.metadata;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -13,6 +14,8 @@ import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 
 public final class MetadataExtractor {
+
+    private static final String LOG_FILENAME_FORMAT = "%s.log";
 
     private static final String DATE_OUT_FORMAT = "yyyy-MMM-dd'T'HH.mm.ss";
 
@@ -30,8 +33,6 @@ public final class MetadataExtractor {
 
     private static final String PIPELINE_VERSION = "Pipeline version:";
 
-    private static final String REGEX = "(.*)(_)(CPCT)(\\d+)(\\.)(log)";
-
     private static final String PIPELINE_LOG_REGEX = "PipelineCheck.log";
 
     private final PathRegexFinder pathFinder;
@@ -45,7 +46,11 @@ public final class MetadataExtractor {
     }
 
     public ReportMetadata extractMetadata(final String runDirectory) throws IOException, HealthChecksException {
-        final Path logPath = pathFinder.findPath(runDirectory, REGEX);
+        String folderName = runDirectory;
+        if (runDirectory.contains(File.separator)) {
+            folderName = runDirectory.substring(runDirectory.lastIndexOf(File.separator) + ONE, runDirectory.length());
+        }
+        final Path logPath = pathFinder.findPath(runDirectory, String.format(LOG_FILENAME_FORMAT, folderName));
         final List<String> dateLines = lineReader.readLines(logPath, doesLineStartWith(LAST_LINE));
         final String date = dateLines.get(ZERO).split(REGEX_SPLIT)[ONE].trim();
         final DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern(DATE_IN_FORMATTER, Locale.ENGLISH);
