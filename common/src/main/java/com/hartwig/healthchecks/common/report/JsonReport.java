@@ -32,27 +32,11 @@ public final class JsonReport extends AbstractJsonBaseReport {
         return INSTANCE;
     }
 
-    @Override
-    public void addReportData(@NotNull final BaseReport reportData) {
-        HEALTH_CHECKS.putIfAbsent(reportData.getCheckType(), reportData);
-    }
-
     @NotNull
     @Override
     public Optional<String> generateReport(final String runDirectory) throws GenerateReportException {
-        final JsonArray reportArray = new JsonArray();
         final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
-
-        final String parseLogs = propertiesUtil.getProperty(PARSE_LOGS);
-
-        if (parseLogs != null && parseLogs.equals(TRUE)) {
-            final JsonObject element = getMetadata(runDirectory);
-            if (element != null) {
-                reportArray.add(element);
-            }
-        }
-
-        computeElements(reportArray);
+        final JsonArray reportArray = computeElements(runDirectory);
 
         final String reportDir = propertiesUtil.getProperty(REPORT_DIR);
         final String fileName = String.format("%s/%s", reportDir,

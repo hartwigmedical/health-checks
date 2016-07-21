@@ -17,6 +17,7 @@ import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
 import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
+import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,7 +68,19 @@ public abstract class AbstractJsonBaseReport implements Report {
         return element;
     }
 
-    protected void computeElements(@NotNull final JsonArray reportArray) {
+    protected JsonArray computeElements(@NotNull final String runDirectory) {
+        final JsonArray reportArray = new JsonArray();
+        final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
+
+        final String parseLogs = propertiesUtil.getProperty(PARSE_LOGS);
+
+        if (parseLogs != null && parseLogs.equals(TRUE)) {
+            final JsonObject element = getMetadata(runDirectory);
+            if (element != null) {
+                reportArray.add(element);
+            }
+        }
+
         HEALTH_CHECKS.forEach((checkType, baseReport) -> {
             final JsonElement configJson = GSON.toJsonTree(baseReport);
 
@@ -76,5 +89,7 @@ public abstract class AbstractJsonBaseReport implements Report {
 
             reportArray.add(element);
         });
+
+        return reportArray;
     }
 }
