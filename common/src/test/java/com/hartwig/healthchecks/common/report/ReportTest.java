@@ -5,9 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -16,6 +13,9 @@ import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
 import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -49,7 +49,7 @@ public class ReportTest {
 
                 PropertiesUtil.getInstance();
                 result = propertiesUtil;
-                times = 1;
+                times = 2;
 
                 new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
                 result = metadataExtractor;
@@ -97,7 +97,7 @@ public class ReportTest {
 
                 PropertiesUtil.getInstance();
                 result = propertiesUtil;
-                times = 1;
+                times = 2;
 
                 propertiesUtil.getProperty(PARSE_LOGS);
                 returns(ZERO);
@@ -146,7 +146,7 @@ public class ReportTest {
 
                 PropertiesUtil.getInstance();
                 result = propertiesUtil;
-                times = 1;
+                times = 2;
 
                 new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
                 result = metadataExtractor;

@@ -2,17 +2,18 @@ package com.hartwig.healthchecks.nesbit.adapter;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
-import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
+import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.nesbit.extractor.GermlineExtractor;
+import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
+
+import org.junit.Test;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -26,16 +27,22 @@ public class NesbitAdapterTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
+    private static final String DUMMY_REPORT = "DummyReport";
+
     private static final String REF_VALUE = "409";
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl variant, @Mocked final HealthCheckerImpl somatic,
-                    @Mocked final JsonReport report) {
+            @Mocked final Report report, @Mocked HealthCheckReportFactory factory, @Mocked AbstractHealthCheckAdapter mock) {
 
         new NonStrictExpectations() {
 
             {
-                JsonReport.getInstance();
+                AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
+                result = factory;
+                times = 1;
+
+                factory.create();
                 result = report;
                 times = 1;
 
@@ -55,8 +62,8 @@ public class NesbitAdapterTest {
 
             }
         };
-        final HealthCheckAdapter adapter = new NesbitAdapter();
-        adapter.runCheck(DUMMY_RUN_DIR);
+        final AbstractHealthCheckAdapter adapter = new NesbitAdapter();
+        adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
 
         new Verifications() {
 

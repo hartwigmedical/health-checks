@@ -2,15 +2,15 @@ package com.hartwig.healthchecks.bile.adapter;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
+
+import org.junit.Test;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -24,6 +24,8 @@ public class BileAdapterTest {
     private static final String DUMMY_ID = "DUMMY_ID";
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
+
+    private static final String DUMMY_REPORT = "DummyReport";
 
     @Test
     public void verifyAdapterRunning() {
@@ -41,8 +43,8 @@ public class BileAdapterTest {
                 return getBaseDummyReport();
             }
         };
-        final HealthCheckAdapter adapter = new BileAdapter();
-        adapter.runCheck(DUMMY_RUN_DIR);
+        final AbstractHealthCheckAdapter adapter = new BileAdapter();
+        adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
     }
 
     private BaseReport getBaseDummyReport() {

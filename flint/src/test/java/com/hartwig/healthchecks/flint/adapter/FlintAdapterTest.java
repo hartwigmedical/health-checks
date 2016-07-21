@@ -2,18 +2,19 @@ package com.hartwig.healthchecks.flint.adapter;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.WGSExtractor;
+
+import org.junit.Test;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -27,19 +28,25 @@ public class FlintAdapterTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
+    private static final String DUMMY_REPORT = "DummyReport";
+
     private static final String REF_VALUE = "409";
 
     private static final String TUM_VALUE = "309";
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl insertSize,
-                    @Mocked final HealthCheckerImpl summaryMetric, @Mocked final HealthCheckerImpl coverage,
-                    @Mocked final JsonReport report) {
+            @Mocked final HealthCheckerImpl summaryMetric, @Mocked final HealthCheckerImpl coverage,
+            @Mocked final Report report, @Mocked HealthCheckReportFactory factory, @Mocked AbstractHealthCheckAdapter mock) {
 
         new NonStrictExpectations() {
 
             {
-                JsonReport.getInstance();
+                AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
+                result = factory;
+                times = 1;
+
+                factory.create();
                 result = report;
                 times = 1;
 
@@ -67,8 +74,8 @@ public class FlintAdapterTest {
                 times = 1;
             }
         };
-        final HealthCheckAdapter adapter = new FlintAdapter();
-        adapter.runCheck(DUMMY_RUN_DIR);
+        final AbstractHealthCheckAdapter adapter = new FlintAdapter();
+        adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
 
         new Verifications() {
 
@@ -83,7 +90,8 @@ public class FlintAdapterTest {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new SampleReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport), Arrays.asList(secTestDataReport));
+        return new SampleReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport),
+                Arrays.asList(secTestDataReport));
     }
 
     private BaseReport getSummaryMetricsDummyReport() {
@@ -91,7 +99,7 @@ public class FlintAdapterTest {
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
         return new SampleReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
-                        Arrays.asList(secTestDataReport));
+                Arrays.asList(secTestDataReport));
     }
 
     private BaseReport getCoverageDummyReport() {

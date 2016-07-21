@@ -1,8 +1,7 @@
 package com.hartwig.healthchecks.nesbit.adapter;
 
-import org.jetbrains.annotations.NotNull;
-
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -10,19 +9,22 @@ import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
 import com.hartwig.healthchecks.nesbit.extractor.GermlineExtractor;
+import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
+
+import org.jetbrains.annotations.NotNull;
 
 @ResourceWrapper(type = CheckCategory.NESBIT)
-public class NesbitAdapter implements HealthCheckAdapter {
-
-    private final Report report = JsonReport.getInstance();
+public class NesbitAdapter extends AbstractHealthCheckAdapter {
 
     @Override
-    public void runCheck(@NotNull final String runDirectory) {
+    public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
+
+        final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
+        final Report report = healthCheckReportFactory.create();
+
         final ExtensionLineReader germlineReader = ExtensionLineReader.build();
         final DataExtractor germlineExtractor = new GermlineExtractor(germlineReader);
         final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, runDirectory, germlineExtractor);
