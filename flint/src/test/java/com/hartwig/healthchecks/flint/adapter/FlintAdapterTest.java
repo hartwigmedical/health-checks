@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.flint.adapter;
 
 import java.util.Arrays;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
@@ -37,12 +37,12 @@ public class FlintAdapterTest {
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl insertSize,
             @Mocked final HealthCheckerImpl summaryMetric, @Mocked final HealthCheckerImpl coverage,
-            @Mocked final Report report, @Mocked HealthCheckReportFactory factory, @Mocked HealthCheckAdapter mock) {
+            @Mocked final Report report, @Mocked HealthCheckReportFactory factory, @Mocked AbstractHealthCheckAdapter mock) {
 
         new NonStrictExpectations() {
 
             {
-                HealthCheckAdapter.attachReport(DUMMY_REPORT);
+                AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
                 result = factory;
                 times = 1;
 
@@ -74,7 +74,7 @@ public class FlintAdapterTest {
                 times = 1;
             }
         };
-        final HealthCheckAdapter adapter = new FlintAdapter();
+        final AbstractHealthCheckAdapter adapter = new FlintAdapter();
         adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
 
         new Verifications() {

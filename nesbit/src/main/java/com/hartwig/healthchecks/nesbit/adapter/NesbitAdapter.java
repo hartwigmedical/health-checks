@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.nesbit.adapter;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
@@ -17,12 +17,12 @@ import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
 import org.jetbrains.annotations.NotNull;
 
 @ResourceWrapper(type = CheckCategory.NESBIT)
-public class NesbitAdapter extends HealthCheckAdapter {
+public class NesbitAdapter extends AbstractHealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
 
-        final HealthCheckReportFactory healthCheckReportFactory = HealthCheckAdapter.attachReport(reportType);
+        final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
         final ExtensionLineReader germlineReader = ExtensionLineReader.build();

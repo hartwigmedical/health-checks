@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.flint.adapter;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
@@ -18,12 +18,12 @@ import com.hartwig.healthchecks.flint.extractor.WGSExtractor;
 import org.jetbrains.annotations.NotNull;
 
 @ResourceWrapper(type = CheckCategory.FLINT)
-public class FlintAdapter extends HealthCheckAdapter {
+public class FlintAdapter extends AbstractHealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
 
-        final HealthCheckReportFactory healthCheckReportFactory = HealthCheckAdapter.attachReport(reportType);
+        final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
         final SampleReader insertSizeMetricsReader = SampleReader.build();

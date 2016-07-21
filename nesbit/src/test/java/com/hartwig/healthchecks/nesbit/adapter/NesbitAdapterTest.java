@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.nesbit.adapter;
 
 import java.util.Arrays;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
@@ -33,12 +33,12 @@ public class NesbitAdapterTest {
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl variant, @Mocked final HealthCheckerImpl somatic,
-            @Mocked final Report report, @Mocked HealthCheckReportFactory factory, @Mocked HealthCheckAdapter mock) {
+            @Mocked final Report report, @Mocked HealthCheckReportFactory factory, @Mocked AbstractHealthCheckAdapter mock) {
 
         new NonStrictExpectations() {
 
             {
-                HealthCheckAdapter.attachReport(DUMMY_REPORT);
+                AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
                 result = factory;
                 times = 1;
 
@@ -62,7 +62,7 @@ public class NesbitAdapterTest {
 
             }
         };
-        final HealthCheckAdapter adapter = new NesbitAdapter();
+        final AbstractHealthCheckAdapter adapter = new NesbitAdapter();
         adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
 
         new Verifications() {

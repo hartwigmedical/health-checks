@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import com.hartwig.healthchecks.boo.extractor.PrestatsCheck;
 import com.hartwig.healthchecks.boo.extractor.PrestatsExtractor;
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
@@ -35,12 +35,12 @@ public class BooAdapterTest {
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl prestats, @Mocked final Report report,
-            @Mocked HealthCheckReportFactory factory, @Mocked HealthCheckAdapter mock) {
+            @Mocked HealthCheckReportFactory factory, @Mocked AbstractHealthCheckAdapter mock) {
 
         new NonStrictExpectations() {
 
             {
-                HealthCheckAdapter.attachReport(DUMMY_REPORT);
+                AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
                 result = factory;
                 times = 1;
 
@@ -57,7 +57,7 @@ public class BooAdapterTest {
                 times = 1;
             }
         };
-        final HealthCheckAdapter adapter = new BooAdapter();
+        final AbstractHealthCheckAdapter adapter = new BooAdapter();
         adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
 
         new Verifications() {

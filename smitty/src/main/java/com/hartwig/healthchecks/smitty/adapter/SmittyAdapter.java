@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.smitty.adapter;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
@@ -16,12 +16,12 @@ import com.hartwig.healthchecks.smitty.extractor.KinshipExtractor;
 import org.jetbrains.annotations.NotNull;
 
 @ResourceWrapper(type = CheckCategory.SMITTY)
-public class SmittyAdapter extends HealthCheckAdapter {
+public class SmittyAdapter extends AbstractHealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
 
-        final HealthCheckReportFactory healthCheckReportFactory = HealthCheckAdapter.attachReport(reportType);
+        final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
         final Reader kinshipReader = Reader.build();

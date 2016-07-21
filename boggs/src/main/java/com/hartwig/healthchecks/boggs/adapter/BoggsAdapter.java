@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.boggs.adapter;
 
 import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
@@ -16,7 +16,7 @@ import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import org.jetbrains.annotations.NotNull;
 
 @ResourceWrapper(type = CheckCategory.BOGGS)
-public class BoggsAdapter extends HealthCheckAdapter {
+public class BoggsAdapter extends AbstractHealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {

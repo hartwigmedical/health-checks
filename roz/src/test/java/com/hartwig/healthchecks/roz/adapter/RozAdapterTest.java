@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.roz.adapter;
 
 import static org.junit.Assert.assertEquals;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
@@ -43,7 +43,7 @@ public class RozAdapterTest {
                 return getBaseDummyReport();
             }
         };
-        final HealthCheckAdapter adapter = new RozAdapter();
+        final AbstractHealthCheckAdapter adapter = new RozAdapter();
         adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
     }
 

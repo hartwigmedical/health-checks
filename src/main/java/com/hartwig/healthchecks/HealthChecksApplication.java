@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
@@ -62,12 +62,9 @@ public class HealthChecksApplication {
     /**
      * To Run Healthchecks over files in a dir
      *
-     * @param args
-     *            - Arguments on how to run the healtchecks should contain:
-     *            -rundir [run-directory] -checktype [boggs - all] -reporttype [json - stdout]
-     * @throws ParseException
-     *             - In case commandline's arguments could not be parsed.
-     *
+     * @param args - Arguments on how to run the healtchecks should contain:
+     *             -rundir [run-directory] -checktype [boggs - all] -reporttype [json - stdout]
+     * @throws ParseException - In case commandline's arguments could not be parsed.
      */
     public static void main(final String... args) throws ParseException {
         final Options options = createOptions();
@@ -104,7 +101,7 @@ public class HealthChecksApplication {
 
     @NotNull
     private static CommandLine createCommandLine(@NotNull final Options options, @NotNull final String... args)
-                    throws ParseException {
+            throws ParseException {
         final CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);
     }
@@ -115,7 +112,7 @@ public class HealthChecksApplication {
         } else {
             final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
             try {
-                final HealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
+                final AbstractHealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
 
                 healthCheckAdapter.runCheck(runDirectory, reportType);
             } catch (final NotFoundException e) {
@@ -127,18 +124,19 @@ public class HealthChecksApplication {
 
     protected void executeAllChecks() {
         final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
-        final Collection<HealthCheckAdapter> adapters = flyweight.getAllAdapters();
+        final Collection<AbstractHealthCheckAdapter> adapters = flyweight.getAllAdapters();
 
-        final Observable<HealthCheckAdapter> adapterObservable = Observable.from(adapters).subscribeOn(Schedulers.io());
+        final Observable<AbstractHealthCheckAdapter> adapterObservable = Observable.from(adapters).subscribeOn(
+                Schedulers.io());
 
         BlockingObservable.from(adapterObservable).subscribe(adapter -> adapter.runCheck(runDirectory, reportType),
-                        (error) -> LOGGER.error(error.getMessage()), () -> generateReport());
+                (error) -> LOGGER.error(error.getMessage()), () -> generateReport());
     }
 
     private void generateReport() {
         try {
 
-            final HealthCheckReportFactory reportFactory = HealthCheckAdapter.attachReport(reportType);
+            final HealthCheckReportFactory reportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
             final Report report = reportFactory.create();
 
             final Optional<String> reportData = report.generateReport(runDirectory);

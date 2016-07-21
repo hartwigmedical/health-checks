@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -20,20 +20,20 @@ public final class HealthChecksFlyweight {
 
     private static final Logger LOGGER = LogManager.getLogger(HealthChecksFlyweight.class);
 
-    private static final Map<CheckCategory, HealthCheckAdapter> FLYWEIGHT = new HashMap<>();
+    private static final Map<CheckCategory, AbstractHealthCheckAdapter> FLYWEIGHT = new HashMap<>();
 
     private static final HealthChecksFlyweight INSTANCE = new HealthChecksFlyweight();
 
     private static final Reflections BASE = new Reflections("com.hartwig.healthchecks");
 
     @SuppressWarnings("rawtypes")
-    private static final Set<Class<? extends HealthCheckAdapter>> BASE_SET = BASE
-                    .getSubTypesOf(HealthCheckAdapter.class);
+    private static final Set<Class<? extends AbstractHealthCheckAdapter>> BASE_SET = BASE
+                    .getSubTypesOf(AbstractHealthCheckAdapter.class);
 
     static {
         BASE_SET.stream().forEach(adapter -> {
             try {
-                final HealthCheckAdapter adapterInstance = adapter.newInstance();
+                final AbstractHealthCheckAdapter adapterInstance = adapter.newInstance();
                 final ResourceWrapper resourceWrapper = adapter.getAnnotation(ResourceWrapper.class);
                 final CheckCategory checkCategory = resourceWrapper.type();
 
@@ -52,7 +52,7 @@ public final class HealthChecksFlyweight {
     }
 
     @NotNull
-    public HealthCheckAdapter getAdapter(@NotNull final String type) throws NotFoundException {
+    public AbstractHealthCheckAdapter getAdapter(@NotNull final String type) throws NotFoundException {
         final Optional<CheckCategory> checkType = CheckCategory.getByCategory(type);
         if (!checkType.isPresent()) {
             throw new NotFoundException(String.format("Invalid CheckCategory informed %s", type));
@@ -60,7 +60,7 @@ public final class HealthChecksFlyweight {
         return FLYWEIGHT.get(checkType.get());
     }
 
-    public Collection<HealthCheckAdapter> getAllAdapters() {
+    public Collection<AbstractHealthCheckAdapter> getAllAdapters() {
         return FLYWEIGHT.values();
     }
 }

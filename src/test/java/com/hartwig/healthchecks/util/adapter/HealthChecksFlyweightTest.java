@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.boggs.adapter.BoggsAdapter;
-import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 
 public class HealthChecksFlyweightTest {
@@ -23,7 +23,7 @@ public class HealthChecksFlyweightTest {
     public void getAdapterSuccess() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
         assertNotNull(NOT_NULL_MSG, healthChecksFlyweight);
-        final HealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter(BOGGS);
+        final AbstractHealthCheckAdapter boggsAdapter = healthChecksFlyweight.getAdapter(BOGGS);
         assertTrue(WRONG_TYPE_MSG, boggsAdapter instanceof BoggsAdapter);
     }
 

@@ -7,13 +7,9 @@ import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.report.StandardOutputReport;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public final class ReportsFlyweight {
-
-    private static final Logger LOGGER = LogManager.getLogger(ReportsFlyweight.class);
 
     private static final Map<String, Report> FLYWEIGHT = new HashMap<>();
 
