@@ -53,7 +53,7 @@ public class MetadataExtractorTest {
         };
         final ReportMetadata reportMetadata = extractor.extractMetadata(TEST_DIR);
         assertNotNull(reportMetadata);
-        assertEquals("Wrong Date", "Sat Jul 9 15:41:42 CEST 2016", reportMetadata.getDate());
+        assertEquals("Wrong Date", "2016-Jul-09T15.41.42", reportMetadata.getDate());
         assertEquals("Wrong Version", "v1.7", reportMetadata.getPipelineVersion());
     }
 
