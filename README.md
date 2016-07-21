@@ -22,7 +22,7 @@ The first line (i.e. ./gradlew wrapper) has to be executed only for the first ti
 Once built, the project can be executed in the following way:
 
 ```
-java -jar build/libs/health-checks-1.0.0-SNAPSHOT-all.jar -rundir [run-directory] -checktype boggs
+java -jar build/libs/health-checks-1.0.1-SNAPSHOT-all.jar -rundir [run-directory] -checktype boggs -reporttype stdout
 ```
 
 # Different Modules 

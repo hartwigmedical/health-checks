@@ -2,16 +2,17 @@ package com.hartwig.healthchecks.boggs.adapter;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
 import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
 import com.hartwig.healthchecks.common.adapter.HealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.JsonReport;
+import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.report.SampleReport;
+
+import org.junit.Test;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -29,13 +30,20 @@ public class BoggsAdapterTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
+    private static final String DUMMY_REPORT = "DummyReport";
+
     @Test
-    public void verifyAdapterRunning(@Mocked final HealthCheckerImpl mapping, @Mocked final JsonReport report) {
+    public void verifyAdapterRunning(@Mocked final HealthCheckerImpl mapping, @Mocked final Report report, @Mocked
+            HealthCheckReportFactory factory, @Mocked HealthCheckAdapter mock) {
 
         new NonStrictExpectations() {
 
             {
-                JsonReport.getInstance();
+                HealthCheckAdapter.attachReport(DUMMY_REPORT);
+                result = factory;
+                times = 1;
+
+                factory.create();
                 result = report;
                 times = 1;
 
@@ -48,7 +56,7 @@ public class BoggsAdapterTest {
             }
         };
         final HealthCheckAdapter adapter = new BoggsAdapter();
-        adapter.runCheck(DUMMY_RUN_DIR);
+        adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
 
         new Verifications() {
 

@@ -1,6 +1,14 @@
 package com.hartwig.healthchecks.common.adapter;
 
-public interface HealthCheckAdapter {
+import org.jetbrains.annotations.NotNull;
 
-    void runCheck(String runDirectory);
+public abstract class HealthCheckAdapter {
+
+    public abstract void runCheck(@NotNull final String runDirectory, @NotNull final String reportType);
+
+    public static HealthCheckReportFactory attachReport(String reportType) {
+        return () -> {
+            return ReportsFlyweight.getInstance().getReport(reportType);
+        };
+    }
 }
