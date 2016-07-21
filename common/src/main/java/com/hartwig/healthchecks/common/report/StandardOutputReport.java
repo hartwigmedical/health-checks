@@ -5,7 +5,6 @@ import java.util.Optional;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
-import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +22,6 @@ public final class StandardOutputReport extends AbstractJsonBaseReport {
     @NotNull
     @Override
     public Optional<String> generateReport(final String runDirectory) throws GenerateReportException {
-        final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
         final JsonArray reportArray = computeElements(runDirectory);
 
         final JsonObject reportJson = new JsonObject();
