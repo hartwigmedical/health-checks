@@ -95,7 +95,7 @@ public class HealthChecksApplication {
     }
 
     public void processHealthChecks() {
-        LOGGER.info(String.format(CHECK_TYPE_MSG, ALL_CHECKS));
+        LOGGER.info(String.format(CHECK_TYPE_MSG, checkType));
         if (checkType.equalsIgnoreCase(ALL_CHECKS)) {
             executeAllChecks(runDirectory);
         } else {
