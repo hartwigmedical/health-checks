@@ -9,11 +9,12 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.stream.Stream;
 
 import com.hartwig.healthchecks.common.io.path.SamplePath;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
+
+import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface SampleReader {
@@ -29,7 +30,9 @@ public interface SampleReader {
             final Path filePath = SamplePathFinder.build().findPath(samplePath.getPath(), samplePath.getPrefix(),
                             samplePath.getSuffix());
             final Path fileToRead = findFileInPath(filePath.toString(), samplePath.getExtension());
-            return Files.lines(Paths.get(fileToRead.toString())).collect(Collectors.toList());
+            try (Stream<String> lines = Files.lines(Paths.get(fileToRead.toString()))) {
+                return lines.collect(Collectors.toList());
+            }
         };
     }
 
