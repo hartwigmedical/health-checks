@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.stream.Stream;
 
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
+
+import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface LineReader {
@@ -25,8 +27,11 @@ public interface LineReader {
     @NotNull
     static LineReader build() {
         return (filePath, filter) -> {
-            final List<String> searchedLines = Files.lines(Paths.get(filePath.toString())).filter(filter)
-                            .collect(Collectors.toList());
+            List<String> searchedLines = new ArrayList<>();
+            try (Stream<String> lines = Files.lines(Paths.get(filePath.toString()))) {
+                searchedLines.addAll(lines.filter(filter).collect(Collectors.toList()));
+            }
+
             if (searchedLines.isEmpty()) {
                 throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, filePath, filter.toString()));
             }
