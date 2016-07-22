@@ -54,7 +54,7 @@ public class ZipFilesReader {
     private List<String> readFileFromZip(@NotNull final String path, @NotNull final String fileName) {
         final List<String> fileLines = new ArrayList<>();
         try {
-            fileLines.addAll(FileInZipsReader.build().readLines(path.toString(), fileName));
+            fileLines.addAll(FileInZipsReader.build().readLines(path, fileName));
         } catch (IOException | HealthChecksException e) {
             LOGGER.error(String.format("Error occurred when reading file %s. Will return empty stream. Error -> %s",
                             path, e.getMessage()));
