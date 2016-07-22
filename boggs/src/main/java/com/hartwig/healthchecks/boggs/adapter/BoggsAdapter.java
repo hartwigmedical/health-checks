@@ -8,7 +8,7 @@ import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
-import com.hartwig.healthchecks.common.io.reader.ZipFileReader;
+import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -24,7 +24,7 @@ public class BoggsAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final ZipFileReader zipFileReader = new ZipFileReader();
+        final ZipFilesReader zipFileReader = new ZipFilesReader();
         final MappingExtractor mappingExtractor = new MappingExtractor(new SambambaFlagStatParser(), zipFileReader);
         final HealthChecker mappingHealthChecker = new HealthCheckerImpl(CheckType.MAPPING, runDirectory,
                         mappingExtractor);
