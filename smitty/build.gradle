@@ -1,5 +1,4 @@
 group 'com.hartwig.healthchecks.smitty'
-version '1.0.3-SNAPSHOT'
 
 dependencies {
     compile project(":common")

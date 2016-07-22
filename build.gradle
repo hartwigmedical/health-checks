@@ -13,12 +13,14 @@ plugins {
 }
 
 group 'com.hartwig.healthchecks'
-version '1.0.3-SNAPSHOT'
+String tag = file('tag').getText('UTF-8').split('\\n')[0]
 
 apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 allprojects {
+
+    version tag + '-SNAPSHOT'
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
