@@ -14,9 +14,9 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
-import com.hartwig.healthchecks.common.io.path.SamplePath;
+import com.hartwig.healthchecks.common.io.path.SamplePathData;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
-import com.hartwig.healthchecks.common.io.reader.SampleReader;
+import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
@@ -33,11 +33,11 @@ public class RealignerExtractor extends AbstractDataExtractor {
 
     private static final String MAP_REALI_CHAN_ALIGN = "MAPPING_REALIGNER_CHANGED_ALIGNMENTS";
 
-    private final SampleReader reader;
+    private final SampleFinderAndReader reader;
 
     private final SamplePathFinder samplePathFinder;
 
-    public RealignerExtractor(final SampleReader reader, final SamplePathFinder samplePathFinder) {
+    public RealignerExtractor(final SampleFinderAndReader reader, final SamplePathFinder samplePathFinder) {
         super();
         this.reader = reader;
         this.samplePathFinder = samplePathFinder;
@@ -69,7 +69,7 @@ public class RealignerExtractor extends AbstractDataExtractor {
 
     private long getMappedValue(final String runDirectory, final String suffix, final String path)
                     throws IOException, HealthChecksException {
-        final SamplePath samplePath = new SamplePath(path, SAMPLE_PREFIX, suffix, SLICED_EXT);
+        final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, SLICED_EXT);
 
         final List<String> lines = reader.readLines(samplePath);
         if (lines.isEmpty()) {
@@ -90,7 +90,7 @@ public class RealignerExtractor extends AbstractDataExtractor {
 
     private long getDiffCount(final String runDirectory, final String suffix, final String path)
                     throws IOException, EmptyFileException {
-        final SamplePath samplePath = new SamplePath(path, SAMPLE_PREFIX, suffix, BAM_DIFF_EXT);
+        final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, BAM_DIFF_EXT);
         final List<String> lines = reader.readLines(samplePath);
         if (lines.isEmpty()) {
             throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, suffix, runDirectory));

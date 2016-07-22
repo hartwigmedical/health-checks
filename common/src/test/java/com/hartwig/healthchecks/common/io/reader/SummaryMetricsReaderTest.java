@@ -13,8 +13,8 @@ import java.util.List;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
-import com.hartwig.healthchecks.common.io.path.SamplePath;
-import com.hartwig.healthchecks.common.io.reader.SampleReader;
+import com.hartwig.healthchecks.common.io.path.SamplePathData;
+import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
 
 public class SummaryMetricsReaderTest {
 
@@ -50,8 +50,8 @@ public class SummaryMetricsReaderTest {
     public void readLines() throws IOException {
         final URL testPath = Resources.getResource(TEST_DIR + File.separator + QC_STATS);
         final String suffix = REF_DED_SAMPLE_SUFFIX + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
-        final SamplePath samplePath = new SamplePath(testPath.getPath(), SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
-        final SampleReader reader = SampleReader.build();
+        final SamplePathData samplePath = new SamplePathData(testPath.getPath(), SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
+        final SampleFinderAndReader reader = SampleFinderAndReader.build();
         final List<String> readLines = reader.readLines(samplePath);
         assertNotNull(NOT_NULL, readLines);
         assertEquals(WRONG_NUM_LINES, EXPECTED_NUM_LINES, readLines.size());
@@ -61,8 +61,8 @@ public class SummaryMetricsReaderTest {
     public void readEmptyFile() throws IOException {
         final URL testPath = Resources.getResource(EMPTY_DIR + File.separator + QC_STATS);
         final String suffix = REF_DED_SAMPLE_SUFFIX + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
-        final SamplePath samplePath = new SamplePath(testPath.getPath(), SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
-        final SampleReader reader = SampleReader.build();
+        final SamplePathData samplePath = new SamplePathData(testPath.getPath(), SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
+        final SampleFinderAndReader reader = SampleFinderAndReader.build();
         final List<String> readLines = reader.readLines(samplePath);
         assertNotNull(NOT_NULL, readLines);
         assertEquals(NOT_NULL, 0, readLines.size());
@@ -72,8 +72,8 @@ public class SummaryMetricsReaderTest {
     public void readNoFileDir() throws IOException {
         final URL testPath = Resources.getResource(NO_FILE_DIR);
         final String suffix = REF_DED_SAMPLE_SUFFIX + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
-        final SamplePath samplePath = new SamplePath(testPath.getPath(), SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
-        final SampleReader reader = SampleReader.build();
+        final SamplePathData samplePath = new SamplePathData(testPath.getPath(), SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
+        final SampleFinderAndReader reader = SampleFinderAndReader.build();
         reader.readLines(samplePath);
     }
 
@@ -81,16 +81,16 @@ public class SummaryMetricsReaderTest {
     public void readNoFile() throws IOException {
         final URL testPath = Resources.getResource(NO_FILE_DIR + File.separator + QC_STATS);
         final String suffix = TUM_DED_SAMPLE_SUFFIX + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
-        final SamplePath samplePath = new SamplePath(testPath.getPath(), SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
-        final SampleReader reader = SampleReader.build();
+        final SamplePathData samplePath = new SamplePathData(testPath.getPath(), SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
+        final SampleFinderAndReader reader = SampleFinderAndReader.build();
         reader.readLines(samplePath);
     }
 
     @Test(expected = NoSuchFileException.class)
     public void readNoneExistingFolder() throws IOException {
         final String suffix = REF_DED_SAMPLE_SUFFIX + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
-        final SamplePath samplePath = new SamplePath(DUMMY_DIR, SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
-        final SampleReader reader = SampleReader.build();
+        final SamplePathData samplePath = new SamplePathData(DUMMY_DIR, SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
+        final SampleFinderAndReader reader = SampleFinderAndReader.build();
         reader.readLines(samplePath);
     }
 }

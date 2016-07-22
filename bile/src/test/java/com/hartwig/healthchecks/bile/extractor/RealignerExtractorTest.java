@@ -19,9 +19,9 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.io.path.SamplePath;
+import com.hartwig.healthchecks.common.io.path.SamplePathData;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
-import com.hartwig.healthchecks.common.io.reader.SampleReader;
+import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
@@ -87,7 +87,7 @@ public class RealignerExtractorTest {
     private List<String> mallformatedLines;
 
     @Mocked
-    private SampleReader reader;
+    private SampleFinderAndReader reader;
 
     @Mocked
     private SamplePathFinder samplePathFinder;
@@ -129,13 +129,13 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, refSlicLines);
 
                 samplePathFinder.findPath(anyString, anyString, T_DEDUP);
                 returns(new File(TUM_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(tumDiffLines, tumSlicLines);
             }
         };
@@ -147,7 +147,7 @@ public class RealignerExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void extractDataFromEmptyRefDiffFile(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
@@ -155,7 +155,7 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(emptyLines);
             }
         };
@@ -164,7 +164,7 @@ public class RealignerExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void extractDataFromEmptyRefSlicFile(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
@@ -172,7 +172,7 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, emptyLines);
             }
         };
@@ -181,7 +181,7 @@ public class RealignerExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void extractDataFromEmptyTumDiffFile(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
@@ -189,13 +189,13 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, refSlicLines);
 
                 samplePathFinder.findPath(anyString, anyString, T_DEDUP);
                 returns(new File(TUM_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(emptyLines);
             }
         };
@@ -204,7 +204,7 @@ public class RealignerExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void extractDataFromEmptyTumSliceFile(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
@@ -212,13 +212,13 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, refSlicLines);
 
                 samplePathFinder.findPath(anyString, anyString, T_DEDUP);
                 returns(new File(TUM_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(tumDiffLines, emptyLines);
             }
         };
@@ -227,7 +227,7 @@ public class RealignerExtractorTest {
 
     @Test(expected = IOException.class)
     public void extractDataFromFileIoException(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
@@ -235,7 +235,7 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 result = new IOException();
             }
         };
@@ -244,7 +244,7 @@ public class RealignerExtractorTest {
 
     @Test(expected = LineNotFoundException.class)
     public void extractDataLineNotFoundRefExceptionFirstFile(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
@@ -252,7 +252,7 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, missingLines);
             }
         };
@@ -261,7 +261,7 @@ public class RealignerExtractorTest {
 
     @Test(expected = LineNotFoundException.class)
     public void extractDataLineNotFoundRefException(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
@@ -269,7 +269,7 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
 
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, missingLines);
             }
         };
@@ -278,19 +278,19 @@ public class RealignerExtractorTest {
 
     @Test(expected = LineNotFoundException.class)
     public void extractDataLineNotFoundTumException(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
             {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, refSlicLines);
 
                 samplePathFinder.findPath(anyString, anyString, T_DEDUP);
                 returns(new File(TUM_PATH).toPath());
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 result = new LineNotFoundException("", "");
             }
         };
@@ -299,7 +299,7 @@ public class RealignerExtractorTest {
 
     @Test(expected = FileNotFoundException.class)
     public void extractDataLineSamplePathRefFileNotFound(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
@@ -313,14 +313,14 @@ public class RealignerExtractorTest {
 
     @Test(expected = FileNotFoundException.class)
     public void extractDataLineSamplePathTumFileNotFound(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
             {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, refSlicLines);
 
                 samplePathFinder.findPath(anyString, anyString, T_DEDUP);
@@ -332,14 +332,14 @@ public class RealignerExtractorTest {
 
     @Test(expected = MalformedFileException.class)
     public void extractDataLineMalformated(@Mocked final SamplePathFinder samplePathFinder,
-                    @Mocked final SampleReader reader) throws IOException, HealthChecksException {
+                    @Mocked final SampleFinderAndReader reader) throws IOException, HealthChecksException {
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
         new Expectations() {
 
             {
                 samplePathFinder.findPath(anyString, anyString, R_DEDUP);
                 returns(new File(REF_PATH).toPath());
-                reader.readLines((SamplePath) any);
+                reader.readLines((SamplePathData) any);
                 returns(refDiffLines, mallformatedLines);
             }
         };
