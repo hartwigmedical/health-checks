@@ -58,8 +58,8 @@ public interface FolderChecker {
     }
 
     static boolean isDirectoryNotEmpty(final Path path) throws IOException {
-        try (DirectoryStream<Path> ds = Files.newDirectoryStream(path, getHiddenFilesFilter())) {
-            return ds.iterator().hasNext();
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path, getHiddenFilesFilter())) {
+            return directoryStream.iterator().hasNext();
         }
     }
 
