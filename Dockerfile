@@ -15,11 +15,12 @@ RUN apt-get update
 RUN apt-get -y install golang
 RUN apt-get -y install wget
 RUN apt-get -y install unzip
+RUN apt-get -y install curl
 
 RUN cd ~
-RUN wget https://services.gradle.org/distributions/gradle-2.13-bin.zip
-RUN unzip gradle-2.13-bin.zip
-ENV GRADLE_HOME=$HOME/gradle-2.13
+RUN wget https://services.gradle.org/distributions/gradle-2.14-bin.zip
+RUN unzip gradle-2.14-bin.zip
+ENV GRADLE_HOME=$HOME/gradle-2.14
 ENV PATH=$PATH:$GRADLE_HOME/bin
 
 ENV JAVA_HOME=/usr/lib/jvm/java-8-oracle
