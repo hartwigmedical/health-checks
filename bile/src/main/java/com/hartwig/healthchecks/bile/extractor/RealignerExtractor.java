@@ -78,7 +78,7 @@ public class RealignerExtractor extends AbstractDataExtractor {
 
         final Optional<String> mappedLine = lines.stream().filter(line -> line.contains(MAPPED)).findFirst();
         if (!mappedLine.isPresent()) {
-            throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, suffix, runDirectory));
+            throw new LineNotFoundException(suffix, MAPPED);
         }
         final String mapped = mappedLine.get();
         if (!mapped.contains(PLUS)) {

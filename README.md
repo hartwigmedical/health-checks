@@ -14,7 +14,7 @@ The Health Checks project uses Gradle as the build management tool. However, in 
 
 ```
 $ ./gradlew wrapper
-$ ./gradlw clean build shadowJar
+$ ./gradlew clean build shadowJar
 ```
 
 The first line (i.e. ./gradlew wrapper) has to be executed only for the first time the project is built.

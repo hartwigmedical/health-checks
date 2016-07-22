@@ -205,7 +205,7 @@ public class WGSExtractorTest {
                 reader.readLines((SamplePath) any);
                 returns(refLines);
                 reader.readLines((SamplePath) any);
-                result = new LineNotFoundException("");
+                result = new LineNotFoundException("", "");
             }
         };
         final WGSExtractor extractor = new WGSExtractor(reader);

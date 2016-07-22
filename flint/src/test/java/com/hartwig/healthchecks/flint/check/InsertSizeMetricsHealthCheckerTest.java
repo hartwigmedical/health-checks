@@ -25,6 +25,8 @@ import mockit.Mocked;
 
 public class InsertSizeMetricsHealthCheckerTest {
 
+    private static final String DUMMY_FILTER = "DUMMY_FILTER";
+
     private static final String DUMMY_CHECK = "DUMMY_CHECK";
 
     private static final String REF_VALUE = "409";
@@ -118,7 +120,7 @@ public class InsertSizeMetricsHealthCheckerTest {
 
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
-                result = new LineNotFoundException(DUMMY_ERROR);
+                result = new LineNotFoundException(DUMMY_RUN_DIR, DUMMY_FILTER);
             }
         };
 
@@ -129,15 +131,15 @@ public class InsertSizeMetricsHealthCheckerTest {
         final String errorMessage = ((ErrorReport) report).getMessage();
 
         assertEquals(WRONG_ERROR, LineNotFoundException.class.getName(), error);
-        assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
+        assertEquals(WRONG_ERROR_MESSAGE,
+                        "File " + DUMMY_RUN_DIR + " does not contain lines with value " + DUMMY_FILTER, errorMessage);
     }
 
     private BaseReport createTestData() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new SampleReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport),
-                        Arrays.asList(secTestDataReport));
+        return new SampleReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport), Arrays.asList(secTestDataReport));
     }
 
     private void assertBaseData(final List<BaseDataReport> reports, final String patientId, final String check,

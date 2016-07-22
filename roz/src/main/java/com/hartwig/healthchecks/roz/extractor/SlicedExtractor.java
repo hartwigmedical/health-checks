@@ -6,7 +6,7 @@ import java.util.List;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
-import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
+import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
@@ -21,9 +21,9 @@ public class SlicedExtractor extends AbstractDataExtractor {
 
     private static final String EXT = "_Cosmicv76_GoNLv5_sliced.vcf";
 
-    private final ExtensionLineReader reader;
+    private final ExtensionFinderAndLineReader reader;
 
-    public SlicedExtractor(final ExtensionLineReader reader) {
+    public SlicedExtractor(final ExtensionFinderAndLineReader reader) {
         super();
         this.reader = reader;
     }

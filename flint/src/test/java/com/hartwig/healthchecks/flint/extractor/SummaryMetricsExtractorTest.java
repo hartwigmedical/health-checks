@@ -185,7 +185,7 @@ public class SummaryMetricsExtractorTest {
                 reader.readLines((SamplePath) any);
                 returns(refLines);
                 reader.readLines((SamplePath) any);
-                result = new LineNotFoundException("");
+                result = new LineNotFoundException("", "");
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);
