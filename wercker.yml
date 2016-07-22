@@ -23,3 +23,18 @@ build:
             gradle clean build jacocoRootReport coveralls check shadowJar
   after-steps:
     - internal/store-container
+
+# defining the release pipeline
+release:
+  steps:
+    - script:
+        name: Define TAG env variable
+        code: |
+            export TAG=`cat tag`
+    - github-create-release:
+        token: $GITHUB_TOKEN
+        title: Health Checks version $TAG
+        tag: $TAG
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: build/libs/health-checks-$TAG-SNAPSHOT-all.jar
