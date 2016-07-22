@@ -49,7 +49,7 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
         }
         final Optional<String> searchedLine = lines.stream().filter(fileLine -> fileLine.startsWith(PAIR)).findFirst();
         if (!searchedLine.isPresent()) {
-            throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, suffix, PAIR));
+            throw new LineNotFoundException(suffix, PAIR);
         }
         final String patientId = getPatientId(suffix, lines, INPUT);
 

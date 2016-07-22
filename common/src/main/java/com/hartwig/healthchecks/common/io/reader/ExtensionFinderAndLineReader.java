@@ -11,14 +11,14 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 
 @FunctionalInterface
-public interface ExtensionLineReader {
+public interface ExtensionFinderAndLineReader {
 
     @NotNull
     List<String> readLines(@NotNull final String path, @NotNull String extension, @NotNull Predicate<String> filter)
                     throws IOException, HealthChecksException;
 
     @NotNull
-    static ExtensionLineReader build() {
+    static ExtensionFinderAndLineReader build() {
         return (path, extension, filter) -> {
             final Path filePath = PathExtensionFinder.build().findPath(path, extension);
             return LineReader.build().readLines(filePath, filter);

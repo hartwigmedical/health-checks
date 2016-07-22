@@ -3,17 +3,14 @@ package com.hartwig.healthchecks.common.report;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
-
-import org.jetbrains.annotations.NotNull;
 
 public final class JsonReport extends AbstractJsonBaseReport {
 
@@ -22,8 +19,6 @@ public final class JsonReport extends AbstractJsonBaseReport {
     private static final String REPORT_NAME = "health-checks_%s.json";
 
     private static final JsonReport INSTANCE = new JsonReport();
-
-    private static final Map<CheckType, BaseReport> HEALTH_CHECKS = new ConcurrentHashMap<>();
 
     private JsonReport() {
     }

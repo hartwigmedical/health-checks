@@ -7,7 +7,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
+import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -24,7 +24,7 @@ public class RozAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final ExtensionLineReader reader = ExtensionLineReader.build();
+        final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
         final DataExtractor extractor = new SlicedExtractor(reader);
         final HealthChecker healthcheck = new HealthCheckerImpl(CheckType.SLICED, runDirectory, extractor);
         final BaseReport baseReport = healthcheck.runCheck();

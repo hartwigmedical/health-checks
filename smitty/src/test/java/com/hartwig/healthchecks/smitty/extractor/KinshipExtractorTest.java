@@ -11,7 +11,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
-import com.hartwig.healthchecks.common.io.reader.Reader;
+import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
@@ -45,7 +45,7 @@ public class KinshipExtractorTest {
     private List<String> emptyLines;
 
     @Mocked
-    private Reader kinshipReader;
+    private FileFinderAndReader kinshipReader;
 
     @Before
     public void setUp() {

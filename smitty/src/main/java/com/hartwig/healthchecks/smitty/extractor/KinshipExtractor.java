@@ -8,7 +8,7 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
-import com.hartwig.healthchecks.common.io.reader.Reader;
+import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
@@ -29,9 +29,9 @@ public class KinshipExtractor extends AbstractDataExtractor {
 
     private static final String KINSHIP = ".kinship";
 
-    private final Reader kinshipReader;
+    private final FileFinderAndReader kinshipReader;
 
-    public KinshipExtractor(final Reader kinshipReader) {
+    public KinshipExtractor(final FileFinderAndReader kinshipReader) {
         super();
         this.kinshipReader = kinshipReader;
     }

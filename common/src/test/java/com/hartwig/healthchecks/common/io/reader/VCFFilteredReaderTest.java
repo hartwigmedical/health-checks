@@ -34,7 +34,7 @@ public class VCFFilteredReaderTest {
     @Test
     public void readHeaderLine() throws IOException, HealthChecksException {
         final URL testPath = Resources.getResource(TEST_DIR);
-        final ExtensionLineReader reader = ExtensionLineReader.build();
+        final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
         final Predicate<String> headerPredicate = createHeaderPredicate(CHROM);
         final List<String> readLines = reader.readLines(testPath.getPath(), EXT, headerPredicate);
         assertNotNull(NOT_NULL, readLines);
@@ -44,7 +44,7 @@ public class VCFFilteredReaderTest {
     @Test(expected = FileNotFoundException.class)
     public void readFileNotFound() throws IOException, HealthChecksException {
         final URL testPath = Resources.getResource(EMPTY_DIR);
-        final ExtensionLineReader reader = ExtensionLineReader.build();
+        final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
         final Predicate<String> headerPredicate = createHeaderPredicate(CHROM);
         reader.readLines(testPath.getPath(), EXT, headerPredicate);
     }
@@ -52,7 +52,7 @@ public class VCFFilteredReaderTest {
     @Test(expected = FileNotFoundException.class)
     public void readFolderNotFound() throws IOException, HealthChecksException {
         final URL testPath = Resources.getResource(EMPTY_DIR);
-        final ExtensionLineReader reader = ExtensionLineReader.build();
+        final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
         final Predicate<String> headerPredicate = createHeaderPredicate(DUMMY_VALUE);
         reader.readLines(testPath.getPath(), EXT, headerPredicate);
     }
@@ -60,7 +60,7 @@ public class VCFFilteredReaderTest {
     @Test(expected = LineNotFoundException.class)
     public void readLineNotFound() throws IOException, HealthChecksException {
         final URL testPath = Resources.getResource(TEST_DIR);
-        final ExtensionLineReader reader = ExtensionLineReader.build();
+        final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
         final Predicate<String> headerPredicate = createHeaderPredicate(DUMMY_VALUE);
         reader.readLines(testPath.getPath(), EXT, headerPredicate);
     }

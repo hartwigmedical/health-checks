@@ -291,7 +291,7 @@ public class RealignerExtractorTest {
                 samplePathFinder.findPath(anyString, anyString, T_DEDUP);
                 returns(new File(TUM_PATH).toPath());
                 reader.readLines((SamplePath) any);
-                result = new LineNotFoundException("");
+                result = new LineNotFoundException("", "");
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);

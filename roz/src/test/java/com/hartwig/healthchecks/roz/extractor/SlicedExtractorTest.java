@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.reader.ExtensionLineReader;
+import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
@@ -51,7 +51,7 @@ public class SlicedExtractorTest {
     private List<String> headerLines;
 
     @Mocked
-    private ExtensionLineReader reader;
+    private ExtensionFinderAndLineReader reader;
 
     @Before
     public void setUp() {
@@ -99,7 +99,7 @@ public class SlicedExtractorTest {
 
             {
                 reader.readLines(anyString, anyString, (Predicate<String>) any);
-                result = new LineNotFoundException("");
+                result = new LineNotFoundException("", "");
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);

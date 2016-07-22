@@ -35,7 +35,7 @@ public abstract class AbstractFlintExtractor extends AbstractDataExtractor {
         final Optional<Integer> lineNumbers = IntStream.range(0, lines.size())
                         .filter(index -> lines.get(index).contains(filter)).mapToObj(index -> index).findFirst();
         if (!lineNumbers.isPresent()) {
-            throw new LineNotFoundException(String.format(LINE_NOT_FOUND_ERROR, suffix, filter));
+            throw new LineNotFoundException(suffix, filter);
         }
         return lineNumbers.get();
     }

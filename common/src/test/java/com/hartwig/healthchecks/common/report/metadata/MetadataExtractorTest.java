@@ -92,7 +92,7 @@ public class MetadataExtractorTest {
                 pathFinder.findPath(anyString, anyString);
                 returns(new File(DUMMY_DIR).toPath());
                 lineReader.readLines(new File(DUMMY_DIR).toPath(), (Predicate<String>) any);
-                result = new LineNotFoundException("");
+                result = new LineNotFoundException("", "");
 
             }
         };
