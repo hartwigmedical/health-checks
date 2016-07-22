@@ -27,8 +27,6 @@ public class VCFFilteredReaderTest {
 
     private static final String TEST_DIR = "rundir";
 
-    private static final String EMPTY_FILES = "emptyFiles";
-
     private static final String EMPTY_DIR = "empty";
 
     private static final String EXT = "_Cosmicv76_GoNLv5_sliced.vcf";
