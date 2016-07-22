@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.common.io.reader.ZipFileReader;
+import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 
 public abstract class AbstractTotalSequenceExtractor extends AbstractDataExtractor {
 
@@ -22,7 +22,8 @@ public abstract class AbstractTotalSequenceExtractor extends AbstractDataExtract
     protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
 
     @NotNull
-    protected Long sumOfTotalSequences(@NotNull final Path path, final ZipFileReader zipFileReader) throws IOException {
+    protected Long sumOfTotalSequences(@NotNull final Path path, final ZipFilesReader zipFileReader)
+                    throws IOException {
         final Path fastqcDataPath = new File(path + File.separator + QC_STATS + File.separator).toPath();
         final List<String> allLines = zipFileReader.readFieldFromZipFiles(fastqcDataPath, FASTQC_DATA_FILE_NAME,
                         TOTAL_SEQUENCES);

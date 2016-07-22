@@ -24,7 +24,7 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.reader.ZipFileReader;
+import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
@@ -49,7 +49,7 @@ public class MappingExtractorTest {
     private List<String> emptyList;
 
     @Mocked
-    private ZipFileReader zipFileReader;
+    private ZipFilesReader zipFileReader;
 
     @Before
     public void setUp() {
