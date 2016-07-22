@@ -9,7 +9,7 @@ import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
-import com.hartwig.healthchecks.common.io.reader.SampleReader;
+import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -25,7 +25,7 @@ public class BileAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final SampleReader reader = SampleReader.build();
+        final SampleFinderAndReader reader = SampleFinderAndReader.build();
         final SamplePathFinder samplePathFinder = SamplePathFinder.build();
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
 

@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.common.io.path;
 
 import org.jetbrains.annotations.NotNull;
 
-public class SamplePath {
+public class SamplePathData {
 
     @NotNull
     private final String path;
@@ -16,7 +16,7 @@ public class SamplePath {
     @NotNull
     private final String suffix;
 
-    public SamplePath(@NotNull final String path, @NotNull final String prefix, @NotNull final String suffix,
+    public SamplePathData(@NotNull final String path, @NotNull final String prefix, @NotNull final String suffix,
                     @NotNull final String extension) {
         this.path = path;
         this.extension = extension;

@@ -9,8 +9,8 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.path.SamplePath;
-import com.hartwig.healthchecks.common.io.reader.SampleReader;
+import com.hartwig.healthchecks.common.io.path.SamplePathData;
+import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
@@ -19,9 +19,9 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
 
     private static final String INSERT_SIZE_METRICS = ".insert_size_metrics";
 
-    private final SampleReader reader;
+    private final SampleFinderAndReader reader;
 
-    public InsertSizeMetricsExtractor(final SampleReader reader) {
+    public InsertSizeMetricsExtractor(final SampleFinderAndReader reader) {
         super();
         this.reader = reader;
     }
@@ -38,7 +38,7 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
                     throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
-        final SamplePath samplePath = new SamplePath(path, SAMPLE_PREFIX, suffix, INSERT_SIZE_METRICS);
+        final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, INSERT_SIZE_METRICS);
         final List<String> lines = reader.readLines(samplePath);
 
         if (lines.isEmpty()) {
