@@ -6,7 +6,9 @@ public class EmptyFileException extends HealthChecksException {
 
     private static final long serialVersionUID = -8396650626359037492L;
 
-    public EmptyFileException(@NotNull final String message) {
-        super(message);
+    protected static final String EMPTY_FILES_ERROR = "File %s was found empty in path -> %s";
+
+    public EmptyFileException(@NotNull final String fileName, final String filePath) {
+        super(String.format(EMPTY_FILES_ERROR, fileName, filePath));
     }
 }

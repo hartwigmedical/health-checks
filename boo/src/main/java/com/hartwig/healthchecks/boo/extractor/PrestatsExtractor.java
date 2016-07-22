@@ -74,7 +74,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
         }).collect(toList());
         if (prestatsDataReports == null || prestatsDataReports.isEmpty()) {
             LOGGER.error(String.format(EMPTY_FILES_ERROR, SUMMARY_FILE_NAME, path));
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, SUMMARY_FILE_NAME, path));
+            throw new EmptyFileException(SUMMARY_FILE_NAME, path.toString());
         }
         return prestatsDataReports;
     }
@@ -123,9 +123,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
                     throws IOException, EmptyFileException {
         final Long totalSequences = sumOfTotalSequences(pathToCheck, zipFileReader);
         if (totalSequences == ZERO_DOUBLE_VALUE) {
-            final String errorMessage = String.format(EMPTY_FILES_ERROR, FASTQC_DATA_FILE_NAME, pathToCheck);
-            LOGGER.error(errorMessage);
-            throw new EmptyFileException(errorMessage);
+            throw new EmptyFileException(FASTQC_DATA_FILE_NAME, pathToCheck.toString());
         }
         String status = PASS;
         if (totalSequences < MIN_TOTAL_SQ) {

@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hartwig.healthchecks.boo.extractor.PrestatsCheck;
-import com.hartwig.healthchecks.boo.extractor.PrestatsExtractor;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
@@ -103,7 +101,7 @@ public class PrestatsHealthCheckerTest {
 
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
-                result = new EmptyFileException(DUMMY_ERROR);
+                result = new EmptyFileException(DUMMY_ERROR, "DUMMYPATH");
             }
         };
 
@@ -114,6 +112,6 @@ public class PrestatsHealthCheckerTest {
         final String errorMessage = ((ErrorReport) report).getMessage();
 
         assertEquals(WRONG_ERROR, EmptyFileException.class.getName(), error);
-        assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
+        assertEquals(WRONG_ERROR_MESSAGE, "File DUMMY_ERROR was found empty in path -> DUMMYPATH", errorMessage);
     }
 }

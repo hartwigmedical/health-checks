@@ -3,8 +3,9 @@ package com.hartwig.healthchecks.smitty.extractor;
 import java.io.IOException;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
@@ -12,8 +13,6 @@ import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
-
-import org.jetbrains.annotations.NotNull;
 
 public class KinshipExtractor extends AbstractDataExtractor {
 
@@ -41,9 +40,6 @@ public class KinshipExtractor extends AbstractDataExtractor {
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
                     throws IOException, HealthChecksException {
         final List<String> kinshipLines = kinshipReader.readLines(runDirectory, KINSHIP);
-        if (kinshipLines.isEmpty()) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, KINSHIP_TEST, runDirectory));
-        }
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
             throw new MalformedFileException(String.format(MALFORMED_FILE_MSG, KINSHIP_TEST, runDirectory,
                             kinshipLines.size(), EXPECTED_NUM_LINES));

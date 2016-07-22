@@ -73,7 +73,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final FlagStatData flagstatData = flagstatParser.parse(runDirPath + File.separator + MAPPING + File.separator,
                         REALIGN);
         if (flagstatData == null) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, FLAGSTAT_SUFFIX, runDirPath.toString()));
+            throw new EmptyFileException(FLAGSTAT_SUFFIX, runDirPath.toString());
         }
         final List<BaseDataReport> mappingDataReports = new ArrayList<>();
         final List<FlagStats> passed = flagstatData.getPassedStats();

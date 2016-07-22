@@ -73,7 +73,7 @@ public class RealignerExtractor extends AbstractDataExtractor {
 
         final List<String> lines = reader.readLines(samplePath);
         if (lines.isEmpty()) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, SLICED_EXT, runDirectory));
+            throw new EmptyFileException(SLICED_EXT, runDirectory);
         }
 
         final Optional<String> mappedLine = lines.stream().filter(line -> line.contains(MAPPED)).findFirst();
@@ -89,11 +89,11 @@ public class RealignerExtractor extends AbstractDataExtractor {
     }
 
     private long getDiffCount(final String runDirectory, final String suffix, final String path)
-                    throws IOException, EmptyFileException {
+                    throws IOException, HealthChecksException {
         final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, BAM_DIFF_EXT);
         final List<String> lines = reader.readLines(samplePath);
         if (lines.isEmpty()) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, suffix, runDirectory));
+            throw new EmptyFileException(suffix, runDirectory);
         }
         return lines.stream().filter(line -> !(line.startsWith(SMALLER_THAN) || line.startsWith(BIGGER_THAN))).count();
     }
