@@ -2,6 +2,7 @@ package com.hartwig.healthchecks.common.io.dir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -51,9 +52,24 @@ public interface FolderChecker {
 
     static void checkIfDirectoryIsEmpty(final File directory) throws IOException, EmptyFolderException {
         final Path path = directory.toPath();
-        final boolean isDirectoryNotEmpty = Files.newDirectoryStream(path).iterator().hasNext();
-        if (!isDirectoryNotEmpty) {
+        if (!isDirectoryNotEmpty(path)) {
             throw new EmptyFolderException(path.toString());
         }
+    }
+
+    static boolean isDirectoryNotEmpty(final Path path) throws IOException {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(path, getHiddenFilesFilter())) {
+            return ds.iterator().hasNext();
+        }
+    }
+
+    static DirectoryStream.Filter<Path> getHiddenFilesFilter() {
+        return new DirectoryStream.Filter<Path>() {
+
+            @Override
+            public boolean accept(final Path entry) throws IOException {
+                return !Files.isHidden(entry);
+            }
+        };
     }
 }
