@@ -28,7 +28,9 @@ build:
 release:
   steps:
     - script:
-        export TAG=`cat tag`
+        name: Define TAG env variable
+        code: |
+            export TAG=`cat tag`
     - github-create-release:
         token: $GITHUB_TOKEN
         tag: $TAG
