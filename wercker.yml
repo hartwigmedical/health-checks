@@ -33,9 +33,8 @@ release:
             export TAG=`cat tag`
     - github-create-release:
         token: $GITHUB_TOKEN
+        title: Health Checks version $TAG
         tag: $TAG
     - github-upload-asset:
         token: $GITHUB_TOKEN
         file: build/libs/health-checks-$TAG-SNAPSHOT-all.jar
-  after-steps:
-    - internal/store-container
