@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -104,8 +103,6 @@ public class WGSExtractorTest {
 
     private List<String> tumLines;
 
-    private List<String> emptyLines;
-
     private List<String> missingLines;
 
     @Mocked
@@ -126,7 +123,6 @@ public class WGSExtractorTest {
         tumLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                         tDataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
-        emptyLines = new ArrayList<>();
         missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                         tDataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
     }
@@ -151,7 +147,7 @@ public class WGSExtractorTest {
 
             {
                 reader.readLines((SamplePathData) any);
-                returns(emptyLines);
+                result = new EmptyFileException("", "");
             }
         };
         final WGSExtractor extractor = new WGSExtractor(reader);

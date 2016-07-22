@@ -63,7 +63,7 @@ public class SambambaFlagStatParser implements FlagStatParser {
         });
 
         if (passedStats.isEmpty() || failedStats.isEmpty()) {
-            throw new EmptyFileException(String.format(EMPTY_FILE_ERROR, filePath));
+            throw new EmptyFileException(FLAGSTAT_SUFFIX, filePath.toString());
         }
 
         return new FlagStatData(passedStats, failedStats);

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.SamplePathData;
@@ -40,11 +39,6 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
         final String path = runDirectory + File.separator + QC_STATS;
         final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, INSERT_SIZE_METRICS);
         final List<String> lines = reader.readLines(samplePath);
-
-        if (lines.isEmpty()) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, suffix, runDirectory));
-        }
-
         final String patientId = getPatientId(suffix, lines, INPUT);
 
         final BaseDataReport medianReport = getValue(lines, suffix, patientId,

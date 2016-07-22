@@ -12,7 +12,8 @@ import java.util.List;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
-import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 
 public class KinshipReaderTest {
 
@@ -31,7 +32,7 @@ public class KinshipReaderTest {
     private static final int EXPECTED_NUM_LINES = 2;
 
     @Test
-    public void readKinship() throws IOException {
+    public void readKinship() throws IOException, HealthChecksException {
         final URL testPath = Resources.getResource(TEST_DIR);
 
         final FileFinderAndReader reader = FileFinderAndReader.build();
@@ -40,17 +41,15 @@ public class KinshipReaderTest {
         assertEquals(WRONG_NUM_LINES, EXPECTED_NUM_LINES, readLines.size());
     }
 
-    @Test
-    public void readEmptyKinship() throws IOException {
+    @Test(expected = EmptyFileException.class)
+    public void readEmptyKinship() throws IOException, HealthChecksException {
         final URL testPath = Resources.getResource(EMPTY_DIR);
         final FileFinderAndReader reader = FileFinderAndReader.build();
-        final List<String> readLines = reader.readLines(testPath.getPath(), KINSHIP);
-        assertNotNull(NOT_NULL, readLines);
-        assertEquals(NOT_NULL, 0, readLines.size());
+        reader.readLines(testPath.getPath(), KINSHIP);
     }
 
     @Test(expected = FileNotFoundException.class)
-    public void readNoKinship() throws IOException {
+    public void readNoKinship() throws IOException, HealthChecksException {
         final URL testPath = Resources.getResource(NO_FILE_DIR);
 
         final FileFinderAndReader reader = FileFinderAndReader.build();
@@ -58,7 +57,7 @@ public class KinshipReaderTest {
     }
 
     @Test(expected = NoSuchFileException.class)
-    public void readNoneExistingFolder() throws IOException {
+    public void readNoneExistingFolder() throws IOException, HealthChecksException {
         final FileFinderAndReader reader = FileFinderAndReader.build();
         reader.readLines("bla", KINSHIP);
     }

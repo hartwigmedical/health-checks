@@ -100,7 +100,7 @@ public class SummaryMetricsHealthCheckerTest {
 
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
-                result = new EmptyFileException(DUMMY_ERROR);
+                result = new EmptyFileException(DUMMY_ERROR, "DUMMYPATH");
             }
         };
 
@@ -111,7 +111,7 @@ public class SummaryMetricsHealthCheckerTest {
         final String errorMessage = ((ErrorReport) report).getMessage();
 
         assertEquals(WRONG_ERROR, EmptyFileException.class.getName(), error);
-        assertEquals(WRONG_ERROR_MESSAGE, DUMMY_ERROR, errorMessage);
+        assertEquals(WRONG_ERROR_MESSAGE, "File DUMMY_ERROR was found empty in path -> DUMMYPATH", errorMessage);
     }
 
     @Test

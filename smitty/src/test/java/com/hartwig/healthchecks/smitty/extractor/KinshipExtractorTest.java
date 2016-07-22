@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -15,9 +18,6 @@ import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -84,7 +84,7 @@ public class KinshipExtractorTest {
 
             {
                 kinshipReader.readLines(anyString, anyString);
-                returns(emptyLines);
+                result = new EmptyFileException("", "");
             }
         };
         kinshipExtractor.extractFromRunDirectory(TEST_DIR);

@@ -41,7 +41,7 @@ public class WGSExtractor extends AbstractFlintExtractor {
         final List<String> lines = reader.readLines(samplePath);
 
         if (lines.isEmpty()) {
-            throw new EmptyFileException(String.format(EMPTY_FILES_ERROR, suffix, runDirectory));
+            throw new EmptyFileException(suffix, runDirectory);
         }
 
         final String patientId = getPatientId(suffix, lines, INPUT);

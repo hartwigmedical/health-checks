@@ -6,13 +6,15 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 
 @FunctionalInterface
 public interface FileFinderAndReader {
 
     @NotNull
-    List<String> readLines(@NotNull final String path, @NotNull String extension) throws IOException;
+    List<String> readLines(@NotNull final String path, @NotNull String extension)
+                    throws IOException, HealthChecksException;
 
     @NotNull
     static FileFinderAndReader build() {

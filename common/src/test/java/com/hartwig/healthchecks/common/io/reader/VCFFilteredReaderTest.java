@@ -27,7 +27,9 @@ public class VCFFilteredReaderTest {
 
     private static final String TEST_DIR = "rundir";
 
-    private static final String EMPTY_DIR = "emptyFiles";
+    private static final String EMPTY_FILES = "emptyFiles";
+
+    private static final String EMPTY_DIR = "empty";
 
     private static final String EXT = "_Cosmicv76_GoNLv5_sliced.vcf";
 
@@ -46,14 +48,6 @@ public class VCFFilteredReaderTest {
         final URL testPath = Resources.getResource(EMPTY_DIR);
         final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
         final Predicate<String> headerPredicate = createHeaderPredicate(CHROM);
-        reader.readLines(testPath.getPath(), EXT, headerPredicate);
-    }
-
-    @Test(expected = FileNotFoundException.class)
-    public void readFolderNotFound() throws IOException, HealthChecksException {
-        final URL testPath = Resources.getResource(EMPTY_DIR);
-        final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
-        final Predicate<String> headerPredicate = createHeaderPredicate(DUMMY_VALUE);
         reader.readLines(testPath.getPath(), EXT, headerPredicate);
     }
 

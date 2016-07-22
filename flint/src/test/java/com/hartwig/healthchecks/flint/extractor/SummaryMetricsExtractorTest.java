@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,8 +82,6 @@ public class SummaryMetricsExtractorTest {
 
     private List<String> tumLines;
 
-    private List<String> emptyLines;
-
     private List<String> missingLines;
 
     @Mocked
@@ -104,7 +101,6 @@ public class SummaryMetricsExtractorTest {
         tumLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, dataLine,
                         FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
-        emptyLines = new ArrayList<>();
         missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
                         FILLING_LINE, FILLING_LINE, FILLING_LINE);
     }
@@ -131,7 +127,7 @@ public class SummaryMetricsExtractorTest {
 
             {
                 reader.readLines((SamplePathData) any);
-                returns(emptyLines);
+                result = new EmptyFileException("", "");
             }
         };
         extractor.extractFromRunDirectory(TEST_DIR);

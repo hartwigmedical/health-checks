@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.path.SamplePathData;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
@@ -14,7 +15,7 @@ import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 public interface SampleFinderAndReader {
 
     @NotNull
-    List<String> readLines(@NotNull final SamplePathData samplePathData) throws IOException;
+    List<String> readLines(@NotNull final SamplePathData samplePathData) throws IOException, HealthChecksException;
 
     @NotNull
     static SampleFinderAndReader build() {
