@@ -2,6 +2,8 @@ package com.hartwig.healthchecks.boo.adapter;
 
 import java.util.Arrays;
 
+import org.junit.Test;
+
 import com.hartwig.healthchecks.boo.extractor.PrestatsCheck;
 import com.hartwig.healthchecks.boo.extractor.PrestatsExtractor;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
@@ -13,17 +15,11 @@ import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
-import org.junit.Test;
-
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
 import mockit.Verifications;
 
 public class BooAdapterTest {
-
-    private static final String DUMMY_VALUE = "1.0d";
-
-    private static final String DUMMY_CHECK = "DUMMY_CHECK";
 
     private static final String DUMMY_ID = "DUMMY_ID";
 
@@ -35,7 +31,7 @@ public class BooAdapterTest {
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl prestats, @Mocked final Report report,
-            @Mocked HealthCheckReportFactory factory, @Mocked AbstractHealthCheckAdapter mock) {
+                    @Mocked final HealthCheckReportFactory factory, @Mocked final AbstractHealthCheckAdapter mock) {
 
         new NonStrictExpectations() {
 

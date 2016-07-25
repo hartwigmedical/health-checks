@@ -26,16 +26,8 @@ public interface FolderChecker {
             checkIfDirectoryExist(folder);
             checkIfIsDirectory(folder);
             checkIfDirectoryIsEmpty(folder);
-            return cleanUpPath(folder);
+            return folder.getPath();
         };
-    }
-
-    static String cleanUpPath(final File folder) {
-        String folderPath = folder.getPath();
-        if (folderPath.endsWith(File.separator)) {
-            folderPath = folderPath.substring(0, folderPath.length() - 1);
-        }
-        return folderPath;
     }
 
     static void checkIfDirectoryExist(final File folder) throws FolderDoesNotExistException {

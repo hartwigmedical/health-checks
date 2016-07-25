@@ -24,13 +24,13 @@ public class LineInZipsReaderTest {
 
     private static final String TOTAL_SEQUENCES = "Total Sequences";
 
-    protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
+    private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
 
     private static final String PATIENT = "CPCT12345678T";
 
     private static final String TEST_DIR = "rundir";
 
-    protected static final String QC_STATS = "QCStats";
+    private static final String QC_STATS = "QCStats";
 
     @Test
     public void readLine() throws IOException, HealthChecksException {
