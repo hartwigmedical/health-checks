@@ -1,5 +1,7 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
@@ -8,12 +10,11 @@ import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
+import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-
-import org.jetbrains.annotations.NotNull;
 
 @ResourceWrapper(type = CheckCategory.BOGGS)
 public class BoggsAdapter extends AbstractHealthCheckAdapter {
@@ -25,7 +26,10 @@ public class BoggsAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final ZipFilesReader zipFileReader = new ZipFilesReader();
-        final MappingExtractor mappingExtractor = new MappingExtractor(new SambambaFlagStatParser(), zipFileReader);
+        final SamplePathFinder samplePathFinder = SamplePathFinder.build();
+        final SambambaFlagStatParser flagstatParser = new SambambaFlagStatParser();
+
+        final MappingExtractor mappingExtractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
         final HealthChecker mappingHealthChecker = new HealthCheckerImpl(CheckType.MAPPING, runDirectory,
                         mappingExtractor);
         final BaseReport mapping = mappingHealthChecker.runCheck();

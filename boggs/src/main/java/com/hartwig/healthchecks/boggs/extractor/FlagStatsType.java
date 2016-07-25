@@ -31,14 +31,13 @@ public enum FlagStatsType {
 
     private final Class calculableClass;
 
-    FlagStatsType(@NotNull final int index, @NotNull final Calculable calculable,
-                    @NotNull final Class calculableClass) {
+    FlagStatsType(final int index, @NotNull final Calculable calculable, @NotNull final Class calculableClass) {
         this.index = index;
         this.calculable = calculable;
         this.calculableClass = calculableClass;
     }
 
-    public static Optional<FlagStatsType> getByIndex(@NotNull final int index) {
+    public static Optional<FlagStatsType> getByIndex(final int index) {
         return Arrays.stream(FlagStatsType.values()).filter(type -> type.getIndex() == index).findFirst();
     }
 

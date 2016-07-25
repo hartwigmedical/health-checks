@@ -1,5 +1,7 @@
 package com.hartwig.healthchecks.boo.adapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.boo.extractor.PrestatsExtractor;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
@@ -7,12 +9,11 @@ import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
+import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
-
-import org.jetbrains.annotations.NotNull;
 
 @ResourceWrapper(type = CheckCategory.BOO)
 public class BooAdapter extends AbstractHealthCheckAdapter {
@@ -24,7 +25,9 @@ public class BooAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final ZipFilesReader zipFileReader = new ZipFilesReader();
-        final PrestatsExtractor prestatsExtractor = new PrestatsExtractor(zipFileReader);
+        final SamplePathFinder samplePathFinder = SamplePathFinder.build();
+
+        final PrestatsExtractor prestatsExtractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
         final HealthChecker prestastHealthChecker = new HealthCheckerImpl(CheckType.PRESTATS, runDirectory,
                         prestatsExtractor);
         final BaseReport prestats = prestastHealthChecker.runCheck();

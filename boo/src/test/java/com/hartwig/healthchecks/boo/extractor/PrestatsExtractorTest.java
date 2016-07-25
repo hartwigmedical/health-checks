@@ -17,6 +17,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
+import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -58,6 +59,9 @@ public class PrestatsExtractorTest {
     @Mocked
     private ZipFilesReader zipFileReader;
 
+    @Mocked
+    private SamplePathFinder samplePathFinder;
+
     @Before
     public void setUp() {
         summaryDataRef = new ArrayList<>();
@@ -78,11 +82,11 @@ public class PrestatsExtractorTest {
 
     @Test
     public void canProcessRunDirectoryStructure() throws IOException, HealthChecksException {
-        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
+        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(RUNDIR, anyString, anyString);
+                samplePathFinder.findPath(RUNDIR, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
                 zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
                 returns(summaryDataRef);
@@ -90,7 +94,7 @@ public class PrestatsExtractorTest {
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 
-                zipFileReader.getZipFilesPath(RUNDIR, anyString, anyString);
+                samplePathFinder.findPath(RUNDIR, anyString, anyString);
                 returns(new File(TEST_TUM_ID).toPath());
                 zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
                 returns(summaryDataTum);
@@ -108,14 +112,14 @@ public class PrestatsExtractorTest {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(RUNDIR, anyString, anyString);
+                samplePathFinder.findPath(RUNDIR, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
                 zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
                 returns(emptyList);
 
             }
         };
-        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
+        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
         extractor.extractFromRunDirectory(RUNDIR);
     }
 
@@ -124,7 +128,7 @@ public class PrestatsExtractorTest {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(RUNDIR, anyString, anyString);
+                samplePathFinder.findPath(RUNDIR, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
                 zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
                 returns(summaryDataRef);
@@ -134,7 +138,7 @@ public class PrestatsExtractorTest {
 
             }
         };
-        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
+        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
         extractor.extractFromRunDirectory(RUNDIR);
     }
 
@@ -143,12 +147,12 @@ public class PrestatsExtractorTest {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(DUMMY_RUN_DIR, anyString, anyString);
+                samplePathFinder.findPath(DUMMY_RUN_DIR, anyString, anyString);
                 result = new NoSuchFileException(DUMMY_RUN_DIR);
 
             }
         };
-        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader);
+        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }
 

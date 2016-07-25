@@ -16,6 +16,7 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.function.DivisionOperator;
 import com.hartwig.healthchecks.common.io.extractor.AbstractTotalSequenceExtractor;
+import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -33,10 +34,15 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     @NotNull
     private final ZipFilesReader zipFileReader;
 
-    public MappingExtractor(@NotNull final FlagStatParser flagstatParser, final ZipFilesReader zipFileReader) {
+    @NotNull
+    private final SamplePathFinder samplePathFinder;
+
+    public MappingExtractor(@NotNull final FlagStatParser flagstatParser, @NotNull final ZipFilesReader zipFileReader,
+                    @NotNull final SamplePathFinder samplePathFinder) {
         super();
         this.flagstatParser = flagstatParser;
         this.zipFileReader = zipFileReader;
+        this.samplePathFinder = samplePathFinder;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     @NotNull
     private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException, EmptyFileException {
-        final Path sampleFile = zipFileReader.getZipFilesPath(runDirectory, prefix, suffix);
+        final Path sampleFile = samplePathFinder.findPath(runDirectory, prefix, suffix);
 
         final String patientId = sampleFile.getFileName().toString();
         final Long totalSequences = sumOfTotalSequences(sampleFile, zipFileReader);
@@ -60,11 +66,6 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
         logBaseDataReports(mappingChecks);
         return mappingChecks;
-    }
-
-    @NotNull
-    private static double toPercentage(@NotNull final double percentage) {
-        return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
     }
 
     private List<BaseDataReport> getFlagStatsData(@NotNull final String patientId, @NotNull final Path runDirPath,
@@ -189,4 +190,10 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
         return isAllReadReport;
     }
+
+    @NotNull
+    private static double toPercentage(final double percentage) {
+        return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
+    }
+
 }
