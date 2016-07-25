@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +18,9 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathsExtensionFinder;
 
 public class ZipFilesReader {
+
+    private static final String ERROR_MSG = "Error occurred when reading file %s. "
+                    + "Will return empty stream. Error -> %s";
 
     private static final Logger LOGGER = LogManager.getLogger(ZipFilesReader.class);
 
@@ -56,8 +58,7 @@ public class ZipFilesReader {
         try {
             fileLines.addAll(FileInZipsReader.build().readLines(path, fileName));
         } catch (IOException | HealthChecksException e) {
-            LOGGER.error(String.format("Error occurred when reading file %s. Will return empty stream. Error -> %s",
-                            path, e.getMessage()));
+            LOGGER.error(String.format(ERROR_MSG, path, e.getMessage()));
         }
         return fileLines;
     }
@@ -66,10 +67,10 @@ public class ZipFilesReader {
     private String searchForLineInZip(@NotNull final Path path, @NotNull final String fileName,
                     @NotNull final String filter) {
         String searchedLine = null;
-        final Optional<String> optinalValue = readFileFromZip(path.toString(), fileName).stream()
-                        .filter(line -> line.contains(filter)).findFirst();
-        if (optinalValue.isPresent()) {
-            searchedLine = optinalValue.get();
+        try {
+            searchedLine = LineInZipsReader.build().readLines(path.toString(), fileName, filter);
+        } catch (IOException | HealthChecksException e) {
+            LOGGER.error(String.format(ERROR_MSG, path, e.getMessage()));
         }
         return searchedLine;
     }
