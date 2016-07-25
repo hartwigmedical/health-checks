@@ -24,6 +24,7 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -51,21 +52,24 @@ public class MappingExtractorTest {
     @Mocked
     private ZipFilesReader zipFileReader;
 
+    @Mocked
+    private FlagStatParser flagstatParser;
+
+    @Mocked
+    private SamplePathFinder samplePathFinder;
+
     @Before
     public void setUp() {
         fastqLines = TestZipFileFactory.getFastqLines();
         emptyList = new ArrayList<>();
     }
 
-    @Mocked
-    private FlagStatParser flagstatParser;
-
     @Test
     public void extractData() throws IOException, HealthChecksException {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
@@ -73,7 +77,7 @@ public class MappingExtractorTest {
                 flagstatParser.parse(anyString, anyString);
                 returns(dummyData());
 
-                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_TUM_ID).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
@@ -83,7 +87,7 @@ public class MappingExtractorTest {
             }
         };
 
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
 
         final BaseReport mappingReport = extractor.extractFromRunDirectory(RUNDIR);
         assertNotNull("We should have data", mappingReport);
@@ -102,12 +106,12 @@ public class MappingExtractorTest {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(DUMMY_RUN_DIR, anyString, anyString);
+                samplePathFinder.findPath(DUMMY_RUN_DIR, anyString, anyString);
                 result = new NoSuchFileException(anyString);
 
             }
         };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
         extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     }
 
@@ -116,13 +120,13 @@ public class MappingExtractorTest {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(emptyList);
             }
         };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
         extractor.extractFromRunDirectory(RUNDIR);
     }
 
@@ -132,7 +136,7 @@ public class MappingExtractorTest {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
@@ -141,7 +145,7 @@ public class MappingExtractorTest {
                 returns(null);
             }
         };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
         extractor.extractFromRunDirectory(RUNDIR);
     }
 
@@ -150,11 +154,11 @@ public class MappingExtractorTest {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                samplePathFinder.findPath(anyString, anyString, anyString);
                 result = new NoSuchFileException("");
             }
         };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
         extractor.extractFromRunDirectory(RUNDIR);
     }
 
@@ -164,7 +168,7 @@ public class MappingExtractorTest {
         new Expectations() {
 
             {
-                zipFileReader.getZipFilesPath(anyString, anyString, anyString);
+                samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
@@ -173,7 +177,7 @@ public class MappingExtractorTest {
                 result = new NoSuchFileException("");
             }
         };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader);
+        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
         extractor.extractFromRunDirectory(RUNDIR);
     }
 

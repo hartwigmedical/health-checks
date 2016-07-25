@@ -19,6 +19,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractTotalSequenceExtractor;
+import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -37,9 +38,15 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     @NotNull
     private final ZipFilesReader zipFileReader;
 
-    public PrestatsExtractor(@NotNull final ZipFilesReader zipFileReader) {
+    @NotNull
+    private final SamplePathFinder samplePathFinder;
+
+    public PrestatsExtractor(@NotNull final ZipFilesReader zipFileReader,
+                    @NotNull final SamplePathFinder samplePathFinder) {
         super();
         this.zipFileReader = zipFileReader;
+        this.samplePathFinder = samplePathFinder;
+
     }
 
     @Override
@@ -54,7 +61,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     @NotNull
     private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException, EmptyFileException {
-        final Path samplePath = zipFileReader.getZipFilesPath(runDirectory, prefix, suffix);
+        final Path samplePath = samplePathFinder.findPath(runDirectory, prefix, suffix);
         final String samplePatientId = samplePath.getFileName().toString();
         final List<BaseDataReport> sampleData = extractSummaryData(samplePath, samplePatientId);
         final BaseDataReport sampleFastq = extractFastqData(samplePath, samplePatientId);
@@ -80,8 +87,8 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private Map<String, List<BaseDataReport>> getSummaryData(final List<String> allLines, final String patientId)
-                    throws IOException {
+    private Map<String, List<BaseDataReport>> getSummaryData(@NotNull final List<String> allLines,
+                    @NotNull final String patientId) throws IOException {
         return allLines.stream().map(line -> {
             final String[] values = line.trim().split(SEPERATOR_REGEX);
             BaseDataReport prestatsDataReport = null;

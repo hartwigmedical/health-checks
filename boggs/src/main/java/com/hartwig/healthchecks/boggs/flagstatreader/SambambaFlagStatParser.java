@@ -15,8 +15,6 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 public class SambambaFlagStatParser implements FlagStatParser {
 
-    private static final String EMPTY_FILE_ERROR = "flagstats file empty path -> %s";
-
     private static final String SEPERATOR_REGEX = " ";
 
     private static final int ZERO = 0;
@@ -31,7 +29,7 @@ public class SambambaFlagStatParser implements FlagStatParser {
 
     @Override
     @NotNull
-    public FlagStatData parse(@NotNull final String flagstatPath, final String filter)
+    public FlagStatData parse(@NotNull final String flagstatPath, @NotNull final String filter)
                     throws IOException, EmptyFileException {
         final Optional<Path> filePath = Files.walk(new File(flagstatPath).toPath())
                         .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
