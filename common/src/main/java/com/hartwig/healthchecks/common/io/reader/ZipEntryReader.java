@@ -20,15 +20,16 @@ public interface ZipEntryReader {
     Logger LOGGER = LogManager.getLogger(ZipEntryReader.class);
 
     @NotNull
-    Stream<String> readZipElement(final ZipFile zipFile, final ZipEntry zipElement);
+    Stream<String> readZipElement(final ZipFile zipFile, final ZipEntry zipEntry);
 
     @NotNull
     static ZipEntryReader build() {
-        return (zipFile, zipElement) -> {
+        return (zipFile, zipEntry) -> {
             Stream<String> readLines = Stream.empty();
             try {
-                final InputStream inputStream = zipFile.getInputStream(zipElement);
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                final InputStream inputStream = zipFile.getInputStream(zipEntry);
+                final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                final BufferedReader reader = new BufferedReader(inputStreamReader);
                 readLines = reader.lines();
             } catch (final IOException e) {
                 LOGGER.error(String.format(ERROR_MSG, e.getMessage()));

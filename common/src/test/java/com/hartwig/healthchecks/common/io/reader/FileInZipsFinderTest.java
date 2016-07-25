@@ -19,13 +19,13 @@ public class FileInZipsFinderTest {
 
     private static final String ZIP_FILE = "CPCT12345678T_FLOWCELL_S2_L002_R2_001_fastqc.zip";
 
-    protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
+    private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
 
     private static final String PATIENT = "CPCT12345678T";
 
     private static final String TEST_DIR = "rundir";
 
-    protected static final String QC_STATS = "QCStats";
+    private static final String QC_STATS = "QCStats";
 
     @Test
     public void readLines() throws IOException, HealthChecksException {

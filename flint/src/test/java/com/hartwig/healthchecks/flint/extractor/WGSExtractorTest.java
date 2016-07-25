@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,6 +106,8 @@ public class WGSExtractorTest {
 
     private List<String> missingLines;
 
+    private List<String> emptyLines;
+
     @Mocked
     private SampleFinderAndReader reader;
 
@@ -125,6 +128,7 @@ public class WGSExtractorTest {
 
         missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                         tDataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
+        emptyLines = new ArrayList<String>();
     }
 
     @Test
@@ -202,6 +206,34 @@ public class WGSExtractorTest {
                 returns(refLines);
                 reader.readLines((SamplePathData) any);
                 result = new LineNotFoundException("", "");
+            }
+        };
+        final WGSExtractor extractor = new WGSExtractor(reader);
+        extractor.extractFromRunDirectory(TEST_DIR);
+    }
+
+    @Test(expected = EmptyFileException.class)
+    public void extractDataEmptyRef() throws IOException, HealthChecksException {
+        new Expectations() {
+
+            {
+                reader.readLines((SamplePathData) any);
+                returns(emptyLines);
+            }
+        };
+        final WGSExtractor extractor = new WGSExtractor(reader);
+        extractor.extractFromRunDirectory(TEST_DIR);
+    }
+
+    @Test(expected = EmptyFileException.class)
+    public void extractDataEmptyTum() throws IOException, HealthChecksException {
+        new Expectations() {
+
+            {
+                reader.readLines((SamplePathData) any);
+                returns(refLines);
+                reader.readLines((SamplePathData) any);
+                returns(emptyLines);
             }
         };
         final WGSExtractor extractor = new WGSExtractor(reader);
