@@ -1,9 +1,15 @@
 package com.hartwig.healthchecks.common.report;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
+
+import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
@@ -13,9 +19,6 @@ import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
 import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -40,7 +43,7 @@ public class ReportTest {
     private static final String PARSE_LOGS = "parse.logs";
 
     @Test
-    public void generateReport(@Mocked final MetadataExtractor metadataExtractor,
+    public void generateStOutReport(@Mocked final MetadataExtractor metadataExtractor,
                     @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
                     throws IOException, HealthChecksException {
         new NonStrictExpectations() {
@@ -49,7 +52,7 @@ public class ReportTest {
 
                 PropertiesUtil.getInstance();
                 result = propertiesUtil;
-                times = 2;
+                times = 1;
 
                 new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
                 result = metadataExtractor;
@@ -63,14 +66,10 @@ public class ReportTest {
 
                 metadataExtractor.extractMetadata(RUN_DIR);
                 returns(new ReportMetadata(SOME_DATE, SOME_VERSION));
-
-                new FileWriter(new File(anyString));
-                result = fileWriter;
-                times = 1;
             }
         };
 
-        final Report report = JsonReport.getInstance();
+        final Report report = StandardOutputReport.getInstance();
 
         final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
         report.addReportData(baseConfig1);
@@ -78,13 +77,98 @@ public class ReportTest {
         final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
-        try {
-            final Optional<String> location = report.generateReport(RUN_DIR);
-            Assert.assertNotNull(location);
-            Assert.assertTrue(location.isPresent());
-        } catch (final GenerateReportException e) {
-            Assert.fail("Failed to generate report.");
-        }
+        final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
+        assertNotNull(jsonOptional);
+        assertTrue(jsonOptional.isPresent());
+        final String json = jsonOptional.get();
+        assertTrue(json.contains(SOME_DATE));
+        assertTrue(json.contains(SOME_VERSION));
+    }
+
+    @Test
+    public void generateReportMetadataIOException(@Mocked final MetadataExtractor metadataExtractor,
+                    @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
+                    throws IOException, HealthChecksException {
+        new NonStrictExpectations() {
+
+            {
+
+                PropertiesUtil.getInstance();
+                result = propertiesUtil;
+                times = 1;
+
+                new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
+                result = metadataExtractor;
+                times = 1;
+
+                propertiesUtil.getProperty(PARSE_LOGS);
+                returns(ONE);
+
+                propertiesUtil.getProperty(REPORT_DIR);
+                returns(TMP_DIR);
+
+                metadataExtractor.extractMetadata(RUN_DIR);
+                result = new IOException();
+            }
+        };
+
+        final Report report = StandardOutputReport.getInstance();
+
+        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        report.addReportData(baseConfig1);
+
+        final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
+        report.addReportData(baseConfig2);
+
+        final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
+        assertNotNull(jsonOptional);
+        assertTrue(jsonOptional.isPresent());
+        final String json = jsonOptional.get();
+        assertFalse(json.contains(SOME_DATE));
+        assertFalse(json.contains(SOME_VERSION));
+    }
+
+    @Test
+    public void generateReportMetadataHealthCheckException(@Mocked final MetadataExtractor metadataExtractor,
+                    @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
+                    throws IOException, HealthChecksException {
+        new NonStrictExpectations() {
+
+            {
+
+                PropertiesUtil.getInstance();
+                result = propertiesUtil;
+                times = 1;
+
+                new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
+                result = metadataExtractor;
+                times = 1;
+
+                propertiesUtil.getProperty(PARSE_LOGS);
+                returns(ONE);
+
+                propertiesUtil.getProperty(REPORT_DIR);
+                returns(TMP_DIR);
+
+                metadataExtractor.extractMetadata(RUN_DIR);
+                result = new HealthChecksException("");
+            }
+        };
+
+        final Report report = StandardOutputReport.getInstance();
+
+        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        report.addReportData(baseConfig1);
+
+        final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
+        report.addReportData(baseConfig2);
+
+        final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
+        assertNotNull(jsonOptional);
+        assertTrue(jsonOptional.isPresent());
+        final String json = jsonOptional.get();
+        assertFalse(json.contains(SOME_DATE));
+        assertFalse(json.contains(SOME_VERSION));
     }
 
     @Test
@@ -119,13 +203,9 @@ public class ReportTest {
         final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
-        try {
-            final Optional<String> location = report.generateReport(RUN_DIR);
-            Assert.assertNotNull(location);
-            Assert.assertTrue(location.isPresent());
-        } catch (final GenerateReportException e) {
-            Assert.fail("Failed to generate report.");
-        }
+        final Optional<String> location = report.generateReport(RUN_DIR);
+        assertNotNull(location);
+        assertTrue(location.isPresent());
 
         new Verifications() {
 
@@ -177,8 +257,8 @@ public class ReportTest {
 
         final Optional<String> location = report.generateReport(RUN_DIR);
 
-        Assert.assertNotNull(location);
-        Assert.assertFalse(location.isPresent());
+        assertNotNull(location);
+        assertFalse(location.isPresent());
     }
 
 }
