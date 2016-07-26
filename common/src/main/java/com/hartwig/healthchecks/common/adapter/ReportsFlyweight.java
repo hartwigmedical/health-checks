@@ -11,13 +11,17 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ReportsFlyweight {
 
+    private static final String STDOUT = "stdout";
+
+    private static final String JSON = "json";
+
     private static final Map<String, Report> FLYWEIGHT = new HashMap<>();
 
     private static final ReportsFlyweight INSTANCE = new ReportsFlyweight();
 
     static {
-        FLYWEIGHT.put("json", JsonReport.getInstance());
-        FLYWEIGHT.put("stdout", StandardOutputReport.getInstance());
+        FLYWEIGHT.put(JSON, JsonReport.getInstance());
+        FLYWEIGHT.put(STDOUT, StandardOutputReport.getInstance());
     }
 
     private ReportsFlyweight() {
