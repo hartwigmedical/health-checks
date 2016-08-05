@@ -13,7 +13,8 @@ public class PatientMultiChecksReport extends BaseReport {
     @NotNull
     private final List<BaseDataReport> patientData;
 
-    public PatientMultiChecksReport(@NotNull final CheckType checkType, @NotNull final List<BaseDataReport> patientData) {
+    public PatientMultiChecksReport(@NotNull final CheckType checkType,
+            @NotNull final List<BaseDataReport> patientData) {
         super(checkType);
         this.patientData = patientData;
     }
