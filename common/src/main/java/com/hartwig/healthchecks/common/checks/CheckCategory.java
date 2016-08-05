@@ -19,9 +19,7 @@ public enum CheckCategory {
 
     public static Optional<CheckCategory> getByCategory(@NotNull final String typeToCheck) {
         final List<CheckCategory> types = Arrays.asList(CheckCategory.values());
-        final Optional<CheckCategory> returnType = types.stream()
-                        .filter(type -> type.toString().equalsIgnoreCase(typeToCheck)).findFirst();
 
-        return returnType;
+        return types.stream().filter(type -> type.toString().equalsIgnoreCase(typeToCheck)).findFirst();
     }
 }

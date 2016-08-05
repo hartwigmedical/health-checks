@@ -21,7 +21,7 @@ public enum FlagStatsType {
     READ_2_INDEX(7, SingleValue.apply(), SingleValue.class),
     PROPERLY_PAIRED_INDEX(8, DivisionOperator.apply(), DivisionOperator.class),
     ITSELF_AND_MATE_INDEX(9, SingleValue.apply(), SingleValue.class),
-    SINGELTONS_INDEX(10, SingleValue.apply(), SingleValue.class),
+    SINGLETONS_INDEX(10, SingleValue.apply(), SingleValue.class),
     MATE_MAP_DIF_CHR_INDEX(11, SingleValue.apply(), SingleValue.class),
     MATE_MAP_DIF_CHR_Q5_INDEX(12, SingleValue.apply(), SingleValue.class);
 
@@ -41,7 +41,6 @@ public enum FlagStatsType {
         return Arrays.stream(FlagStatsType.values()).filter(type -> type.getIndex() == index).findFirst();
     }
 
-    @NotNull
     public int getIndex() {
         return index;
     }

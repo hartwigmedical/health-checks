@@ -137,7 +137,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     private BaseDataReport generateSingletonDataReport(@NotNull final String patientId,
                     @NotNull final List<FlagStats> passed) {
 
-        final FlagStats singletonStat = passed.get(FlagStatsType.SINGELTONS_INDEX.getIndex());
+        final FlagStats singletonStat = passed.get(FlagStatsType.SINGLETONS_INDEX.getIndex());
         final double singletonPercentage = singletonStat.getValue();
 
         final BaseDataReport singletonReport = new BaseDataReport(patientId,

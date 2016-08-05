@@ -85,6 +85,6 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     protected void logBaseDataReport(final BaseDataReport baseDataReport) {
         LOGGER.info(String.format(LOG_MSG, baseDataReport.getCheckName(), baseDataReport.getPatientId(),
-                        baseDataReport.getValue()));
+                baseDataReport.getValue()));
     }
 }

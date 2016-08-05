@@ -221,7 +221,7 @@ public class MappingExtractorTest {
         final FlagStats read2 = new FlagStats(FlagStatsType.READ_2_INDEX, 8960d);
         final FlagStats proper = new FlagStats(FlagStatsType.PROPERLY_PAIRED_INDEX, 17808d);
         final FlagStats itself = new FlagStats(FlagStatsType.ITSELF_AND_MATE_INDEX, 17808d);
-        final FlagStats singleton = new FlagStats(FlagStatsType.SINGELTONS_INDEX, 55d);
+        final FlagStats singleton = new FlagStats(FlagStatsType.SINGLETONS_INDEX, 55d);
         final FlagStats mateMapped = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_INDEX, 0d);
         final FlagStats q5Index = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_Q5_INDEX, 0d);
 

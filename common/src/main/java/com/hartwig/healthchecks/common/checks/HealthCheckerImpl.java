@@ -13,20 +13,19 @@ import com.hartwig.healthchecks.common.report.ErrorReport;
 
 public class HealthCheckerImpl implements HealthChecker {
 
-    private static final String ERROR_MSG = "Got An Exception with message: %s";
+    private static final String ERROR_MSG = "Got an exception with message: %s";
 
     private static final Logger LOGGER = LogManager.getLogger(HealthCheckerImpl.class);
 
     @NotNull
     private final String runDirectory;
-
     @NotNull
     private final DataExtractor dataExtractor;
 
     private final CheckType checkType;
 
     public HealthCheckerImpl(final CheckType checkType, @NotNull final String runDirectory,
-                    @NotNull final DataExtractor dataExtractor) {
+            @NotNull final DataExtractor dataExtractor) {
         this.runDirectory = runDirectory;
         this.dataExtractor = dataExtractor;
         this.checkType = checkType;

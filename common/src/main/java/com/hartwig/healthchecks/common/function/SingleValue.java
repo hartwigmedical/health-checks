@@ -3,9 +3,9 @@ package com.hartwig.healthchecks.common.function;
 @FunctionalInterface
 public interface SingleValue extends Calculable {
 
-    double calculate(double singelValue);
+    double calculate(double singleValue);
 
     static SingleValue apply() {
-        return (singelValue) -> singelValue;
+        return (singleValue) -> singleValue;
     }
 }
