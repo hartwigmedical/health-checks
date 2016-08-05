@@ -21,17 +21,14 @@ public final class HealthChecksFlyweight {
     private static final Logger LOGGER = LogManager.getLogger(HealthChecksFlyweight.class);
 
     private static final Map<CheckCategory, AbstractHealthCheckAdapter> FLYWEIGHT = new HashMap<>();
-
     private static final HealthChecksFlyweight INSTANCE = new HealthChecksFlyweight();
-
     private static final Reflections BASE = new Reflections("com.hartwig.healthchecks");
 
-    @SuppressWarnings("rawtypes")
     private static final Set<Class<? extends AbstractHealthCheckAdapter>> BASE_SET = BASE
                     .getSubTypesOf(AbstractHealthCheckAdapter.class);
 
     static {
-        BASE_SET.stream().forEach(adapter -> {
+        BASE_SET.forEach(adapter -> {
             try {
                 final AbstractHealthCheckAdapter adapterInstance = adapter.newInstance();
                 final ResourceWrapper resourceWrapper = adapter.getAnnotation(ResourceWrapper.class);
