@@ -26,8 +26,8 @@ public class RozAdapter extends AbstractHealthCheckAdapter {
 
         final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
         final DataExtractor extractor = new SlicedExtractor(reader);
-        final HealthChecker healthcheck = new HealthCheckerImpl(CheckType.SLICED, runDirectory, extractor);
-        final BaseReport baseReport = healthcheck.runCheck();
+        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.SLICED, runDirectory, extractor);
+        final BaseReport baseReport = healthCheck.runCheck();
         report.addReportData(baseReport);
     }
 }

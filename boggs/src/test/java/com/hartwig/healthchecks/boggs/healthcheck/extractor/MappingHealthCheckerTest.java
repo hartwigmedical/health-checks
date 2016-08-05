@@ -114,7 +114,6 @@ public class MappingHealthCheckerTest {
         final BaseDataReport properlyData = new BaseDataReport("Dummy",
                         MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(), "0.0");
 
-        final List<BaseDataReport> reports = Arrays.asList(mappedData, duplicateData, properlyData);
-        return reports;
+        return Arrays.asList(mappedData, duplicateData, properlyData);
     }
 }

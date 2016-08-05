@@ -110,10 +110,8 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final double mappedPercentage = toPercentage(
                         mappedStatCalc.calculate(mappedStat.getValue(), totalStat.getValue()));
 
-        final BaseDataReport mappedDataReport = new BaseDataReport(patientId,
+        return new BaseDataReport(patientId,
                         MappingCheck.MAPPING_MAPPED.getDescription(), String.valueOf(mappedPercentage));
-
-        return mappedDataReport;
     }
 
     @NotNull
@@ -126,11 +124,9 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final double properlyPairedPercentage = toPercentage(
                         properStatCalc.calculate(properPaired.getValue(), mappedStat.getValue()));
 
-        final BaseDataReport properReport = new BaseDataReport(patientId,
+        return new BaseDataReport(patientId,
                         MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(),
                         String.valueOf(properlyPairedPercentage));
-
-        return properReport;
     }
 
     @NotNull
@@ -140,10 +136,8 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGLETONS_INDEX.getIndex());
         final double singletonPercentage = singletonStat.getValue();
 
-        final BaseDataReport singletonReport = new BaseDataReport(patientId,
+        return new BaseDataReport(patientId,
                         MappingCheck.MAPPING_SINGLETON.getDescription(), String.valueOf(singletonPercentage));
-
-        return singletonReport;
     }
 
     @NotNull
@@ -153,11 +147,9 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
         final double mateMappedDiffChrPerc = diffPercStat.getValue();
 
-        final BaseDataReport mateMappedDiffReport = new BaseDataReport(patientId,
+        return new BaseDataReport(patientId,
                         MappingCheck.MAPPING_MATE_MAPPED_DIFFERENT_CHR.getDescription(),
                         String.valueOf(mateMappedDiffChrPerc));
-
-        return mateMappedDiffReport;
     }
 
     @NotNull
@@ -170,10 +162,8 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final double proportionOfDuplicateRead = toPercentage(
                         duplicateStatCalc.calculate(duplicateStat.getValue(), totalStat.getValue()));
 
-        final BaseDataReport duplicateReport = new BaseDataReport(patientId,
+        return new BaseDataReport(patientId,
                         MappingCheck.MAPPING_DUPLIVATES.getDescription(), String.valueOf(proportionOfDuplicateRead));
-
-        return duplicateReport;
     }
 
     @NotNull
@@ -185,15 +175,11 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final boolean isAllReadsPresent = totalStat.getValue() == Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE
                         + secondaryStat.getValue();
 
-        final BaseDataReport isAllReadReport = new BaseDataReport(patientId,
+        return new BaseDataReport(patientId,
                         MappingCheck.MAPPING_IS_ALL_READ.getDescription(), String.valueOf(isAllReadsPresent));
-
-        return isAllReadReport;
     }
 
-    @NotNull
     private static double toPercentage(final double percentage) {
         return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
     }
-
 }

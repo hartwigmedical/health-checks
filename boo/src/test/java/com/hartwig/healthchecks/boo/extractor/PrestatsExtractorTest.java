@@ -16,7 +16,6 @@ import org.junit.Test;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;

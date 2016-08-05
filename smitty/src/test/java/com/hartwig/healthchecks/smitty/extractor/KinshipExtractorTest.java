@@ -42,8 +42,6 @@ public class KinshipExtractorTest {
 
     private List<String> malformedLines;
 
-    private List<String> emptyLines;
-
     @Mocked
     private FileFinderAndReader kinshipReader;
 
@@ -56,7 +54,6 @@ public class KinshipExtractorTest {
         malformedLines = new ArrayList<>();
         malformedLines.addAll(lines);
         malformedLines.add(FIRST_LINE);
-        emptyLines = new ArrayList<>();
     }
 
     @Test

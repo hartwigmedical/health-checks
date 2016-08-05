@@ -182,11 +182,10 @@ public class MappingExtractorTest {
     }
 
     private BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
-                    @NotNull final MappingCheck check) {
+            @NotNull final MappingCheck check) {
 
-        return mapping.stream().filter(baseDataReport -> {
-            return baseDataReport.getCheckName().equals(check.getDescription());
-        }).findFirst().get();
+        return mapping.stream().filter(
+                baseDataReport -> baseDataReport.getCheckName().equals(check.getDescription())).findFirst().get();
     }
 
     private void assetMappingData(final List<BaseDataReport> mapping) {
@@ -210,7 +209,6 @@ public class MappingExtractorTest {
     }
 
     private FlagStatData dummyData() throws IOException, EmptyFileException {
-
         final FlagStats total = new FlagStats(FlagStatsType.TOTAL_INDEX, 17940d);
         final FlagStats secondary = new FlagStats(FlagStatsType.SECONDARY_INDEX, 20d);
         final FlagStats supplementary = new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, 0d);
@@ -226,11 +224,10 @@ public class MappingExtractorTest {
         final FlagStats q5Index = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_Q5_INDEX, 0d);
 
         final List<FlagStats> passedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped, paired,
-                        read1, read2, proper, itself, singleton, mateMapped, q5Index);
+                read1, read2, proper, itself, singleton, mateMapped, q5Index);
         final List<FlagStats> failedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped, paired,
-                        read1, read2, proper, itself, singleton, mateMapped, q5Index);
+                read1, read2, proper, itself, singleton, mateMapped, q5Index);
 
-        final FlagStatData flagStatData = new FlagStatData(passedStats, failedStats);
-        return flagStatData;
+        return new FlagStatData(passedStats, failedStats);
     }
 }

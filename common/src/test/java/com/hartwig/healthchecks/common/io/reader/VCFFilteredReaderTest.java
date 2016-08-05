@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import com.google.common.io.Resources;
@@ -57,15 +58,8 @@ public class VCFFilteredReaderTest {
         reader.readLines(testPath.getPath(), EXT, headerPredicate);
     }
 
-    private Predicate<String> createHeaderPredicate(final String filter) {
-        final Predicate<String> headerPredicate = new Predicate<String>() {
-
-            @Override
-            public boolean test(final String line) {
-                return line.startsWith(filter);
-            }
-        };
-        return headerPredicate;
+    @NotNull
+    private static Predicate<String> createHeaderPredicate(@NotNull final String filter) {
+        return line -> line.startsWith(filter);
     }
-
 }

@@ -15,6 +15,8 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.jetbrains.annotations.NotNull;
+
 public class WGSExtractor extends AbstractFlintExtractor {
 
     private static final String WGS_EXT = "dedup_WGSMetrics.txt";
@@ -26,8 +28,9 @@ public class WGSExtractor extends AbstractFlintExtractor {
         this.reader = reader;
     }
 
+    @NotNull
     @Override
-    public BaseReport extractFromRunDirectory(final String runDirectory) throws IOException, HealthChecksException {
+    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory) throws IOException, HealthChecksException {
         final List<BaseDataReport> referenceSample = getSampleData(runDirectory, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSample = getSampleData(runDirectory, TUM_SAMPLE_SUFFIX);
         return new SampleReport(CheckType.COVERAGE, referenceSample, tumorSample);
@@ -51,13 +54,13 @@ public class WGSExtractor extends AbstractFlintExtractor {
         final BaseDataReport coverageBaseQ = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_BASEQ);
         final BaseDataReport coverageDupe = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_DUPE);
         final BaseDataReport coverageMapQ = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_MAPQ);
-        final BaseDataReport coverageOvelap = getValue(lines, suffix, patientId,
+        final BaseDataReport coverageOverlap = getValue(lines, suffix, patientId,
                         CoverageCheck.COVERAGE_PCT_EXC_OVERLAP);
         final BaseDataReport coverageTotal = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_TOTAL);
         final BaseDataReport coverageUnpaired = getValue(lines, suffix, patientId,
                         CoverageCheck.COVERAGE_PCT_EXC_UNPAIRED);
         final BaseDataReport coverageSD = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_SD);
-        return Arrays.asList(coverageMean, coverageMedian, coverageBaseQ, coverageDupe, coverageMapQ, coverageOvelap,
+        return Arrays.asList(coverageMean, coverageMedian, coverageBaseQ, coverageDupe, coverageMapQ, coverageOverlap,
                         coverageTotal, coverageUnpaired, coverageSD);
     }
 

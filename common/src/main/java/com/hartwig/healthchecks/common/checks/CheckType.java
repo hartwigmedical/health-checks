@@ -11,5 +11,5 @@ public enum CheckType {
     SOMATIC,
     SLICED,
     REALIGNER,
-    GERMLINE;
+    GERMLINE
 }

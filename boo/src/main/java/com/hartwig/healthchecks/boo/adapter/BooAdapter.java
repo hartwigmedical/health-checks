@@ -28,9 +28,9 @@ public class BooAdapter extends AbstractHealthCheckAdapter {
         final SamplePathFinder samplePathFinder = SamplePathFinder.build();
 
         final PrestatsExtractor prestatsExtractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
-        final HealthChecker prestastHealthChecker = new HealthCheckerImpl(CheckType.PRESTATS, runDirectory,
+        final HealthChecker prestatsHealthChecker = new HealthCheckerImpl(CheckType.PRESTATS, runDirectory,
                         prestatsExtractor);
-        final BaseReport prestats = prestastHealthChecker.runCheck();
+        final BaseReport prestats = prestatsHealthChecker.runCheck();
         report.addReportData(prestats);
 
     }

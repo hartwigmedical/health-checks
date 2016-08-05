@@ -25,7 +25,7 @@ public class ZipFilesReaderTest {
 
     private static final String MISSING_LINES_MSG = "Missing lines from Zip";
 
-    private static final int NUM_SUNMARY_LINES = 13;
+    private static final int NUM_SUMMARY_LINES = 13;
 
     private static final int NUM_FASTQC_LINES = 1;
 
@@ -41,7 +41,7 @@ public class ZipFilesReaderTest {
         final ZipFilesReader zipFileReader = new ZipFilesReader();
         final Path path = new File(url.getPath()).toPath();
         final List<String> lines = zipFileReader.readAllLinesFromZips(path, SUMMARY_FILE_NAME);
-        assertEquals(MISSING_LINES_MSG, NUM_SUNMARY_LINES, lines.size());
+        assertEquals(MISSING_LINES_MSG, NUM_SUMMARY_LINES, lines.size());
     }
 
     @Test

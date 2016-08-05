@@ -30,12 +30,12 @@ public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
                     throws LineNotFoundException, HeaderNotFoundException {
         final String[] headers = lines.get(ZERO).split(SEPARATOR_REGEX);
 
-        List<String> expecetedHeaders = Arrays.stream(neededHeaders).collect(Collectors.toList());
+        List<String> expectedHeaders = Arrays.stream(neededHeaders).collect(Collectors.toList());
         if (isGermlineCheck) {
-            expecetedHeaders = Stream.concat(Arrays.stream(neededHeaders), Arrays.stream(neededHeadersVariants))
+            expectedHeaders = Stream.concat(Arrays.stream(neededHeaders), Arrays.stream(neededHeadersVariants))
                             .collect(Collectors.toList());
         }
-        final List<String> validation = expecetedHeaders.stream()
+        final List<String> validation = expectedHeaders.stream()
                         .filter(expectedHeader -> Arrays.stream(headers)
                                         .filter(header -> header.matches(expectedHeader)).count() < ONE)
                         .collect(Collectors.toList());

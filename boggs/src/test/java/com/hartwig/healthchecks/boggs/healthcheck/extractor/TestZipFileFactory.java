@@ -25,9 +25,9 @@ public class TestZipFileFactory {
                         + "_001.fastq.gz," + "WARN\tUNKNOWN\tCPCT12345678" + suffix + "FLOWCELL_S2_" + lane
                         + "_001.fastq.gz").split(",");
         return Arrays.asList(lines);
-    };
+    }
 
     public static List<String> getFastqLines() {
         return Arrays.asList("Total Sequences\t8951");
-    };
+    }
 }
