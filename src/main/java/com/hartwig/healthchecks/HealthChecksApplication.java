@@ -28,7 +28,7 @@ import rx.Observable;
 import rx.observables.BlockingObservable;
 import rx.schedulers.Schedulers;
 
-public class HealthChecksApplication {
+public final class HealthChecksApplication {
 
     private static final String RUN_DIR_ARG_DESC = "The path containing the data for a single run";
     private static final String CHECK_TYPE_ARGS_DESC = "The type of check to be executed for a single run";
