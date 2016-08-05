@@ -73,6 +73,10 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
         final FlagStatData flagstatData = flagstatParser.parse(runDirPath + File.separator + MAPPING + File.separator,
                         REALIGN);
+        // KODU: Flagstat data can be null!
+        if (flagstatData == null) {
+            throw new EmptyFileException(FLAGSTAT_SUFFIX, runDirPath.toString());
+        }
         final List<BaseDataReport> mappingDataReports = new ArrayList<>();
         final List<FlagStats> passed = flagstatData.getPassedStats();
 

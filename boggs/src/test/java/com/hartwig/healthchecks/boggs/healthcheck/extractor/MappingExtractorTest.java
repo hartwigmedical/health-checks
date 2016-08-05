@@ -118,7 +118,6 @@ public class MappingExtractorTest {
     @Test(expected = EmptyFileException.class)
     public void extractDataEmptyFastQFile() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
