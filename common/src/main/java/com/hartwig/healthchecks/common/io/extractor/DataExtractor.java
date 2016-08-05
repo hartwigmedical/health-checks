@@ -9,5 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface DataExtractor {
 
+    @NotNull
     BaseReport extractFromRunDirectory(@NotNull final String runDirectory) throws IOException, HealthChecksException;
 }

@@ -24,7 +24,6 @@ public final class JsonReport extends AbstractJsonBaseReport {
 
     private static final String ERROR_GENERATING_REPORT = "Error occurred whilst generating reports. Error -> %s";
 
-
     private JsonReport() {
     }
 

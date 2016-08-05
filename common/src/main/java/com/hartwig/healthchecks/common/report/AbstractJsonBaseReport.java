@@ -29,16 +29,13 @@ abstract class AbstractJsonBaseReport implements Report {
     static final Gson GSON = new GsonBuilder().setPrettyPrinting()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).disableHtmlEscaping().create();
 
-    private static final String METADATA_ERR_MSG = "Error occurred whilst extracting metadata. "
-                    + "Will continue with report generation anyway. Error -> %s ";
+    private static final String ADD_META_DATA = "add.metadata";
+    private static final String ADD_META_DATA_TRUE = "1";
 
     private static final String PIPELINE_VERSION = "PipelineVersion";
     private static final String RUN_DATE = "RunDate";
-
-    private static final String TRUE = "1";
-
-    private static final String PARSE_LOGS = "parse.logs";
-
+    private static final String METADATA_ERR_MSG = "Error occurred whilst extracting metadata. "
+                    + "Will continue with report generation anyway. Error -> %s ";
 
     private static final Logger LOGGER = LogManager.getLogger(Report.class);
 
@@ -53,9 +50,9 @@ abstract class AbstractJsonBaseReport implements Report {
         final JsonArray reportArray = new JsonArray();
         final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
 
-        final String parseLogs = propertiesUtil.getProperty(PARSE_LOGS);
+        final String addMetaData = propertiesUtil.getProperty(ADD_META_DATA);
 
-        if (parseLogs.equals(TRUE)) {
+        if (addMetaData.equals(ADD_META_DATA_TRUE)) {
             final JsonObject element = getMetadata(runDirectory);
             if (element != null) {
                 reportArray.add(element);
@@ -82,6 +79,7 @@ abstract class AbstractJsonBaseReport implements Report {
             final MetadataExtractor metadataExtractor = new MetadataExtractor(PathRegexFinder.build(),
                     LineReader.build());
             final ReportMetadata reportMetadata = metadataExtractor.extractMetadata(runDirectory);
+
             final JsonParser parser = new JsonParser();
             element = new JsonObject();
             element.add(RUN_DATE, parser.parse(reportMetadata.getDate()));
