@@ -40,7 +40,7 @@ public class ReportTest {
 
     private static final String REPORT_DIR = "report.dir";
 
-    private static final String PARSE_LOGS = "parse.logs";
+    private static final String ADD_META_DATA = "add.metadata";
 
     @Test
     public void generateStOutReport(@Mocked final MetadataExtractor metadataExtractor,
@@ -58,7 +58,7 @@ public class ReportTest {
                 result = metadataExtractor;
                 times = 1;
 
-                propertiesUtil.getProperty(PARSE_LOGS);
+                propertiesUtil.getProperty(ADD_META_DATA);
                 returns(ONE);
 
                 propertiesUtil.getProperty(REPORT_DIR);
@@ -101,7 +101,7 @@ public class ReportTest {
                 result = metadataExtractor;
                 times = 1;
 
-                propertiesUtil.getProperty(PARSE_LOGS);
+                propertiesUtil.getProperty(ADD_META_DATA);
                 returns(ONE);
 
                 propertiesUtil.getProperty(REPORT_DIR);
@@ -144,7 +144,7 @@ public class ReportTest {
                 result = metadataExtractor;
                 times = 1;
 
-                propertiesUtil.getProperty(PARSE_LOGS);
+                propertiesUtil.getProperty(ADD_META_DATA);
                 returns(ONE);
 
                 propertiesUtil.getProperty(REPORT_DIR);
@@ -183,7 +183,7 @@ public class ReportTest {
                 result = propertiesUtil;
                 times = 2;
 
-                propertiesUtil.getProperty(PARSE_LOGS);
+                propertiesUtil.getProperty(ADD_META_DATA);
                 returns(ZERO);
 
                 propertiesUtil.getProperty(REPORT_DIR);
@@ -232,7 +232,7 @@ public class ReportTest {
                 result = metadataExtractor;
                 times = 1;
 
-                propertiesUtil.getProperty(PARSE_LOGS);
+                propertiesUtil.getProperty(ADD_META_DATA);
                 returns(ONE);
 
                 propertiesUtil.getProperty(REPORT_DIR);
@@ -260,5 +260,4 @@ public class ReportTest {
         assertNotNull(location);
         assertFalse(location.isPresent());
     }
-
 }

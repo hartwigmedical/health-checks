@@ -7,13 +7,12 @@ import org.junit.Test;
 public class PropertiesUtilTest {
 
     @Test
-    public void getProperty() throws Exception {
+    public void getProperty() {
         final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
         final String dir = propertiesUtil.getProperty("report.dir");
-        final String parseLogs = propertiesUtil.getProperty("parse.logs");
+        final String addMetaData = propertiesUtil.getProperty("add.metadata");
 
         assertEquals("Directory is not the one expected", "/tmp", dir);
-        assertEquals("Wrong value", "1", parseLogs);
+        assertEquals("Wrong value", "1", addMetaData);
     }
-
 }
