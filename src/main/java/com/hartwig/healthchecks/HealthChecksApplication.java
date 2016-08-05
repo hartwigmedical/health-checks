@@ -44,8 +44,11 @@ public final class HealthChecksApplication {
 
     private static final String ALL_CHECKS = "all";
 
+    @NotNull
     private final String runDirectory;
+    @NotNull
     private final String checkType;
+    @NotNull
     private final String reportType;
 
     private HealthChecksApplication(@NotNull final String runDirectory, @NotNull final String checkType,
