@@ -12,21 +12,22 @@ public class SampleReport extends BaseReport {
 
     @NotNull
     private final List<BaseDataReport> referenceSample;
-
     @NotNull
     private final List<BaseDataReport> tumorSample;
 
-    public SampleReport(final CheckType checkType, final List<BaseDataReport> referenceSample,
-                    final List<BaseDataReport> tumorSample) {
+    public SampleReport(final CheckType checkType, @NotNull final List<BaseDataReport> referenceSample,
+                    @NotNull final List<BaseDataReport> tumorSample) {
         super(checkType);
         this.referenceSample = referenceSample;
         this.tumorSample = tumorSample;
     }
 
+    @NotNull
     public List<BaseDataReport> getReferenceSample() {
         return referenceSample;
     }
 
+    @NotNull
     public List<BaseDataReport> getTumorSample() {
         return tumorSample;
     }

@@ -17,6 +17,7 @@ public class BaseReport implements Serializable {
         this.checkType = checkType;
     }
 
+    @NotNull
     public CheckType getCheckType() {
         return checkType;
     }

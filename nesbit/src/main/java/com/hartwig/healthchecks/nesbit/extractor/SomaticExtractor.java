@@ -24,6 +24,8 @@ import com.hartwig.healthchecks.nesbit.model.VCFSomaticData;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticSetData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
+import org.jetbrains.annotations.NotNull;
+
 public class SomaticExtractor extends AbstractVCFExtractor {
 
     private static final String SET = "set=";
@@ -52,11 +54,13 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     }
 
     @Override
-    public BaseReport extractFromRunDirectory(final String runDirectory) throws IOException, HealthChecksException {
+    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
+            throws IOException, HealthChecksException {
         final List<BaseDataReport> patientData = getPatientData(runDirectory);
         return new PatientMultiChecksReport(CheckType.SOMATIC, patientData);
     }
 
+    @NotNull
     private List<BaseDataReport> getPatientData(final String runDirectory) throws IOException, HealthChecksException {
         final List<String> headerLines = reader.readLines(runDirectory, EXT, new VCFHeaderLinePredicate());
         final String[] headers = getHeaders(headerLines, EXT, Boolean.FALSE);
@@ -74,9 +78,9 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     }
 
     private List<BaseDataReport> getTypeChecks(final List<VCFSomaticData> vcfData, final String patientId,
-                    final VCFType vcfType) {
+            final VCFType vcfType) {
         final BaseDataReport countReport = getSomaticVariantCount(patientId, vcfData, vcfType,
-                        String.format(SOMATIC_TYPE_LABEL, vcfType.name()));
+                String.format(SOMATIC_TYPE_LABEL, vcfType.name()));
         final List<BaseDataReport> reports = new ArrayList<>();
         reports.add(countReport);
         final List<VCFSomaticSetData> vcfTypeSetData = getSetDataForType(vcfData, vcfType);
@@ -107,7 +111,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     }
 
     protected BaseDataReport getSomaticVariantCount(final String patientId, final List<VCFSomaticData> vcfData,
-                    final VCFType vcfType, final String checkName) {
+            final VCFType vcfType, final String checkName) {
         final Long count = vcfData.stream().filter(data -> data.getType().equals(vcfType)).count();
         return new BaseDataReport(patientId, checkName, String.valueOf(count));
     }
@@ -115,16 +119,16 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     private List<VCFSomaticSetData> getSetDataForType(final List<VCFSomaticData> vcfData, final VCFType vcfType) {
         return vcfData.stream().filter(vcf -> vcf.getType().equals(vcfType)).map(vcf -> {
             VCFSomaticSetData vcfSomaticSetData = null;
-            final String setValue = Arrays.stream(vcf.getInfo().split(SEMICOLON_DELIMITER))
-                            .filter(infoLine -> infoLine.contains(SET))
-                            .map(infoLine -> infoLine.substring(infoLine.indexOf(EQUAL) + ONE, infoLine.length()))
-                            .findFirst().get();
+            final String setValue = Arrays.stream(vcf.getInfo().split(SEMICOLON_DELIMITER)).filter(
+                    infoLine -> infoLine.contains(SET)).map(
+                    infoLine -> infoLine.substring(infoLine.indexOf(EQUAL) + ONE,
+                            infoLine.length())).findFirst().get();
             final String[] allCallers = setValue.split(DASH);
-            final List<String> filteredCallers = Arrays.stream(allCallers)
-                            .filter(caller -> !caller.startsWith(FILTER_IN)).collect(Collectors.toList());
+            final List<String> filteredCallers = Arrays.stream(allCallers).filter(
+                    caller -> !caller.startsWith(FILTER_IN)).collect(Collectors.toList());
             if (filteredCallers.size() > ZERO) {
-                final Map<String, Integer> callersMap = filteredCallers.stream()
-                                .collect(Collectors.toMap(key -> key, value -> filteredCallers.size() - ONE));
+                final Map<String, Integer> callersMap = filteredCallers.stream().collect(
+                        Collectors.toMap(key -> key, value -> filteredCallers.size() - ONE));
                 vcfSomaticSetData = new VCFSomaticSetData(filteredCallers.size(), callersMap);
             }
             return vcfSomaticSetData;
@@ -132,64 +136,65 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     }
 
     private BaseDataReport calculatePrecision(final List<VCFSomaticSetData> vcfSomaticSetData, final String patientId,
-                    final VCFType vcfType, final String caller) {
+            final VCFType vcfType, final String caller) {
         final List<VCFSomaticSetData> callerSets = getSetsForCaller(vcfSomaticSetData, caller);
         final List<VCFSomaticSetData> callerSetsPerCallersCount = getSetForCallerWithMoreThanOneCaller(callerSets,
-                        caller);
+                caller);
         double precision = ZERO_DOUBLE_VALUE;
         if (!callerSetsPerCallersCount.isEmpty() && !callerSets.isEmpty()) {
             precision = (double) callerSetsPerCallersCount.size() / callerSets.size();
         }
         return new BaseDataReport(patientId,
-                        String.format(PRECISION_CHECK_LABEL, vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
-                        String.valueOf(precision));
+                String.format(PRECISION_CHECK_LABEL, vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
+                String.valueOf(precision));
     }
 
-    private BaseDataReport calculateSensitivity(final List<VCFSomaticSetData> vcfSomaticSetData, final String patientId,
-                    final VCFType vcfType, final String caller) {
+    private BaseDataReport calculateSensitivity(final List<VCFSomaticSetData> vcfSomaticSetData,
+            final String patientId, final VCFType vcfType, final String caller) {
         final List<VCFSomaticSetData> callerSetsPerCallersCount = getSetForCallerWithMoreThanOneCaller(
-                        vcfSomaticSetData, caller);
+                vcfSomaticSetData, caller);
         final List<VCFSomaticSetData> setsPerCount = getSetsFilteredByCount(vcfSomaticSetData,
-                        isTotalCallersCountMoreThan(ONE));
+                isTotalCallersCountMoreThan(ONE));
         double sensitivity = ZERO_DOUBLE_VALUE;
         if (!callerSetsPerCallersCount.isEmpty() && !setsPerCount.isEmpty()) {
             sensitivity = (double) callerSetsPerCallersCount.size() / setsPerCount.size();
         }
         return new BaseDataReport(patientId,
-                        String.format(SENSITIVITY_CHECK_LABEL, vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
-                        String.valueOf(sensitivity));
+                String.format(SENSITIVITY_CHECK_LABEL, vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
+                String.valueOf(sensitivity));
     }
 
     private BaseDataReport calculateProportion(final List<VCFSomaticSetData> vcfSomaticSetData, final String patientId,
-                    final VCFType vcfType, final int count) {
+            final VCFType vcfType, final int count) {
         final List<VCFSomaticSetData> setsPerCount = getSetsFilteredByCount(vcfSomaticSetData,
-                        isTotalCallersCountEqual(count));
+                isTotalCallersCountEqual(count));
         double proportion = ZERO_DOUBLE_VALUE;
         if (!setsPerCount.isEmpty() && !vcfSomaticSetData.isEmpty()) {
             proportion = setsPerCount.size() / vcfSomaticSetData.size();
         }
 
         return new BaseDataReport(patientId,
-                        String.format(PROPORTION_CHECK_LABEL, vcfType.name(), String.valueOf(count)),
-                        String.valueOf(proportion));
+                String.format(PROPORTION_CHECK_LABEL, vcfType.name(), String.valueOf(count)),
+                String.valueOf(proportion));
     }
 
     private List<VCFSomaticSetData> getSetForCallerWithMoreThanOneCaller(
-                    final List<VCFSomaticSetData> vcfSomaticSetData, final String caller) {
+            final List<VCFSomaticSetData> vcfSomaticSetData, final String caller) {
         final List<VCFSomaticSetData> callerSets = getSetsForCaller(vcfSomaticSetData, caller);
-        return callerSets.stream().filter(vcfSomaticSet -> vcfSomaticSet.getCallersCountPerCaller().get(caller) > ONE)
-                        .collect(Collectors.toList());
+        return callerSets.stream().filter(
+                vcfSomaticSet -> vcfSomaticSet.getCallersCountPerCaller().get(caller) > ONE).collect(
+                Collectors.toList());
     }
 
     private List<VCFSomaticSetData> getSetsForCaller(final List<VCFSomaticSetData> vcfSomaticSetData,
-                    final String caller) {
-        return vcfSomaticSetData.stream()
-                        .filter(vcfSomaticSet -> vcfSomaticSet.getCallersCountPerCaller().containsKey(caller))
-                        .collect(Collectors.toList());
+            final String caller) {
+        return vcfSomaticSetData.stream().filter(
+                vcfSomaticSet -> vcfSomaticSet.getCallersCountPerCaller().containsKey(caller)).collect(
+                Collectors.toList());
     }
 
     private List<VCFSomaticSetData> getSetsFilteredByCount(final List<VCFSomaticSetData> vcfSomaticSetData,
-                    final Predicate<VCFSomaticSetData> countFilter) {
+            final Predicate<VCFSomaticSetData> countFilter) {
         return vcfSomaticSetData.stream().filter(countFilter).collect(Collectors.toList());
     }
 

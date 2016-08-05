@@ -22,59 +22,40 @@ import com.hartwig.healthchecks.common.util.PropertiesUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractJsonBaseReport implements Report {
+abstract class AbstractJsonBaseReport implements Report {
 
-    protected static final String METADATA_ERR_MSG = "Error occurred whilst extracting metada."
+    static final Gson GSON = new GsonBuilder().setPrettyPrinting()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).disableHtmlEscaping().create();
+
+    private static final String METADATA_ERR_MSG = "Error occurred whilst extracting metadata. "
                     + "Will continue with report generation anyway. Error -> %s ";
 
-    protected static final String ERROR_GENERATING_REPORT = "Error occurred whilst generating reports. Error -> %s";
+    private static final String PIPELINE_VERSION = "PipelineVersion";
+    private static final String RUN_DATE = "RunDate";
 
-    protected static final String PIPE_LINE_VERSION = "PipeLineVersion";
+    private static final String TRUE = "1";
 
-    protected static final String RUN_DATE = "RunDate";
+    private static final String PARSE_LOGS = "parse.logs";
 
-    protected static final String TRUE = "1";
 
-    protected static final String PARSE_LOGS = "parse.logs";
+    private static final Logger LOGGER = LogManager.getLogger(Report.class);
 
-    protected static final Gson GSON = new GsonBuilder().setPrettyPrinting()
-                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).disableHtmlEscaping().create();
-
-    protected static final Logger LOGGER = LogManager.getLogger(Report.class);
-
-    protected static final Map<CheckType, BaseReport> HEALTH_CHECKS = new ConcurrentHashMap<>();
+    private static final Map<CheckType, BaseReport> HEALTH_CHECKS = new ConcurrentHashMap<>();
 
     @Override
     public void addReportData(@NotNull final BaseReport reportData) {
         HEALTH_CHECKS.putIfAbsent(reportData.getCheckType(), reportData);
     }
 
-    protected JsonObject getMetadata(final String runDirectory) {
-        JsonObject element = null;
-
-        try {
-            final MetadataExtractor metadataExtractor = new MetadataExtractor(PathRegexFinder.build(),
-                            LineReader.build());
-            final ReportMetadata reportMetadata = metadataExtractor.extractMetadata(runDirectory);
-            final JsonParser parser = new JsonParser();
-            element = new JsonObject();
-            element.add(RUN_DATE, parser.parse(reportMetadata.getDate()));
-            element.add(PIPE_LINE_VERSION, parser.parse(reportMetadata.getPipelineVersion()));
-        } catch (IOException | HealthChecksException e) {
-            LOGGER.error(String.format(METADATA_ERR_MSG, e.getMessage()));
-        }
-
-        return element;
-    }
-
-    protected JsonArray computeElements(@NotNull final String runDirectory) {
+    JsonArray computeElements(@NotNull final String runDirectory) {
         final JsonArray reportArray = new JsonArray();
         final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
 
         final String parseLogs = propertiesUtil.getProperty(PARSE_LOGS);
 
-        if (parseLogs != null && parseLogs.equals(TRUE)) {
+        if (parseLogs.equals(TRUE)) {
             final JsonObject element = getMetadata(runDirectory);
             if (element != null) {
                 reportArray.add(element);
@@ -91,5 +72,24 @@ public abstract class AbstractJsonBaseReport implements Report {
         });
 
         return reportArray;
+    }
+
+    @Nullable
+    private static JsonObject getMetadata(final String runDirectory) {
+        JsonObject element = null;
+
+        try {
+            final MetadataExtractor metadataExtractor = new MetadataExtractor(PathRegexFinder.build(),
+                    LineReader.build());
+            final ReportMetadata reportMetadata = metadataExtractor.extractMetadata(runDirectory);
+            final JsonParser parser = new JsonParser();
+            element = new JsonObject();
+            element.add(RUN_DATE, parser.parse(reportMetadata.getDate()));
+            element.add(PIPELINE_VERSION, parser.parse(reportMetadata.getPipelineVersion()));
+        } catch (IOException | HealthChecksException e) {
+            LOGGER.error(String.format(METADATA_ERR_MSG, e.getMessage()));
+        }
+
+        return element;
     }
 }

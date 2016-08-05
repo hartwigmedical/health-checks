@@ -11,5 +11,5 @@ public interface Report {
     void addReportData(@NotNull BaseReport reportData);
 
     @NotNull
-    Optional<String> generateReport(String runDirectory) throws GenerateReportException;
+    Optional<String> generateReport(@NotNull String runDirectory) throws GenerateReportException;
 }

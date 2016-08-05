@@ -6,10 +6,8 @@ public class BaseDataReport {
 
     @NotNull
     private final String patientId;
-
     @NotNull
     private final String checkName;
-
     @NotNull
     private final String value;
 

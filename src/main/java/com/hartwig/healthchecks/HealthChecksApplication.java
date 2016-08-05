@@ -136,7 +136,6 @@ public final class HealthChecksApplication {
 
     private void generateReport() {
         try {
-
             final HealthCheckReportFactory reportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
             final Report report = reportFactory.create();
 

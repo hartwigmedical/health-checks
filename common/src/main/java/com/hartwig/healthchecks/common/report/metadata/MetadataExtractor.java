@@ -13,53 +13,49 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 
-public final class MetadataExtractor {
+import org.jetbrains.annotations.NotNull;
 
-    private static final String LOG_FILENAME_FORMAT = "%s.log";
-
-    private static final String DATE_OUT_FORMAT = "yyyy-MMM-dd'T'HH.mm.ss";
-
-    private static final String DATE_IN_FORMATTER = "EEE MMM d HH:mm:ss z yyyy";
-
-    private static final String COLON = ":";
-
-    private static final String REGEX_SPLIT = "\t";
+public class MetadataExtractor {
 
     private static final int ZERO = 0;
-
     private static final int ONE = 1;
 
+    private static final String LOG_FILENAME_FORMAT = "%s.log";
+    private static final String DATE_OUT_FORMAT = "yyyy-MMM-dd'T'HH.mm.ss";
+    private static final String DATE_IN_FORMATTER = "EEE MMM d HH:mm:ss z yyyy";
+    private static final String REGEX_SPLIT = "\t";
     private static final String LAST_LINE = "End Kinship";
 
-    private static final String PIPELINE_VERSION = "Pipeline version:";
-
     private static final String PIPELINE_LOG_REGEX = "PipelineCheck.log";
+    private static final String PIPELINE_VERSION = "Pipeline version:";
+    private static final String COLON = ":";
 
+    @NotNull
     private final PathRegexFinder pathFinder;
-
+    @NotNull
     private final LineReader lineReader;
 
-    public MetadataExtractor(final PathRegexFinder pathFinder, final LineReader lineReader) {
-        super();
+    public MetadataExtractor(@NotNull final PathRegexFinder pathFinder, @NotNull final LineReader lineReader) {
         this.pathFinder = pathFinder;
         this.lineReader = lineReader;
     }
 
-    public ReportMetadata extractMetadata(final String runDirectory) throws IOException, HealthChecksException {
+    public ReportMetadata extractMetadata(@NotNull final String runDirectory)
+            throws IOException, HealthChecksException {
         String folderName = runDirectory;
         if (runDirectory.contains(File.separator)) {
             folderName = runDirectory.substring(runDirectory.lastIndexOf(File.separator) + ONE, runDirectory.length());
         }
-        final Path logPath = pathFinder.findPath(runDirectory, String.format(LOG_FILENAME_FORMAT, folderName));
-        final List<String> dateLines = lineReader.readLines(logPath, doesLineStartWith(LAST_LINE));
+        final Path dateTimeLogPath = pathFinder.findPath(runDirectory, String.format(LOG_FILENAME_FORMAT, folderName));
+        final List<String> dateLines = lineReader.readLines(dateTimeLogPath, doesLineStartWith(LAST_LINE));
         final String date = dateLines.get(ZERO).split(REGEX_SPLIT)[ONE].trim();
         final DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern(DATE_IN_FORMATTER, Locale.ENGLISH);
         final LocalDateTime formattedDate = LocalDateTime.parse(date, inFormatter);
         final DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(DATE_OUT_FORMAT, Locale.ENGLISH);
 
         final Path pipelineLog = pathFinder.findPath(runDirectory, PIPELINE_LOG_REGEX);
-        final List<String> verionsLines = lineReader.readLines(pipelineLog, doesLineStartWith(PIPELINE_VERSION));
-        final String pipelineVersion = verionsLines.get(ZERO).split(COLON)[ONE];
+        final List<String> versionsLines = lineReader.readLines(pipelineLog, doesLineStartWith(PIPELINE_VERSION));
+        final String pipelineVersion = versionsLines.get(ZERO).split(COLON)[ONE];
         return new ReportMetadata(formattedDate.format(outFormatter), pipelineVersion.trim());
     }
 

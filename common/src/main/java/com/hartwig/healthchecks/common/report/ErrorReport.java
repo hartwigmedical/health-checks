@@ -10,20 +10,22 @@ public class ErrorReport extends BaseReport {
 
     @NotNull
     private final String error;
-
     @NotNull
     private final String message;
 
-    public ErrorReport(@NotNull final CheckType checkType, @NotNull final String error, @NotNull final String message) {
+    public ErrorReport(@NotNull final CheckType checkType, @NotNull final String error,
+            @NotNull final String message) {
         super(checkType);
         this.error = error;
         this.message = message;
     }
 
+    @NotNull
     public String getError() {
         return error;
     }
 
+    @NotNull
     public String getMessage() {
         return message;
     }

@@ -21,7 +21,7 @@ public final class StandardOutputReport extends AbstractJsonBaseReport {
 
     @NotNull
     @Override
-    public Optional<String> generateReport(final String runDirectory) throws GenerateReportException {
+    public Optional<String> generateReport(@NotNull final String runDirectory) throws GenerateReportException {
         final JsonArray reportArray = computeElements(runDirectory);
 
         final JsonObject reportJson = new JsonObject();

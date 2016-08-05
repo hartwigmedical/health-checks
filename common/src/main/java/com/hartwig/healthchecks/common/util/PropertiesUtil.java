@@ -9,19 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PropertiesUtil {
 
-    private static final String CONFIG_FILE = "config.properties";
-
-    private static final String ERROR_LOADING_PROPERTIES = "Error loading properties. Error -> %s";
-
     private static final Logger LOGGER = LogManager.getLogger(PropertiesUtil.class);
 
-    private static PropertiesUtil instance = new PropertiesUtil();
+    private static final String CONFIG_FILE = "config.properties";
+    private static final String ERROR_LOADING_PROPERTIES = "Error loading PROPERTIES. Error -> %s";
 
-    private static Properties properties = new Properties();
+    private static final PropertiesUtil INSTANCE = new PropertiesUtil();
+    private static final Properties PROPERTIES = new Properties();
 
     static {
         try {
-            properties.load(ClassLoader.getSystemResourceAsStream(CONFIG_FILE));
+            PROPERTIES.load(ClassLoader.getSystemResourceAsStream(CONFIG_FILE));
         } catch (IOException e) {
             LOGGER.error(String.format(ERROR_LOADING_PROPERTIES, e.getMessage()));
         }
@@ -30,12 +28,13 @@ public final class PropertiesUtil {
     private PropertiesUtil() {
     }
 
+    @NotNull
     public static PropertiesUtil getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @NotNull
     public String getProperty(@NotNull final String key) {
-        return properties.getProperty(key);
+        return PROPERTIES.getProperty(key);
     }
 }

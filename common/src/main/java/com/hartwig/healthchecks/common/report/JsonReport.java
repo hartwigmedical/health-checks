@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.JsonArray;
@@ -14,11 +16,14 @@ import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 public final class JsonReport extends AbstractJsonBaseReport {
 
-    private static final String REPORT_DIR = "report.dir";
+    private static final JsonReport INSTANCE = new JsonReport();
 
+    private static final Logger LOGGER = LogManager.getLogger(JsonReport.class);
+    private static final String REPORT_DIR = "report.dir";
     private static final String REPORT_NAME = "health-checks_%s.json";
 
-    private static final JsonReport INSTANCE = new JsonReport();
+    private static final String ERROR_GENERATING_REPORT = "Error occurred whilst generating reports. Error -> %s";
+
 
     private JsonReport() {
     }
@@ -29,7 +34,7 @@ public final class JsonReport extends AbstractJsonBaseReport {
 
     @NotNull
     @Override
-    public Optional<String> generateReport(final String runDirectory) throws GenerateReportException {
+    public Optional<String> generateReport(@NotNull final String runDirectory) throws GenerateReportException {
         final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
         final JsonArray reportArray = computeElements(runDirectory);
 
@@ -46,6 +51,6 @@ public final class JsonReport extends AbstractJsonBaseReport {
             LOGGER.error(String.format(ERROR_GENERATING_REPORT, e.getMessage()));
             throw (GenerateReportException) new GenerateReportException(e.getMessage()).initCause(e);
         }
-        return Optional.ofNullable(fileName);
+        return Optional.of(fileName);
     }
 }
