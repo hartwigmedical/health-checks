@@ -49,7 +49,7 @@ public class HealthChecksApplication {
     private final String reportType;
 
     private HealthChecksApplication(@NotNull final String runDirectory, @NotNull final String checkType,
-                    @NotNull final String reportType) {
+            @NotNull final String reportType) {
         this.runDirectory = runDirectory;
         this.checkType = checkType;
         this.reportType = reportType;
@@ -58,12 +58,10 @@ public class HealthChecksApplication {
     /**
      * To Run Healthchecks over files in a dir
      *
-     * @param args
-     *            - Arguments on how to run the health-checks should contain:
-     *            -rundir [run-directory] -checktype [boggs - all] -reporttype
-     *            [json - stdout]
-     * @throws ParseException
-     *             - In case commandline's arguments could not be parsed.
+     * @param args - Arguments on how to run the health-checks should contain:
+     *             -rundir [run-directory] -checktype [boggs - all] -reporttype
+     *             [json - stdout]
+     * @throws ParseException - In case commandline's arguments could not be parsed.
      */
     public static void main(final String... args) throws ParseException {
         final Options options = createOptions();
@@ -87,7 +85,7 @@ public class HealthChecksApplication {
         }
 
         final HealthChecksApplication healthChecksApplication = new HealthChecksApplication(runDirectory, checkType,
-                        reportType);
+                reportType);
         healthChecksApplication.processHealthChecks();
     }
 
@@ -104,7 +102,7 @@ public class HealthChecksApplication {
 
     @NotNull
     private static CommandLine createCommandLine(@NotNull final Options options, @NotNull final String... args)
-                    throws ParseException {
+            throws ParseException {
         final CommandLineParser parser = new DefaultParser();
         return parser.parse(options, args);
     }
@@ -129,11 +127,11 @@ public class HealthChecksApplication {
         final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
         final Collection<AbstractHealthCheckAdapter> adapters = flyweight.getAllAdapters();
 
-        final Observable<AbstractHealthCheckAdapter> adapterObservable = Observable.from(adapters)
-                        .subscribeOn(Schedulers.io());
+        final Observable<AbstractHealthCheckAdapter> adapterObservable = Observable.from(adapters).subscribeOn(
+                Schedulers.io());
 
         BlockingObservable.from(adapterObservable).subscribe(adapter -> adapter.runCheck(runDirectory, reportType),
-                        (error) -> LOGGER.error(error.getMessage()), this::generateReport);
+                (error) -> LOGGER.error(error.getMessage()), this::generateReport);
     }
 
     private void generateReport() {
