@@ -31,9 +31,7 @@ import rx.schedulers.Schedulers;
 public class HealthChecksApplication {
 
     private static final String RUN_DIR_ARG_DESC = "The path containing the data for a single run";
-
     private static final String CHECK_TYPE_ARGS_DESC = "The type of check to be executed for a single run";
-
     private static final String REPORT_TYPE_ARGS_DESC = "The type of report to be generated: json or stdout.";
 
     private static final String REPORT_GENERATED_MSG = "Report generated -> \n%s";
@@ -41,20 +39,16 @@ public class HealthChecksApplication {
     private static final Logger LOGGER = LogManager.getLogger(HealthChecksApplication.class);
 
     private static final String RUN_DIRECTORY = "rundir";
-
     private static final String CHECK_TYPE = "checktype";
-
     private static final String REPORT_TYPE = "reporttype";
 
     private static final String ALL_CHECKS = "all";
 
     private final String runDirectory;
-
     private final String checkType;
-
     private final String reportType;
 
-    public HealthChecksApplication(@NotNull final String runDirectory, @NotNull final String checkType,
+    private HealthChecksApplication(@NotNull final String runDirectory, @NotNull final String checkType,
                     @NotNull final String reportType) {
         this.runDirectory = runDirectory;
         this.checkType = checkType;
@@ -65,7 +59,7 @@ public class HealthChecksApplication {
      * To Run Healthchecks over files in a dir
      *
      * @param args
-     *            - Arguments on how to run the healtchecks should contain:
+     *            - Arguments on how to run the health-checks should contain:
      *            -rundir [run-directory] -checktype [boggs - all] -reporttype
      *            [json - stdout]
      * @throws ParseException
@@ -115,7 +109,7 @@ public class HealthChecksApplication {
         return parser.parse(options, args);
     }
 
-    public void processHealthChecks() {
+    private void processHealthChecks() {
         if (checkType.equalsIgnoreCase(ALL_CHECKS)) {
             executeAllChecks();
         } else {
@@ -131,7 +125,7 @@ public class HealthChecksApplication {
         }
     }
 
-    protected void executeAllChecks() {
+    private void executeAllChecks() {
         final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
         final Collection<AbstractHealthCheckAdapter> adapters = flyweight.getAllAdapters();
 
@@ -139,7 +133,7 @@ public class HealthChecksApplication {
                         .subscribeOn(Schedulers.io());
 
         BlockingObservable.from(adapterObservable).subscribe(adapter -> adapter.runCheck(runDirectory, reportType),
-                        (error) -> LOGGER.error(error.getMessage()), () -> generateReport());
+                        (error) -> LOGGER.error(error.getMessage()), this::generateReport);
     }
 
     private void generateReport() {
@@ -149,7 +143,9 @@ public class HealthChecksApplication {
             final Report report = reportFactory.create();
 
             final Optional<String> reportData = report.generateReport(runDirectory);
-            LOGGER.info(String.format(REPORT_GENERATED_MSG, reportData.get()));
+            if (reportData.isPresent()) {
+                LOGGER.info(String.format(REPORT_GENERATED_MSG, reportData.get()));
+            }
         } catch (final GenerateReportException e) {
             LOGGER.log(Level.ERROR, e.getMessage());
         }
