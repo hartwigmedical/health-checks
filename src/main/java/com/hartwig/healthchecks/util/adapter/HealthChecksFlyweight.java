@@ -24,8 +24,8 @@ public final class HealthChecksFlyweight {
     private static final HealthChecksFlyweight INSTANCE = new HealthChecksFlyweight();
     private static final Reflections BASE = new Reflections("com.hartwig.healthchecks");
 
-    private static final Set<Class<? extends AbstractHealthCheckAdapter>> BASE_SET = BASE
-                    .getSubTypesOf(AbstractHealthCheckAdapter.class);
+    private static final Set<Class<? extends AbstractHealthCheckAdapter>> BASE_SET = BASE.getSubTypesOf(
+            AbstractHealthCheckAdapter.class);
 
     static {
         BASE_SET.forEach(adapter -> {

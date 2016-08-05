@@ -12,11 +12,8 @@ import com.hartwig.healthchecks.common.exception.NotFoundException;
 public class HealthChecksFlyweightTest {
 
     private static final String WRONG_TYPE_MSG = "Wrong Type fo Adapter";
-
     private static final String BOGGS = "boggs";
-
     private static final String NOT_NULL_MSG = "healthChecksFlyweight should not be null";
-
     private static final String DUMMY_TYPE = "bla";
 
     @Test
