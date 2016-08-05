@@ -29,10 +29,10 @@ public interface PathRegexFinder {
         };
     }
 
+    @NotNull
     static Optional<Path> getPath(final String path, final String regex) throws IOException {
         try (Stream<Path> paths = Files.walk(new File(path).toPath())) {
             return paths.filter(filePath -> filePath.getFileName().toString().matches(regex)).findFirst();
         }
     }
-
 }

@@ -62,7 +62,7 @@ public class GermlineExtractor extends AbstractVCFExtractor {
 
     private List<VCFGermlineData> getVCFDataForGermLine(final List<String> lines) {
         return lines.stream().map(line -> {
-            final String[] values = line.split(SEPERATOR_REGEX);
+            final String[] values = line.split(SEPARATOR_REGEX);
             final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
             final String refData = values[PATIENT_REF_INDEX];
             final String tumData = values[PATIENT_TUM_INDEX];

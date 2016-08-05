@@ -65,7 +65,7 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
 
     private BaseDataReport getValue(final String line, final String patientId, final SummaryMetricsCheck check)
                     throws LineNotFoundException {
-        final String value = line.split(SEPERATOR_REGEX)[check.getIndex()];
+        final String value = line.split(SEPARATOR_REGEX)[check.getIndex()];
         final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;

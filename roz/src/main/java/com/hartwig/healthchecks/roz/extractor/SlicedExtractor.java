@@ -38,7 +38,7 @@ public class SlicedExtractor extends AbstractDataExtractor {
     private BaseDataReport getPatientData(final String runDirectory) throws IOException, HealthChecksException {
         final List<String> headerLine = reader.readLines(runDirectory, EXT, new VCFHeaderLinePredicate());
 
-        final String patientId = headerLine.get(0).split(SEPERATOR_REGEX)[PATIENT_ID_INDEX];
+        final String patientId = headerLine.get(0).split(SEPARATOR_REGEX)[PATIENT_ID_INDEX];
 
         final long value = reader.readLines(runDirectory, EXT, new VCFDataLinePredicate()).stream()
                         .filter(line -> !line.startsWith(HASH)).count();

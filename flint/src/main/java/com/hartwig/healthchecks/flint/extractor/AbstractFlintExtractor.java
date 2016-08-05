@@ -44,7 +44,7 @@ public abstract class AbstractFlintExtractor extends AbstractDataExtractor {
                     final int fieldIndex) throws LineNotFoundException {
         final Integer index = findLineIndex(suffix, lines, filter);
         final String line = lines.get(index + ONE);
-        final String[] lineValues = line.split(SEPERATOR_REGEX);
+        final String[] lineValues = line.split(SEPARATOR_REGEX);
         return lineValues[fieldIndex];
     }
 }

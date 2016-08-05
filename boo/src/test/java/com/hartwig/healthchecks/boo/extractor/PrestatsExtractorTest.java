@@ -166,25 +166,25 @@ public class PrestatsExtractorTest {
     private void assertRefSampleData(final List<BaseDataReport> sampleData) {
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, sampleData.size());
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(),
-                        AbstractDataExtractor.FAIL, TEST_REF_ID);
+                        PrestatsExtractor.FAIL, TEST_REF_ID);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription(),
-                        AbstractDataExtractor.WARN, TEST_REF_ID);
+                PrestatsExtractor.WARN, TEST_REF_ID);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription(),
-                        AbstractDataExtractor.FAIL, TEST_REF_ID);
+                PrestatsExtractor.FAIL, TEST_REF_ID);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription(),
-                        AbstractDataExtractor.PASS, TEST_REF_ID);
+                PrestatsExtractor.PASS, TEST_REF_ID);
     }
 
     private void assertTumorSampleData(final List<BaseDataReport> sampleData) {
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, EXPECTED_CHECKS_NUM, sampleData.size());
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(),
-                        AbstractDataExtractor.FAIL, TEST_TUM_ID);
+                PrestatsExtractor.FAIL, TEST_TUM_ID);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription(),
-                        AbstractDataExtractor.WARN, TEST_TUM_ID);
+                PrestatsExtractor.WARN, TEST_TUM_ID);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription(),
-                        AbstractDataExtractor.FAIL, TEST_TUM_ID);
+                PrestatsExtractor.FAIL, TEST_TUM_ID);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription(),
-                        AbstractDataExtractor.PASS, TEST_TUM_ID);
+                PrestatsExtractor.PASS, TEST_TUM_ID);
     }
 
     private void assertPrestatsDataReport(final List<BaseDataReport> sampleData, final String check,

@@ -56,12 +56,6 @@ public interface FolderChecker {
     }
 
     static DirectoryStream.Filter<Path> getHiddenFilesFilter() {
-        return new DirectoryStream.Filter<Path>() {
-
-            @Override
-            public boolean accept(final Path entry) throws IOException {
-                return !Files.isHidden(entry);
-            }
-        };
+        return entry -> !Files.isHidden(entry);
     }
 }

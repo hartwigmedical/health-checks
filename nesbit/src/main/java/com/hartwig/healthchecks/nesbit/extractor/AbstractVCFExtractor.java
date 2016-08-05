@@ -28,7 +28,7 @@ public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
 
     protected String[] getHeaders(final List<String> lines, final String extension, final boolean isGermlineCheck)
                     throws LineNotFoundException, HeaderNotFoundException {
-        final String[] headers = lines.get(ZERO).split(SEPERATOR_REGEX);
+        final String[] headers = lines.get(ZERO).split(SEPARATOR_REGEX);
 
         List<String> expecetedHeaders = Arrays.stream(neededHeaders).collect(Collectors.toList());
         if (isGermlineCheck) {

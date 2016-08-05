@@ -9,12 +9,6 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 
 public abstract class AbstractDataExtractor implements DataExtractor {
 
-    public static final String PASS = "PASS";
-
-    public static final String WARN = "WARN";
-
-    public static final String FAIL = "FAIL";
-
     protected static final int ONE = 1;
 
     protected static final int NEGATIVE_ONE = -1;
@@ -22,8 +16,6 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected static final int ZERO = 0;
 
     protected static final double ZERO_DOUBLE_VALUE = 0.0d;
-
-    protected static final String FILE_NOT_FOUND = "File %s was not found";
 
     protected static final String SAMPLE_PREFIX = "CPCT";
 
@@ -33,15 +25,11 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     protected static final String EMPTY_FILES_ERROR = "File %s was found empty in path -> %s";
 
-    protected static final String LINE_NOT_FOUND_ERROR = "File %s does not contain line with value %s";
-
-    protected static final String FILE_NOT_FOUND_ERROR = "File with prefix %s and suffix %s was not found in path %s";
-
     protected static final String HEADER_NOT_FOUND_ERROR = "File %s does not contain following headers %s";
 
     protected static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s was expecting %s in file";
 
-    protected static final String SEPERATOR_REGEX = "\t";
+    protected static final String SEPARATOR_REGEX = "\t";
 
     protected static final String FLAGSTAT_SUFFIX = ".flagstat";
 

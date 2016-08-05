@@ -27,17 +27,18 @@ import com.hartwig.healthchecks.common.report.SampleReport;
 
 public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
-    protected static final String SUMMARY_FILE_NAME = "summary.txt";
+    static final String PASS = "PASS";
+    static final String WARN = "WARN";
+    static final String FAIL = "FAIL";
+    static final String SUMMARY_FILE_NAME = "summary.txt";
 
     private static final int EXPECTED_LINE_LENGTH = 3;
-
     private static final long MIN_TOTAL_SQ = 85000000L;
 
     private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
 
     @NotNull
     private final ZipFilesReader zipFileReader;
-
     @NotNull
     private final SamplePathFinder samplePathFinder;
 
@@ -46,7 +47,6 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
         super();
         this.zipFileReader = zipFileReader;
         this.samplePathFinder = samplePathFinder;
-
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     private Map<String, List<BaseDataReport>> getSummaryData(@NotNull final List<String> allLines,
                     @NotNull final String patientId) throws IOException {
         return allLines.stream().map(line -> {
-            final String[] values = line.trim().split(SEPERATOR_REGEX);
+            final String[] values = line.trim().split(SEPARATOR_REGEX);
             BaseDataReport prestatsDataReport = null;
             if (values.length == EXPECTED_LINE_LENGTH) {
                 final String status = values[0];
@@ -105,24 +105,19 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
     @NotNull
     private Comparator<BaseDataReport> isStatusWorse() {
-        final Comparator<BaseDataReport> isStatusWorse = new Comparator<BaseDataReport>() {
-
-            @Override
-            public int compare(@NotNull final BaseDataReport firstData, @NotNull final BaseDataReport secondData) {
-                final String firstStatus = firstData.getValue();
-                final String secondStatus = secondData.getValue();
-                int status = ONE;
-                if (firstStatus.equals(secondStatus)) {
-                    status = ZERO;
-                } else if (FAIL.equals(firstStatus)) {
-                    status = NEGATIVE_ONE;
-                } else if (WARN.equals(firstStatus) && PASS.equals(secondStatus)) {
-                    status = NEGATIVE_ONE;
-                }
-                return status;
+        return (firstData, secondData) -> {
+            final String firstStatus = firstData.getValue();
+            final String secondStatus = secondData.getValue();
+            int status = ONE;
+            if (firstStatus.equals(secondStatus)) {
+                status = ZERO;
+            } else if (FAIL.equals(firstStatus)) {
+                status = NEGATIVE_ONE;
+            } else if (WARN.equals(firstStatus) && PASS.equals(secondStatus)) {
+                status = NEGATIVE_ONE;
             }
+            return status;
         };
-        return isStatusWorse;
     }
 
     @NotNull

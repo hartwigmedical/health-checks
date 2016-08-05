@@ -31,7 +31,7 @@ public abstract class AbstractTotalSequenceExtractor extends AbstractDataExtract
         final List<String> allValues = allLines.stream().map(line -> {
             String totalSequences = null;
             if (line != null) {
-                final String[] values = line.split(SEPERATOR_REGEX);
+                final String[] values = line.split(SEPARATOR_REGEX);
                 totalSequences = values[1];
             }
             return totalSequences;

@@ -45,7 +45,7 @@ public class KinshipExtractor extends AbstractDataExtractor {
                             kinshipLines.size(), EXPECTED_NUM_LINES));
         }
         final BaseDataReport baseDataReport = kinshipLines.stream().skip(ONE).map(line -> {
-            final String[] values = line.split(SEPERATOR_REGEX);
+            final String[] values = line.split(SEPARATOR_REGEX);
             return new BaseDataReport(values[PATIENT_ID_INDEX], KINSHIP_TEST, values[KINSHIP_INDEX]);
         }).findFirst().get();
         logBaseDataReport(baseDataReport);
