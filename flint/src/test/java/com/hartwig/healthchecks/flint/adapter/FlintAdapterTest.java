@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.flint.adapter;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
@@ -14,6 +14,7 @@ import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.WGSExtractor;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import mockit.Mocked;
@@ -23,24 +24,18 @@ import mockit.Verifications;
 public class FlintAdapterTest {
 
     private static final String DUMMY_CHECK = "DUMMY_CHECK";
-
     private static final String DUMMY_ID = "DUMMY_ID";
-
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
-
     private static final String DUMMY_REPORT = "DummyReport";
-
     private static final String REF_VALUE = "409";
-
     private static final String TUM_VALUE = "309";
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl insertSize,
             @Mocked final HealthCheckerImpl summaryMetric, @Mocked final HealthCheckerImpl coverage,
-            @Mocked final Report report, @Mocked HealthCheckReportFactory factory, @Mocked AbstractHealthCheckAdapter mock) {
-
+            @Mocked final Report report, @Mocked HealthCheckReportFactory factory,
+            @Mocked AbstractHealthCheckAdapter mock) {
         new NonStrictExpectations() {
-
             {
                 AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
                 result = factory;
@@ -78,7 +73,6 @@ public class FlintAdapterTest {
         adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
 
         new Verifications() {
-
             {
                 report.addReportData((BaseReport) any);
                 times = 3;
@@ -86,26 +80,30 @@ public class FlintAdapterTest {
         };
     }
 
+    @NotNull
     private BaseReport getInsertSizeDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new SampleReport(CheckType.INSERT_SIZE, Arrays.asList(testDataReport),
-                Arrays.asList(secTestDataReport));
+        return new SampleReport(CheckType.INSERT_SIZE, Collections.singletonList(testDataReport),
+                Collections.singletonList(secTestDataReport));
     }
 
-    private BaseReport getSummaryMetricsDummyReport() {
+    @NotNull
+    private static BaseReport getSummaryMetricsDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new SampleReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
-                Arrays.asList(secTestDataReport));
+        return new SampleReport(CheckType.SUMMARY_METRICS, Collections.singletonList(testDataReport),
+                Collections.singletonList(secTestDataReport));
     }
 
-    private BaseReport getCoverageDummyReport() {
+    @NotNull
+    private static BaseReport getCoverageDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 
-        return new SampleReport(CheckType.COVERAGE, Arrays.asList(testDataReport), Arrays.asList(secTestDataReport));
+        return new SampleReport(CheckType.COVERAGE, Collections.singletonList(testDataReport),
+                Collections.singletonList(secTestDataReport));
     }
 }

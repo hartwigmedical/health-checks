@@ -14,6 +14,8 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.jetbrains.annotations.NotNull;
+
 public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
 
     private static final String INSERT_SIZE_METRICS = ".insert_size_metrics";
@@ -25,16 +27,19 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
         this.reader = reader;
     }
 
+    @NotNull
     @Override
-    public BaseReport extractFromRunDirectory(final String runDirectory) throws IOException, HealthChecksException {
+    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
+            throws IOException, HealthChecksException {
         final List<BaseDataReport> referenceSample = getSampleData(runDirectory, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSample = getSampleData(runDirectory, TUM_SAMPLE_SUFFIX);
 
         return new SampleReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
     }
 
+    @NotNull
     private List<BaseDataReport> getSampleData(final String runDirectory, final String sampleType)
-                    throws IOException, HealthChecksException {
+            throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
         final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, INSERT_SIZE_METRICS);
@@ -42,18 +47,19 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
         final String patientId = getPatientId(suffix, lines, INPUT);
 
         final BaseDataReport medianReport = getValue(lines, suffix, patientId,
-                        InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
+                InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
         final BaseDataReport width70PerReport = getValue(lines, suffix, patientId,
-                        InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
+                InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
         return Arrays.asList(medianReport, width70PerReport);
     }
 
-    private BaseDataReport getValue(final List<String> lines, final String suffix, final String patientId,
-                    final InsertSizeMetricsCheck check) throws LineNotFoundException {
+    @NotNull
+    private BaseDataReport getValue(@NotNull final List<String> lines, @NotNull final String suffix,
+            @NotNull final String patientId, @NotNull final InsertSizeMetricsCheck check)
+            throws LineNotFoundException {
         final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
         final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;
     }
-
 }

@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
@@ -26,29 +29,17 @@ import mockit.Mocked;
 public class SummaryMetricsHealthCheckerTest {
 
     private static final String DUMMY_FILTER = "DUMMY_FILTER";
-
     private static final String DUMMY_CHECK = "DUMMY_CHECK";
-
     private static final String REF_VALUE = "409";
-
     private static final String TUM_VALUE = "309";
-
     private static final String WRONG_ERROR_MESSAGE = "Wrong Error Message";
-
     private static final String WRONG_ERROR = "Wrong Error";
-
     private static final String DUMMY_ERROR = "DUMMY_ERROR";
-
     private static final String WRONG_CHECK_NAME = "Wrong Check Name";
-
     private static final String WRONG_CHECK_STATUS = "Wrong Check status";
-
     private static final String WRONG_PATIENT_ID_MSG = "Wrong Patient ID";
-
     private static final String WRONG_TYPE_MSG = "Report with wrong type";
-
     private static final String DUMMY_ID = "DUMMY_ID";
-
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     @Mocked
@@ -58,7 +49,6 @@ public class SummaryMetricsHealthCheckerTest {
     public void verifyHealthChecker() throws IOException, HealthChecksException {
         final BaseReport testData = createTestData();
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 returns(testData);
@@ -77,7 +67,6 @@ public class SummaryMetricsHealthCheckerTest {
     @Test
     public void verifyHealthCheckerIOException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new IOException(DUMMY_ERROR);
@@ -97,7 +86,6 @@ public class SummaryMetricsHealthCheckerTest {
     @Test
     public void verifyHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new EmptyFileException(DUMMY_ERROR, "DUMMYPATH");
@@ -117,7 +105,6 @@ public class SummaryMetricsHealthCheckerTest {
     @Test
     public void verifyHealthCheckerLineNotFoundException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new LineNotFoundException(DUMMY_RUN_DIR, DUMMY_FILTER);
@@ -132,21 +119,25 @@ public class SummaryMetricsHealthCheckerTest {
 
         assertEquals(WRONG_ERROR, LineNotFoundException.class.getName(), error);
         assertEquals(WRONG_ERROR_MESSAGE,
-                        "File " + DUMMY_RUN_DIR + " does not contain lines with value " + DUMMY_FILTER, errorMessage);
+                "File " + DUMMY_RUN_DIR + " does not contain lines with value " + DUMMY_FILTER, errorMessage);
     }
 
-    private BaseReport createTestData() {
+    @NotNull
+    private static BaseReport createTestData() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
-        return new SampleReport(CheckType.SUMMARY_METRICS, Arrays.asList(testDataReport),
-                        Arrays.asList(secTestDataReport));
+        return new SampleReport(CheckType.SUMMARY_METRICS, Collections.singletonList(testDataReport),
+                Collections.singletonList(secTestDataReport));
     }
 
-    private void assertBaseData(final List<BaseDataReport> reports, final String patientId, final String check,
-                    final String expectedValue) {
-        final BaseDataReport value = reports.stream().filter(p -> p.getCheckName().equals(check)).findFirst().get();
-        assertEquals(WRONG_CHECK_NAME, check, value.getCheckName());
-        assertEquals(WRONG_CHECK_STATUS, expectedValue, value.getValue());
-        assertEquals(WRONG_PATIENT_ID_MSG, patientId, value.getPatientId());
+    private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String patientId,
+            @NotNull final String check, @NotNull final String expectedValue) {
+        final Optional<BaseDataReport> value = reports.stream().filter(
+                p -> p.getCheckName().equals(check)).findFirst();
+        assert value.isPresent();
+
+        assertEquals(WRONG_CHECK_NAME, check, value.get().getCheckName());
+        assertEquals(WRONG_CHECK_STATUS, expectedValue, value.get().getValue());
+        assertEquals(WRONG_PATIENT_ID_MSG, patientId, value.get().getPatientId());
     }
 }

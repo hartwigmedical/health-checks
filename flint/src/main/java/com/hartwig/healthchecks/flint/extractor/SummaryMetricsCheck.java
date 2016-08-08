@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.flint.extractor;
 
-public enum SummaryMetricsCheck {
+enum SummaryMetricsCheck {
     MAPPING_PF_MISMATCH_RATE(12),
     MAPPING_PF_INDEL_RATE(14),
     MAPPING_STRAND_BALANCE(19),
@@ -16,5 +16,4 @@ public enum SummaryMetricsCheck {
     public int getIndex() {
         return index;
     }
-
 }

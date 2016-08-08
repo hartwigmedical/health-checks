@@ -21,9 +21,10 @@ public class WGSExtractor extends AbstractFlintExtractor {
 
     private static final String WGS_EXT = "dedup_WGSMetrics.txt";
 
+    @NotNull
     private final SampleFinderAndReader reader;
 
-    public WGSExtractor(final SampleFinderAndReader reader) {
+    public WGSExtractor(@NotNull final SampleFinderAndReader reader) {
         super();
         this.reader = reader;
     }
@@ -37,7 +38,8 @@ public class WGSExtractor extends AbstractFlintExtractor {
         return new SampleReport(CheckType.COVERAGE, referenceSample, tumorSample);
     }
 
-    private List<BaseDataReport> getSampleData(final String runDirectory, final String sampleType)
+    @NotNull
+    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleType)
             throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
@@ -65,8 +67,9 @@ public class WGSExtractor extends AbstractFlintExtractor {
                 coverageTotal, coverageUnpaired, coverageSD);
     }
 
-    private BaseDataReport getValue(final List<String> lines, final String suffix, final String patientId,
-            final CoverageCheck check) throws LineNotFoundException {
+    @NotNull
+    private BaseDataReport getValue(@NotNull final List<String> lines, @NotNull final String suffix,
+            @NotNull final String patientId, @NotNull final CoverageCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
         final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
         logBaseDataReport(baseDataReport);

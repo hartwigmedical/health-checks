@@ -1,7 +1,6 @@
 package com.hartwig.healthchecks.common.checks;
 
 public enum CheckType {
-
     MAPPING,
     PRESTATS,
     KINSHIP,

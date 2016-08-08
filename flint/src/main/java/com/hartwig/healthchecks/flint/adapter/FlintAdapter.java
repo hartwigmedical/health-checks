@@ -17,12 +17,12 @@ import com.hartwig.healthchecks.flint.extractor.WGSExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckCategory.FLINT)
 public class FlintAdapter extends AbstractHealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
-
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
