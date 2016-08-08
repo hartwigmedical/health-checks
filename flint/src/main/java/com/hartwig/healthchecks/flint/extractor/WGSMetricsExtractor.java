@@ -17,14 +17,14 @@ import com.hartwig.healthchecks.common.report.SampleReport;
 
 import org.jetbrains.annotations.NotNull;
 
-public class WGSExtractor extends AbstractFlintExtractor {
+public class WGSMetricsExtractor extends AbstractFlintExtractor {
 
     private static final String WGS_EXT = "dedup_WGSMetrics.txt";
 
     @NotNull
     private final SampleFinderAndReader reader;
 
-    public WGSExtractor(@NotNull final SampleFinderAndReader reader) {
+    public WGSMetricsExtractor(@NotNull final SampleFinderAndReader reader) {
         super();
         this.reader = reader;
     }

@@ -9,10 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -23,10 +19,14 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.jetbrains.annotations.NotNull;
+import org.junit.Before;
+import org.junit.Test;
+
 import mockit.Expectations;
 import mockit.Mocked;
 
-public class WGSExtractorTest {
+public class WGSMetricsExtractorTest {
 
     private static final String WRONG_PATIENT_ID = "Wrong Patient ID";
 
@@ -115,7 +115,7 @@ public class WGSExtractorTest {
                 returns(refLines, tumLines);
             }
         };
-        final WGSExtractor extractor = new WGSExtractor(reader);
+        final WGSMetricsExtractor extractor = new WGSMetricsExtractor(reader);
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
         assertReport(report);
     }
@@ -128,7 +128,7 @@ public class WGSExtractorTest {
                 result = new EmptyFileException("", "");
             }
         };
-        final WGSExtractor extractor = new WGSExtractor(reader);
+        final WGSMetricsExtractor extractor = new WGSMetricsExtractor(reader);
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 
@@ -140,7 +140,7 @@ public class WGSExtractorTest {
                 result = new IOException();
             }
         };
-        final WGSExtractor extractor = new WGSExtractor(reader);
+        final WGSMetricsExtractor extractor = new WGSMetricsExtractor(reader);
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 
@@ -152,7 +152,7 @@ public class WGSExtractorTest {
                 returns(missingLines);
             }
         };
-        final WGSExtractor extractor = new WGSExtractor(reader);
+        final WGSMetricsExtractor extractor = new WGSMetricsExtractor(reader);
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 
@@ -164,7 +164,7 @@ public class WGSExtractorTest {
                 returns(refLines, missingLines);
             }
         };
-        final WGSExtractor extractor = new WGSExtractor(reader);
+        final WGSMetricsExtractor extractor = new WGSMetricsExtractor(reader);
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 
@@ -178,7 +178,7 @@ public class WGSExtractorTest {
                 result = new LineNotFoundException("", "");
             }
         };
-        final WGSExtractor extractor = new WGSExtractor(reader);
+        final WGSMetricsExtractor extractor = new WGSMetricsExtractor(reader);
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 
@@ -190,7 +190,7 @@ public class WGSExtractorTest {
                 returns(emptyLines);
             }
         };
-        final WGSExtractor extractor = new WGSExtractor(reader);
+        final WGSMetricsExtractor extractor = new WGSMetricsExtractor(reader);
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 
@@ -204,7 +204,7 @@ public class WGSExtractorTest {
                 returns(emptyLines);
             }
         };
-        final WGSExtractor extractor = new WGSExtractor(reader);
+        final WGSMetricsExtractor extractor = new WGSMetricsExtractor(reader);
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 

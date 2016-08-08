@@ -12,7 +12,7 @@ import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
-import com.hartwig.healthchecks.flint.extractor.WGSExtractor;
+import com.hartwig.healthchecks.flint.extractor.WGSMetricsExtractor;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class FlintAdapterTest {
                 returns(getSummaryMetricsDummyReport());
                 times = 1;
 
-                new HealthCheckerImpl(CheckType.COVERAGE, anyString, (WGSExtractor) any);
+                new HealthCheckerImpl(CheckType.COVERAGE, anyString, (WGSMetricsExtractor) any);
                 result = coverage;
                 times = 1;
 

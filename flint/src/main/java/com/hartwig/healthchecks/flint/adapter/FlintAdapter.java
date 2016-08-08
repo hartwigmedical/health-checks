@@ -13,7 +13,7 @@ import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
-import com.hartwig.healthchecks.flint.extractor.WGSExtractor;
+import com.hartwig.healthchecks.flint.extractor.WGSMetricsExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class FlintAdapter extends AbstractHealthCheckAdapter {
         report.addReportData(summaryReport);
 
         final SampleFinderAndReader wgsReader = SampleFinderAndReader.build();
-        final DataExtractor wgsExtractor = new WGSExtractor(wgsReader);
+        final DataExtractor wgsExtractor = new WGSMetricsExtractor(wgsReader);
         final HealthChecker coverageChecker = new HealthCheckerImpl(CheckType.COVERAGE, runDirectory, wgsExtractor);
         final BaseReport coverageReport = coverageChecker.runCheck();
         report.addReportData(coverageReport);
