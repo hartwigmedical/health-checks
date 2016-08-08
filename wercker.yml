@@ -1,5 +1,5 @@
 # docker box definition
-box: ekholabs/wercker-jdk8-go
+box: hartwigmedical/wercker-jdk8-go
 
 # defining the build pipeline
 build:
