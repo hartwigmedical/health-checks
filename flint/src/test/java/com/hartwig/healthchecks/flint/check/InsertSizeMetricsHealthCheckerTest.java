@@ -3,13 +3,9 @@ package com.hartwig.healthchecks.flint.check;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -22,6 +18,9 @@ import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.ErrorReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
