@@ -37,5 +37,4 @@ public interface LineReader {
             return lines.filter(filter).collect(Collectors.toList());
         }
     }
-
 }

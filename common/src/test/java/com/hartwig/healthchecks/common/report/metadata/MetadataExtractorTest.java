@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Predicate;
 
 import org.junit.Test;
@@ -24,18 +25,15 @@ import mockit.Mocked;
 
 public class MetadataExtractorTest {
 
-    private static final String VERSION = "v1.7";
-
+    private static final String EXPECTED_VERSION = "v1.7";
     private static final String EXPECTED_DATE = "2016-Jul-09T15.41.42";
 
     private static final String PIPELINE_VERSION_V1_7 = "Pipeline version: v1.7";
-
     private static final String DATA = "End Kinship\tSat Jul 9 15:41:42 CEST 2016\t"
                     + "160704_HMFregCPCT_FR10301986_FR12244591_CPCT02020306.filtered_variants.vcf\t"
                     + "hmfpcompute-foxtrot1-15";
 
     private static final String DUMMY_DIR = "bla";
-
     private static final String TEST_DIR = "rundir";
 
     @Mocked
@@ -48,55 +46,53 @@ public class MetadataExtractorTest {
     public void extractMetaData() throws IOException, HealthChecksException {
         final MetadataExtractor extractor = new MetadataExtractor(pathFinder, lineReader);
         new Expectations() {
-
             {
                 pathFinder.findPath(anyString, anyString);
                 returns(new File(TEST_DIR).toPath());
                 lineReader.readLines(new File(TEST_DIR).toPath(), (Predicate<String>) any);
-                returns(Arrays.asList(DATA));
+                returns(Collections.singletonList(DATA));
 
                 pathFinder.findPath(anyString, anyString);
                 returns(new File(TEST_DIR).toPath());
                 lineReader.readLines(new File(TEST_DIR).toPath(), (Predicate<String>) any);
-                returns(Arrays.asList(PIPELINE_VERSION_V1_7));
+                returns(Collections.singletonList(PIPELINE_VERSION_V1_7));
             }
         };
         final ReportMetadata reportMetadata = extractor.extractMetadata(TEST_DIR);
         assertNotNull(reportMetadata);
+
         assertEquals("Wrong Date", EXPECTED_DATE, reportMetadata.getDate());
-        assertEquals("Wrong Version", VERSION, reportMetadata.getPipelineVersion());
+        assertEquals("Wrong Version", EXPECTED_VERSION, reportMetadata.getPipelineVersion());
     }
 
     @Test
     public void extractMetaDataFullPath() throws IOException, HealthChecksException {
         final MetadataExtractor extractor = new MetadataExtractor(pathFinder, lineReader);
         new Expectations() {
-
             {
                 pathFinder.findPath(anyString, anyString);
                 returns(new File(TEST_DIR).toPath());
                 lineReader.readLines(new File(TEST_DIR).toPath(), (Predicate<String>) any);
-                returns(Arrays.asList(DATA));
+                returns(Collections.singletonList(DATA));
 
                 pathFinder.findPath(anyString, anyString);
                 returns(new File(TEST_DIR).toPath());
                 lineReader.readLines(new File(TEST_DIR).toPath(), (Predicate<String>) any);
-                returns(Arrays.asList(PIPELINE_VERSION_V1_7));
+                returns(Collections.singletonList(PIPELINE_VERSION_V1_7));
             }
         };
         final URL testPath = Resources.getResource(TEST_DIR);
-        final String dirPath = testPath.getPath().toString();
-        final ReportMetadata reportMetadata = extractor.extractMetadata(dirPath);
+        final ReportMetadata reportMetadata = extractor.extractMetadata(testPath.getPath());
+
         assertNotNull(reportMetadata);
         assertEquals("Wrong Date", EXPECTED_DATE, reportMetadata.getDate());
-        assertEquals("Wrong Version", VERSION, reportMetadata.getPipelineVersion());
+        assertEquals("Wrong Version", EXPECTED_VERSION, reportMetadata.getPipelineVersion());
     }
 
     @Test(expected = FileNotFoundException.class)
     public void extractMetaDataEmptyFolder() throws IOException, HealthChecksException {
         final MetadataExtractor extractor = new MetadataExtractor(pathFinder, lineReader);
         new Expectations() {
-
             {
                 pathFinder.findPath(anyString, anyString);
                 result = new FileNotFoundException();
@@ -109,7 +105,6 @@ public class MetadataExtractorTest {
     public void extractMetaDataDummyFolder() throws IOException, HealthChecksException {
         final MetadataExtractor extractor = new MetadataExtractor(pathFinder, lineReader);
         new Expectations() {
-
             {
                 pathFinder.findPath(anyString, anyString);
                 result = new NoSuchFileException("");
@@ -122,7 +117,6 @@ public class MetadataExtractorTest {
     public void extractMetaDataEmptyFiles() throws IOException, HealthChecksException {
         final MetadataExtractor extractor = new MetadataExtractor(pathFinder, lineReader);
         new Expectations() {
-
             {
                 pathFinder.findPath(anyString, anyString);
                 returns(new File(DUMMY_DIR).toPath());

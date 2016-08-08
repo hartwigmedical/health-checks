@@ -16,12 +16,12 @@ import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckCategory.BILE)
 public class BileAdapter extends AbstractHealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
-
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
