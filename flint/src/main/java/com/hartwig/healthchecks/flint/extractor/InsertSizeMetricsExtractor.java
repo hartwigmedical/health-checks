@@ -38,7 +38,7 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     }
 
     @NotNull
-    private List<BaseDataReport> getSampleData(final String runDirectory, final String sampleType)
+    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleType)
             throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
