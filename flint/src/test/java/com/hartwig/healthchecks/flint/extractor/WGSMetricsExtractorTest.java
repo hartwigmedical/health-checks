@@ -40,7 +40,7 @@ public class WGSMetricsExtractorTest {
             + "PCT_50X\tPCT_60X\tPCT_70X\tPCT_80X\tPCT_90X\tPCT_100X";
 
     private static final String INPUT_LINE = "# picard.analysis.CollectMultipleMetrics "
-            + "SAMPLE_IDENTIFIER=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
+            + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
                     + "ASSUME_SORTED=true " + "OUTPUT=/sample/output/cancerPanel/QCStats//%s_dedup/"
                     + "%s_dedup_MultipleMetrics.txt "
                     + "PROGRAM=[CollectAlignmentSummaryMetrics, CollectBaseDistributionByCycle,"
