@@ -50,7 +50,7 @@ public class MappingHealthCheckerTest {
 
         assertEquals("Report with wrong type", CheckType.MAPPING, report.getCheckType());
         assertEquals("Dummy", ((SampleReport) report).getReferenceSample().get(0).getSampleId());
-        assertEquals(MappingCheck.MAPPING_MAPPED.getDescription(),
+        assertEquals(MappingCheck.MAPPING_PERCENTAGE_MAPPED.toString(),
                         ((SampleReport) report).getReferenceSample().get(0).getCheckName());
     }
 
@@ -100,12 +100,13 @@ public class MappingHealthCheckerTest {
 
     @NotNull
     private static List<BaseDataReport> createDummyBaseData() {
-        final BaseDataReport mappedData = new BaseDataReport("Dummy", MappingCheck.MAPPING_MAPPED.getDescription(),
+        final BaseDataReport mappedData = new BaseDataReport("Dummy",
+                MappingCheck.MAPPING_PERCENTAGE_MAPPED.toString(),
                         "0.0");
         final BaseDataReport duplicateData = new BaseDataReport("Dummy",
-                MappingCheck.MAPPING_DUPLICATES.getDescription(), "0.0");
+                MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES.toString(), "0.0");
         final BaseDataReport properlyData = new BaseDataReport("Dummy",
-                        MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(), "0.0");
+                MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED.toString(), "0.0");
 
         return Arrays.asList(mappedData, duplicateData, properlyData);
     }

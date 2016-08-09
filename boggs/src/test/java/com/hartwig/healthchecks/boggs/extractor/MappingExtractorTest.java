@@ -168,29 +168,32 @@ public class MappingExtractorTest {
     private static BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
             @NotNull final MappingCheck check) {
         Optional<BaseDataReport> report = mapping.stream().filter(
-                baseDataReport -> baseDataReport.getCheckName().equals(check.getDescription())).findFirst();
+                baseDataReport -> baseDataReport.getCheckName().equals(check.toString())).findFirst();
 
         assert report.isPresent();
         return report.get();
     }
 
     private static void assetMappingData(@NotNull final List<BaseDataReport> mapping) {
-        final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_MAPPED);
+        final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
         assertEquals("99.69", mappedData.getValue());
 
-        final BaseDataReport mateData = extractReportData(mapping, MappingCheck.MAPPING_MATE_MAPPED_DIFFERENT_CHR);
+        final BaseDataReport mateData = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR);
         assertEquals("0.0", mateData.getValue());
 
-        final BaseDataReport properData = extractReportData(mapping, MappingCheck.MAPPING_PROPERLY_PAIRED);
+        final BaseDataReport properData = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED);
         assertEquals("99.57", properData.getValue());
 
-        final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_SINGLETON);
+        final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
         assertEquals("55.0", singletonData.getValue());
 
-        final BaseDataReport duplicateData = extractReportData(mapping, MappingCheck.MAPPING_DUPLICATES);
+        final BaseDataReport duplicateData = extractReportData(mapping,
+                MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
         assertEquals("5.95", duplicateData.getValue());
 
-        final BaseDataReport isAllRead = extractReportData(mapping, MappingCheck.MAPPING_IS_ALL_READ);
+        final BaseDataReport isAllRead = extractReportData(mapping, MappingCheck.MAPPING_OUTPUT_COMPLETE);
         assertEquals("false", isAllRead.getValue());
     }
 
