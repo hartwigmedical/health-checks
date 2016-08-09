@@ -24,25 +24,15 @@ import mockit.Mocked;
 public class KinshipHealthCheckerTest {
 
     private static final String DUMMY_CHECK = "DUMMY_CHECK";
-
     private static final String EXPECTED_VALUE = "0.04";
-
     private static final String WRONG_ERROR_MESSAGE = "Wrong Error Message";
-
     private static final String WRONG_ERROR = "Wrong Error";
-
     private static final String DUMMY_ERROR = "DUMMY_ERROR";
-
     private static final String WRONG_CHECK_NAME = "Wrong Check Name";
-
     private static final String WRONG_CHECK_STATUS = "Wrong Check status";
-
     private static final String WRONG_PATIENT_ID_MSG = "Wrong Patient ID";
-
     private static final String WRONG_TYPE_MSG = "Report with wrong type";
-
     private static final String DUMMY_ID = "DUMMY_ID";
-
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
 
     @Mocked
