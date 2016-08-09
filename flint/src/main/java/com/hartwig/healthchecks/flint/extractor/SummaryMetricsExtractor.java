@@ -52,7 +52,7 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
         if (!searchedLine.isPresent()) {
             throw new LineNotFoundException(suffix, PAIR);
         }
-        final String sampleId = getSampleId(suffix, lines, INPUT);
+        final String sampleId = getSampleId(suffix, lines, SAMPLE_IDENTIFIER);
 
         final BaseDataReport pfIndelRate = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_INDEL_RATE);

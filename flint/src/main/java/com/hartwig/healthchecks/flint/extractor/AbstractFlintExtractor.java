@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractFlintExtractor extends AbstractDataExtractor {
 
-    static final String INPUT = "INPUT";
+    static final String SAMPLE_IDENTIFIER = "INPUT";
 
     private static final String SPACE = " ";
     private static final String EQUAL_REGEX = "=";
@@ -36,11 +36,11 @@ abstract class AbstractFlintExtractor extends AbstractDataExtractor {
         }
 
         // KODU: Not sure this makes sense or could ever happen...
-        throw new IllegalStateException("No patient ID found");
+        throw new IllegalStateException("No sample ID found");
     }
 
     @NotNull
-    String getValueFromLine(@NotNull final List<String> lines, @NotNull final String suffix,
+    static String getValueFromLine(@NotNull final List<String> lines, @NotNull final String suffix,
             @NotNull final String filter, final int fieldIndex) throws LineNotFoundException {
         final int index = findLineIndex(suffix, lines, filter);
         final String line = lines.get(index + ONE);

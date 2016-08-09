@@ -50,7 +50,7 @@ public class WGSMetricsExtractor extends AbstractFlintExtractor {
             throw new EmptyFileException(suffix, runDirectory);
         }
 
-        final String sampleId = getSampleId(suffix, lines, INPUT);
+        final String sampleId = getSampleId(suffix, lines, SAMPLE_IDENTIFIER);
 
         final BaseDataReport coverageMean = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_MEAN);
         final BaseDataReport coverageMedian = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_MEDIAN);

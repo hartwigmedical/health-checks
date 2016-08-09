@@ -33,8 +33,8 @@ public class SummaryMetricsExtractorTest {
             "PAIR\t17920\t17920\t1\t0\t17865\t0.996931\t" + "2678694\t17852\t2677263\t2587040\t0\t%s\t0.005017\t"
                     + "%s\t151\t17810\t0.996921\t0\t%s\t%s\t%s\t\t\t\t";
 
-    private static final String INPUT_LINE =
-            "# picard.analysis.CollectMultipleMetrics " + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
+    private static final String INPUT_LINE = "# picard.analysis.CollectMultipleMetrics "
+            + "SAMPLE_IDENTIFIER=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
                     + "ASSUME_SORTED=true " + "OUTPUT=/sample/output/cancerPanel/QCStats//%s_dedup/"
                     + "%s_dedup_MultipleMetrics.txt "
                     + "PROGRAM=[CollectAlignmentSummaryMetrics, CollectBaseDistributionByCycle,"

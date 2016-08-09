@@ -44,7 +44,7 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
         final String path = runDirectory + File.separator + QC_STATS;
         final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, INSERT_SIZE_METRICS);
         final List<String> lines = reader.readLines(samplePath);
-        final String sampleId = getSampleId(suffix, lines, INPUT);
+        final String sampleId = getSampleId(suffix, lines, SAMPLE_IDENTIFIER);
 
         final BaseDataReport medianReport = getValue(lines, suffix, sampleId,
                 InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);

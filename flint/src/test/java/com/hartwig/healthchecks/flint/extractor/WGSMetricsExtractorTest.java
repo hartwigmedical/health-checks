@@ -39,8 +39,8 @@ public class WGSMetricsExtractorTest {
             + "PCT_EXC_CAPPED\tPCT_EXC_TOTAL\tPCT_5X\tPCT_10X\tPCT_15X\tPCT_20X\tPCT_25X\tPCT_30X\tPCT_40X\t"
             + "PCT_50X\tPCT_60X\tPCT_70X\tPCT_80X\tPCT_90X\tPCT_100X";
 
-    private static final String INPUT_LINE =
-            "# picard.analysis.CollectMultipleMetrics " + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
+    private static final String INPUT_LINE = "# picard.analysis.CollectMultipleMetrics "
+            + "SAMPLE_IDENTIFIER=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
                     + "ASSUME_SORTED=true " + "OUTPUT=/sample/output/cancerPanel/QCStats//%s_dedup/"
                     + "%s_dedup_MultipleMetrics.txt "
                     + "PROGRAM=[CollectAlignmentSummaryMetrics, CollectBaseDistributionByCycle,"

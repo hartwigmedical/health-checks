@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 enum InsertSizeMetricsCheck {
     MAPPING_MEDIAN_INSERT_SIZE("MEDIAN_INSERT_SIZE", 0),
-    MAPPING_WIDTH_OF_70_PERCENT("WIDTH_OF_70_PERCENT", 15),;
+    MAPPING_WIDTH_OF_70_PERCENT("WIDTH_OF_70_PERCENT", 14),;
 
     @NotNull
     private final String fieldName;
