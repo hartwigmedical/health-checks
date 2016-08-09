@@ -27,13 +27,13 @@ import mockit.Mocked;
 
 public class SummaryMetricsExtractorTest {
 
-    private static final String WRONG_PATIENT_ID = "Wrong Patient ID";
+    private static final String WRONG_SAMPLE_ID = "Wrong Sample ID";
 
     private static final String DATA_LINE =
             "PAIR\t17920\t17920\t1\t0\t17865\t0.996931\t" + "2678694\t17852\t2677263\t2587040\t0\t%s\t0.005017\t"
                     + "%s\t151\t17810\t0.996921\t0\t%s\t%s\t%s\t\t\t\t";
 
-    private static final String INPUT_LINE = "# picard.analysis.CollectMultipleMetrics "
+    private static final String START_LINE = "# picard.analysis.CollectMultipleMetrics "
             + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
                     + "ASSUME_SORTED=true " + "OUTPUT=/sample/output/cancerPanel/QCStats//%s_dedup/"
                     + "%s_dedup_MultipleMetrics.txt "
@@ -53,8 +53,8 @@ public class SummaryMetricsExtractorTest {
 
     private static final String TEST_DIR = "Test";
     private static final String WRONG_DATA = "Wrong Data";
-    private static final String PATIENT_ID_R = "CPCT12345678R";
-    private static final String PATIENT_ID_T = "CPCT12345678T";
+    private static final String SAMPLE_ID_R = "CPCT12345678R";
+    private static final String SAMPLE_ID_T = "CPCT12345678T";
     private static final String MISMATCH_VALUE_R = "0.005024";
     private static final String MISMATCH_VALUE_T = "0.004024";
     private static final String INDEL_VALUE_R = "0.000161";
@@ -65,7 +65,7 @@ public class SummaryMetricsExtractorTest {
     private static final String CHIMERA_VALUE_T = "0.000212";
     private static final String ADAPTER_VALUE_R = "0.000056";
     private static final String ADAPTER_VALUE_T = "0.000036";
-    private static final String SHOULD_NOT_BE_NULL = "Should Not be Null";
+    private static final String SHOULD_NOT_BE_NULL = "Should not be Null";
 
     private List<String> refLines;
     private List<String> tumLines;
@@ -76,16 +76,16 @@ public class SummaryMetricsExtractorTest {
 
     @Before
     public void setUp() {
-        String inputLine = String.format(INPUT_LINE, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R);
+        String startLine = String.format(START_LINE, SAMPLE_ID_R, SAMPLE_ID_R, SAMPLE_ID_R, SAMPLE_ID_R);
         String dataLine = String.format(DATA_LINE, MISMATCH_VALUE_R, INDEL_VALUE_R, STRAND_VALUE_R, CHIMERA_VALUE_R,
                 ADAPTER_VALUE_R);
-        refLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
+        refLines = Arrays.asList(FILLING_LINE, startLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
                 dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
-        inputLine = String.format(INPUT_LINE, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T);
+        startLine = String.format(START_LINE, SAMPLE_ID_T, SAMPLE_ID_T, SAMPLE_ID_T, SAMPLE_ID_T);
         dataLine = String.format(DATA_LINE, MISMATCH_VALUE_T, INDEL_VALUE_T, STRAND_VALUE_T, CHIMERA_VALUE_T,
                 ADAPTER_VALUE_T);
-        tumLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, dataLine,
+        tumLines = Arrays.asList(FILLING_LINE, startLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, dataLine,
                 FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
         missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
@@ -167,7 +167,7 @@ public class SummaryMetricsExtractorTest {
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 
-    private void assertReport(@NotNull final BaseReport report) {
+    private static void assertReport(@NotNull final BaseReport report) {
         assertEquals("Report with wrong type", CheckType.SUMMARY_METRICS, report.getCheckType());
         assertNotNull(SHOULD_NOT_BE_NULL, report);
         assertField(report, SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE.toString(), MISMATCH_VALUE_R,
@@ -178,19 +178,19 @@ public class SummaryMetricsExtractorTest {
         assertField(report, SummaryMetricsCheck.MAPPING_PCT_ADAPTER.toString(), ADAPTER_VALUE_R, ADAPTER_VALUE_T);
     }
 
-    private void assertField(@NotNull final BaseReport report, @NotNull final String field,
+    private static void assertField(@NotNull final BaseReport report, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((SampleReport) report).getReferenceSample(), PATIENT_ID_R, field, refValue);
-        assertBaseData(((SampleReport) report).getTumorSample(), PATIENT_ID_T, field, tumValue);
+        assertBaseData(((SampleReport) report).getReferenceSample(), SAMPLE_ID_R, field, refValue);
+        assertBaseData(((SampleReport) report).getTumorSample(), SAMPLE_ID_T, field, tumValue);
     }
 
-    private void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String patientId,
+    private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String sampleId,
             @NotNull final String check, @NotNull final String expectedValue) {
         final Optional<BaseDataReport> value = reports.stream().filter(
                 p -> p.getCheckName().equals(check)).findFirst();
         assert value.isPresent();
 
         assertEquals(WRONG_DATA, expectedValue, value.get().getValue());
-        assertEquals(WRONG_PATIENT_ID, patientId, value.get().getSampleId());
+        assertEquals(WRONG_SAMPLE_ID, sampleId, value.get().getSampleId());
     }
 }

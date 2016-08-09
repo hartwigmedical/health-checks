@@ -15,16 +15,21 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class SummaryMetricsExtractor extends AbstractFlintExtractor {
 
-    private static final String PAIR = "PAIR";
-    private static final String AL_SUM_METRICS = ".alignment_summary_metrics";
+    private static final Logger LOGGER = LogManager.getLogger(SummaryMetricsExtractor.class);
 
+    private static final String PICARD_CATEGORY_TO_READ = "PAIR";
+    private static final String AL_SUM_METRICS_EXTENSION = ".alignment_summary_metrics";
+
+    @NotNull
     private final SampleFinderAndReader reader;
 
-    public SummaryMetricsExtractor(final SampleFinderAndReader reader) {
+    public SummaryMetricsExtractor(@NotNull final SampleFinderAndReader reader) {
         super();
         this.reader = reader;
     }
@@ -44,15 +49,16 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
 
-        final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, AL_SUM_METRICS);
+        final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, AL_SUM_METRICS_EXTENSION);
 
         final List<String> lines = reader.readLines(samplePath);
 
-        final Optional<String> searchedLine = lines.stream().filter(fileLine -> fileLine.startsWith(PAIR)).findFirst();
+        final Optional<String> searchedLine = lines.stream().filter(
+                fileLine -> fileLine.startsWith(PICARD_CATEGORY_TO_READ)).findFirst();
         if (!searchedLine.isPresent()) {
-            throw new LineNotFoundException(suffix, PAIR);
+            throw new LineNotFoundException(suffix, PICARD_CATEGORY_TO_READ);
         }
-        final String sampleId = getSampleId(suffix, lines, SAMPLE_IDENTIFIER);
+        final String sampleId = getSampleId(suffix, lines, PICARD_SAMPLE_IDENTIFIER);
 
         final BaseDataReport pfIndelRate = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_INDEL_RATE);
@@ -68,11 +74,11 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
     }
 
     @NotNull
-    private BaseDataReport getValue(@NotNull final String line, @NotNull final String sampleId,
+    private static BaseDataReport getValue(@NotNull final String line, @NotNull final String sampleId,
             @NotNull final SummaryMetricsCheck check) throws LineNotFoundException {
         final String value = line.split(SEPARATOR_REGEX)[check.getIndex()];
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
-        logBaseDataReport(baseDataReport);
+        logBaseDataReport(LOGGER, baseDataReport);
         return baseDataReport;
     }
 }

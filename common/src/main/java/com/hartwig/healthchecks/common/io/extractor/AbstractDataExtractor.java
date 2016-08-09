@@ -6,6 +6,7 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractDataExtractor implements DataExtractor {
 
@@ -42,14 +43,18 @@ public abstract class AbstractDataExtractor implements DataExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(AbstractDataExtractor.class);
 
-    protected void logBaseDataReports(final List<BaseDataReport> baseDataReports) {
-        baseDataReports.forEach((baseDataReport) -> {
-            logBaseDataReport(baseDataReport);
-        });
+    protected void logBaseDataReports(@NotNull final List<BaseDataReport> baseDataReports) {
+        baseDataReports.forEach(this::logBaseDataReport);
     }
 
-    protected void logBaseDataReport(final BaseDataReport baseDataReport) {
+    protected void logBaseDataReport(@NotNull final BaseDataReport baseDataReport) {
         LOGGER.info(String.format(LOG_MSG, baseDataReport.getCheckName(), baseDataReport.getSampleId(),
+                baseDataReport.getValue()));
+    }
+
+    protected static void logBaseDataReport(@NotNull final Logger logger,
+            @NotNull final BaseDataReport baseDataReport) {
+        logger.info(String.format(LOG_MSG, baseDataReport.getCheckName(), baseDataReport.getSampleId(),
                 baseDataReport.getValue()));
     }
 }

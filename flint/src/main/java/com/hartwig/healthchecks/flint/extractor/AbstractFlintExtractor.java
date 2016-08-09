@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractFlintExtractor extends AbstractDataExtractor {
 
-    static final String SAMPLE_IDENTIFIER = "INPUT";
+    static final String PICARD_SAMPLE_IDENTIFIER = "INPUT";
 
     private static final String SPACE = " ";
     private static final String EQUAL_REGEX = "=";
