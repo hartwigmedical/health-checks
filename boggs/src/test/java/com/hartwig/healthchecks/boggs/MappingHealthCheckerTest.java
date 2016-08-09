@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.healthcheck.extractor;
+package com.hartwig.healthchecks.boggs;
 
 import static org.junit.Assert.assertEquals;
 

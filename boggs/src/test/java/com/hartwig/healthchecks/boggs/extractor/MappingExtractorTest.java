@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.healthcheck.extractor;
+package com.hartwig.healthchecks.boggs.extractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,12 +9,10 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
-import com.hartwig.healthchecks.boggs.extractor.MappingCheck;
-import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
@@ -54,7 +52,7 @@ public class MappingExtractorTest {
 
     @Before
     public void setUp() {
-        fastqLines = TestZipFileFactory.getFastqLines();
+        fastqLines = Collections.singletonList("Total Sequences\t8951");
         emptyList = new ArrayList<>();
     }
 
