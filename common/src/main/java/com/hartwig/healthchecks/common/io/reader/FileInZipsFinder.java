@@ -14,22 +14,23 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
-public interface FileInZipsFinder {
+interface FileInZipsFinder {
 
     String FILE_NOT_FOUND = "File %s not found in %s";
 
     Logger LOGGER = LogManager.getLogger(FileInZipsFinder.class);
 
     @NotNull
-    List<? extends ZipEntry> findFileInZip(final ZipFile zipFile, final String fileNameInZip) throws IOException;
+    List<? extends ZipEntry> findFileInZip(@NotNull final ZipFile zipFile, @NotNull final String fileNameInZip)
+            throws IOException;
 
     @NotNull
     static FileInZipsFinder build() {
         return (zipFile, fileNameInZip) -> {
             final Predicate<ZipEntry> isFile = zipEntry -> !zipEntry.isDirectory();
             final Predicate<ZipEntry> isFileName = zipEntry -> zipEntry.getName().contains(fileNameInZip);
-            final List<? extends ZipEntry> fileInZip = zipFile.stream().filter(isFile.and(isFileName))
-                            .collect(toList());
+            final List<? extends ZipEntry> fileInZip = zipFile.stream().filter(isFile.and(isFileName)).collect(
+                    toList());
             if (fileInZip.isEmpty()) {
                 throw new FileNotFoundException(String.format(FILE_NOT_FOUND, fileNameInZip, zipFile.getName()));
             }

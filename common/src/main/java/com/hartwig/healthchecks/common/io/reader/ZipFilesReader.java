@@ -8,37 +8,35 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.path.PathsExtensionFinder;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.path.PathsExtensionFinder;
-
 public class ZipFilesReader {
 
-    private static final String ERROR_MSG = "Error occurred when reading file %s. "
-                    + "Will return empty stream. Error -> %s";
+    private static final String ERROR_MSG =
+            "Error occurred when reading file %s. " + "Will return empty stream. Error -> %s";
 
     private static final Logger LOGGER = LogManager.getLogger(ZipFilesReader.class);
-
     private static final String ZIP_FILES_SUFFIX = ".zip";
 
     @NotNull
     public List<String> readAllLinesFromZips(@NotNull final Path path, @NotNull final String fileName)
-                    throws IOException {
+            throws IOException {
         final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path.toString(), ZIP_FILES_SUFFIX);
-        return zipPaths.stream().map(zipPath -> readFileFromZip(zipPath.toString(), fileName))
-                        .flatMap(Collection::stream).collect(toList());
+        return zipPaths.stream().map(zipPath -> readFileFromZip(zipPath.toString(), fileName)).flatMap(
+                Collection::stream).collect(toList());
     }
 
     @NotNull
     public List<String> readFieldFromZipFiles(@NotNull final Path path, @NotNull final String fileName,
-                    @NotNull final String filter) throws IOException {
+            @NotNull final String filter) throws IOException {
         final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path.toString(), ZIP_FILES_SUFFIX);
-        return zipPaths.stream().map(zipPath -> {
-            return searchForLineInZip(zipPath, fileName, filter);
-        }).filter(line -> line != null).collect(toList());
+        return zipPaths.stream().map(zipPath -> searchForLineInZip(zipPath, fileName, filter)).filter(
+                line -> line != null).collect(toList());
     }
 
     @NotNull
@@ -54,7 +52,7 @@ public class ZipFilesReader {
 
     @NotNull
     private String searchForLineInZip(@NotNull final Path path, @NotNull final String fileName,
-                    @NotNull final String filter) {
+            @NotNull final String filter) {
         String searchedLine = null;
         try {
             searchedLine = LineInZipsReader.build().readLines(path.toString(), fileName, filter);
@@ -63,5 +61,4 @@ public class ZipFilesReader {
         }
         return searchedLine;
     }
-
 }

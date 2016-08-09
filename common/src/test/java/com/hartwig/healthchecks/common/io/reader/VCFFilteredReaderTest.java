@@ -9,27 +9,21 @@ import java.net.URL;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
-
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
+
 public class VCFFilteredReaderTest {
 
     private static final String CHROM = "#CHROM";
-
     private static final String DUMMY_VALUE = "bla";
-
     private static final String WRONG_NUM_LINES = "Wrong # of Lines";
-
     private static final String NOT_NULL = "Should Not Be null";
-
     private static final String TEST_DIR = "rundir";
-
     private static final String EMPTY_DIR = "empty";
-
     private static final String EXT = "_Cosmicv76_GoNLv5_sliced.vcf";
 
     @Test

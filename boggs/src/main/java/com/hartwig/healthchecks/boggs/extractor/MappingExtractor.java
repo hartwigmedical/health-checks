@@ -28,8 +28,11 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(MappingExtractor.class);
 
-    private static final Long MILLIS_FACTOR = 10000L;
-    private static final String REALIGN = ".realign";
+    private static final long MILLIS_FACTOR = 10000L;
+    private static final double HUNDRED_FACTOR = 100D;
+    private static final int DOUBLE_SEQUENCE = 2;
+
+    private static final String FLAGSTAT_FILE_FILTER = ".realign";
 
     @NotNull
     private final FlagStatParser flagstatParser;
@@ -72,7 +75,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     private List<BaseDataReport> getFlagStatsData(@NotNull final String sampleId, @NotNull final Path runDirPath,
                     @NotNull final String totalSequences) throws IOException, EmptyFileException {
         final FlagStatData flagstatData = flagstatParser.parse(runDirPath + File.separator + MAPPING + File.separator,
-                        REALIGN);
+                FLAGSTAT_FILE_FILTER);
         // KODU: Flagstat data can be null!
         if (flagstatData == null) {
             throw new EmptyFileException(FLAGSTAT_SUFFIX, runDirPath.toString());

@@ -8,24 +8,18 @@ import java.net.URL;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
-import org.junit.Test;
-
 import com.google.common.io.Resources;
+
+import org.junit.Test;
 
 public class PathRegexFinderTest {
 
     private static final String DUMMY_DIR = "bla";
-
     private static final String NOT_NULL = "Should Not Be null";
-
     private static final String TEST_DIR = "rundir";
-
     private static final String NO_FILE_DIR = "empty";
-
     private static final String REGEX = "(.*)(_)(CPCT)(\\d+)(\\.)(log)";
-
     private static final String WRONG_REGEX = "(.*)(_)(CPCT)(\\d+)(\\.)";
-
     private static final String PIPELINE_LOG_REGEX = "PipelineCheck.log";
 
     @Test

@@ -9,26 +9,20 @@ import java.net.URL;
 import java.nio.file.NoSuchFileException;
 import java.util.List;
 
-import org.junit.Test;
-
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 
+import org.junit.Test;
+
 public class KinshipReaderTest {
 
     private static final String WRONG_NUM_LINES = "Wrong # of Lines";
-
     private static final String NOT_NULL = "Should Not Be null";
-
     private static final String TEST_DIR = "rundir";
-
     private static final String EMPTY_DIR = "emptyFiles";
-
     private static final String NO_FILE_DIR = "empty";
-
     private static final String KINSHIP = ".kinship";
-
     private static final int EXPECTED_NUM_LINES = 2;
 
     @Test

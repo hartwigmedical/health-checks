@@ -24,8 +24,6 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s was expecting %s in file";
     protected static final String SEPARATOR_REGEX = "\t";
     protected static final String FLAGSTAT_SUFFIX = ".flagstat";
-    protected static final Double HUNDRED_FACTOR = 100D;
-    protected static final Integer DOUBLE_SEQUENCE = 2;
     protected static final String DEDUP_SAMPLE_SUFFIX = "dedup";
     protected static final String UNDERSCORE = "_";
     protected static final String HASH = "#";

@@ -13,14 +13,14 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
-public interface ZipEntryReader {
+interface ZipEntryReader {
 
     String ERROR_MSG = "Error occurred when" + " reading file. Will return empty stream. Error -> %s";
 
     Logger LOGGER = LogManager.getLogger(ZipEntryReader.class);
 
     @NotNull
-    Stream<String> readZipElement(final ZipFile zipFile, final ZipEntry zipEntry);
+    Stream<String> readZipElement(@NotNull final ZipFile zipFile, @NotNull final ZipEntry zipEntry);
 
     @NotNull
     static ZipEntryReader build() {
@@ -35,8 +35,6 @@ public interface ZipEntryReader {
                 LOGGER.error(String.format(ERROR_MSG, e.getMessage()));
             }
             return readLines.filter(line -> line != null && !line.isEmpty());
-
         };
     }
-
 }

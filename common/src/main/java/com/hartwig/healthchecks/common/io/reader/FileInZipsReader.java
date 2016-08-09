@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 
+import org.jetbrains.annotations.NotNull;
+
 @FunctionalInterface
-public interface FileInZipsReader {
+interface FileInZipsReader {
 
     @NotNull
     List<String> readLines(@NotNull final String zipPath, @NotNull final String fileNameInZip)
-                    throws IOException, HealthChecksException;
+            throws IOException, HealthChecksException;
 
     @NotNull
     static FileInZipsReader build() {
@@ -32,14 +32,14 @@ public interface FileInZipsReader {
         };
     }
 
-    static List<String> read(final String zipPath, final String fileNameInZip) throws IOException {
+    @NotNull
+    static List<String> read(@NotNull final String zipPath, @NotNull final String fileNameInZip) throws IOException {
         try (final ZipFile zipFile = new ZipFile(zipPath)) {
             final List<? extends ZipEntry> fileEntryInZip = FileInZipsFinder.build().findFileInZip(zipFile,
-                            fileNameInZip);
-            return fileEntryInZip.stream().map(zipElement -> {
-                return ZipEntryReader.build().readZipElement(zipFile, zipElement).collect(toList());
-            }).flatMap(Collection::stream).collect(toList());
+                    fileNameInZip);
+            return fileEntryInZip.stream().map(
+                    zipElement -> ZipEntryReader.build().readZipElement(zipFile, zipElement).collect(
+                            toList())).flatMap(Collection::stream).collect(toList());
         }
     }
-
 }

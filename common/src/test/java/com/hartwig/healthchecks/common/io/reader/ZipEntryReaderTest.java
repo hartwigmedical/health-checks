@@ -7,16 +7,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+
+import org.junit.Test;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -30,7 +29,6 @@ public class ZipEntryReaderTest {
                     @Mocked final InputStream inputStream, @Mocked final BufferedReader reader,
                     @Mocked final InputStreamReader inputStreamReader) throws IOException, HealthChecksException {
         new NonStrictExpectations() {
-
             {
                 zipFile.getInputStream(zipEntry);
                 result = inputStream;
@@ -42,7 +40,7 @@ public class ZipEntryReaderTest {
                 result = reader;
 
                 reader.lines();
-                returns(Arrays.asList(DATA, "", null).stream());
+                returns(Stream.of(DATA, "", null));
             }
         };
         final Stream<String> zipStream = ZipEntryReader.build().readZipElement(zipFile, zipEntry);
@@ -56,7 +54,6 @@ public class ZipEntryReaderTest {
                     @Mocked final InputStream inputStream, @Mocked final BufferedReader reader,
                     @Mocked final InputStreamReader inputStreamReader) throws IOException, HealthChecksException {
         new NonStrictExpectations() {
-
             {
                 zipFile.getInputStream(zipEntry);
                 result = new IOException();
@@ -65,6 +62,5 @@ public class ZipEntryReaderTest {
         final Stream<String> zipStream = ZipEntryReader.build().readZipElement(zipFile, zipEntry);
         final List<String> lines = zipStream.collect(Collectors.toList());
         assertEquals("Wrong num of lines", 0, lines.size());
-
     }
 }

@@ -9,17 +9,17 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
+
+import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface LineReader {
 
     @NotNull
     List<String> readLines(@NotNull final Path filePath, @NotNull Predicate<String> filter)
-                    throws IOException, HealthChecksException;
+            throws IOException, HealthChecksException;
 
     @NotNull
     static LineReader build() {
@@ -32,7 +32,9 @@ public interface LineReader {
         };
     }
 
-    static List<String> read(final Path filePath, final Predicate<String> filter) throws IOException {
+    @NotNull
+    static List<String> read(@NotNull final Path filePath, @NotNull final Predicate<String> filter)
+            throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(filePath.toString()))) {
             return lines.filter(filter).collect(Collectors.toList());
         }

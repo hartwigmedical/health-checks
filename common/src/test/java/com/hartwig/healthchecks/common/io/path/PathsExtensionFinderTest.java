@@ -9,19 +9,16 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.junit.Test;
-
 import com.google.common.io.Resources;
+
+import org.junit.Test;
 
 public class PathsExtensionFinderTest {
 
     private static final String PATIENT = "CPCT12345678T";
-
     private static final String ZIP = ".zip";
-
     private static final String TEST_DIR = "rundir";
-
-    protected static final String QC_STATS = "QCStats";
+    private static final String QC_STATS = "QCStats";
 
     @Test
     public void findPaths() throws IOException {

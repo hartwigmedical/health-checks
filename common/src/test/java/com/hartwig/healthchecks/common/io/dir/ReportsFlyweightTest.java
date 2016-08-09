@@ -5,20 +5,18 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.adapter.ReportsFlyweight;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.report.JsonReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.report.StandardOutputReport;
 
+import org.junit.Test;
+
 public class ReportsFlyweightTest {
 
     private static final String BLA = "BLA";
-
     private static final String STDOUT = "stdout";
-
     private static final String JSON = "json";
 
     @Test

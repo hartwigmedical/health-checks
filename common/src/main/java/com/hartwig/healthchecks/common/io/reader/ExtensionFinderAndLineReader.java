@@ -5,10 +5,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
+
+import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface ExtensionFinderAndLineReader {
@@ -24,5 +24,4 @@ public interface ExtensionFinderAndLineReader {
             return LineReader.build().readLines(filePath, filter);
         };
     }
-
 }

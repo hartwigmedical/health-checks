@@ -9,17 +9,17 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 
+import org.jetbrains.annotations.NotNull;
+
 @FunctionalInterface
-public interface LineInZipsReader {
+interface LineInZipsReader {
 
     @NotNull
     String readLines(@NotNull final String zipPath, @NotNull final String fileNameInZip, @NotNull final String filter)
-                    throws IOException, HealthChecksException;
+            throws IOException, HealthChecksException;
 
     @NotNull
     static LineInZipsReader build() {
@@ -32,16 +32,15 @@ public interface LineInZipsReader {
         };
     }
 
-    static Optional<String> read(final String zipPath, final String fileNameInZip, @NotNull final String filter)
-                    throws IOException {
+    @NotNull
+    static Optional<String> read(@NotNull final String zipPath, @NotNull final String fileNameInZip,
+            @NotNull final String filter) throws IOException {
         try (final ZipFile zipFile = new ZipFile(zipPath)) {
             final List<? extends ZipEntry> fileEntryInZip = FileInZipsFinder.build().findFileInZip(zipFile,
-                            fileNameInZip);
-            return fileEntryInZip.stream().map(zipElement -> {
-                return ZipEntryReader.build().readZipElement(zipFile, zipElement).filter(line -> line.contains(filter))
-                                .collect(toList());
-            }).flatMap(Collection::stream).findFirst();
+                    fileNameInZip);
+            return fileEntryInZip.stream().map(
+                    zipElement -> ZipEntryReader.build().readZipElement(zipFile, zipElement).filter(
+                            line -> line.contains(filter)).collect(toList())).flatMap(Collection::stream).findFirst();
         }
     }
-
 }

@@ -9,8 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -20,6 +18,8 @@ import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
 import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
+import org.junit.Test;
+
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
 import mockit.Verifications;
@@ -27,19 +27,12 @@ import mockit.Verifications;
 public class ReportTest {
 
     private static final String ZERO = "0";
-
     private static final String SOME_VERSION = "v1.7";
-
     private static final String SOME_DATE = "2016-Jul-09T15.41.42";
-
     private static final String TMP_DIR = "/tmp";
-
     private static final String ONE = "1";
-
     private static final String RUN_DIR = "runDir";
-
     private static final String REPORT_DIR = "report.dir";
-
     private static final String ADD_META_DATA = "add.metadata";
 
     @Test
@@ -47,9 +40,7 @@ public class ReportTest {
                     @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
                     throws IOException, HealthChecksException {
         new NonStrictExpectations() {
-
             {
-
                 PropertiesUtil.getInstance();
                 result = propertiesUtil;
                 times = 1;
@@ -90,7 +81,6 @@ public class ReportTest {
                     @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
                     throws IOException, HealthChecksException {
         new NonStrictExpectations() {
-
             {
 
                 PropertiesUtil.getInstance();
@@ -133,7 +123,6 @@ public class ReportTest {
                     @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
                     throws IOException, HealthChecksException {
         new NonStrictExpectations() {
-
             {
 
                 PropertiesUtil.getInstance();
@@ -176,9 +165,7 @@ public class ReportTest {
                     @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
                     throws IOException, HealthChecksException {
         new NonStrictExpectations() {
-
             {
-
                 PropertiesUtil.getInstance();
                 result = propertiesUtil;
                 times = 2;
@@ -208,7 +195,6 @@ public class ReportTest {
         assertTrue(location.isPresent());
 
         new Verifications() {
-
             {
                 metadataExtractor.extractMetadata(RUN_DIR);
                 times = 0;
@@ -221,9 +207,7 @@ public class ReportTest {
                     @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
                     throws IOException, HealthChecksException {
         new NonStrictExpectations() {
-
             {
-
                 PropertiesUtil.getInstance();
                 result = propertiesUtil;
                 times = 2;
