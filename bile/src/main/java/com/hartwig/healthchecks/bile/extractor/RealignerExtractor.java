@@ -21,9 +21,13 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class RealignerExtractor extends AbstractDataExtractor {
+
+    private static final Logger LOGGER = LogManager.getLogger(RealignerExtractor.class);
 
     private static final String DECIMAL_PRECISION = "#0.00000";
     private static final String MAPPED = "mapped";
@@ -31,6 +35,11 @@ public class RealignerExtractor extends AbstractDataExtractor {
     private static final String BAM_DIFF_EXT = ".prepostrealign.diff";
 
     private static final String MAP_REALIGN_CHAN_ALIGN = "MAPPING_REALIGNER_CHANGED_ALIGNMENTS";
+    private static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s was expecting %s in file";
+
+    private static final String BIGGER_THAN = ">";
+    private static final String SMALLER_THAN = "<";
+    private static final String PLUS = "+";
 
     @NotNull
     private final SampleFinderAndReader reader;
@@ -66,7 +75,7 @@ public class RealignerExtractor extends AbstractDataExtractor {
         final long mappedValue = getMappedValue(runDirectory, suffix, path);
         final String value = new DecimalFormat(DECIMAL_PRECISION).format((double) diffCount / mappedValue);
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, MAP_REALIGN_CHAN_ALIGN, value);
-        logBaseDataReport(baseDataReport);
+        logBaseDataReport(LOGGER, baseDataReport);
         return Collections.singletonList(baseDataReport);
     }
 

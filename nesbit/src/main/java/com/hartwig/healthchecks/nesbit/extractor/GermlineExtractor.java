@@ -17,9 +17,13 @@ import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 import com.hartwig.healthchecks.nesbit.predicate.VCFGermlineVariantPredicate;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class GermlineExtractor extends AbstractVCFExtractor {
+
+    private static final Logger LOGGER = LogManager.getLogger(GermlineExtractor.class);
 
     private static final String GERMLINE_INDELS = "VARIANTS_GERMLINE_INDELS";
     private static final String GERMLINE_SNP = "VARIANTS_GERMLINE_SNP";
@@ -61,12 +65,12 @@ public class GermlineExtractor extends AbstractVCFExtractor {
         final BaseDataReport indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS, GERMLINE_INDELS,
                 isRef);
         final List<BaseDataReport> reports = Arrays.asList(snp, indels);
-        logBaseDataReports(reports);
+        logBaseDataReports(LOGGER, reports);
         return reports;
     }
 
     @NotNull
-    private List<VCFGermlineData> getVCFDataForGermLine(@NotNull final List<String> lines) {
+    private static List<VCFGermlineData> getVCFDataForGermLine(@NotNull final List<String> lines) {
         return lines.stream().map(line -> {
             final String[] values = line.split(SEPARATOR_REGEX);
             final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);

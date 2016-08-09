@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -27,15 +28,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
+    private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
+
+    @VisibleForTesting
     static final String PASS = "PASS";
+    @VisibleForTesting
     static final String WARN = "WARN";
+    @VisibleForTesting
     static final String FAIL = "FAIL";
+    @VisibleForTesting
     static final String SUMMARY_FILE_NAME = "summary.txt";
 
     private static final int EXPECTED_LINE_LENGTH = 3;
+    private static final String EMPTY_FILES_ERROR = "File %s was found empty in path -> %s";
     private static final long MIN_TOTAL_SQ = 85000000L;
-
-    private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
+    private static final int NEGATIVE_ONE = -1;
 
     @NotNull
     private final ZipFilesReader zipFileReader;
@@ -66,7 +73,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
         final List<BaseDataReport> sampleData = extractSummaryData(samplePath, sampleId);
         final BaseDataReport sampleFastq = extractFastqData(samplePath, sampleId);
         sampleData.add(sampleFastq);
-        logBaseDataReports(sampleData);
+        logBaseDataReports(LOGGER, sampleData);
         return sampleData;
     }
 

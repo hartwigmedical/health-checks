@@ -33,6 +33,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
     private static final String FLAGSTAT_DIRECTORY = "mapping";
     private static final String FLAGSTAT_FILE_FILTER = ".realign";
+    private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
     @NotNull
     private final FlagStatParser flagstatParser;

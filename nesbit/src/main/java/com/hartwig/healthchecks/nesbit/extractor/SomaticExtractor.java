@@ -21,9 +21,13 @@ import com.hartwig.healthchecks.nesbit.model.VCFSomaticData;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticSetData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class SomaticExtractor extends AbstractVCFExtractor {
+
+    private static final Logger LOGGER = LogManager.getLogger(SomaticExtractor.class);
 
     private static final String SET = "set=";
     private static final String PROPORTION_CHECK_LABEL = "SOMATIC_%s_PROPORTION_VARIANTS_%s_CALLERS";
@@ -34,6 +38,9 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     private static final List<String> CALLERS = Arrays.asList("mutect", "varscan", "strelka", "freebayes");
     private static final String FILTER_IN = "filterIn";
     private static final String EXT = "_Cosmicv76_melted.vcf";
+    private static final String EQUAL = "=";
+    private static final String SEMICOLON_DELIMITER = ";";
+    private static final String DASH = "-";
 
     @NotNull
     private final ExtensionFinderAndLineReader reader;
@@ -65,7 +72,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         reports.addAll(getTypeChecks(vcfData, sampleId, VCFType.SNP));
         reports.addAll(getTypeChecks(vcfData, sampleId, VCFType.INDELS));
 
-        logBaseDataReports(reports);
+        logBaseDataReports(LOGGER, reports);
         return reports;
     }
 
@@ -77,19 +84,18 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         final List<BaseDataReport> reports = new ArrayList<>();
         reports.add(countReport);
         final List<VCFSomaticSetData> vcfTypeSetData = getSetDataForType(vcfData, vcfType);
-        final List<BaseDataReport> precisionReports = CALLERS.stream().map(caller -> {
-            return calculatePrecision(vcfTypeSetData, sampleId, vcfType, caller);
-        }).collect(Collectors.toList());
+        final List<BaseDataReport> precisionReports = CALLERS.stream().map(
+                caller -> calculatePrecision(vcfTypeSetData, sampleId, vcfType, caller)).collect(Collectors.toList());
         reports.addAll(precisionReports);
 
-        final List<BaseDataReport> sensitivityReports = CALLERS.stream().map(caller -> {
-            return calculateSensitivity(vcfTypeSetData, sampleId, vcfType, caller);
-        }).collect(Collectors.toList());
+        final List<BaseDataReport> sensitivityReports = CALLERS.stream().map(
+                caller -> calculateSensitivity(vcfTypeSetData, sampleId, vcfType, caller)).collect(
+                Collectors.toList());
         reports.addAll(sensitivityReports);
 
-        final List<BaseDataReport> proportionReports = CALLERS_COUNT.stream().map(callerCount -> {
-            return calculateProportion(vcfTypeSetData, sampleId, vcfType, callerCount);
-        }).collect(Collectors.toList());
+        final List<BaseDataReport> proportionReports = CALLERS_COUNT.stream().map(
+                callerCount -> calculateProportion(vcfTypeSetData, sampleId, vcfType, callerCount)).collect(
+                Collectors.toList());
         reports.addAll(proportionReports);
         return reports;
     }

@@ -14,24 +14,26 @@ import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractVCFExtractor extends AbstractDataExtractor {
 
+    private static final String HEADER_NOT_FOUND_ERROR = "File %s does not contain following headers %s";
+    private static final String[] NEEDED_HEADERS = { "FILTER", "REF", "ALT", "INFO", "(CPCT)(\\d+)(T)" };
+    private static final String[] NEEDED_HEADERS_VARIANTS = { "(CPCT)(\\d+)(R)" };
+    private static final String COMMA_DELIMITER = ",";
+
     static final int PATIENT_TUM_INDEX = 10;
     static final int PATIENT_REF_INDEX = 9;
     static final int INFO_INDEX = 7;
     static final int ALT_INDEX = 4;
     static final int REF_INDEX = 3;
 
-    private final String[] neededHeaders = { "FILTER", "REF", "ALT", "INFO", "(CPCT)(\\d+)(T)" };
-    private final String[] neededHeadersVariants = { "(CPCT)(\\d+)(R)" };
-
     @NotNull
     String[] getHeaders(@NotNull final List<String> lines, @NotNull final String extension,
             final boolean isGermlineCheck) throws LineNotFoundException, HeaderNotFoundException {
         final String[] headers = lines.get(ZERO).split(SEPARATOR_REGEX);
 
-        List<String> expectedHeaders = Arrays.stream(neededHeaders).collect(Collectors.toList());
+        List<String> expectedHeaders = Arrays.stream(NEEDED_HEADERS).collect(Collectors.toList());
         if (isGermlineCheck) {
-            expectedHeaders = Stream.concat(Arrays.stream(neededHeaders),
-                    Arrays.stream(neededHeadersVariants)).collect(Collectors.toList());
+            expectedHeaders = Stream.concat(Arrays.stream(NEEDED_HEADERS),
+                    Arrays.stream(NEEDED_HEADERS_VARIANTS)).collect(Collectors.toList());
         }
         final List<String> validation = expectedHeaders.stream().filter(
                 expectedHeader -> Arrays.stream(headers).filter(header -> header.matches(expectedHeader)).count()

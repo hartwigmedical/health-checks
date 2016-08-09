@@ -13,13 +13,18 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class SlicedExtractor extends AbstractDataExtractor {
 
+    private static final Logger LOGGER = LogManager.getLogger(SlicedExtractor.class);
+
     private static final int SAMPLE_ID_INDEX = 9;
     private static final String SLICED_NUM_VARIANTS = "SLICED_NUMBER_OF_VARIANTS";
     private static final String EXT = "_Cosmicv76_GoNLv5_sliced.vcf";
+    private static final String HASH = "#";
 
     @NotNull
     private final ExtensionFinderAndLineReader reader;
@@ -34,7 +39,7 @@ public class SlicedExtractor extends AbstractDataExtractor {
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final BaseDataReport sampleData = getSampleData(runDirectory);
-        logBaseDataReport(sampleData);
+        logBaseDataReport(LOGGER, sampleData);
         return new PatientReport(CheckType.SLICED, sampleData);
     }
 

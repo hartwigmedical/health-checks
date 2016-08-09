@@ -13,9 +13,13 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class KinshipExtractor extends AbstractDataExtractor {
+
+    private static final Logger LOGGER = LogManager.getLogger(KinshipExtractor.class);
 
     private static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s -> %s lines found was expecting %s";
 
@@ -49,7 +53,7 @@ public class KinshipExtractor extends AbstractDataExtractor {
 
         assert optBaseDataReport.isPresent();
 
-        logBaseDataReport(optBaseDataReport.get());
+        logBaseDataReport(LOGGER, optBaseDataReport.get());
         return new PatientReport(CheckType.KINSHIP, optBaseDataReport.get());
     }
 }
