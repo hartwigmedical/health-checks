@@ -4,15 +4,15 @@ import org.jetbrains.annotations.NotNull;
 
 enum InsertSizeMetricsCheck {
     MAPPING_MEDIAN_INSERT_SIZE("MEDIAN_INSERT_SIZE", 0),
-    MAPPING_WIDTH_OF_70_PERCENT("WIDTH_OF_70_PERCENT", 14),;
+    MAPPING_WIDTH_OF_70_PERCENT("WIDTH_OF_70_PERCENT", 14);
 
     @NotNull
     private final String fieldName;
-    private final int index;
+    private final int columnIndex;
 
-    InsertSizeMetricsCheck(@NotNull final String fieldName, final int index) {
+    InsertSizeMetricsCheck(@NotNull final String fieldName, final int columnIndex) {
         this.fieldName = fieldName;
-        this.index = index;
+        this.columnIndex = columnIndex;
     }
 
     @NotNull
@@ -20,7 +20,7 @@ enum InsertSizeMetricsCheck {
         return fieldName;
     }
 
-    public int getIndex() {
-        return index;
+    public int getColumnIndex() {
+        return columnIndex;
     }
 }

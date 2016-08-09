@@ -28,7 +28,7 @@ import mockit.Mocked;
 
 public class WGSMetricsExtractorTest {
 
-    private static final String WRONG_PATIENT_ID = "Wrong Patient ID";
+    private static final String WRONG_SAMPLE_ID = "Wrong Sample ID";
 
     private static final String DATA_LINE = "2858674662\t%s\t%s\t%s\t0\t%s\t%s\t%s\t"
             + "%s\t%s\t0.001026\t%s\t0.000041\t0.000037\t0.00003\t0.00002\t0.00001\t0.000005\t"
@@ -39,7 +39,7 @@ public class WGSMetricsExtractorTest {
             + "PCT_EXC_CAPPED\tPCT_EXC_TOTAL\tPCT_5X\tPCT_10X\tPCT_15X\tPCT_20X\tPCT_25X\tPCT_30X\tPCT_40X\t"
             + "PCT_50X\tPCT_60X\tPCT_70X\tPCT_80X\tPCT_90X\tPCT_100X";
 
-    private static final String INPUT_LINE = "# picard.analysis.CollectMultipleMetrics "
+    private static final String START_LINE = "# picard.analysis.CollectMultipleMetrics "
             + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
                     + "ASSUME_SORTED=true " + "OUTPUT=/sample/output/cancerPanel/QCStats//%s_dedup/"
                     + "%s_dedup_MultipleMetrics.txt "
@@ -58,8 +58,8 @@ public class WGSMetricsExtractorTest {
     private static final String FILLING_LINE = "bla\tbla\tbla\tbla\tbla\tbla\tbla\tbla\tbla\tbla";
     private static final String TEST_DIR = "Test";
     private static final String WRONG_DATA = "Wrong Data";
-    private static final String PATIENT_ID_R = "CPCT12345678R";
-    private static final String PATIENT_ID_T = "CPCT12345678T";
+    private static final String SAMPLE_ID_R = "CPCT12345678R";
+    private static final String SAMPLE_ID_T = "CPCT12345678T";
     private static final String COV_MEAN_R = "0.000856";
     private static final String COV_MEAN_T = "0.000756";
     private static final String COV_SD_R = "0.257469";
@@ -78,7 +78,7 @@ public class WGSMetricsExtractorTest {
     private static final String COV_OVERLAP_T = "0.030675";
     private static final String COV_TOTAL_R = "0.086479";
     private static final String COV_TOTAL_T = "0.096479";
-    private static final String SHOULD_NOT_BE_NULL = "Should Not be Null";
+    private static final String SHOULD_NOT_BE_NULL = "Should not be Null";
 
     private List<String> refLines;
     private List<String> tumLines;
@@ -90,16 +90,16 @@ public class WGSMetricsExtractorTest {
 
     @Before
     public void setUp() {
-        String inputLine = String.format(INPUT_LINE, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R, PATIENT_ID_R);
+        String startLine = String.format(START_LINE, SAMPLE_ID_R, SAMPLE_ID_R, SAMPLE_ID_R, SAMPLE_ID_R);
         final String dataLine = String.format(DATA_LINE, COV_MEAN_R, COV_SD_R, COV_MED_R, COV_MAP_Q_R, COV_DUPE_R,
                 COV_UNPAIR_R, COV_BASE_Q_R, COV_OVERLAP_R, COV_TOTAL_R);
-        refLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
+        refLines = Arrays.asList(FILLING_LINE, startLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                 dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
-        inputLine = String.format(INPUT_LINE, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T, PATIENT_ID_T);
+        startLine = String.format(START_LINE, SAMPLE_ID_T, SAMPLE_ID_T, SAMPLE_ID_T, SAMPLE_ID_T);
         final String tDataLine = String.format(DATA_LINE, COV_MEAN_T, COV_SD_T, COV_MED_T, COV_MAP_Q_T, COV_DUPE_T,
                 COV_UNPAIR_T, COV_BASE_Q_T, COV_OVERLAP_T, COV_TOTAL_T);
-        tumLines = Arrays.asList(FILLING_LINE, inputLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
+        tumLines = Arrays.asList(FILLING_LINE, startLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                 tDataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
 
         missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
@@ -208,7 +208,7 @@ public class WGSMetricsExtractorTest {
         extractor.extractFromRunDirectory(TEST_DIR);
     }
 
-    private void assertReport(@NotNull final BaseReport report) {
+    private static void assertReport(@NotNull final BaseReport report) {
         assertEquals("Report with wrong type", CheckType.COVERAGE, report.getCheckType());
         assertNotNull(SHOULD_NOT_BE_NULL, report);
         assertField(report, CoverageCheck.COVERAGE_MEAN.name(), COV_MEAN_R, COV_MEAN_T);
@@ -222,19 +222,19 @@ public class WGSMetricsExtractorTest {
         assertField(report, CoverageCheck.COVERAGE_PCT_EXC_TOTAL.name(), COV_TOTAL_R, COV_TOTAL_T);
     }
 
-    private void assertField(@NotNull final BaseReport report, @NotNull final String field,
+    private static void assertField(@NotNull final BaseReport report, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((SampleReport) report).getReferenceSample(), PATIENT_ID_R, field, refValue);
-        assertBaseData(((SampleReport) report).getTumorSample(), PATIENT_ID_T, field, tumValue);
+        assertBaseData(((SampleReport) report).getReferenceSample(), SAMPLE_ID_R, field, refValue);
+        assertBaseData(((SampleReport) report).getTumorSample(), SAMPLE_ID_T, field, tumValue);
     }
 
-    private void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String patientId,
+    private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String sampleId,
             @NotNull final String check, @NotNull final String expectedValue) {
         final Optional<BaseDataReport> value = reports.stream().filter(
                 p -> p.getCheckName().equals(check)).findFirst();
         assert value.isPresent();
 
         assertEquals(WRONG_DATA, expectedValue, value.get().getValue());
-        assertEquals(WRONG_PATIENT_ID, patientId, value.get().getSampleId());
+        assertEquals(WRONG_SAMPLE_ID, sampleId, value.get().getSampleId());
     }
 }

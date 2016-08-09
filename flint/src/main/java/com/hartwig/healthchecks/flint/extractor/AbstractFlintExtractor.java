@@ -21,8 +21,8 @@ abstract class AbstractFlintExtractor extends AbstractDataExtractor {
     private static final String BAM_EXT = "_dedup.bam";
 
     @NotNull
-    String getSampleId(@NotNull final String suffix, @NotNull final List<String> lines, @NotNull final String filter)
-            throws LineNotFoundException {
+    static String getSampleId(@NotNull final String suffix, @NotNull final List<String> lines,
+            @NotNull final String filter) throws LineNotFoundException {
         final int index = findLineIndex(suffix, lines, filter);
         final Optional<String> optValue = Arrays.stream(lines.get(index).split(SPACE)).filter(
                 line -> line.contains(filter)).map(inputLine -> {

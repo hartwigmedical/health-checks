@@ -46,7 +46,7 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
     @NotNull
     private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleType)
             throws IOException, HealthChecksException {
-        final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
+        final String suffix = sampleType + UNDERSCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
 
         final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, AL_SUM_METRICS_EXTENSION);

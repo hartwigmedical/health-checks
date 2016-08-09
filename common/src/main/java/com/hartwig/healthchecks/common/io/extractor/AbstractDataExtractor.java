@@ -27,7 +27,7 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected static final Double HUNDRED_FACTOR = 100D;
     protected static final Integer DOUBLE_SEQUENCE = 2;
     protected static final String DEDUP_SAMPLE_SUFFIX = "dedup";
-    protected static final String UNDER_SCORE = "_";
+    protected static final String UNDERSCORE = "_";
     protected static final String HASH = "#";
     protected static final String QC_STATS = "QCStats";
     protected static final String BIGGER_THAN = ">";

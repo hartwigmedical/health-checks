@@ -15,11 +15,11 @@ enum CoverageCheck {
 
     @NotNull
     private final String fieldName;
-    private final int index;
+    private final int columnIndex;
 
-    CoverageCheck(@NotNull final String fieldName, final int index) {
+    CoverageCheck(@NotNull final String fieldName, final int columnIndex) {
         this.fieldName = fieldName;
-        this.index = index;
+        this.columnIndex = columnIndex;
     }
 
     @NotNull
@@ -27,7 +27,7 @@ enum CoverageCheck {
         return fieldName;
     }
 
-    public int getIndex() {
-        return index;
+    public int getColumnIndex() {
+        return columnIndex;
     }
 }

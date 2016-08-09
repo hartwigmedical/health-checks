@@ -81,7 +81,7 @@ public class FlintAdapterTest {
     }
 
     @NotNull
-    private BaseReport getInsertSizeDummyReport() {
+    private static BaseReport getInsertSizeDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         final BaseDataReport secTestDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, TUM_VALUE);
 

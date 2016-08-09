@@ -15,11 +15,14 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class WGSMetricsExtractor extends AbstractFlintExtractor {
 
-    private static final String WGS_EXT = "dedup_WGSMetrics.txt";
+    private static final Logger LOGGER = LogManager.getLogger(WGSMetricsExtractor.class);
+    private static final String WGS_METRICS_EXTENSION = "dedup_WGSMetrics.txt";
 
     @NotNull
     private final SampleFinderAndReader reader;
@@ -41,9 +44,9 @@ public class WGSMetricsExtractor extends AbstractFlintExtractor {
     @NotNull
     private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleType)
             throws IOException, HealthChecksException {
-        final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
+        final String suffix = sampleType + UNDERSCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
-        final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, WGS_EXT);
+        final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, WGS_METRICS_EXTENSION);
         final List<String> lines = reader.readLines(samplePath);
 
         if (lines.isEmpty()) {
@@ -54,6 +57,7 @@ public class WGSMetricsExtractor extends AbstractFlintExtractor {
 
         final BaseDataReport coverageMean = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_MEAN);
         final BaseDataReport coverageMedian = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_MEDIAN);
+        final BaseDataReport coverageSD = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_SD);
         final BaseDataReport coverageBaseQ = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_PCT_EXC_BASEQ);
         final BaseDataReport coverageDupe = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_PCT_EXC_DUPE);
         final BaseDataReport coverageMapQ = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_PCT_EXC_MAPQ);
@@ -62,17 +66,17 @@ public class WGSMetricsExtractor extends AbstractFlintExtractor {
         final BaseDataReport coverageTotal = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_PCT_EXC_TOTAL);
         final BaseDataReport coverageUnpaired = getValue(lines, suffix, sampleId,
                 CoverageCheck.COVERAGE_PCT_EXC_UNPAIRED);
-        final BaseDataReport coverageSD = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_SD);
-        return Arrays.asList(coverageMean, coverageMedian, coverageBaseQ, coverageDupe, coverageMapQ, coverageOverlap,
-                coverageTotal, coverageUnpaired, coverageSD);
+
+        return Arrays.asList(coverageMean, coverageMedian, coverageSD, coverageBaseQ, coverageDupe, coverageMapQ,
+                coverageOverlap, coverageTotal, coverageUnpaired);
     }
 
     @NotNull
-    private BaseDataReport getValue(@NotNull final List<String> lines, @NotNull final String suffix,
+    private static BaseDataReport getValue(@NotNull final List<String> lines, @NotNull final String suffix,
             @NotNull final String sampleId, @NotNull final CoverageCheck check) throws LineNotFoundException {
-        final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
+        final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getColumnIndex());
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
-        logBaseDataReport(baseDataReport);
+        logBaseDataReport(LOGGER, baseDataReport);
         return baseDataReport;
     }
 }

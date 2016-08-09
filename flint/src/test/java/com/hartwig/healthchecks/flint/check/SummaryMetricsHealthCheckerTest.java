@@ -36,7 +36,7 @@ public class SummaryMetricsHealthCheckerTest {
     private static final String DUMMY_ERROR = "DUMMY_ERROR";
     private static final String WRONG_CHECK_NAME = "Wrong Check Name";
     private static final String WRONG_CHECK_STATUS = "Wrong Check status";
-    private static final String WRONG_PATIENT_ID_MSG = "Wrong Patient ID";
+    private static final String WRONG_SAMPLE_ID_MSG = "Wrong Sample ID";
     private static final String WRONG_TYPE_MSG = "Report with wrong type";
     private static final String DUMMY_ID = "DUMMY_ID";
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
@@ -129,7 +129,7 @@ public class SummaryMetricsHealthCheckerTest {
                 Collections.singletonList(secTestDataReport));
     }
 
-    private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String patientId,
+    private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String sampleId,
             @NotNull final String check, @NotNull final String expectedValue) {
         final Optional<BaseDataReport> value = reports.stream().filter(
                 p -> p.getCheckName().equals(check)).findFirst();
@@ -137,6 +137,6 @@ public class SummaryMetricsHealthCheckerTest {
 
         assertEquals(WRONG_CHECK_NAME, check, value.get().getCheckName());
         assertEquals(WRONG_CHECK_STATUS, expectedValue, value.get().getValue());
-        assertEquals(WRONG_PATIENT_ID_MSG, patientId, value.get().getSampleId());
+        assertEquals(WRONG_SAMPLE_ID_MSG, sampleId, value.get().getSampleId());
     }
 }
