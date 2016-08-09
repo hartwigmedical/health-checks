@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
 import com.hartwig.healthchecks.boggs.extractor.MappingCheck;
@@ -46,10 +47,8 @@ public class MappingExtractorTest {
 
     @Mocked
     private ZipFilesReader zipFileReader;
-
     @Mocked
     private FlagStatParser flagstatParser;
-
     @Mocked
     private SamplePathFinder samplePathFinder;
 
@@ -170,8 +169,11 @@ public class MappingExtractorTest {
     @NotNull
     private static BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
             @NotNull final MappingCheck check) {
-        return mapping.stream().filter(
-                baseDataReport -> baseDataReport.getCheckName().equals(check.getDescription())).findFirst().get();
+        Optional<BaseDataReport> report = mapping.stream().filter(
+                baseDataReport -> baseDataReport.getCheckName().equals(check.getDescription())).findFirst();
+
+        assert report.isPresent();
+        return report.get();
     }
 
     private static void assetMappingData(@NotNull final List<BaseDataReport> mapping) {
@@ -187,7 +189,7 @@ public class MappingExtractorTest {
         final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_SINGLETON);
         assertEquals("55.0", singletonData.getValue());
 
-        final BaseDataReport duplicateData = extractReportData(mapping, MappingCheck.MAPPING_DUPLIVATES);
+        final BaseDataReport duplicateData = extractReportData(mapping, MappingCheck.MAPPING_DUPLICATES);
         assertEquals("5.95", duplicateData.getValue());
 
         final BaseDataReport isAllRead = extractReportData(mapping, MappingCheck.MAPPING_IS_ALL_READ);

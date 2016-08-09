@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
 import java.util.List;
-
-import org.junit.Test;
+import java.util.Optional;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 public class SambambaFlagStatParserTest {
 
@@ -44,14 +46,16 @@ public class SambambaFlagStatParserTest {
         parser.parse("bla/CPCT12345678R/mapping/", "realign");
     }
 
-    private void assertFlagStatData(final List<FlagStats> flagStat, final int size, final double expectedTotalIndex) {
+    private static void assertFlagStatData(@NotNull final List<FlagStats> flagStat, final int size,
+            final double expectedTotalIndex) {
         assertEquals(DID_NOT_GET_THE_EXPECTED_VALUE, size, flagStat.size());
 
-        final FlagStats passedFlagStat = flagStat.stream()
-                        .filter(flagStats -> flagStats.getFlagStatsType() == FlagStatsType.TOTAL_INDEX).findFirst()
-                        .get();
+        final Optional<FlagStats> passedFlagStat = flagStat.stream().filter(
+                flagStats -> flagStats.getFlagStatsType() == FlagStatsType.TOTAL_INDEX).findFirst();
 
-        assertNotNull(passedFlagStat);
-        assertEquals(expectedTotalIndex, passedFlagStat.getValue(), 0.0d);
+        assert passedFlagStat.isPresent();
+
+        assertNotNull(passedFlagStat.get());
+        assertEquals(expectedTotalIndex, passedFlagStat.get().getValue(), 0.0d);
     }
 }

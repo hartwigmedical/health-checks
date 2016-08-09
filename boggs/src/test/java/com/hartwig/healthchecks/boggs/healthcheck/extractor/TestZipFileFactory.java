@@ -1,9 +1,10 @@
 package com.hartwig.healthchecks.boggs.healthcheck.extractor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class TestZipFileFactory {
+final class TestZipFileFactory {
 
     public static List<String> getSummaryLines(final String lane, final String suffix, final String perTSQStatus,
                     final String seqLengthStatus, final String duplicationLevelStatus) {
@@ -27,7 +28,7 @@ public class TestZipFileFactory {
         return Arrays.asList(lines);
     }
 
-    public static List<String> getFastqLines() {
-        return Arrays.asList("Total Sequences\t8951");
+    static List<String> getFastqLines() {
+        return Collections.singletonList("Total Sequences\t8951");
     }
 }

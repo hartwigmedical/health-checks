@@ -6,7 +6,7 @@ public enum MappingCheck {
 
     MAPPING_TOTAL("in total"),
     MAPPING_SECONDARY("secondary"),
-    MAPPING_DUPLIVATES("duplicates"),
+    MAPPING_DUPLICATES("duplicates"),
     MAPPING_MAPPED("mapped"),
     MAPPING_PROPERLY_PAIRED("properly paired"),
     MAPPING_MATE_MAPPED_DIFFERENT_CHR("with mate mapped to a different chr"),

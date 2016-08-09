@@ -8,7 +8,6 @@ public class FlagStatData {
 
     @NotNull
     private final List<FlagStats> passedStats;
-
     @NotNull
     private final List<FlagStats> failedStats;
 
@@ -23,7 +22,7 @@ public class FlagStatData {
     }
 
     @NotNull
-    public List<FlagStats> getFailedStats() {
+    List<FlagStats> getFailedStats() {
         return failedStats;
     }
 }

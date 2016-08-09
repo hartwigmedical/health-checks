@@ -52,6 +52,13 @@ public abstract class AbstractDataExtractor implements DataExtractor {
                 baseDataReport.getValue()));
     }
 
+    protected static void logBaseDataReports(@NotNull final Logger logger,
+            @NotNull final List<BaseDataReport> baseDataReports) {
+        for (BaseDataReport report : baseDataReports) {
+            logBaseDataReport(logger, report);
+        }
+    }
+
     protected static void logBaseDataReport(@NotNull final Logger logger,
             @NotNull final BaseDataReport baseDataReport) {
         logger.info(String.format(LOG_MSG, baseDataReport.getCheckName(), baseDataReport.getSampleId(),

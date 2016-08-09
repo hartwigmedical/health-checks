@@ -19,8 +19,7 @@ public abstract class AbstractTotalSequenceExtractor extends AbstractDataExtract
 
     private static final String TOTAL_SEQUENCES = "Total Sequences";
 
-    @NotNull
-    protected Long sumOfTotalSequences(@NotNull final Path path, final ZipFilesReader zipFileReader)
+    protected static long sumOfTotalSequences(@NotNull final Path path, @NotNull final ZipFilesReader zipFileReader)
             throws IOException {
         final Path fastqcDataPath = new File(path + File.separator + QC_STATS + File.separator).toPath();
         final List<String> allLines = zipFileReader.readFieldFromZipFiles(fastqcDataPath, FASTQC_DATA_FILE_NAME,

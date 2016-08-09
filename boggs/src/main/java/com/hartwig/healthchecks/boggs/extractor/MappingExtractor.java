@@ -20,20 +20,21 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
-    private static final Long MILLIS_FACTOR = 10000L;
+    private static final Logger LOGGER = LogManager.getLogger(MappingExtractor.class);
 
+    private static final Long MILLIS_FACTOR = 10000L;
     private static final String REALIGN = ".realign";
 
     @NotNull
     private final FlagStatParser flagstatParser;
-
     @NotNull
     private final ZipFilesReader zipFileReader;
-
     @NotNull
     private final SamplePathFinder samplePathFinder;
 
@@ -60,11 +61,11 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
                     @NotNull final String suffix) throws IOException, EmptyFileException {
         final Path sampleFile = samplePathFinder.findPath(runDirectory, prefix, suffix);
 
-        final String patientId = sampleFile.getFileName().toString();
+        final String sampleId = sampleFile.getFileName().toString();
         final Long totalSequences = sumOfTotalSequences(sampleFile, zipFileReader);
-        final List<BaseDataReport> mappingChecks = getFlagStatsData(patientId, sampleFile, totalSequences.toString());
+        final List<BaseDataReport> mappingChecks = getFlagStatsData(sampleId, sampleFile, totalSequences.toString());
 
-        logBaseDataReports(mappingChecks);
+        logBaseDataReports(LOGGER, mappingChecks);
         return mappingChecks;
     }
 
@@ -101,7 +102,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private BaseDataReport generateMappedDataReport(@NotNull final String sampleId,
+    private static BaseDataReport generateMappedDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
@@ -114,7 +115,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private BaseDataReport generateProperDataReport(@NotNull final String sampleId,
+    private static BaseDataReport generateProperDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats properPaired = passed.get(FlagStatsType.PROPERLY_PAIRED_INDEX.getIndex());
@@ -128,7 +129,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private BaseDataReport generateSingletonDataReport(@NotNull final String sampleId,
+    private static BaseDataReport generateSingletonDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGLETONS_INDEX.getIndex());
         final double singletonPercentage = singletonStat.getValue();
@@ -138,7 +139,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private BaseDataReport generateMateMappedDataReport(@NotNull final String sampleId,
+    private static BaseDataReport generateMateMappedDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
         final double mateMappedDiffChrPerc = diffPercStat.getValue();
@@ -149,7 +150,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private BaseDataReport generateDuplicateDataReport(@NotNull final String sampleId,
+    private static BaseDataReport generateDuplicateDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats duplicateStat = passed.get(FlagStatsType.DUPLICATES_INDEX.getIndex());
@@ -157,12 +158,12 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final double proportionOfDuplicateRead = toPercentage(
                         duplicateStatCalc.calculate(duplicateStat.getValue(), totalStat.getValue()));
 
-        return new BaseDataReport(sampleId,
-                        MappingCheck.MAPPING_DUPLIVATES.getDescription(), String.valueOf(proportionOfDuplicateRead));
+        return new BaseDataReport(sampleId, MappingCheck.MAPPING_DUPLICATES.getDescription(),
+                String.valueOf(proportionOfDuplicateRead));
     }
 
     @NotNull
-    private BaseDataReport generateIsAllReadDataReport(@NotNull final String sampleId,
+    private static BaseDataReport generateIsAllReadDataReport(@NotNull final String sampleId,
                     @NotNull final String totalSequences, @NotNull final List<FlagStats> passed) {
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats secondaryStat = passed.get(FlagStatsType.SECONDARY_INDEX.getIndex());

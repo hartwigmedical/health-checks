@@ -27,13 +27,9 @@ import mockit.Mocked;
 public class MappingHealthCheckerTest {
 
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
-
     private static final String DUMMY_ERROR = "DUMMY_ERROR";
-
     private static final String WRONG_ERROR_MESSAGE = "Wrong Error Message";
-
     private static final String WRONG_ERROR = "Wrong Error";
-
     private static final String WRONG_TYPE_MSG = "Report with wrong type";
 
     @Mocked
@@ -41,7 +37,6 @@ public class MappingHealthCheckerTest {
 
     @Test
     public void verifyMappingHealthChecker() throws IOException, HealthChecksException {
-
         new Expectations() {
 
             {
@@ -62,7 +57,6 @@ public class MappingHealthCheckerTest {
     @Test
     public void verifyMappingHealthCheckerIOException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new IOException(DUMMY_ERROR);
@@ -82,7 +76,6 @@ public class MappingHealthCheckerTest {
     @Test
     public void verifyMappingHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new EmptyFileException(DUMMY_ERROR, "DUMMYPATH");
@@ -110,7 +103,7 @@ public class MappingHealthCheckerTest {
         final BaseDataReport mappedData = new BaseDataReport("Dummy", MappingCheck.MAPPING_MAPPED.getDescription(),
                         "0.0");
         final BaseDataReport duplicateData = new BaseDataReport("Dummy",
-                        MappingCheck.MAPPING_DUPLIVATES.getDescription(), "0.0");
+                MappingCheck.MAPPING_DUPLICATES.getDescription(), "0.0");
         final BaseDataReport properlyData = new BaseDataReport("Dummy",
                         MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(), "0.0");
 

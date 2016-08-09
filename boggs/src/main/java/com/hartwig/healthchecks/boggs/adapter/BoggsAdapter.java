@@ -1,7 +1,5 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
@@ -16,12 +14,13 @@ import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 
+import org.jetbrains.annotations.NotNull;
+
 @ResourceWrapper(type = CheckCategory.BOGGS)
 public class BoggsAdapter extends AbstractHealthCheckAdapter {
 
     @Override
     public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
-
         final HealthCheckReportFactory healthCheckReportFactory = attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 

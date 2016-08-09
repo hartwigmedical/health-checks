@@ -2,22 +2,25 @@ package com.hartwig.healthchecks.boggs.flagstatreader;
 
 import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
 
+import org.jetbrains.annotations.NotNull;
+
 public class FlagStats {
 
+    @NotNull
     private final FlagStatsType flagStatsType;
+    private final double value;
 
-    private final Double value;
-
-    public FlagStats(final FlagStatsType flagStatsType, final Double value) {
+    public FlagStats(@NotNull final FlagStatsType flagStatsType, final double value) {
         this.flagStatsType = flagStatsType;
         this.value = value;
     }
 
-    public FlagStatsType getFlagStatsType() {
+    @NotNull
+    FlagStatsType getFlagStatsType() {
         return flagStatsType;
     }
 
-    public Double getValue() {
+    public double getValue() {
         return value;
     }
 }

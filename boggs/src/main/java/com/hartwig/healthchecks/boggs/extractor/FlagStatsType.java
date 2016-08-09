@@ -3,11 +3,11 @@ package com.hartwig.healthchecks.boggs.extractor;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.function.Calculable;
 import com.hartwig.healthchecks.common.function.DivisionOperator;
 import com.hartwig.healthchecks.common.function.SingleValue;
+
+import org.jetbrains.annotations.NotNull;
 
 public enum FlagStatsType {
 
@@ -26,9 +26,9 @@ public enum FlagStatsType {
     MATE_MAP_DIF_CHR_Q5_INDEX(12, SingleValue.apply(), SingleValue.class);
 
     private final int index;
-
+    @NotNull
     private final Calculable calculable;
-
+    @NotNull
     private final Class calculableClass;
 
     FlagStatsType(final int index, @NotNull final Calculable calculable, @NotNull final Class calculableClass) {
@@ -37,6 +37,7 @@ public enum FlagStatsType {
         this.calculableClass = calculableClass;
     }
 
+    @NotNull
     public static Optional<FlagStatsType> getByIndex(final int index) {
         return Arrays.stream(FlagStatsType.values()).filter(type -> type.getIndex() == index).findFirst();
     }
