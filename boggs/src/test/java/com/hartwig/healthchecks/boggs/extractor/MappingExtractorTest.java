@@ -52,7 +52,7 @@ public class MappingExtractorTest {
 
     @Before
     public void setUp() {
-        fastqLines = Collections.singletonList("Total Sequences\t8951");
+        fastqLines = Collections.singletonList("Total Sequences\t20000");
         emptyList = new ArrayList<>();
     }
 
@@ -85,10 +85,10 @@ public class MappingExtractorTest {
         assertEquals("Report with wrong type", CheckType.MAPPING, mappingReport.getCheckType());
 
         final List<BaseDataReport> referenceSample = ((SampleReport) mappingReport).getReferenceSample();
-        assetMappingData(referenceSample);
+        assertMappingData(referenceSample);
 
         final List<BaseDataReport> tumorSample = ((SampleReport) mappingReport).getTumorSample();
-        assetMappingData(tumorSample);
+        assertMappingData(tumorSample);
     }
 
     @Test(expected = NoSuchFileException.class)
@@ -174,7 +174,7 @@ public class MappingExtractorTest {
         return report.get();
     }
 
-    private static void assetMappingData(@NotNull final List<BaseDataReport> mapping) {
+    private static void assertMappingData(@NotNull final List<BaseDataReport> mapping) {
         final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
         assertEquals("99.69", mappedData.getValue());
 
@@ -193,8 +193,9 @@ public class MappingExtractorTest {
                 MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
         assertEquals("5.95", duplicateData.getValue());
 
-        final BaseDataReport isAllRead = extractReportData(mapping, MappingCheck.MAPPING_OUTPUT_COMPLETE);
-        assertEquals("false", isAllRead.getValue());
+        final BaseDataReport proportionRead = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
+        assertEquals("89.8", proportionRead.getValue());
     }
 
     @NotNull

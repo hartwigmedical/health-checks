@@ -14,13 +14,12 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractTotalSequenceExtractor extends AbstractDataExtractor {
 
     protected static final String QC_STATS = "QCStats";
-    protected static final String MAPPING = "mapping";
     protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
 
     private static final String TOTAL_SEQUENCES = "Total Sequences";
 
-    protected static long sumOfTotalSequences(@NotNull final Path path, @NotNull final ZipFilesReader zipFileReader)
-            throws IOException {
+    protected static long sumOfTotalSequencesFromFastQC(@NotNull final Path path,
+            @NotNull final ZipFilesReader zipFileReader) throws IOException {
         final Path fastqcDataPath = new File(path + File.separator + QC_STATS + File.separator).toPath();
         final List<String> allLines = zipFileReader.readFieldFromZipFiles(fastqcDataPath, FASTQC_DATA_FILE_NAME,
                 TOTAL_SEQUENCES);

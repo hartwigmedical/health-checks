@@ -43,7 +43,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     private final SamplePathFinder samplePathFinder;
 
     public PrestatsExtractor(@NotNull final ZipFilesReader zipFileReader,
-                    @NotNull final SamplePathFinder samplePathFinder) {
+            @NotNull final SamplePathFinder samplePathFinder) {
         super();
         this.zipFileReader = zipFileReader;
         this.samplePathFinder = samplePathFinder;
@@ -52,7 +52,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     @Override
     @NotNull
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
-                    throws IOException, HealthChecksException {
+            throws IOException, HealthChecksException {
         final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
         return new SampleReport(CheckType.PRESTATS, refSampleData, tumorSampleData);
@@ -60,7 +60,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
     @NotNull
     private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
-                    @NotNull final String suffix) throws IOException, EmptyFileException {
+            @NotNull final String suffix) throws IOException, EmptyFileException {
         final Path samplePath = samplePathFinder.findPath(runDirectory, prefix, suffix);
         final String sampleId = samplePath.getFileName().toString();
         final List<BaseDataReport> sampleData = extractSummaryData(samplePath, sampleId);
@@ -72,13 +72,13 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
     @NotNull
     private List<BaseDataReport> extractSummaryData(@NotNull final Path samplePath, @NotNull final String sampleId)
-                    throws IOException, EmptyFileException {
+            throws IOException, EmptyFileException {
         final Path path = new File(samplePath + File.separator + QC_STATS + File.separator).toPath();
         final List<String> allLines = zipFileReader.readAllLinesFromZips(path, SUMMARY_FILE_NAME);
         final Map<String, List<BaseDataReport>> data = getSummaryData(allLines, sampleId);
-        final List<BaseDataReport> prestatsDataReports = data.values().stream().map(prestatsDataReportList -> {
-            return prestatsDataReportList.stream().min(isStatusWorse()).get();
-        }).collect(toList());
+        final List<BaseDataReport> prestatsDataReports = data.values().stream().map(
+                prestatsDataReportList -> prestatsDataReportList.stream().min(isStatusWorse()).get()).collect(
+                toList());
         if (prestatsDataReports == null || prestatsDataReports.isEmpty()) {
             LOGGER.error(String.format(EMPTY_FILES_ERROR, SUMMARY_FILE_NAME, path));
             throw new EmptyFileException(SUMMARY_FILE_NAME, path.toString());
@@ -122,8 +122,8 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
     @NotNull
     private BaseDataReport extractFastqData(@NotNull final Path pathToCheck, @NotNull final String sampleId)
-                    throws IOException, EmptyFileException {
-        final Long totalSequences = sumOfTotalSequences(pathToCheck, zipFileReader);
+            throws IOException, EmptyFileException {
+        final long totalSequences = sumOfTotalSequencesFromFastQC(pathToCheck, zipFileReader);
         if (totalSequences == ZERO_DOUBLE_VALUE) {
             throw new EmptyFileException(FASTQC_DATA_FILE_NAME, pathToCheck.toString());
         }
