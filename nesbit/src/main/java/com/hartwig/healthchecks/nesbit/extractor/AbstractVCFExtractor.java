@@ -10,49 +10,48 @@ import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
-public abstract class AbstractVCFExtractor extends AbstractDataExtractor {
+import org.jetbrains.annotations.NotNull;
 
-    protected static final int PATIENT_TUM_INDEX = 10;
+abstract class AbstractVCFExtractor extends AbstractDataExtractor {
 
-    protected static final int PATIENT_REF_INDEX = 9;
+    static final int PATIENT_TUM_INDEX = 10;
+    static final int PATIENT_REF_INDEX = 9;
+    static final int INFO_INDEX = 7;
+    static final int ALT_INDEX = 4;
+    static final int REF_INDEX = 3;
 
-    protected static final int INFO_INDEX = 7;
+    private final String[] neededHeaders = { "FILTER", "REF", "ALT", "INFO", "(CPCT)(\\d+)(T)" };
+    private final String[] neededHeadersVariants = { "(CPCT)(\\d+)(R)" };
 
-    protected static final int ALT_INDEX = 4;
-
-    protected static final int REF_INDEX = 3;
-
-    private final String[] neededHeaders = {"FILTER", "REF", "ALT", "INFO", "(CPCT)(\\d+)(T)"};
-
-    private final String[] neededHeadersVariants = {"(CPCT)(\\d+)(R)"};
-
-    protected String[] getHeaders(final List<String> lines, final String extension, final boolean isGermlineCheck)
-                    throws LineNotFoundException, HeaderNotFoundException {
+    @NotNull
+    String[] getHeaders(@NotNull final List<String> lines, @NotNull final String extension,
+            final boolean isGermlineCheck) throws LineNotFoundException, HeaderNotFoundException {
         final String[] headers = lines.get(ZERO).split(SEPARATOR_REGEX);
 
         List<String> expectedHeaders = Arrays.stream(neededHeaders).collect(Collectors.toList());
         if (isGermlineCheck) {
-            expectedHeaders = Stream.concat(Arrays.stream(neededHeaders), Arrays.stream(neededHeadersVariants))
-                            .collect(Collectors.toList());
+            expectedHeaders = Stream.concat(Arrays.stream(neededHeaders),
+                    Arrays.stream(neededHeadersVariants)).collect(Collectors.toList());
         }
-        final List<String> validation = expectedHeaders.stream()
-                        .filter(expectedHeader -> Arrays.stream(headers)
-                                        .filter(header -> header.matches(expectedHeader)).count() < ONE)
-                        .collect(Collectors.toList());
+        final List<String> validation = expectedHeaders.stream().filter(
+                expectedHeader -> Arrays.stream(headers).filter(header -> header.matches(expectedHeader)).count()
+                        < ONE).collect(Collectors.toList());
         if (!validation.isEmpty()) {
-            final String missingHeaders = validation.stream().map(Object::toString)
-                            .collect(Collectors.joining(COMMA_DELIMITER));
+            final String missingHeaders = validation.stream().map(Object::toString).collect(
+                    Collectors.joining(COMMA_DELIMITER));
             throw new HeaderNotFoundException(String.format(HEADER_NOT_FOUND_ERROR, extension, missingHeaders));
         }
         return headers;
     }
 
-    protected String getPatientIdFromHeader(final String[] headers, final String suffix) {
-        return Arrays.stream(headers).filter(header -> header.startsWith(SAMPLE_PREFIX) && header.endsWith(suffix))
-                        .findFirst().get();
+    @NotNull
+    static String getSampleIdFromHeader(@NotNull final String[] headers, @NotNull final String suffix) {
+        return Arrays.stream(headers).filter(
+                header -> header.startsWith(SAMPLE_PREFIX) && header.endsWith(suffix)).findFirst().get();
     }
 
-    protected VCFType getVCFType(final String ref, final String alt) {
+    @NotNull
+    static VCFType getVCFType(@NotNull final String ref, @NotNull final String alt) {
         VCFType type = VCFType.INDELS;
         if (ref.length() == alt.length()) {
             type = VCFType.SNP;

@@ -8,10 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -21,6 +17,10 @@ import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Before;
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -191,6 +191,6 @@ public class SummaryMetricsExtractorTest {
         assert value.isPresent();
 
         assertEquals(WRONG_DATA, expectedValue, value.get().getValue());
-        assertEquals(WRONG_PATIENT_ID, patientId, value.get().getPatientId());
+        assertEquals(WRONG_PATIENT_ID, patientId, value.get().getSampleId());
     }
 }

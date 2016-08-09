@@ -10,9 +10,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -21,6 +18,9 @@ import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -190,8 +190,8 @@ public class PrestatsExtractorTest {
                     final String expectedStatus, final String expectedPatientId) {
         final String actualStatus = sampleData.stream().filter(p -> p.getCheckName().equals(check)).findFirst().get()
                         .getValue();
-        final String externalId = sampleData.stream().filter(p -> p.getCheckName().equals(check)).findFirst().get()
-                        .getPatientId();
+        final String externalId = sampleData.stream().filter(
+                p -> p.getCheckName().equals(check)).findFirst().get().getSampleId();
         assertEquals(WRONG_PATIENT_ID_MSG, expectedPatientId, externalId);
         assertEquals(WRONG_CHECK_VALUE_MSG, expectedStatus, actualStatus);
     }

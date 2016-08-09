@@ -53,25 +53,25 @@ public class RealignerExtractor extends AbstractDataExtractor {
     }
 
     @NotNull
-    private List<BaseDataReport> getSampleData(final String runDirectory, final String sampleType)
+    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleType)
             throws IOException, HealthChecksException {
         final String suffix = sampleType + UNDER_SCORE + DEDUP_SAMPLE_SUFFIX;
         final String path = runDirectory + File.separator + QC_STATS;
         final Path pathFound = samplePathFinder.findPath(path, SAMPLE_PREFIX, suffix);
 
-        final String patientId = pathFound.toString().substring(pathFound.toString().lastIndexOf("/") + ONE,
+        final String sampleId = pathFound.toString().substring(pathFound.toString().lastIndexOf("/") + ONE,
                 pathFound.toString().lastIndexOf("_dedup"));
 
         final long diffCount = getDiffCount(runDirectory, suffix, path);
         final long mappedValue = getMappedValue(runDirectory, suffix, path);
         final String value = new DecimalFormat(DECIMAL_PRECISION).format((double) diffCount / mappedValue);
-        final BaseDataReport baseDataReport = new BaseDataReport(patientId, MAP_REALIGN_CHAN_ALIGN, value);
+        final BaseDataReport baseDataReport = new BaseDataReport(sampleId, MAP_REALIGN_CHAN_ALIGN, value);
         logBaseDataReport(baseDataReport);
         return Collections.singletonList(baseDataReport);
     }
 
-    private long getMappedValue(final String runDirectory, final String suffix, final String path)
-            throws IOException, HealthChecksException {
+    private long getMappedValue(@NotNull final String runDirectory, @NotNull final String suffix,
+            @NotNull final String path) throws IOException, HealthChecksException {
         final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, SLICED_EXT);
 
         final List<String> lines = reader.readLines(samplePath);
@@ -91,8 +91,8 @@ public class RealignerExtractor extends AbstractDataExtractor {
         return Long.valueOf(mappedValue.trim());
     }
 
-    private long getDiffCount(final String runDirectory, final String suffix, final String path)
-            throws IOException, HealthChecksException {
+    private long getDiffCount(@NotNull final String runDirectory, @NotNull final String suffix,
+            @NotNull final String path) throws IOException, HealthChecksException {
         final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, BAM_DIFF_EXT);
         final List<String> lines = reader.readLines(samplePath);
         if (lines.isEmpty()) {

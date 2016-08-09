@@ -10,6 +10,7 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import mockit.Mock;
@@ -18,20 +19,14 @@ import mockit.MockUp;
 public class RozAdapterTest {
 
     private static final String DUMMY_VALUE = "1.0d";
-
     private static final String DUMMY_CHECK = "DUMMY_CHECK";
-
     private static final String DUMMY_ID = "DUMMY_ID";
-
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
-
     private static final String DUMMY_REPORT = "DummyReport";
 
     @Test
     public void verifyAdapterRunning() {
-
         new MockUp<HealthCheckerImpl>() {
-
             @Mock
             void $init(final CheckType checkType, final String runDir, final DataExtractor extractor) {
                 assertEquals(checkType, CheckType.SLICED);
@@ -47,7 +42,8 @@ public class RozAdapterTest {
         adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
     }
 
-    private BaseReport getBaseDummyReport() {
+    @NotNull
+    private static BaseReport getBaseDummyReport() {
         final BaseDataReport baseDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
         return new PatientReport(CheckType.SLICED, baseDataReport);
     }

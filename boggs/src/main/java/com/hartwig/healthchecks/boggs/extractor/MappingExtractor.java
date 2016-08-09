@@ -6,8 +6,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
@@ -21,6 +19,8 @@ import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
+
+import org.jetbrains.annotations.NotNull;
 
 public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
@@ -68,9 +68,8 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         return mappingChecks;
     }
 
-    private List<BaseDataReport> getFlagStatsData(@NotNull final String patientId, @NotNull final Path runDirPath,
+    private List<BaseDataReport> getFlagStatsData(@NotNull final String sampleId, @NotNull final Path runDirPath,
                     @NotNull final String totalSequences) throws IOException, EmptyFileException {
-
         final FlagStatData flagstatData = flagstatParser.parse(runDirPath + File.separator + MAPPING + File.separator,
                         REALIGN);
         // KODU: Flagstat data can be null!
@@ -80,103 +79,97 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final List<BaseDataReport> mappingDataReports = new ArrayList<>();
         final List<FlagStats> passed = flagstatData.getPassedStats();
 
-        final BaseDataReport mappedDataReport = generateMappedDataReport(patientId, passed);
+        final BaseDataReport mappedDataReport = generateMappedDataReport(sampleId, passed);
         mappingDataReports.add(mappedDataReport);
 
-        final BaseDataReport properDataReport = generateProperDataReport(patientId, passed);
+        final BaseDataReport properDataReport = generateProperDataReport(sampleId, passed);
         mappingDataReports.add(properDataReport);
 
-        final BaseDataReport singletonDataReport = generateSingletonDataReport(patientId, passed);
+        final BaseDataReport singletonDataReport = generateSingletonDataReport(sampleId, passed);
         mappingDataReports.add(singletonDataReport);
 
-        final BaseDataReport mateMappedDataReport = generateMateMappedDataReport(patientId, passed);
+        final BaseDataReport mateMappedDataReport = generateMateMappedDataReport(sampleId, passed);
         mappingDataReports.add(mateMappedDataReport);
 
-        final BaseDataReport duplicateDataReport = generateDuplicateDataReport(patientId, passed);
+        final BaseDataReport duplicateDataReport = generateDuplicateDataReport(sampleId, passed);
         mappingDataReports.add(duplicateDataReport);
 
-        final BaseDataReport isAllReadDataReport = generateIsAllReadDataReport(patientId, totalSequences, passed);
+        final BaseDataReport isAllReadDataReport = generateIsAllReadDataReport(sampleId, totalSequences, passed);
         mappingDataReports.add(isAllReadDataReport);
 
         return mappingDataReports;
     }
 
     @NotNull
-    private BaseDataReport generateMappedDataReport(@NotNull final String patientId,
+    private BaseDataReport generateMappedDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
-
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final DivisionOperator mappedStatCalc = FlagStatsType.MAPPED_INDEX.getCalculableInstance();
         final double mappedPercentage = toPercentage(
                         mappedStatCalc.calculate(mappedStat.getValue(), totalStat.getValue()));
 
-        return new BaseDataReport(patientId,
+        return new BaseDataReport(sampleId,
                         MappingCheck.MAPPING_MAPPED.getDescription(), String.valueOf(mappedPercentage));
     }
 
     @NotNull
-    private BaseDataReport generateProperDataReport(@NotNull final String patientId,
+    private BaseDataReport generateProperDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
-
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats properPaired = passed.get(FlagStatsType.PROPERLY_PAIRED_INDEX.getIndex());
         final DivisionOperator properStatCalc = FlagStatsType.PROPERLY_PAIRED_INDEX.getCalculableInstance();
         final double properlyPairedPercentage = toPercentage(
                         properStatCalc.calculate(properPaired.getValue(), mappedStat.getValue()));
 
-        return new BaseDataReport(patientId,
+        return new BaseDataReport(sampleId,
                         MappingCheck.MAPPING_PROPERLY_PAIRED.getDescription(),
                         String.valueOf(properlyPairedPercentage));
     }
 
     @NotNull
-    private BaseDataReport generateSingletonDataReport(@NotNull final String patientId,
+    private BaseDataReport generateSingletonDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
-
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGLETONS_INDEX.getIndex());
         final double singletonPercentage = singletonStat.getValue();
 
-        return new BaseDataReport(patientId,
+        return new BaseDataReport(sampleId,
                         MappingCheck.MAPPING_SINGLETON.getDescription(), String.valueOf(singletonPercentage));
     }
 
     @NotNull
-    private BaseDataReport generateMateMappedDataReport(@NotNull final String patientId,
+    private BaseDataReport generateMateMappedDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
-
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
         final double mateMappedDiffChrPerc = diffPercStat.getValue();
 
-        return new BaseDataReport(patientId,
+        return new BaseDataReport(sampleId,
                         MappingCheck.MAPPING_MATE_MAPPED_DIFFERENT_CHR.getDescription(),
                         String.valueOf(mateMappedDiffChrPerc));
     }
 
     @NotNull
-    private BaseDataReport generateDuplicateDataReport(@NotNull final String patientId,
+    private BaseDataReport generateDuplicateDataReport(@NotNull final String sampleId,
                     @NotNull final List<FlagStats> passed) {
-
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats duplicateStat = passed.get(FlagStatsType.DUPLICATES_INDEX.getIndex());
         final DivisionOperator duplicateStatCalc = FlagStatsType.DUPLICATES_INDEX.getCalculableInstance();
         final double proportionOfDuplicateRead = toPercentage(
                         duplicateStatCalc.calculate(duplicateStat.getValue(), totalStat.getValue()));
 
-        return new BaseDataReport(patientId,
+        return new BaseDataReport(sampleId,
                         MappingCheck.MAPPING_DUPLIVATES.getDescription(), String.valueOf(proportionOfDuplicateRead));
     }
 
     @NotNull
-    private BaseDataReport generateIsAllReadDataReport(@NotNull final String patientId,
+    private BaseDataReport generateIsAllReadDataReport(@NotNull final String sampleId,
                     @NotNull final String totalSequences, @NotNull final List<FlagStats> passed) {
-
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats secondaryStat = passed.get(FlagStatsType.SECONDARY_INDEX.getIndex());
         final boolean isAllReadsPresent = totalStat.getValue() == Double.parseDouble(totalSequences) * DOUBLE_SEQUENCE
                         + secondaryStat.getValue();
 
-        return new BaseDataReport(patientId,
+        return new BaseDataReport(sampleId,
                         MappingCheck.MAPPING_IS_ALL_READ.getDescription(), String.valueOf(isAllReadsPresent));
     }
 

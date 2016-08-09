@@ -1,8 +1,6 @@
 package com.hartwig.healthchecks.boggs.adapter;
 
-import java.util.Arrays;
-
-import org.junit.Test;
+import java.util.Collections;
 
 import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
@@ -14,6 +12,9 @@ import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
+
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
 import mockit.Verifications;
@@ -21,21 +22,15 @@ import mockit.Verifications;
 public class BoggsAdapterTest {
 
     private static final String DUMMY_VALUE = "1.0d";
-
     private static final String DUMMY_CHECK = "DUMMY_CHECK";
-
     private static final String DUMMY_ID = "DUMMY_ID";
-
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
-
     private static final String DUMMY_REPORT = "DummyReport";
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl mapping, @Mocked final Report report,
                     @Mocked final HealthCheckReportFactory factory, @Mocked final AbstractHealthCheckAdapter mock) {
-
         new NonStrictExpectations() {
-
             {
                 AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
                 result = factory;
@@ -57,7 +52,6 @@ public class BoggsAdapterTest {
         adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
 
         new Verifications() {
-
             {
                 report.addReportData((BaseReport) any);
                 times = 1;
@@ -65,9 +59,10 @@ public class BoggsAdapterTest {
         };
     }
 
-    private SampleReport getDummyMappingReport() {
+    @NotNull
+    private static SampleReport getDummyMappingReport() {
         final BaseDataReport mappingDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
-        return new SampleReport(CheckType.MAPPING, Arrays.asList(mappingDataReport), Arrays.asList(mappingDataReport));
+        return new SampleReport(CheckType.MAPPING, Collections.singletonList(mappingDataReport),
+                Collections.singletonList(mappingDataReport));
     }
-
 }

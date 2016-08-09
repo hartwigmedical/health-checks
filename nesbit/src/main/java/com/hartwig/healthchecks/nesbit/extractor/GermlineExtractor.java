@@ -46,17 +46,19 @@ public class GermlineExtractor extends AbstractVCFExtractor {
         return new SampleReport(CheckType.GERMLINE, refData, tumData);
     }
 
-    private List<BaseDataReport> getSampleData(final List<String> headerLines, final List<String> lines,
-            final String suffix) throws IOException, HealthChecksException {
+    @NotNull
+    private List<BaseDataReport> getSampleData(@NotNull final List<String> headerLines,
+            @NotNull final List<String> lines, @NotNull final String suffix)
+            throws IOException, HealthChecksException {
         final String[] headers = getHeaders(headerLines, EXT, Boolean.TRUE);
-        final String patientId = getPatientIdFromHeader(headers, suffix);
+        final String sampleId = getSampleIdFromHeader(headers, suffix);
         boolean isRef = Boolean.TRUE;
         if (suffix.equals(TUM_SAMPLE_SUFFIX)) {
             isRef = Boolean.FALSE;
         }
         final List<VCFGermlineData> vcfData = getVCFDataForGermLine(lines);
-        final BaseDataReport snp = getGermlineVariantCount(patientId, vcfData, VCFType.SNP, GERMLINE_SNP, isRef);
-        final BaseDataReport indels = getGermlineVariantCount(patientId, vcfData, VCFType.INDELS, GERMLINE_INDELS,
+        final BaseDataReport snp = getGermlineVariantCount(sampleId, vcfData, VCFType.SNP, GERMLINE_SNP, isRef);
+        final BaseDataReport indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS, GERMLINE_INDELS,
                 isRef);
         final List<BaseDataReport> reports = Arrays.asList(snp, indels);
         logBaseDataReports(reports);
@@ -64,7 +66,7 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     }
 
     @NotNull
-    private List<VCFGermlineData> getVCFDataForGermLine(final List<String> lines) {
+    private List<VCFGermlineData> getVCFDataForGermLine(@NotNull final List<String> lines) {
         return lines.stream().map(line -> {
             final String[] values = line.split(SEPARATOR_REGEX);
             final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
@@ -75,9 +77,10 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     }
 
     @NotNull
-    private static BaseDataReport getGermlineVariantCount(final String patientId, final List<VCFGermlineData> vcfData,
-            final VCFType vcfType, final String checkName, final boolean refSample) {
+    private static BaseDataReport getGermlineVariantCount(@NotNull final String sampleId,
+            @NotNull final List<VCFGermlineData> vcfData, @NotNull final VCFType vcfType,
+            @NotNull final String checkName, final boolean refSample) {
         final Long count = vcfData.stream().filter(new VCFGermlineVariantPredicate(vcfType, refSample)).count();
-        return new BaseDataReport(patientId, checkName, String.valueOf(count));
+        return new BaseDataReport(sampleId, checkName, String.valueOf(count));
     }
 }

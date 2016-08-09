@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.nesbit.adapter;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
@@ -13,6 +13,7 @@ import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.nesbit.extractor.GermlineExtractor;
 import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import mockit.Mocked;
@@ -22,11 +23,8 @@ import mockit.Verifications;
 public class NesbitAdapterTest {
 
     private static final String DUMMY_CHECK = "DUMMY_CHECK";
-
     private static final String DUMMY_ID = "DUMMY_ID";
-
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
-
     private static final String DUMMY_REPORT = "DummyReport";
 
     private static final String REF_VALUE = "409";
@@ -34,9 +32,7 @@ public class NesbitAdapterTest {
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl variant, @Mocked final HealthCheckerImpl somatic,
             @Mocked final Report report, @Mocked HealthCheckReportFactory factory, @Mocked AbstractHealthCheckAdapter mock) {
-
         new NonStrictExpectations() {
-
             {
                 AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
                 result = factory;
@@ -74,13 +70,15 @@ public class NesbitAdapterTest {
         };
     }
 
-    private BaseReport getVariantDummyReport() {
+    @NotNull
+    private static BaseReport getVariantDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
-        return new PatientMultiChecksReport(CheckType.GERMLINE, Arrays.asList(testDataReport));
+        return new PatientMultiChecksReport(CheckType.GERMLINE, Collections.singletonList(testDataReport));
     }
 
-    private BaseReport getSomticDummyReport() {
+    @NotNull
+    private static BaseReport getSomticDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
-        return new PatientMultiChecksReport(CheckType.SOMATIC, Arrays.asList(testDataReport));
+        return new PatientMultiChecksReport(CheckType.SOMATIC, Collections.singletonList(testDataReport));
     }
 }

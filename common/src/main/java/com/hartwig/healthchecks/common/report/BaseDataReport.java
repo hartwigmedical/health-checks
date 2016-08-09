@@ -5,22 +5,22 @@ import org.jetbrains.annotations.NotNull;
 public class BaseDataReport {
 
     @NotNull
-    private final String patientId;
+    private final String sampleId;
     @NotNull
     private final String checkName;
     @NotNull
     private final String value;
 
-    public BaseDataReport(@NotNull final String patientId, @NotNull final String checkName,
+    public BaseDataReport(@NotNull final String sampleId, @NotNull final String checkName,
                     @NotNull final String value) {
-        this.patientId = patientId;
+        this.sampleId = sampleId;
         this.checkName = checkName;
         this.value = value;
     }
 
     @NotNull
-    public String getPatientId() {
-        return patientId;
+    public String getSampleId() {
+        return sampleId;
     }
 
     @NotNull

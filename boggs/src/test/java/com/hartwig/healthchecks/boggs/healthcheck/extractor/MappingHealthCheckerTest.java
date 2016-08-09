@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
-
 import com.hartwig.healthchecks.boggs.extractor.MappingCheck;
 import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
 import com.hartwig.healthchecks.common.checks.CheckType;
@@ -20,6 +17,9 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.ErrorReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -54,7 +54,7 @@ public class MappingHealthCheckerTest {
         final BaseReport report = checker.runCheck();
 
         assertEquals("Report with wrong type", CheckType.MAPPING, report.getCheckType());
-        assertEquals("Dummy", ((SampleReport) report).getReferenceSample().get(0).getPatientId());
+        assertEquals("Dummy", ((SampleReport) report).getReferenceSample().get(0).getSampleId());
         assertEquals(MappingCheck.MAPPING_MAPPED.getDescription(),
                         ((SampleReport) report).getReferenceSample().get(0).getCheckName());
     }

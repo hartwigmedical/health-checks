@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
@@ -17,6 +15,8 @@ import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.ErrorReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.smitty.extractor.KinshipExtractor;
+
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -53,7 +53,6 @@ public class KinshipHealthCheckerTest {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, EXPECTED_VALUE);
         final PatientReport testData = new PatientReport(CheckType.KINSHIP, testDataReport);
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 returns(testData);
@@ -62,16 +61,15 @@ public class KinshipHealthCheckerTest {
         final HealthChecker checker = new HealthCheckerImpl(CheckType.KINSHIP, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
-        final BaseDataReport baseDataReports = ((PatientReport) report).getPatientData();
+        final BaseDataReport baseDataReports = ((PatientReport) report).getSampleData();
         assertEquals(WRONG_CHECK_NAME, DUMMY_CHECK, baseDataReports.getCheckName());
         assertEquals(WRONG_CHECK_STATUS, EXPECTED_VALUE, baseDataReports.getValue());
-        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, baseDataReports.getPatientId());
+        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, baseDataReports.getSampleId());
     }
 
     @Test
     public void verifyHealthCheckerIOException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new IOException(DUMMY_ERROR);
@@ -91,7 +89,6 @@ public class KinshipHealthCheckerTest {
     @Test
     public void verifyHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new EmptyFileException(DUMMY_ERROR, "DUMMYPATH");
@@ -111,7 +108,6 @@ public class KinshipHealthCheckerTest {
     @Test
     public void verifyHealthCheckerMalformedFileException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new MalformedFileException(DUMMY_ERROR);

@@ -139,6 +139,6 @@ public class InsertSizeMetricsHealthCheckerTest {
 
         assertEquals(WRONG_CHECK_NAME, check, value.get().getCheckName());
         assertEquals(WRONG_CHECK_STATUS, expectedValue, value.get().getValue());
-        assertEquals(WRONG_PATIENT_ID_MSG, patientId, value.get().getPatientId());
+        assertEquals(WRONG_PATIENT_ID_MSG, patientId, value.get().getSampleId());
     }
 }

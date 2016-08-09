@@ -38,7 +38,7 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     protected static final String SEMICOLON_DELIMITER = ";";
     protected static final String DASH = "-";
 
-    private static final String LOG_MSG = "Check '%s' for Patient '%s' has value '%s'";
+    private static final String LOG_MSG = "Check '%s' for sample '%s' has value '%s'";
 
     private static final Logger LOGGER = LogManager.getLogger(AbstractDataExtractor.class);
 
@@ -49,7 +49,7 @@ public abstract class AbstractDataExtractor implements DataExtractor {
     }
 
     protected void logBaseDataReport(final BaseDataReport baseDataReport) {
-        LOGGER.info(String.format(LOG_MSG, baseDataReport.getCheckName(), baseDataReport.getPatientId(),
+        LOGGER.info(String.format(LOG_MSG, baseDataReport.getCheckName(), baseDataReport.getSampleId(),
                 baseDataReport.getValue()));
     }
 }

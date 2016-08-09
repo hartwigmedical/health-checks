@@ -11,10 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -24,6 +20,10 @@ import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
@@ -62,20 +62,20 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
                     @NotNull final String suffix) throws IOException, EmptyFileException {
         final Path samplePath = samplePathFinder.findPath(runDirectory, prefix, suffix);
-        final String samplePatientId = samplePath.getFileName().toString();
-        final List<BaseDataReport> sampleData = extractSummaryData(samplePath, samplePatientId);
-        final BaseDataReport sampleFastq = extractFastqData(samplePath, samplePatientId);
+        final String sampleId = samplePath.getFileName().toString();
+        final List<BaseDataReport> sampleData = extractSummaryData(samplePath, sampleId);
+        final BaseDataReport sampleFastq = extractFastqData(samplePath, sampleId);
         sampleData.add(sampleFastq);
         logBaseDataReports(sampleData);
         return sampleData;
     }
 
     @NotNull
-    private List<BaseDataReport> extractSummaryData(@NotNull final Path samplePath, @NotNull final String patientId)
+    private List<BaseDataReport> extractSummaryData(@NotNull final Path samplePath, @NotNull final String sampleId)
                     throws IOException, EmptyFileException {
         final Path path = new File(samplePath + File.separator + QC_STATS + File.separator).toPath();
         final List<String> allLines = zipFileReader.readAllLinesFromZips(path, SUMMARY_FILE_NAME);
-        final Map<String, List<BaseDataReport>> data = getSummaryData(allLines, patientId);
+        final Map<String, List<BaseDataReport>> data = getSummaryData(allLines, sampleId);
         final List<BaseDataReport> prestatsDataReports = data.values().stream().map(prestatsDataReportList -> {
             return prestatsDataReportList.stream().min(isStatusWorse()).get();
         }).collect(toList());
@@ -87,8 +87,8 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private Map<String, List<BaseDataReport>> getSummaryData(@NotNull final List<String> allLines,
-                    @NotNull final String patientId) throws IOException {
+    private static Map<String, List<BaseDataReport>> getSummaryData(@NotNull final List<String> allLines,
+            @NotNull final String sampleId) throws IOException {
         return allLines.stream().map(line -> {
             final String[] values = line.trim().split(SEPARATOR_REGEX);
             BaseDataReport prestatsDataReport = null;
@@ -96,7 +96,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
                 final String status = values[0];
                 final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
                 if (check.isPresent()) {
-                    prestatsDataReport = new BaseDataReport(patientId, check.get().getDescription(), status);
+                    prestatsDataReport = new BaseDataReport(sampleId, check.get().getDescription(), status);
                 }
             }
             return prestatsDataReport;
@@ -104,7 +104,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private Comparator<BaseDataReport> isStatusWorse() {
+    private static Comparator<BaseDataReport> isStatusWorse() {
         return (firstData, secondData) -> {
             final String firstStatus = firstData.getValue();
             final String secondStatus = secondData.getValue();
@@ -121,7 +121,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private BaseDataReport extractFastqData(@NotNull final Path pathToCheck, @NotNull final String patientId)
+    private BaseDataReport extractFastqData(@NotNull final Path pathToCheck, @NotNull final String sampleId)
                     throws IOException, EmptyFileException {
         final Long totalSequences = sumOfTotalSequences(pathToCheck, zipFileReader);
         if (totalSequences == ZERO_DOUBLE_VALUE) {
@@ -131,6 +131,6 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
         if (totalSequences < MIN_TOTAL_SQ) {
             status = FAIL;
         }
-        return new BaseDataReport(patientId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(), status);
+        return new BaseDataReport(sampleId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(), status);
     }
 }

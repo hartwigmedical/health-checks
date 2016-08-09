@@ -7,19 +7,17 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
+
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractTotalSequenceExtractor extends AbstractDataExtractor {
 
     protected static final String QC_STATS = "QCStats";
-
-    protected static final String TOTAL_SEQUENCES = "Total Sequences";
-
     protected static final String MAPPING = "mapping";
-
     protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
+
+    private static final String TOTAL_SEQUENCES = "Total Sequences";
 
     @NotNull
     protected Long sumOfTotalSequences(@NotNull final Path path, final ZipFilesReader zipFileReader)

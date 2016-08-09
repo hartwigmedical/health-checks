@@ -50,28 +50,28 @@ public class WGSMetricsExtractor extends AbstractFlintExtractor {
             throw new EmptyFileException(suffix, runDirectory);
         }
 
-        final String patientId = getPatientId(suffix, lines, INPUT);
+        final String sampleId = getSampleId(suffix, lines, INPUT);
 
-        final BaseDataReport coverageMean = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_MEAN);
-        final BaseDataReport coverageMedian = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_MEDIAN);
-        final BaseDataReport coverageBaseQ = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_BASEQ);
-        final BaseDataReport coverageDupe = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_DUPE);
-        final BaseDataReport coverageMapQ = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_MAPQ);
-        final BaseDataReport coverageOverlap = getValue(lines, suffix, patientId,
+        final BaseDataReport coverageMean = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_MEAN);
+        final BaseDataReport coverageMedian = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_MEDIAN);
+        final BaseDataReport coverageBaseQ = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_PCT_EXC_BASEQ);
+        final BaseDataReport coverageDupe = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_PCT_EXC_DUPE);
+        final BaseDataReport coverageMapQ = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_PCT_EXC_MAPQ);
+        final BaseDataReport coverageOverlap = getValue(lines, suffix, sampleId,
                 CoverageCheck.COVERAGE_PCT_EXC_OVERLAP);
-        final BaseDataReport coverageTotal = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_PCT_EXC_TOTAL);
-        final BaseDataReport coverageUnpaired = getValue(lines, suffix, patientId,
+        final BaseDataReport coverageTotal = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_PCT_EXC_TOTAL);
+        final BaseDataReport coverageUnpaired = getValue(lines, suffix, sampleId,
                 CoverageCheck.COVERAGE_PCT_EXC_UNPAIRED);
-        final BaseDataReport coverageSD = getValue(lines, suffix, patientId, CoverageCheck.COVERAGE_SD);
+        final BaseDataReport coverageSD = getValue(lines, suffix, sampleId, CoverageCheck.COVERAGE_SD);
         return Arrays.asList(coverageMean, coverageMedian, coverageBaseQ, coverageDupe, coverageMapQ, coverageOverlap,
                 coverageTotal, coverageUnpaired, coverageSD);
     }
 
     @NotNull
     private BaseDataReport getValue(@NotNull final List<String> lines, @NotNull final String suffix,
-            @NotNull final String patientId, @NotNull final CoverageCheck check) throws LineNotFoundException {
+            @NotNull final String sampleId, @NotNull final CoverageCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
-        final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
+        final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;
     }

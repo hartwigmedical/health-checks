@@ -52,26 +52,26 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
         if (!searchedLine.isPresent()) {
             throw new LineNotFoundException(suffix, PAIR);
         }
-        final String patientId = getPatientId(suffix, lines, INPUT);
+        final String sampleId = getSampleId(suffix, lines, INPUT);
 
-        final BaseDataReport pfIndelRate = getValue(searchedLine.get(), patientId,
+        final BaseDataReport pfIndelRate = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_INDEL_RATE);
-        final BaseDataReport pctAdapter = getValue(searchedLine.get(), patientId,
+        final BaseDataReport pctAdapter = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PCT_ADAPTER);
-        final BaseDataReport pctChimeras = getValue(searchedLine.get(), patientId,
+        final BaseDataReport pctChimeras = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PCT_CHIMERA);
-        final BaseDataReport pfMisMatch = getValue(searchedLine.get(), patientId,
+        final BaseDataReport pfMisMatch = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE);
-        final BaseDataReport strandBalance = getValue(searchedLine.get(), patientId,
+        final BaseDataReport strandBalance = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_STRAND_BALANCE);
         return Arrays.asList(pfIndelRate, pctAdapter, pctChimeras, pfMisMatch, strandBalance);
     }
 
     @NotNull
-    private BaseDataReport getValue(@NotNull final String line, @NotNull final String patientId,
+    private BaseDataReport getValue(@NotNull final String line, @NotNull final String sampleId,
             @NotNull final SummaryMetricsCheck check) throws LineNotFoundException {
         final String value = line.split(SEPARATOR_REGEX)[check.getIndex()];
-        final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
+        final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;
     }

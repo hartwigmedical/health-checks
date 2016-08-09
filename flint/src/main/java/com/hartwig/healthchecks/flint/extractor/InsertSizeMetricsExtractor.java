@@ -44,21 +44,21 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
         final String path = runDirectory + File.separator + QC_STATS;
         final SamplePathData samplePath = new SamplePathData(path, SAMPLE_PREFIX, suffix, INSERT_SIZE_METRICS);
         final List<String> lines = reader.readLines(samplePath);
-        final String patientId = getPatientId(suffix, lines, INPUT);
+        final String sampleId = getSampleId(suffix, lines, INPUT);
 
-        final BaseDataReport medianReport = getValue(lines, suffix, patientId,
+        final BaseDataReport medianReport = getValue(lines, suffix, sampleId,
                 InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
-        final BaseDataReport width70PerReport = getValue(lines, suffix, patientId,
+        final BaseDataReport width70PerReport = getValue(lines, suffix, sampleId,
                 InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
         return Arrays.asList(medianReport, width70PerReport);
     }
 
     @NotNull
     private BaseDataReport getValue(@NotNull final List<String> lines, @NotNull final String suffix,
-            @NotNull final String patientId, @NotNull final InsertSizeMetricsCheck check)
+            @NotNull final String sampleId, @NotNull final InsertSizeMetricsCheck check)
             throws LineNotFoundException {
         final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getIndex());
-        final BaseDataReport baseDataReport = new BaseDataReport(patientId, check.toString(), value);
+        final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
         logBaseDataReport(baseDataReport);
         return baseDataReport;
     }

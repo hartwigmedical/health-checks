@@ -3,10 +3,8 @@ package com.hartwig.healthchecks.boo.extractor;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -17,6 +15,8 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.ErrorReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
+
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -53,13 +53,12 @@ public class PrestatsHealthCheckerTest {
         final BaseDataReport prestatsTestDataReport = new BaseDataReport(DUMMY_ID, PrestatsCheck.DUMMY.getDescription(),
                         FAIL);
 
-        final SampleReport testData = new SampleReport(CheckType.PRESTATS, Arrays.asList(prestatsTestDataReport),
-                        Arrays.asList(prestatsTestDataReport));
+        final SampleReport testData = new SampleReport(CheckType.PRESTATS,
+                Collections.singletonList(prestatsTestDataReport), Collections.singletonList(prestatsTestDataReport));
 
         final HealthChecker checker = new HealthCheckerImpl(CheckType.PRESTATS, DUMMY_RUN_DIR, dataExtractor);
 
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 returns(testData);
@@ -72,13 +71,12 @@ public class PrestatsHealthCheckerTest {
         assertEquals(WRONG_NUMBER_OF_CHECKS_MSG, 1, summaryData.size());
         assertEquals(WRONG_CHECK_STATUS, FAIL, summaryData.get(0).getValue());
         assertEquals(WRONG_CHECK_NAME, PrestatsCheck.DUMMY.getDescription(), summaryData.get(0).getCheckName());
-        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, summaryData.get(0).getPatientId());
+        assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, summaryData.get(0).getSampleId());
     }
 
     @Test
     public void verifyPrestatsHealthCheckerIOException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new IOException(DUMMY_ERROR);
@@ -98,7 +96,6 @@ public class PrestatsHealthCheckerTest {
     @Test
     public void verifyPrestatsHealthCheckerEmptyFileException() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
                 result = new EmptyFileException(DUMMY_ERROR, "DUMMYPATH");

@@ -4,11 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -18,17 +16,17 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import mockit.Expectations;
 import mockit.Mocked;
 
 public class SlicedExtractorTest {
 
     private static final String EXPECTED_VALUE = "8";
-
     private static final String WRONG_NAME = "Wrong name";
-
     private static final String SLICED_NUM_VARIANTS = "SLICED_NUMBER_OF_VARIANTS";
-
     private static final String REPORT_WITH_WRONG_TYPE = "Report with wrong type";
 
     private static final String DATA_LINE = "2\t29940529\trs2246745;COSM4416269\tA\tT\t2627.44\tPASS\t"
@@ -47,7 +45,6 @@ public class SlicedExtractorTest {
     private static final String TEST_DIR = "Test";
 
     private List<String> dataLines;
-
     private List<String> headerLines;
 
     @Mocked
@@ -57,15 +54,13 @@ public class SlicedExtractorTest {
     public void setUp() {
         dataLines = Arrays.asList(DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE,
                         DATA_LINE);
-        headerLines = Arrays.asList(HEADER_LINE);
+        headerLines = Collections.singletonList(HEADER_LINE);
     }
 
     @Test
     public void extractData() throws IOException, HealthChecksException {
-
         final SlicedExtractor extractor = new SlicedExtractor(reader);
         new Expectations() {
-
             {
                 reader.readLines(anyString, anyString, (Predicate<String>) any);
                 returns(headerLines, dataLines);
@@ -73,17 +68,16 @@ public class SlicedExtractorTest {
         };
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
         assertEquals(REPORT_WITH_WRONG_TYPE, CheckType.SLICED, report.getCheckType());
-        final BaseDataReport patientData = ((PatientReport) report).getPatientData();
-        assertEquals(WRONG_NAME, SLICED_NUM_VARIANTS, patientData.getCheckName());
-        assertEquals("Wrong Patient", "CPCT12345678R", patientData.getPatientId());
-        assertEquals("Wrong value", EXPECTED_VALUE, patientData.getValue());
+        final BaseDataReport sampleData = ((PatientReport) report).getSampleData();
+        assertEquals(WRONG_NAME, SLICED_NUM_VARIANTS, sampleData.getCheckName());
+        assertEquals("Wrong Sample", "CPCT12345678R", sampleData.getSampleId());
+        assertEquals("Wrong value", EXPECTED_VALUE, sampleData.getValue());
     }
 
     @Test(expected = IOException.class)
     public void extractDataFromFileIoException() throws IOException, HealthChecksException {
         final SlicedExtractor extractor = new SlicedExtractor(reader);
         new Expectations() {
-
             {
                 reader.readLines(anyString, anyString, (Predicate<String>) any);
                 result = new IOException();
@@ -96,7 +90,6 @@ public class SlicedExtractorTest {
     public void extractDataMissingHeader() throws IOException, HealthChecksException {
         final SlicedExtractor extractor = new SlicedExtractor(reader);
         new Expectations() {
-
             {
                 reader.readLines(anyString, anyString, (Predicate<String>) any);
                 result = new LineNotFoundException("", "");

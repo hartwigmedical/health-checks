@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
 import com.hartwig.healthchecks.boggs.extractor.MappingCheck;
 import com.hartwig.healthchecks.boggs.extractor.MappingExtractor;
@@ -30,23 +26,22 @@ import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
+import org.jetbrains.annotations.NotNull;
+import org.junit.Before;
+import org.junit.Test;
+
 import mockit.Expectations;
 import mockit.Mocked;
 
 public class MappingExtractorTest {
 
     private static final String FASTQC_DATA_TXT = "fastqc_data.txt";
-
     private static final String RUNDIR = "rundir";
-
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
-
     private static final String TEST_REF_ID = "CPCT12345678R";
-
     private static final String TEST_TUM_ID = "CPCT12345678T";
 
     private List<String> fastqLines;
-
     private List<String> emptyList;
 
     @Mocked
@@ -67,7 +62,6 @@ public class MappingExtractorTest {
     @Test
     public void extractData() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
@@ -98,13 +92,11 @@ public class MappingExtractorTest {
 
         final List<BaseDataReport> tumorSample = ((SampleReport) mappingReport).getTumorSample();
         assetMappingData(tumorSample);
-
     }
 
     @Test(expected = NoSuchFileException.class)
     public void extractDataNoneExistingDir() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 samplePathFinder.findPath(DUMMY_RUN_DIR, anyString, anyString);
                 result = new NoSuchFileException(anyString);
@@ -131,9 +123,7 @@ public class MappingExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void extractDataEmptyFlagStatsFile() throws IOException, HealthChecksException {
-
         new Expectations() {
-
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
@@ -151,7 +141,6 @@ public class MappingExtractorTest {
     @Test(expected = NoSuchFileException.class)
     public void extractDataNoFastQFile() throws IOException, HealthChecksException {
         new Expectations() {
-
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 result = new NoSuchFileException("");
@@ -163,9 +152,7 @@ public class MappingExtractorTest {
 
     @Test(expected = NoSuchFileException.class)
     public void extractDataNoFlagStatsFile() throws IOException, HealthChecksException {
-
         new Expectations() {
-
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TEST_REF_ID).toPath());
@@ -180,14 +167,14 @@ public class MappingExtractorTest {
         extractor.extractFromRunDirectory(RUNDIR);
     }
 
-    private BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
+    @NotNull
+    private static BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
             @NotNull final MappingCheck check) {
-
         return mapping.stream().filter(
                 baseDataReport -> baseDataReport.getCheckName().equals(check.getDescription())).findFirst().get();
     }
 
-    private void assetMappingData(final List<BaseDataReport> mapping) {
+    private static void assetMappingData(@NotNull final List<BaseDataReport> mapping) {
         final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_MAPPED);
         assertEquals("99.69", mappedData.getValue());
 
@@ -207,7 +194,8 @@ public class MappingExtractorTest {
         assertEquals("false", isAllRead.getValue());
     }
 
-    private FlagStatData dummyData() throws IOException, EmptyFileException {
+    @NotNull
+    private static FlagStatData dummyData() throws IOException, EmptyFileException {
         final FlagStats total = new FlagStats(FlagStatsType.TOTAL_INDEX, 17940d);
         final FlagStats secondary = new FlagStats(FlagStatsType.SECONDARY_INDEX, 20d);
         final FlagStats supplementary = new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, 0d);

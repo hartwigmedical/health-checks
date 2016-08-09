@@ -235,6 +235,6 @@ public class WGSMetricsExtractorTest {
         assert value.isPresent();
 
         assertEquals(WRONG_DATA, expectedValue, value.get().getValue());
-        assertEquals(WRONG_PATIENT_ID, patientId, value.get().getPatientId());
+        assertEquals(WRONG_PATIENT_ID, patientId, value.get().getSampleId());
     }
 }
