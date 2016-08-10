@@ -18,6 +18,10 @@ public class SambambaFlagStatParser implements FlagStatParser {
     private static final String SEPARATOR_REGEX = " ";
     private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
+    private static final int QC_PASSED_COLUMN = 0;
+    private static final int QC_FAILED_COLUMN = 2;
+    private static final int FIRST_WORD_COLUMN = 3;
+
     @Override
     @NotNull
     public FlagStatData parse(@NotNull final String flagstatPath, @NotNull final String filter)
@@ -34,10 +38,10 @@ public class SambambaFlagStatParser implements FlagStatParser {
 
 
         Files.lines(filePath.get()).map(line -> {
-            final String qcPassed = line.split(SEPARATOR_REGEX)[0];
-            final String qcFailed = line.split(SEPARATOR_REGEX)[2];
+            final String qcPassed = line.split(SEPARATOR_REGEX)[QC_PASSED_COLUMN];
+            final String qcFailed = line.split(SEPARATOR_REGEX)[QC_FAILED_COLUMN];
 
-            final String firstWord = line.split(SEPARATOR_REGEX)[3];
+            final String firstWord = line.split(SEPARATOR_REGEX)[FIRST_WORD_COLUMN];
             final int firstWordIndex = line.indexOf(firstWord);
             final String checkName = line.substring(firstWordIndex, line.length());
 
