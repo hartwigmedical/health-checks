@@ -4,6 +4,16 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
+import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
+import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
+import com.hartwig.healthchecks.common.exception.GenerateReportException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.exception.NotFoundException;
+import com.hartwig.healthchecks.common.io.dir.FolderChecker;
+import com.hartwig.healthchecks.common.io.path.RunPathData;
+import com.hartwig.healthchecks.common.report.Report;
+import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -14,15 +24,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
-import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
-import com.hartwig.healthchecks.common.exception.GenerateReportException;
-import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.exception.NotFoundException;
-import com.hartwig.healthchecks.common.io.dir.FolderChecker;
-import com.hartwig.healthchecks.common.report.Report;
-import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 
 import rx.Observable;
 import rx.observables.BlockingObservable;
@@ -118,7 +119,7 @@ public final class HealthChecksApplication {
             try {
                 final AbstractHealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
 
-                healthCheckAdapter.runCheck(runDirectory, reportType);
+                healthCheckAdapter.runCheck(RunPathData.fromRunDirectory(runDirectory), reportType);
             } catch (final NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -133,7 +134,8 @@ public final class HealthChecksApplication {
         final Observable<AbstractHealthCheckAdapter> adapterObservable = Observable.from(adapters).subscribeOn(
                 Schedulers.io());
 
-        BlockingObservable.from(adapterObservable).subscribe(adapter -> adapter.runCheck(runDirectory, reportType),
+        BlockingObservable.from(adapterObservable).subscribe(
+                adapter -> adapter.runCheck(RunPathData.fromRunDirectory(runDirectory), reportType),
                 (error) -> LOGGER.error(error.getMessage()), this::generateReport);
     }
 

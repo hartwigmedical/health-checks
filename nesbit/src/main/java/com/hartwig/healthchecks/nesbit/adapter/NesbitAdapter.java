@@ -7,6 +7,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.RunPathData;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
@@ -16,24 +17,26 @@ import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckCategory.NESBIT)
 public class NesbitAdapter extends AbstractHealthCheckAdapter {
 
     @Override
-    public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
-
+    public void runCheck(@NotNull final RunPathData runPathData, @NotNull final String reportType) {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
         final ExtensionFinderAndLineReader germlineReader = ExtensionFinderAndLineReader.build();
         final DataExtractor germlineExtractor = new GermlineExtractor(germlineReader);
-        final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, runDirectory, germlineExtractor);
+        final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, runPathData.getRunDirectory(),
+                germlineExtractor);
         final BaseReport germlineReport = germline.runCheck();
         report.addReportData(germlineReport);
 
         final ExtensionFinderAndLineReader somaticReader = ExtensionFinderAndLineReader.build();
         final DataExtractor somaticExtractor = new SomaticExtractor(somaticReader);
-        final HealthChecker somatic = new HealthCheckerImpl(CheckType.SOMATIC, runDirectory, somaticExtractor);
+        final HealthChecker somatic = new HealthCheckerImpl(CheckType.SOMATIC, runPathData.getRunDirectory(),
+                somaticExtractor);
         final BaseReport somaticReport = somatic.runCheck();
         report.addReportData(somaticReport);
     }

@@ -7,6 +7,7 @@ import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
+import com.hartwig.healthchecks.common.io.path.RunPathData;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
@@ -49,7 +50,7 @@ public class BoggsAdapterTest {
             }
         };
         final AbstractHealthCheckAdapter adapter = new BoggsAdapter();
-        adapter.runCheck(DUMMY_RUN_DIR, DUMMY_REPORT);
+        adapter.runCheck(RunPathData.fromRunDirectory(DUMMY_RUN_DIR), DUMMY_REPORT);
 
         new Verifications() {
             {

@@ -7,6 +7,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.RunPathData;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
@@ -20,13 +21,14 @@ import org.jetbrains.annotations.NotNull;
 public class RozAdapter extends AbstractHealthCheckAdapter {
 
     @Override
-    public void runCheck(@NotNull final String runDirectory, @NotNull final String reportType) {
+    public void runCheck(@NotNull final RunPathData runPathData, @NotNull final String reportType) {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
         final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
         final DataExtractor extractor = new SlicedExtractor(reader);
-        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.SLICED, runDirectory, extractor);
+        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.SLICED, runPathData.getRunDirectory(),
+                extractor);
         final BaseReport baseReport = healthCheck.runCheck();
         report.addReportData(baseReport);
     }
