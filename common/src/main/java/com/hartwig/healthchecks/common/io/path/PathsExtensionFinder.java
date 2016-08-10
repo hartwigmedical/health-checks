@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 public interface PathsExtensionFinder {
 
-    String FILE_S_NOT_FOUND_MSG = "File %s not Found in path %s";
+    String FILE_S_NOT_FOUND_MSG = "File %s not found in path %s";
 
     @NotNull
     List<Path> findPaths(@NotNull final String path, @NotNull String extension) throws IOException;
@@ -32,7 +32,8 @@ public interface PathsExtensionFinder {
         };
     }
 
-    static List<Path> getPath(final String path, final String extension) throws IOException {
+    @NotNull
+    static List<Path> getPath(@NotNull final String path, @NotNull final String extension) throws IOException {
         try (Stream<Path> paths = Files.walk(new File(path).toPath())) {
             return paths.filter(filePath -> filePath.getFileName().toString().endsWith(extension)).sorted()
                             .collect(toCollection(ArrayList<Path>::new));

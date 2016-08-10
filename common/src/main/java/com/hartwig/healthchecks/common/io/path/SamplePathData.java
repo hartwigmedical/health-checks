@@ -6,13 +6,10 @@ public class SamplePathData {
 
     @NotNull
     private final String path;
-
     @NotNull
     private final String extension;
-
     @NotNull
     private final String prefix;
-
     @NotNull
     private final String suffix;
 
@@ -24,18 +21,22 @@ public class SamplePathData {
         this.suffix = suffix;
     }
 
+    @NotNull
     public String getPath() {
         return path;
     }
 
+    @NotNull
     public String getExtension() {
         return extension;
     }
 
+    @NotNull
     public String getPrefix() {
         return prefix;
     }
 
+    @NotNull
     public String getSuffix() {
         return suffix;
     }
