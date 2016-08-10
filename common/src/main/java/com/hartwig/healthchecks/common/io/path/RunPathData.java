@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class RunPathData {
 
+    private static final int PATIENT_NAME_LENGTH = 12;
+
     @NotNull
     private final String runDirectory;
     @NotNull
@@ -20,7 +22,7 @@ public class RunPathData {
             throw new MalformedRunDirException(runDirectory);
         }
         String patient = runDirectory.substring(patientPosition + 1);
-        if (patient.length() != 12) {
+        if (patient.length() != PATIENT_NAME_LENGTH) {
             throw new MalformedRunDirException(runDirectory);
         }
         return new RunPathData(runDirectory, patient + "R", patient + "T");
@@ -39,12 +41,12 @@ public class RunPathData {
     }
 
     @NotNull
-    public String getRefSample() {
+    String getRefSample() {
         return refSample;
     }
 
     @NotNull
-    public String getTumorSample() {
+    String getTumorSample() {
         return tumorSample;
     }
 }
