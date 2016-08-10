@@ -40,7 +40,7 @@ public class ZipFilesReader {
     }
 
     @NotNull
-    private List<String> readFileFromZip(@NotNull final String path, @NotNull final String fileName) {
+    private static List<String> readFileFromZip(@NotNull final String path, @NotNull final String fileName) {
         final List<String> fileLines = new ArrayList<>();
         try {
             fileLines.addAll(FileInZipsReader.build().readLines(path, fileName));
@@ -51,7 +51,7 @@ public class ZipFilesReader {
     }
 
     @NotNull
-    private String searchForLineInZip(@NotNull final Path path, @NotNull final String fileName,
+    private static String searchForLineInZip(@NotNull final Path path, @NotNull final String fileName,
             @NotNull final String filter) {
         String searchedLine = null;
         try {
