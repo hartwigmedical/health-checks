@@ -10,7 +10,7 @@ public final class RunPathDataFactory {
     }
 
     @NotNull
-    public RunPathData fromRunDirectory(@NotNull final String runDirectory) {
+    public static RunPathData fromRunDirectory(@NotNull final String runDirectory) {
         return new RunPathData(runDirectory, "bla1", "bla2");
     }
 }

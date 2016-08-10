@@ -16,10 +16,6 @@ import org.jetbrains.annotations.NotNull;
 public class SambambaFlagStatParser implements FlagStatParser {
 
     private static final String SEPARATOR_REGEX = " ";
-    private static final int ZERO = 0;
-    private static final int ONE = 1;
-    private static final int TWO = 2;
-    private static final int THREE = 3;
     private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
     @Override
@@ -30,31 +26,33 @@ public class SambambaFlagStatParser implements FlagStatParser {
                         .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
                                         && path.getFileName().toString().contains(filter))
                         .findFirst();
+        assert filePath.isPresent();
 
-        final int[] index = {ZERO};
+        final int[] index = { 0 };
         final List<FlagStats> passedStats = new ArrayList<>();
         final List<FlagStats> failedStats = new ArrayList<>();
 
-        assert filePath.isPresent();
-        Files.lines(filePath.get()).map(line -> {
-            final String qcPassed = line.split(SEPARATOR_REGEX)[ZERO];
-            final String qcFailed = line.split(SEPARATOR_REGEX)[TWO];
 
-            final String firstWord = line.split(SEPARATOR_REGEX)[THREE];
+        Files.lines(filePath.get()).map(line -> {
+            final String qcPassed = line.split(SEPARATOR_REGEX)[0];
+            final String qcFailed = line.split(SEPARATOR_REGEX)[2];
+
+            final String firstWord = line.split(SEPARATOR_REGEX)[3];
             final int firstWordIndex = line.indexOf(firstWord);
             final String checkName = line.substring(firstWordIndex, line.length());
 
             return new String[] {qcPassed, qcFailed, checkName};
         }).forEach(array -> {
-            final double passedValue = Double.parseDouble(array[ZERO]);
-            final double failedValue = Double.parseDouble(array[ONE]);
-            final Optional<FlagStatsType> statsTypeOpt = FlagStatsType.getByIndex(index[ZERO]);
+            final double passedValue = Double.parseDouble(array[0]);
+            final double failedValue = Double.parseDouble(array[1]);
+            final Optional<FlagStatsType> statsTypeOpt = FlagStatsType.getByIndex(index[0]);
             assert statsTypeOpt.isPresent();
+
             final FlagStats passed = new FlagStats(statsTypeOpt.get(), passedValue);
             final FlagStats failed = new FlagStats(statsTypeOpt.get(), failedValue);
             passedStats.add(passed);
             failedStats.add(failed);
-            index[ZERO] += ONE;
+            index[0] += 1;
         });
 
         if (passedStats.isEmpty() || failedStats.isEmpty()) {

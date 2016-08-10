@@ -10,7 +10,7 @@ import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.io.dir.FolderChecker;
-import com.hartwig.healthchecks.common.io.path.RunPathData;
+import com.hartwig.healthchecks.common.io.path.RunPathDataFactory;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 
@@ -119,7 +119,7 @@ public final class HealthChecksApplication {
             try {
                 final AbstractHealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
 
-                healthCheckAdapter.runCheck(RunPathData.fromRunDirectory(runDirectory), reportType);
+                healthCheckAdapter.runCheck(RunPathDataFactory.fromRunDirectory(runDirectory), reportType);
             } catch (final NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -135,7 +135,7 @@ public final class HealthChecksApplication {
                 Schedulers.io());
 
         BlockingObservable.from(adapterObservable).subscribe(
-                adapter -> adapter.runCheck(RunPathData.fromRunDirectory(runDirectory), reportType),
+                adapter -> adapter.runCheck(RunPathDataFactory.fromRunDirectory(runDirectory), reportType),
                 (error) -> LOGGER.error(error.getMessage()), this::generateReport);
     }
 
