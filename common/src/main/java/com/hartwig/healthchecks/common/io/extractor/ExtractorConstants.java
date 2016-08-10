@@ -7,4 +7,7 @@ public final class ExtractorConstants {
     public static final String TUM_SAMPLE_SUFFIX = "T";
 
     public static final String SEPARATOR_REGEX = "\t";
+
+    private ExtractorConstants() {
+    }
 }
