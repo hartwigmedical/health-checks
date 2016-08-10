@@ -15,9 +15,10 @@ import org.junit.Test;
 public class PathRegexFinderTest {
 
     private static final String DUMMY_DIR = "bla";
-    private static final String NOT_NULL = "Should Not Be null";
+
     private static final String TEST_DIR = "rundir";
     private static final String NO_FILE_DIR = "empty";
+
     private static final String REGEX = "(.*)(_)(CPCT)(\\d+)(\\.)(log)";
     private static final String WRONG_REGEX = "(.*)(_)(CPCT)(\\d+)(\\.)";
     private static final String PIPELINE_LOG_REGEX = "PipelineCheck.log";
@@ -26,14 +27,14 @@ public class PathRegexFinderTest {
     public void findPathRunLog() throws IOException {
         final URL testPath = Resources.getResource(TEST_DIR);
         final Path path = PathRegexFinder.build().findPath(testPath.getPath(), TEST_DIR);
-        assertNotNull(NOT_NULL, path);
+        assertNotNull(path);
     }
 
     @Test
     public void findPathPipelineLog() throws IOException {
         final URL testPath = Resources.getResource(TEST_DIR);
         final Path path = PathRegexFinder.build().findPath(testPath.getPath(), PIPELINE_LOG_REGEX);
-        assertNotNull(NOT_NULL, path);
+        assertNotNull(path);
     }
 
     @Test(expected = FileNotFoundException.class)
