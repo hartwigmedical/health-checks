@@ -38,9 +38,8 @@ public class FileInZipsReaderTest {
 
     @Test(expected = EmptyFileException.class)
     public void readLinesEmptyFiles() throws IOException, HealthChecksException {
-        final URL testPath = Resources.getResource("emptyFiles" + File.separator + SAMPLE + File.separator + QC_STATS
-                        + File.separator + EMPTY_ZIP);
-        FileInZipsReader.build().readLines(testPath.getPath(), SUMMARY_FILE_NAME);
+        final URL testPath = Resources.getResource("emptyFile.zip");
+        FileInZipsReader.build().readLines(testPath.getPath(), "emptyFile");
     }
 
     @Test(expected = FileNotFoundException.class)
