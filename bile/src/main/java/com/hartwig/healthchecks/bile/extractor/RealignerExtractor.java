@@ -4,7 +4,6 @@ import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.RE
 import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
 import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
@@ -63,23 +62,19 @@ public class RealignerExtractor implements DataExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> referenceSample = getSampleData(runDirectory, REF_SAMPLE_SUFFIX);
-        final List<BaseDataReport> tumorSample = getSampleData(runDirectory, TUM_SAMPLE_SUFFIX);
+        final List<BaseDataReport> referenceSample = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
+        final List<BaseDataReport> tumorSample = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
         return new SampleReport(CheckType.REALIGNER, referenceSample, tumorSample);
     }
 
     @NotNull
-    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleType)
-            throws IOException, HealthChecksException {
-        final String suffix = sampleType + UNDERSCORE + DEDUP_SAMPLE_SUFFIX;
-        final String path = runDirectory + File.separator + QC_STATS;
-        final Path pathFound = samplePathFinder.findPath(path, SAMPLE_PREFIX, suffix);
+    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
+            @NotNull final String suffix) throws IOException, HealthChecksException {
+        final Path sampleFile = samplePathFinder.findPath(runDirectory, prefix, suffix);
+        final String sampleId = sampleFile.getFileName().toString();
 
-        final String sampleId = pathFound.toString().substring(pathFound.toString().lastIndexOf("/") + 1,
-                pathFound.toString().lastIndexOf("_dedup"));
-
-        final long diffCount = getDiffCount(runDirectory, suffix, path);
-        final long mappedValue = getMappedValue(runDirectory, suffix, path);
+        final long diffCount = getDiffCount(runDirectory, suffix, "");
+        final long mappedValue = getMappedValue(runDirectory, suffix, "");
         final String value = new DecimalFormat(DECIMAL_PRECISION).format((double) diffCount / mappedValue);
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, MAP_REALIGN_CHAN_ALIGN, value);
         baseDataReport.log(LOGGER);

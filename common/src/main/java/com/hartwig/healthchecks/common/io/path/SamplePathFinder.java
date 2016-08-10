@@ -13,11 +13,11 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 public interface SamplePathFinder {
 
-    String FILE_S_NOT_FOUND_MSG = "File %s not Found in path %s";
+    String FILE_S_NOT_FOUND_MSG = "File %s not found in path %s";
 
     @NotNull
     Path findPath(@NotNull final String path, @NotNull final String prefix, @NotNull final String suffix)
-                    throws IOException;
+            throws IOException;
 
     @NotNull
     static SamplePathFinder build() {
@@ -30,11 +30,13 @@ public interface SamplePathFinder {
         };
     }
 
-    static Optional<Path> getPath(final String path, final String prefix, final String suffix) throws IOException {
+    @NotNull
+    static Optional<Path> getPath(@NotNull final String path, @NotNull final String prefix,
+            @NotNull final String suffix) throws IOException {
         try (Stream<Path> paths = Files.walk(new File(path).toPath())) {
             return paths.filter(filePath -> filePath.getFileName().toString().startsWith(prefix)
-                            && filePath.getFileName().toString().endsWith(suffix)
-                            && filePath.toString().contains(path + File.separator + prefix)).findFirst();
+                    && filePath.getFileName().toString().endsWith(suffix) && filePath.toString().contains(
+                    path + File.separator + prefix)).findFirst();
         }
     }
 }
