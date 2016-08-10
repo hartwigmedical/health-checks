@@ -1,5 +1,7 @@
 package com.hartwig.healthchecks.common.io.path;
 
+import com.hartwig.healthchecks.common.exception.MalformedRunDirException;
+
 import org.jetbrains.annotations.NotNull;
 
 public class RunPathData {
@@ -12,8 +14,15 @@ public class RunPathData {
     private final String tumorSample;
 
     @NotNull
-    public static RunPathData fromRunDirectory(@NotNull final String runDirectory) {
-        String patient = runDirectory.substring(runDirectory.indexOf("CPCT"));
+    public static RunPathData fromRunDirectory(@NotNull final String runDirectory) throws MalformedRunDirException {
+        int patientPosition = runDirectory.indexOf("_CPCT");
+        if (patientPosition == -1) {
+            throw new MalformedRunDirException(runDirectory);
+        }
+        String patient = runDirectory.substring(patientPosition + 1);
+        if (patient.length() != 12) {
+            throw new MalformedRunDirException(runDirectory);
+        }
         return new RunPathData(runDirectory, patient + "R", patient + "T");
     }
 
@@ -27,6 +36,16 @@ public class RunPathData {
     @NotNull
     public String getRunDirectory() {
         return runDirectory;
+    }
+
+    @NotNull
+    public String getRefSample() {
+        return refSample;
+    }
+
+    @NotNull
+    public String getTumorSample() {
+        return tumorSample;
     }
 }
 
