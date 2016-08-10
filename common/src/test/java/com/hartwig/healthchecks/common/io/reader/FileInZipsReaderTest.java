@@ -17,10 +17,9 @@ import org.junit.Test;
 
 public class FileInZipsReaderTest {
 
-    private static final String EMPTY_ZIP = "CPCT12345678T_FLOWCELL_S2_L001_R1_001_fastqc.zip";
     private static final String ZIP_FILE = "CPCT12345678T_FLOWCELL_S2_L002_R2_001_fastqc.zip";
     private static final String SAMPLE = "CPCT12345678T";
-    private static final String TEST_DIR = "rundir";
+    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
     private static final String QC_STATS = "QCStats";
     private static final String SUMMARY_FILE_NAME = "summary.txt";
     private static final String WRONG_NUM_LINES = "Wrong # of Lines";

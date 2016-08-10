@@ -17,11 +17,12 @@ import org.junit.Test;
 
 public class FolderCheckerTest {
 
-    private static final String FILE = "rundir/test.kinship";
+    private static final String FILE = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678/"
+            + "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678.kinship";
     private static final String WRONG_PATH = "Wrong Path";
     private static final String DUMMY_DIR = "bla";
     private static final String NOT_NULL = "Should Not Be null";
-    private static final String TEST_DIR = "rundir";
+    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
     private static final String NO_FILE_DIR = "empty/QCStats/CPCT12345678T_dedup";
 
     @Test
@@ -34,7 +35,7 @@ public class FolderCheckerTest {
     }
 
     @Test
-    public void checkFolderWithExtraSeperator() throws IOException, HealthChecksException {
+    public void checkFolderWithExtraSeparator() throws IOException, HealthChecksException {
         final URL testPath = Resources.getResource(TEST_DIR);
         final String dirPath = testPath.getPath() + File.separator;
         final String path = FolderChecker.build().checkFolder(dirPath);

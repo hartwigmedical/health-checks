@@ -16,7 +16,7 @@ public class PathRegexFinderTest {
 
     private static final String DUMMY_DIR = "bla";
 
-    private static final String TEST_DIR = "rundir";
+    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
     private static final String NO_FILE_DIR = "empty";
 
     private static final String REGEX = "(.*)(_)(CPCT)(\\d+)(\\.)(log)";

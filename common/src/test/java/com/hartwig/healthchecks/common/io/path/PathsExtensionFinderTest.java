@@ -17,7 +17,7 @@ public class PathsExtensionFinderTest {
 
     private static final String PATIENT = "CPCT12345678T";
     private static final String ZIP = ".zip";
-    private static final String TEST_DIR = "rundir";
+    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
     private static final String QC_STATS = "QCStats";
 
     @Test

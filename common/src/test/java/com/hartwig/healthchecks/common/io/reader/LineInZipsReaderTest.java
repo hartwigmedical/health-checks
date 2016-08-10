@@ -21,7 +21,7 @@ public class LineInZipsReaderTest {
     private static final String TOTAL_SEQUENCES = "Total Sequences";
     private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
     private static final String SAMPLE = "CPCT12345678T";
-    private static final String TEST_DIR = "rundir";
+    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
     private static final String QC_STATS = "QCStats";
 
     @Test

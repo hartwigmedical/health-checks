@@ -24,7 +24,7 @@ public class SummaryMetricsReaderTest {
     private static final String QC_STATS = "QCStats";
     private static final String WRONG_NUM_LINES = "Wrong # of Lines";
     private static final String NOT_NULL = "Should Not Be null";
-    private static final String TEST_DIR = "rundir";
+    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
     private static final String EMPTY_DIR = "emptyFiles";
     private static final String NO_FILE_DIR = "empty";
     private static final int EXPECTED_NUM_LINES = 12;

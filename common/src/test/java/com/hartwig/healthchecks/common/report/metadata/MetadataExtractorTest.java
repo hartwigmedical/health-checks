@@ -8,17 +8,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Predicate;
-
-import org.junit.Test;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
+
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -34,7 +33,7 @@ public class MetadataExtractorTest {
                     + "hmfpcompute-foxtrot1-15";
 
     private static final String DUMMY_DIR = "bla";
-    private static final String TEST_DIR = "rundir";
+    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
 
     @Mocked
     private PathRegexFinder pathFinder;
