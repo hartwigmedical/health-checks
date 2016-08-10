@@ -1,5 +1,9 @@
 package com.hartwig.healthchecks.flint.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,6 +26,9 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(InsertSizeMetricsExtractor.class);
     private static final String INSERT_SIZE_METRICS_EXTENSION = ".insert_size_metrics";
+    private static final String UNDERSCORE = "_";
+    private static final String QC_STATS = "QCStats";
+    private static final String DEDUP_SAMPLE_SUFFIX = "dedup";
 
     @NotNull
     private final SampleFinderAndReader reader;
@@ -63,7 +70,7 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
             @NotNull final String sampleId, @NotNull final InsertSizeMetricsCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getColumnIndex());
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
-        logBaseDataReport(LOGGER, baseDataReport);
+        baseDataReport.log(LOGGER);
         return baseDataReport;
     }
 }

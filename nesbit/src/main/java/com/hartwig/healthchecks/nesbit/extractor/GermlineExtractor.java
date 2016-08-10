@@ -1,5 +1,9 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +69,7 @@ public class GermlineExtractor extends AbstractVCFExtractor {
         final BaseDataReport indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS, GERMLINE_INDELS,
                 isRef);
         final List<BaseDataReport> reports = Arrays.asList(snp, indels);
-        logBaseDataReports(LOGGER, reports);
+        BaseDataReport.log(LOGGER, reports);
         return reports;
     }
 

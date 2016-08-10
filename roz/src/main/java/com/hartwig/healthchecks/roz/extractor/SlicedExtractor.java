@@ -1,11 +1,13 @@
 package com.hartwig.healthchecks.roz.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
+
 import java.io.IOException;
 import java.util.List;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
@@ -17,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class SlicedExtractor extends AbstractDataExtractor {
+public class SlicedExtractor implements DataExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(SlicedExtractor.class);
 
@@ -39,7 +41,7 @@ public class SlicedExtractor extends AbstractDataExtractor {
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final BaseDataReport sampleData = getSampleData(runDirectory);
-        logBaseDataReport(LOGGER, sampleData);
+        sampleData.log(LOGGER);
         return new PatientReport(CheckType.SLICED, sampleData);
     }
 

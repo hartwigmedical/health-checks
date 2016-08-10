@@ -1,11 +1,15 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -72,7 +76,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         reports.addAll(getTypeChecks(vcfData, sampleId, VCFType.SNP));
         reports.addAll(getTypeChecks(vcfData, sampleId, VCFType.INDELS));
 
-        logBaseDataReports(LOGGER, reports);
+        BaseDataReport.log(LOGGER, reports);
         return reports;
     }
 
@@ -122,16 +126,16 @@ public class SomaticExtractor extends AbstractVCFExtractor {
             @NotNull final VCFType vcfType) {
         return vcfData.stream().filter(vcf -> vcf.getType().equals(vcfType)).map(vcf -> {
             VCFSomaticSetData vcfSomaticSetData = null;
-            final String setValue = Arrays.stream(vcf.getInfo().split(SEMICOLON_DELIMITER)).filter(
+            final Optional<String> setValue = Arrays.stream(vcf.getInfo().split(SEMICOLON_DELIMITER)).filter(
                     infoLine -> infoLine.contains(SET)).map(
-                    infoLine -> infoLine.substring(infoLine.indexOf(EQUAL) + ONE,
-                            infoLine.length())).findFirst().get();
-            final String[] allCallers = setValue.split(DASH);
+                    infoLine -> infoLine.substring(infoLine.indexOf(EQUAL) + 1, infoLine.length())).findFirst();
+            assert setValue.isPresent();
+            final String[] allCallers = setValue.get().split(DASH);
             final List<String> filteredCallers = Arrays.stream(allCallers).filter(
                     caller -> !caller.startsWith(FILTER_IN)).collect(Collectors.toList());
-            if (filteredCallers.size() > ZERO) {
+            if (filteredCallers.size() > 0) {
                 final Map<String, Integer> callersMap = filteredCallers.stream().collect(
-                        Collectors.toMap(key -> key, value -> filteredCallers.size() - ONE));
+                        Collectors.toMap(key -> key, value -> filteredCallers.size() - 1));
                 vcfSomaticSetData = new VCFSomaticSetData(filteredCallers.size(), callersMap);
             }
             return vcfSomaticSetData;
@@ -144,7 +148,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         final List<VCFSomaticSetData> callerSets = getSetsForCaller(vcfSomaticSetData, caller);
         final List<VCFSomaticSetData> callerSetsPerCallersCount = getSetForCallerWithMoreThanOneCaller(callerSets,
                 caller);
-        double precision = ZERO_DOUBLE_VALUE;
+        double precision = 0D;
         if (!callerSetsPerCallersCount.isEmpty() && !callerSets.isEmpty()) {
             precision = (double) callerSetsPerCallersCount.size() / callerSets.size();
         }
@@ -159,8 +163,8 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         final List<VCFSomaticSetData> callerSetsPerCallersCount = getSetForCallerWithMoreThanOneCaller(
                 vcfSomaticSetData, caller);
         final List<VCFSomaticSetData> setsPerCount = getSetsFilteredByCount(vcfSomaticSetData,
-                isTotalCallersCountMoreThan(ONE));
-        double sensitivity = ZERO_DOUBLE_VALUE;
+                isTotalCallersCountMoreThan(1));
+        double sensitivity = 0D;
         if (!callerSetsPerCallersCount.isEmpty() && !setsPerCount.isEmpty()) {
             sensitivity = (double) callerSetsPerCallersCount.size() / setsPerCount.size();
         }
@@ -174,7 +178,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
             @NotNull final String sampleId, @NotNull final VCFType vcfType, final int count) {
         final List<VCFSomaticSetData> setsPerCount = getSetsFilteredByCount(vcfSomaticSetData,
                 isTotalCallersCountEqual(count));
-        double proportion = ZERO_DOUBLE_VALUE;
+        double proportion = 0D;
         if (!setsPerCount.isEmpty() && !vcfSomaticSetData.isEmpty()) {
             proportion = setsPerCount.size() / vcfSomaticSetData.size();
         }
@@ -189,7 +193,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
             @NotNull final List<VCFSomaticSetData> vcfSomaticSetData, @NotNull final String caller) {
         final List<VCFSomaticSetData> callerSets = getSetsForCaller(vcfSomaticSetData, caller);
         return callerSets.stream().filter(
-                vcfSomaticSet -> vcfSomaticSet.getCallersCountPerCaller().get(caller) > ONE).collect(
+                vcfSomaticSet -> vcfSomaticSet.getCallersCountPerCaller().get(caller) > 1).collect(
                 Collectors.toList());
     }
 

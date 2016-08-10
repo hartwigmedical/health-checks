@@ -1,5 +1,9 @@
 package com.hartwig.healthchecks.boggs.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -69,7 +73,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final long totalSequences = sumOfTotalSequencesFromFastQC(sampleFile, zipFileReader);
         final List<BaseDataReport> mappingChecks = getFlagStatsData(sampleId, sampleFile, totalSequences);
 
-        logBaseDataReports(LOGGER, mappingChecks);
+        BaseDataReport.log(LOGGER, mappingChecks);
         return mappingChecks;
     }
 

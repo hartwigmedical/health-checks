@@ -1,5 +1,7 @@
 package com.hartwig.healthchecks.flint.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -7,11 +9,11 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
-abstract class AbstractFlintExtractor extends AbstractDataExtractor {
+abstract class AbstractFlintExtractor implements DataExtractor {
 
     static final String PICARD_SAMPLE_IDENTIFIER = "INPUT";
 
@@ -27,12 +29,12 @@ abstract class AbstractFlintExtractor extends AbstractDataExtractor {
         final Optional<String> optValue = Arrays.stream(lines.get(index).split(SPACE)).filter(
                 line -> line.contains(filter)).map(inputLine -> {
             final String[] values = inputLine.split(EQUAL_REGEX);
-            return values[ONE];
+            return values[1];
         }).findFirst();
 
         if (optValue.isPresent()) {
             final String value = optValue.get();
-            return value.substring(value.lastIndexOf(File.separator) + ONE, value.indexOf(BAM_EXT));
+            return value.substring(value.lastIndexOf(File.separator) + 1, value.indexOf(BAM_EXT));
         }
 
         // KODU: Not sure this makes sense or could ever happen...
@@ -43,7 +45,7 @@ abstract class AbstractFlintExtractor extends AbstractDataExtractor {
     static String getValueFromLine(@NotNull final List<String> lines, @NotNull final String suffix,
             @NotNull final String filter, final int fieldIndex) throws LineNotFoundException {
         final int index = findLineIndex(suffix, lines, filter);
-        final String line = lines.get(index + ONE);
+        final String line = lines.get(index + 1);
         final String[] lineValues = line.split(SEPARATOR_REGEX);
         return lineValues[fieldIndex];
     }

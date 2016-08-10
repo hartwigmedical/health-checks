@@ -1,5 +1,10 @@
 package com.hartwig.healthchecks.flint.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,6 +30,9 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
 
     private static final String PICARD_CATEGORY_TO_READ = "PAIR";
     private static final String AL_SUM_METRICS_EXTENSION = ".alignment_summary_metrics";
+    private static final String QC_STATS = "QCStats";
+    private static final String UNDERSCORE = "_";
+    private static final String DEDUP_SAMPLE_SUFFIX = "dedup";
 
     @NotNull
     private final SampleFinderAndReader reader;
@@ -78,7 +86,7 @@ public class SummaryMetricsExtractor extends AbstractFlintExtractor {
             @NotNull final SummaryMetricsCheck check) throws LineNotFoundException {
         final String value = line.split(SEPARATOR_REGEX)[check.getIndex()];
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
-        logBaseDataReport(LOGGER, baseDataReport);
+        baseDataReport.log(LOGGER);
         return baseDataReport;
     }
 }

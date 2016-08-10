@@ -1,5 +1,9 @@
 package com.hartwig.healthchecks.flint.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,6 +27,9 @@ public class WGSMetricsExtractor extends AbstractFlintExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(WGSMetricsExtractor.class);
     private static final String WGS_METRICS_EXTENSION = "dedup_WGSMetrics.txt";
+    private static final String QC_STATS = "QCStats";
+    private static final String UNDERSCORE = "_";
+    private static final String DEDUP_SAMPLE_SUFFIX = "dedup";
 
     @NotNull
     private final SampleFinderAndReader reader;
@@ -76,7 +83,7 @@ public class WGSMetricsExtractor extends AbstractFlintExtractor {
             @NotNull final String sampleId, @NotNull final CoverageCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(lines, suffix, check.getFieldName(), check.getColumnIndex());
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
-        logBaseDataReport(LOGGER, baseDataReport);
+        baseDataReport.log(LOGGER);
         return baseDataReport;
     }
 }

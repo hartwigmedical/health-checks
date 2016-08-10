@@ -3,6 +3,11 @@ package com.hartwig.healthchecks.boo.extractor;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -42,7 +47,6 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     private static final int EXPECTED_LINE_LENGTH = 3;
     private static final String EMPTY_FILES_ERROR = "File %s was found empty in path -> %s";
     private static final long MIN_TOTAL_SQ = 85000000L;
-    private static final int NEGATIVE_ONE = -1;
 
     @NotNull
     private final ZipFilesReader zipFileReader;
@@ -73,7 +77,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
         final List<BaseDataReport> sampleData = extractSummaryData(samplePath, sampleId);
         final BaseDataReport sampleFastq = extractFastqData(samplePath, sampleId);
         sampleData.add(sampleFastq);
-        logBaseDataReports(LOGGER, sampleData);
+        BaseDataReport.log(LOGGER, sampleData);
         return sampleData;
     }
 
@@ -115,13 +119,13 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
         return (firstData, secondData) -> {
             final String firstStatus = firstData.getValue();
             final String secondStatus = secondData.getValue();
-            int status = ONE;
+            int status = 1;
             if (firstStatus.equals(secondStatus)) {
-                status = ZERO;
+                status = 0;
             } else if (FAIL.equals(firstStatus)) {
-                status = NEGATIVE_ONE;
+                status = -1;
             } else if (WARN.equals(firstStatus) && PASS.equals(secondStatus)) {
-                status = NEGATIVE_ONE;
+                status = -1;
             }
             return status;
         };
@@ -131,7 +135,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     private BaseDataReport extractFastqData(@NotNull final Path pathToCheck, @NotNull final String sampleId)
             throws IOException, EmptyFileException {
         final long totalSequences = sumOfTotalSequencesFromFastQC(pathToCheck, zipFileReader);
-        if (totalSequences == ZERO_DOUBLE_VALUE) {
+        if (totalSequences == 0) {
             throw new EmptyFileException(FASTQC_DATA_FILE_NAME, pathToCheck.toString());
         }
         String status = PASS;

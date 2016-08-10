@@ -1,18 +1,22 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.hartwig.healthchecks.common.exception.HeaderNotFoundException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
 import org.jetbrains.annotations.NotNull;
 
-abstract class AbstractVCFExtractor extends AbstractDataExtractor {
+abstract class AbstractVCFExtractor implements DataExtractor {
 
     private static final String HEADER_NOT_FOUND_ERROR = "File %s does not contain following headers %s";
     private static final String[] NEEDED_HEADERS = { "FILTER", "REF", "ALT", "INFO", "(CPCT)(\\d+)(T)" };
@@ -28,7 +32,7 @@ abstract class AbstractVCFExtractor extends AbstractDataExtractor {
     @NotNull
     String[] getHeaders(@NotNull final List<String> lines, @NotNull final String extension,
             final boolean isGermlineCheck) throws LineNotFoundException, HeaderNotFoundException {
-        final String[] headers = lines.get(ZERO).split(SEPARATOR_REGEX);
+        final String[] headers = lines.get(0).split(SEPARATOR_REGEX);
 
         List<String> expectedHeaders = Arrays.stream(NEEDED_HEADERS).collect(Collectors.toList());
         if (isGermlineCheck) {
@@ -37,7 +41,7 @@ abstract class AbstractVCFExtractor extends AbstractDataExtractor {
         }
         final List<String> validation = expectedHeaders.stream().filter(
                 expectedHeader -> Arrays.stream(headers).filter(header -> header.matches(expectedHeader)).count()
-                        < ONE).collect(Collectors.toList());
+                        < 1).collect(Collectors.toList());
         if (!validation.isEmpty()) {
             final String missingHeaders = validation.stream().map(Object::toString).collect(
                     Collectors.joining(COMMA_DELIMITER));
@@ -48,8 +52,11 @@ abstract class AbstractVCFExtractor extends AbstractDataExtractor {
 
     @NotNull
     static String getSampleIdFromHeader(@NotNull final String[] headers, @NotNull final String suffix) {
-        return Arrays.stream(headers).filter(
-                header -> header.startsWith(SAMPLE_PREFIX) && header.endsWith(suffix)).findFirst().get();
+        Optional<String> sampleId = Arrays.stream(headers).filter(
+                header -> header.startsWith(SAMPLE_PREFIX) && header.endsWith(suffix)).findFirst();
+
+        assert sampleId.isPresent();
+        return sampleId.get();
     }
 
     @NotNull

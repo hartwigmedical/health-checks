@@ -2,6 +2,8 @@ package com.hartwig.healthchecks.common.io.extractor;
 
 import static java.util.stream.Collectors.toList;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -11,7 +13,7 @@ import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractTotalSequenceExtractor extends AbstractDataExtractor {
+public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
 
     protected static final String QC_STATS = "QCStats";
     protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";

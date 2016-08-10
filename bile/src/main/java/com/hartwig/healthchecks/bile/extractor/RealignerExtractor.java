@@ -1,5 +1,9 @@
 package com.hartwig.healthchecks.bile.extractor;
 
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
+import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,7 +17,7 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
-import com.hartwig.healthchecks.common.io.extractor.AbstractDataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.SamplePathData;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
@@ -25,7 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class RealignerExtractor extends AbstractDataExtractor {
+public class RealignerExtractor implements DataExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(RealignerExtractor.class);
 
@@ -40,6 +44,9 @@ public class RealignerExtractor extends AbstractDataExtractor {
     private static final String BIGGER_THAN = ">";
     private static final String SMALLER_THAN = "<";
     private static final String PLUS = "+";
+    private static final String QC_STATS = "QCStats";
+    private static final String UNDERSCORE = "_";
+    private static final String DEDUP_SAMPLE_SUFFIX = "dedup";
 
     @NotNull
     private final SampleFinderAndReader reader;
@@ -68,14 +75,14 @@ public class RealignerExtractor extends AbstractDataExtractor {
         final String path = runDirectory + File.separator + QC_STATS;
         final Path pathFound = samplePathFinder.findPath(path, SAMPLE_PREFIX, suffix);
 
-        final String sampleId = pathFound.toString().substring(pathFound.toString().lastIndexOf("/") + ONE,
+        final String sampleId = pathFound.toString().substring(pathFound.toString().lastIndexOf("/") + 1,
                 pathFound.toString().lastIndexOf("_dedup"));
 
         final long diffCount = getDiffCount(runDirectory, suffix, path);
         final long mappedValue = getMappedValue(runDirectory, suffix, path);
         final String value = new DecimalFormat(DECIMAL_PRECISION).format((double) diffCount / mappedValue);
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, MAP_REALIGN_CHAN_ALIGN, value);
-        logBaseDataReport(LOGGER, baseDataReport);
+        baseDataReport.log(LOGGER);
         return Collections.singletonList(baseDataReport);
     }
 
@@ -96,7 +103,7 @@ public class RealignerExtractor extends AbstractDataExtractor {
         if (!mapped.contains(PLUS)) {
             throw new MalformedFileException(String.format(MALFORMED_FILE_MSG, SLICED_EXT, runDirectory, PLUS));
         }
-        final String mappedValue = mapped.substring(ZERO, mapped.indexOf(PLUS));
+        final String mappedValue = mapped.substring(0, mapped.indexOf(PLUS));
         return Long.valueOf(mappedValue.trim());
     }
 
