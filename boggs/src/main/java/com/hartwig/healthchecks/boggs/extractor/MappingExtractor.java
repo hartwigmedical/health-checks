@@ -139,8 +139,11 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     @NotNull
     private static BaseDataReport generateSingletonDataReport(@NotNull final String sampleId,
             @NotNull final List<FlagStats> passed) {
+        final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGLETONS_INDEX.getIndex());
-        final double singletonPercentage = singletonStat.getValue();
+        final DivisionOperator singletonStatCalc = FlagStatsType.SINGLETONS_INDEX.getCalculableInstance();
+        final double singletonPercentage = toPercentage(
+                singletonStatCalc.calculate(singletonStat.getValue(), mappedStat.getValue()));
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPORTION_SINGLETON.toString(),
                 String.valueOf(singletonPercentage));
@@ -149,8 +152,11 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     @NotNull
     private static BaseDataReport generateMateMappedDataReport(@NotNull final String sampleId,
             @NotNull final List<FlagStats> passed) {
+        final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
-        final double mateMappedDiffChrPerc = diffPercStat.getValue();
+        final DivisionOperator diffPercStatCalc = FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getCalculableInstance();
+        final double mateMappedDiffChrPerc = toPercentage(
+                diffPercStatCalc.calculate(diffPercStat.getValue(), mappedStat.getValue()));
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR.toString(),
                 String.valueOf(mateMappedDiffChrPerc));

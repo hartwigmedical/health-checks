@@ -187,7 +187,7 @@ public class MappingExtractorTest {
         assertEquals("99.57", properData.getValue());
 
         final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
-        assertEquals("55.0", singletonData.getValue());
+        assertEquals("0.31", singletonData.getValue());
 
         final BaseDataReport duplicateData = extractReportData(mapping,
                 MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
