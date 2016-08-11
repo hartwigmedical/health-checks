@@ -8,7 +8,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.io.path.RunPathData;
+import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class BileAdapter extends AbstractHealthCheckAdapter {
 
     @Override
-    public void runCheck(@NotNull final RunPathData runPathData, @NotNull final String reportType) {
+    public void runCheck(@NotNull final RunContext runContext, @NotNull final String reportType) {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
@@ -30,7 +30,7 @@ public class BileAdapter extends AbstractHealthCheckAdapter {
         final SamplePathFinder samplePathFinder = SamplePathFinder.build();
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
 
-        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.REALIGNER, runPathData.getRunDirectory(),
+        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.REALIGNER, runContext.getRunDirectory(),
                 extractor);
         final BaseReport baseReport = healthCheck.runCheck();
         report.addReportData(baseReport);

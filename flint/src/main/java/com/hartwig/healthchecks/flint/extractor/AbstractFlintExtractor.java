@@ -25,7 +25,7 @@ abstract class AbstractFlintExtractor implements DataExtractor {
     @NotNull
     static String getSampleId(@NotNull final String suffix, @NotNull final List<String> lines,
             @NotNull final String filter) throws LineNotFoundException {
-        final int index = findLineIndex(suffix, lines, filter);
+        final int index = findLineIndex(lines, filter);
         final Optional<String> optValue = Arrays.stream(lines.get(index).split(SPACE)).filter(
                 line -> line.contains(filter)).map(inputLine -> {
             final String[] values = inputLine.split(EQUAL_REGEX);
@@ -42,20 +42,21 @@ abstract class AbstractFlintExtractor implements DataExtractor {
     }
 
     @NotNull
+    // TODO (KODU): Remove suffix
     static String getValueFromLine(@NotNull final List<String> lines, @NotNull final String suffix,
             @NotNull final String filter, final int fieldIndex) throws LineNotFoundException {
-        final int index = findLineIndex(suffix, lines, filter);
+        final int index = findLineIndex(lines, filter);
         final String line = lines.get(index + 1);
         final String[] lineValues = line.split(SEPARATOR_REGEX);
         return lineValues[fieldIndex];
     }
 
-    private static int findLineIndex(@NotNull final String suffix, @NotNull final List<String> lines,
-            @NotNull final String filter) throws LineNotFoundException {
+    private static int findLineIndex(@NotNull final List<String> lines, @NotNull final String filter)
+            throws LineNotFoundException {
         final Optional<Integer> lineNumbers = IntStream.range(0, lines.size()).filter(
                 index -> lines.get(index).contains(filter)).mapToObj(index -> index).findFirst();
         if (!lineNumbers.isPresent()) {
-            throw new LineNotFoundException(suffix, filter);
+            throw new LineNotFoundException(filter);
         }
         return lineNumbers.get();
     }

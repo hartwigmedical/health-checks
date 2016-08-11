@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+
+import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface FileReader {
@@ -27,7 +27,6 @@ public interface FileReader {
                 throw new EmptyFileException(fileToRead.getFileName().toString(), fileToRead.toString());
             }
             return lines;
-
         };
     }
 

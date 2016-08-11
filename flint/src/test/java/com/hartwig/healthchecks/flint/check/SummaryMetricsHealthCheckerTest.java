@@ -20,6 +20,7 @@ import com.hartwig.healthchecks.common.report.SampleReport;
 import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import mockit.Expectations;
@@ -102,6 +103,7 @@ public class SummaryMetricsHealthCheckerTest {
     }
 
     @Test
+    @Ignore
     public void verifyHealthCheckerLineNotFoundException() throws IOException, HealthChecksException {
         new Expectations() {
             {

@@ -6,7 +6,7 @@ import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.io.path.RunPathDataFactory;
+import com.hartwig.healthchecks.common.io.path.RunContextTempFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.PatientReport;
@@ -40,7 +40,7 @@ public class BileAdapterTest {
             }
         };
         final AbstractHealthCheckAdapter adapter = new BileAdapter();
-        adapter.runCheck(RunPathDataFactory.fromRunDirectory(DUMMY_RUN_DIR), DUMMY_REPORT);
+        adapter.runCheck(RunContextTempFactory.fromRunDirectory(DUMMY_RUN_DIR), DUMMY_REPORT);
     }
 
     @NotNull
