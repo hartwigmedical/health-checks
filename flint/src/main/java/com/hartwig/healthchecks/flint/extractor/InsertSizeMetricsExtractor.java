@@ -51,7 +51,6 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-
         final List<BaseDataReport> referenceSample = getSampleData(runContext.refSample());
         final List<BaseDataReport> tumorSample = getSampleData(runContext.tumorSample());
 

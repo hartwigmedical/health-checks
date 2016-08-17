@@ -33,10 +33,16 @@ public final class RunContextFactory {
 
     @NotNull
     // TODO (KODU): Belongs in test-package
-    public static RunContext testContext(@NotNull final String refSampleId, @NotNull final String tumorSampleId) {
-        SampleContext refSample = new SampleContextImpl(refSampleId, "", "", "");
-        SampleContext tumorSample = new SampleContextImpl(tumorSampleId, "", "", "");
-        return new RunContextImpl("", refSample, tumorSample, "", "");
+    public static RunContext testContext(@NotNull final String runDirectory, @NotNull final SampleContext refSample,
+            @NotNull final SampleContext tumorSample, @NotNull final String log, @NotNull final String somatics) {
+        return new RunContextImpl(runDirectory, refSample, tumorSample, log, somatics);
+    }
+
+    @NotNull
+    // TODO (KODU): Belongs in test-package
+    public static SampleContext testSampleContext(@NotNull final String sampleId, @NotNull final String mapping,
+            @NotNull final String sampleQcStats, @NotNull final String runQcStats) {
+        return new SampleContextImpl(sampleId, mapping, sampleQcStats, runQcStats);
     }
 
     @NotNull
@@ -57,9 +63,9 @@ public final class RunContextFactory {
         SampleContext refSampleContext = sampleContextFromRunDirectory(runDirectory, refSampleId);
         SampleContext tumorSampleContext = sampleContextFromRunDirectory(runDirectory, tumorSampleId);
 
-        String logsDirectory = runDirectory + File.separator + RUN_LOG_DIR + File.separator;
+        String logsDirectory = runDirectory + File.separator + RUN_LOG_DIR;
         String somaticsDirectory = runDirectory + File.separator + RUN_SOMATICS_DIR + File.separator + refSampleId
-                + RUN_SOMATICS_DIR_SAMPLE_CONNECTOR + tumorSampleId + File.separator;
+                + RUN_SOMATICS_DIR_SAMPLE_CONNECTOR + tumorSampleId;
 
         return new RunContextImpl(runDirectory, refSampleContext, tumorSampleContext, logsDirectory,
                 somaticsDirectory);
@@ -70,12 +76,10 @@ public final class RunContextFactory {
             @NotNull final String sampleId) {
         String sampleDirectory = runDirectory + File.separator + sampleId;
 
-        String mappingDirectory = sampleDirectory + File.separator + SAMPLE_MAPPING_DIR + File.separator;
-        String sampleQcDirectory = sampleDirectory + File.separator + SAMPLE_QCSTATS_DIR + File.separator;
+        String mappingDirectory = sampleDirectory + File.separator + SAMPLE_MAPPING_DIR;
+        String sampleQcDirectory = sampleDirectory + File.separator + SAMPLE_QCSTATS_DIR;
         String runQcDirectory =
-                runDirectory + File.separator + RUN_QCSTATS_DIR + File.separator + sampleId + RUN_QCSTATS_DIR_SUFFIX
-                        + File.separator;
+                runDirectory + File.separator + RUN_QCSTATS_DIR + File.separator + sampleId + RUN_QCSTATS_DIR_SUFFIX;
         return new SampleContextImpl(sampleId, mappingDirectory, sampleQcDirectory, runQcDirectory);
     }
-
 }

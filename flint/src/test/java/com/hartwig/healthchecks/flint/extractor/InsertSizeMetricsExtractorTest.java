@@ -4,17 +4,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
+import com.hartwig.healthchecks.common.io.path.SampleContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
@@ -74,7 +77,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Mocked
     private FileReader reader;
-    private final RunContext context = RunContextFactory.testContext(SAMPLE_ID_R, SAMPLE_ID_T);
+    private final RunContext context = dummyContext();
     private final SamplePathFinder samplePathFinder = (path, prefix, suffix) -> null;
 
     @Before
@@ -91,6 +94,18 @@ public class InsertSizeMetricsExtractorTest {
 
         missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
                 dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
+    }
+
+    @Test
+    public void realDataWorks() throws IOException, HealthChecksException {
+        final URL runURL = Resources.getResource("run/qcstats/sample");
+        final String runDirectory = runURL.getPath();
+
+        SampleContext sampleContext = RunContextFactory.testSampleContext("sample", "", "", runDirectory);
+        RunContext runContext = RunContextFactory.testContext("", sampleContext, sampleContext, "", "");
+
+        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test
@@ -193,5 +208,12 @@ public class InsertSizeMetricsExtractorTest {
 
         assertEquals(WRONG_DATA, expectedValue, value.get().getValue());
         assertEquals(WRONG_SAMPLE_ID, sampleId, value.get().getSampleId());
+    }
+
+    @NotNull
+    private static RunContext dummyContext() {
+        SampleContext refContext = RunContextFactory.testSampleContext(SAMPLE_ID_R, "", "", "");
+        SampleContext tumorContext = RunContextFactory.testSampleContext(SAMPLE_ID_T, "", "", "");
+        return RunContextFactory.testContext("", refContext, tumorContext, "", "");
     }
 }
