@@ -31,8 +31,8 @@ public class BoggsAdapter extends AbstractHealthCheckAdapter {
 
         final MappingExtractor mappingExtractor = new MappingExtractor(flagstatParser, zipFileReader,
                 samplePathFinder);
-        final HealthChecker mappingHealthChecker = new HealthCheckerImpl(CheckType.MAPPING,
-                runContext.getRunDirectory(), mappingExtractor);
+        final HealthChecker mappingHealthChecker = new HealthCheckerImpl(CheckType.MAPPING, runContext.runDirectory(),
+                mappingExtractor);
         final BaseReport mapping = mappingHealthChecker.runCheck();
         report.addReportData(mapping);
     }

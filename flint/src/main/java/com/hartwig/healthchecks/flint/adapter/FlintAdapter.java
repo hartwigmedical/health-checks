@@ -11,7 +11,7 @@ import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.exception.MalformedRunDirException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.RunPathData;
+import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
@@ -34,27 +34,27 @@ public class FlintAdapter extends AbstractHealthCheckAdapter {
         // KODU (TODO): Remove this wrapping
         RunContext realRunPath = null;
         try {
-            realRunPath = RunPathData.fromRunDirectory(runContext.getRunDirectory());
+            realRunPath = RunContextFactory.fromRunDirectory(runContext.runDirectory());
         } catch (MalformedRunDirException | IOException e) {
             e.printStackTrace();
         }
 
         final DataExtractor insertSizeExtractor = new InsertSizeMetricsExtractor(realRunPath);
-        final HealthChecker insertSizeChecker = new HealthCheckerImpl(CheckType.INSERT_SIZE,
-                runContext.getRunDirectory(), insertSizeExtractor);
+        final HealthChecker insertSizeChecker = new HealthCheckerImpl(CheckType.INSERT_SIZE, runContext.runDirectory(),
+                insertSizeExtractor);
         final BaseReport insertSizeReport = insertSizeChecker.runCheck();
         report.addReportData(insertSizeReport);
 
         final SampleFinderAndReader summaryReader = SampleFinderAndReader.build();
         final DataExtractor summaryExtractor = new SummaryMetricsExtractor(summaryReader);
         final HealthChecker summaryChecker = new HealthCheckerImpl(CheckType.SUMMARY_METRICS,
-                runContext.getRunDirectory(), summaryExtractor);
+                runContext.runDirectory(), summaryExtractor);
         final BaseReport summaryReport = summaryChecker.runCheck();
         report.addReportData(summaryReport);
 
         final SampleFinderAndReader wgsReader = SampleFinderAndReader.build();
         final DataExtractor wgsExtractor = new WGSMetricsExtractor(wgsReader);
-        final HealthChecker coverageChecker = new HealthCheckerImpl(CheckType.COVERAGE, runContext.getRunDirectory(),
+        final HealthChecker coverageChecker = new HealthCheckerImpl(CheckType.COVERAGE, runContext.runDirectory(),
                 wgsExtractor);
         final BaseReport coverageReport = coverageChecker.runCheck();
         report.addReportData(coverageReport);

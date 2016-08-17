@@ -30,7 +30,7 @@ public class BileAdapter extends AbstractHealthCheckAdapter {
         final SamplePathFinder samplePathFinder = SamplePathFinder.build();
         final DataExtractor extractor = new RealignerExtractor(reader, samplePathFinder);
 
-        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.REALIGNER, runContext.getRunDirectory(),
+        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.REALIGNER, runContext.runDirectory(),
                 extractor);
         final BaseReport baseReport = healthCheck.runCheck();
         report.addReportData(baseReport);

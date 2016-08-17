@@ -1,23 +1,21 @@
 package com.hartwig.healthchecks.common.io.path;
 
-import java.nio.file.Path;
-
 import org.jetbrains.annotations.NotNull;
 
 public interface RunContext {
 
     @NotNull
-    String getRunDirectory();
+    String runDirectory();
 
     @NotNull
-    String getRefSample();
+    SampleContext refSample();
 
     @NotNull
-    String getTumorSample();
+    SampleContext tumorSample();
 
     @NotNull
-    Path getRefSampleInsertSizeMetricsPath();
+    String logs();
 
     @NotNull
-    Path getTumorSampleInsertSizeMetricsPath();
+    String somatics();
 }

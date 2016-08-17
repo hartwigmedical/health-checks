@@ -28,14 +28,14 @@ public class NesbitAdapter extends AbstractHealthCheckAdapter {
 
         final ExtensionFinderAndLineReader germlineReader = ExtensionFinderAndLineReader.build();
         final DataExtractor germlineExtractor = new GermlineExtractor(germlineReader);
-        final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, runContext.getRunDirectory(),
+        final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, runContext.runDirectory(),
                 germlineExtractor);
         final BaseReport germlineReport = germline.runCheck();
         report.addReportData(germlineReport);
 
         final ExtensionFinderAndLineReader somaticReader = ExtensionFinderAndLineReader.build();
         final DataExtractor somaticExtractor = new SomaticExtractor(somaticReader);
-        final HealthChecker somatic = new HealthCheckerImpl(CheckType.SOMATIC, runContext.getRunDirectory(),
+        final HealthChecker somatic = new HealthCheckerImpl(CheckType.SOMATIC, runContext.runDirectory(),
                 somaticExtractor);
         final BaseReport somaticReport = somatic.runCheck();
         report.addReportData(somaticReport);

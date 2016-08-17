@@ -27,7 +27,7 @@ public class SmittyAdapter extends AbstractHealthCheckAdapter {
 
         final FileFinderAndReader kinshipReader = FileFinderAndReader.build();
         final DataExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
-        final HealthChecker kinshipChecker = new HealthCheckerImpl(CheckType.KINSHIP, runContext.getRunDirectory(),
+        final HealthChecker kinshipChecker = new HealthCheckerImpl(CheckType.KINSHIP, runContext.runDirectory(),
                 kinshipExtractor);
         final BaseReport kinshipReport = kinshipChecker.runCheck();
         report.addReportData(kinshipReport);

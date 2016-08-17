@@ -14,6 +14,8 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
+import com.hartwig.healthchecks.common.io.path.RunContextFactory;
+import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -72,7 +74,8 @@ public class InsertSizeMetricsExtractorTest {
 
     @Mocked
     private FileReader reader;
-    private final RunContext context = new TestRunContext(SAMPLE_ID_R, SAMPLE_ID_T);
+    private final RunContext context = RunContextFactory.testContext(SAMPLE_ID_R, SAMPLE_ID_T);
+    private final SamplePathFinder samplePathFinder = (path, prefix, suffix) -> null;
 
     @Before
     public void setUp() {
@@ -92,7 +95,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test
     public void extractDataFromFile() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader);
+        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
         new Expectations() {
             {
                 reader.readLines((Path) any);
@@ -105,7 +108,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void extractDataFromEmptyFile() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader);
+        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
         new Expectations() {
             {
                 reader.readLines((Path) any);
@@ -117,7 +120,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test(expected = IOException.class)
     public void extractDataFromFileIoException() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader);
+        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
         new Expectations() {
             {
                 reader.readLines((Path) any);
@@ -130,7 +133,7 @@ public class InsertSizeMetricsExtractorTest {
     @Test(expected = LineNotFoundException.class)
     @Ignore
     public void extractDataLineNotFoundRefExceptionFirstFile() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader);
+        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
         new Expectations() {
             {
                 reader.readLines((Path) any);
@@ -143,7 +146,7 @@ public class InsertSizeMetricsExtractorTest {
     @Test(expected = LineNotFoundException.class)
     @Ignore
     public void extractDataLineNotFoundRefException() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader);
+        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
         new Expectations() {
             {
                 reader.readLines((Path) any);
@@ -155,7 +158,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test(expected = LineNotFoundException.class)
     public void extractDataLineNotFoundTumException() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader);
+        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
         new Expectations() {
             {
                 reader.readLines((Path) any);

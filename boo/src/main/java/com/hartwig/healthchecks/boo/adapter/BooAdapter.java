@@ -30,7 +30,7 @@ public class BooAdapter extends AbstractHealthCheckAdapter {
 
         final PrestatsExtractor prestatsExtractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
         final HealthChecker prestatsHealthChecker = new HealthCheckerImpl(CheckType.PRESTATS,
-                runContext.getRunDirectory(), prestatsExtractor);
+                runContext.runDirectory(), prestatsExtractor);
         final BaseReport prestats = prestatsHealthChecker.runCheck();
         report.addReportData(prestats);
     }
