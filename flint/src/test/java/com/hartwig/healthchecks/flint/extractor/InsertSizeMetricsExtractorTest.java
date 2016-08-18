@@ -44,7 +44,7 @@ public class InsertSizeMetricsExtractorTest {
     private FileReader reader;
 
     @Test
-    public void realDataWorksAsExpected() throws IOException, HealthChecksException {
+    public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
@@ -53,7 +53,7 @@ public class InsertSizeMetricsExtractorTest {
     }
 
     @Test(expected = EmptyFileException.class)
-    public void extractDataFromEmptyFile() throws IOException, HealthChecksException {
+    public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
@@ -61,7 +61,7 @@ public class InsertSizeMetricsExtractorTest {
     }
 
     @Test(expected = IOException.class)
-    public void extractDataFromFileIoException() throws IOException, HealthChecksException {
+    public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
@@ -69,7 +69,7 @@ public class InsertSizeMetricsExtractorTest {
     }
 
     @Test(expected = LineNotFoundException.class)
-    public void extractDataLineNotFoundRefException() throws IOException, HealthChecksException {
+    public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
@@ -77,7 +77,7 @@ public class InsertSizeMetricsExtractorTest {
     }
 
     @Test(expected = LineNotFoundException.class)
-    public void extractDataLineNotFoundTumorException() throws IOException, HealthChecksException {
+    public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
@@ -85,7 +85,7 @@ public class InsertSizeMetricsExtractorTest {
     }
 
     @Test(expected = LineNotFoundException.class)
-    public void extractDataLineNotFoundBothSamples() throws IOException, HealthChecksException {
+    public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
