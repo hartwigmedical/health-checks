@@ -17,7 +17,6 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.io.path.SampleContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
@@ -98,11 +97,10 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test
     public void realDataWorks() throws IOException, HealthChecksException {
-        final URL runURL = Resources.getResource("run/qcstats/sample");
+        final URL runURL = Resources.getResource("run/QCStats2/sample_dedup");
         final String runDirectory = runURL.getPath();
 
-        SampleContext sampleContext = RunContextFactory.testSampleContext("sample", "", "", runDirectory);
-        RunContext runContext = RunContextFactory.testContext("", sampleContext, sampleContext, "", "");
+        RunContext runContext = RunContextFactory.testContext("run", "sample", "sample");
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
         extractor.extractFromRunDirectory("");
@@ -212,8 +210,6 @@ public class InsertSizeMetricsExtractorTest {
 
     @NotNull
     private static RunContext dummyContext() {
-        SampleContext refContext = RunContextFactory.testSampleContext(SAMPLE_ID_R, "", "", "");
-        SampleContext tumorContext = RunContextFactory.testSampleContext(SAMPLE_ID_T, "", "", "");
-        return RunContextFactory.testContext("", refContext, tumorContext, "", "");
+        return RunContextFactory.testContext("", SAMPLE_ID_R, SAMPLE_ID_T);
     }
 }

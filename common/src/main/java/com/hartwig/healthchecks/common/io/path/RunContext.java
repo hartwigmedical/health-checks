@@ -8,14 +8,8 @@ public interface RunContext {
     String runDirectory();
 
     @NotNull
-    SampleContext refSample();
+    String refSample();
 
     @NotNull
-    SampleContext tumorSample();
-
-    @NotNull
-    String logs();
-
-    @NotNull
-    String somatics();
+    String tumorSample();
 }

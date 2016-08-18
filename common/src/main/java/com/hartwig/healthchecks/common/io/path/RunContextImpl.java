@@ -7,21 +7,15 @@ class RunContextImpl implements RunContext {
     @NotNull
     private final String runDirectory;
     @NotNull
-    private final SampleContext refSample;
+    private final String refSample;
     @NotNull
-    private final SampleContext tumorSample;
-    @NotNull
-    private final String logs;
-    @NotNull
-    private final String somatics;
+    private final String tumorSample;
 
-    RunContextImpl(@NotNull final String runDirectory, @NotNull final SampleContext refSample,
-            @NotNull final SampleContext tumorSample, @NotNull final String logs, @NotNull final String somatics) {
+    RunContextImpl(@NotNull final String runDirectory, @NotNull final String refSample,
+            @NotNull final String tumorSample) {
         this.runDirectory = runDirectory;
         this.refSample = refSample;
         this.tumorSample = tumorSample;
-        this.logs = logs;
-        this.somatics = somatics;
     }
 
     @NotNull
@@ -32,26 +26,14 @@ class RunContextImpl implements RunContext {
 
     @NotNull
     @Override
-    public SampleContext refSample() {
+    public String refSample() {
         return refSample;
     }
 
     @NotNull
     @Override
-    public SampleContext tumorSample() {
+    public String tumorSample() {
         return tumorSample;
-    }
-
-    @NotNull
-    @Override
-    public String logs() {
-        return logs;
-    }
-
-    @NotNull
-    @Override
-    public String somatics() {
-        return somatics;
     }
 }
 

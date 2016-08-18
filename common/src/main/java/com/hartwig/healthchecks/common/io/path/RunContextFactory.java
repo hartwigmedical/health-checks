@@ -28,14 +28,14 @@ public final class RunContextFactory {
 
     @NotNull
     public static RunContext backwardsCompatible(@NotNull final String runDirectory) {
-        return new RunContextImpl(runDirectory, null, null, null, null);
+        return new RunContextImpl(runDirectory, null, null);
     }
 
     @NotNull
     // TODO (KODU): Belongs in test-package
-    public static RunContext testContext(@NotNull final String runDirectory, @NotNull final SampleContext refSample,
-            @NotNull final SampleContext tumorSample, @NotNull final String log, @NotNull final String somatics) {
-        return new RunContextImpl(runDirectory, refSample, tumorSample, log, somatics);
+    public static RunContext testContext(@NotNull final String runDirectory, @NotNull final String refSample,
+            @NotNull final String tumorSample) {
+        return new RunContextImpl(runDirectory, refSample, tumorSample);
     }
 
     @NotNull
@@ -57,18 +57,17 @@ public final class RunContextFactory {
             throw new MalformedRunDirException(runDirectory);
         }
 
-        String refSampleId = patient + REF_SAMPLE_SUFFIX;
-        String tumorSampleId = patient + TUMOR_SAMPLE_SUFFIX;
+        String refSample = patient + REF_SAMPLE_SUFFIX;
+        String tumorSample = patient + TUMOR_SAMPLE_SUFFIX;
 
-        SampleContext refSampleContext = sampleContextFromRunDirectory(runDirectory, refSampleId);
-        SampleContext tumorSampleContext = sampleContextFromRunDirectory(runDirectory, tumorSampleId);
+        //        SampleContext refSampleContext = sampleContextFromRunDirectory(runDirectory, refSampleId);
+        //        SampleContext tumorSampleContext = sampleContextFromRunDirectory(runDirectory, tumorSampleId);
 
-        String logsDirectory = runDirectory + File.separator + RUN_LOG_DIR;
-        String somaticsDirectory = runDirectory + File.separator + RUN_SOMATICS_DIR + File.separator + refSampleId
-                + RUN_SOMATICS_DIR_SAMPLE_CONNECTOR + tumorSampleId;
+        //        String logsDirectory = runDirectory + File.separator + RUN_LOG_DIR;
+        //        String somaticsDirectory = runDirectory + File.separator + RUN_SOMATICS_DIR + File.separator + refSampleId
+        //                + RUN_SOMATICS_DIR_SAMPLE_CONNECTOR + tumorSampleId;
 
-        return new RunContextImpl(runDirectory, refSampleContext, tumorSampleContext, logsDirectory,
-                somaticsDirectory);
+        return new RunContextImpl(runDirectory, refSample, tumorSample);
     }
 
     @NotNull

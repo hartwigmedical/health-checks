@@ -1,5 +1,6 @@
 package com.hartwig.healthchecks.flint.extractor;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -10,7 +11,6 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.SampleContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
@@ -25,6 +25,8 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(InsertSizeMetricsExtractor.class);
 
+    private static final String RUN_QCSTATS_DIR = "QCStats";
+    private static final String RUN_QCSTATS_DIR_SUFFIX = "_dedup";
     private static final String INSERT_SIZE_METRICS_EXTENSION = ".insert_size_metrics";
 
     @NotNull
@@ -51,24 +53,29 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> referenceSample = getSampleData(runContext.refSample());
-        final List<BaseDataReport> tumorSample = getSampleData(runContext.tumorSample());
+        final List<BaseDataReport> referenceSample = getSampleData(runDirectory, runContext.refSample());
+        final List<BaseDataReport> tumorSample = getSampleData(runDirectory, runContext.tumorSample());
 
         return new SampleReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
     }
 
     @NotNull
-    private List<BaseDataReport> getSampleData(@NotNull final SampleContext sampleContext)
+    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
             throws IOException, HealthChecksException {
-        Path insertSizeMetricsPath = samplePathFinder.findPath(sampleContext.runQcStats(), sampleContext.sampleId(),
-                INSERT_SIZE_METRICS_EXTENSION);
+        final String path = getPathForSample(runDirectory, sampleId);
+        Path insertSizeMetricsPath = samplePathFinder.findPath(path, sampleId, INSERT_SIZE_METRICS_EXTENSION);
         final List<String> lines = reader.readLines(insertSizeMetricsPath);
 
-        final BaseDataReport medianReport = getValue(lines, sampleContext.sampleId(),
+        final BaseDataReport medianReport = getValue(lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
-        final BaseDataReport width70PerReport = getValue(lines, sampleContext.sampleId(),
+        final BaseDataReport width70PerReport = getValue(lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
         return Arrays.asList(medianReport, width70PerReport);
+    }
+
+    @NotNull
+    private static String getPathForSample(@NotNull final String runDirectory, @NotNull final String sampleId) {
+        return runDirectory + RUN_QCSTATS_DIR + File.separator + sampleId + RUN_QCSTATS_DIR_SUFFIX + File.separator;
     }
 
     @NotNull
