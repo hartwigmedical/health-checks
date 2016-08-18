@@ -1,6 +1,5 @@
 package com.hartwig.healthchecks.common.io.path;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.hartwig.healthchecks.common.exception.MalformedRunDirException;
@@ -39,13 +38,6 @@ public final class RunContextFactory {
     }
 
     @NotNull
-    // TODO (KODU): Belongs in test-package
-    public static SampleContext testSampleContext(@NotNull final String sampleId, @NotNull final String mapping,
-            @NotNull final String sampleQcStats, @NotNull final String runQcStats) {
-        return new SampleContextImpl(sampleId, mapping, sampleQcStats, runQcStats);
-    }
-
-    @NotNull
     public static RunContext fromRunDirectory(@NotNull final String runDirectory)
             throws MalformedRunDirException, IOException {
         int patientPosition = runDirectory.indexOf("_CPCT");
@@ -64,21 +56,10 @@ public final class RunContextFactory {
         //        SampleContext tumorSampleContext = sampleContextFromRunDirectory(runDirectory, tumorSampleId);
 
         //        String logsDirectory = runDirectory + File.separator + RUN_LOG_DIR;
-        //        String somaticsDirectory = runDirectory + File.separator + RUN_SOMATICS_DIR + File.separator + refSampleId
+        //        String somaticsDirectory = runDirectory + File.separator + RUN_SOMATICS_DIR +
+        // File.separator + refSampleId
         //                + RUN_SOMATICS_DIR_SAMPLE_CONNECTOR + tumorSampleId;
 
         return new RunContextImpl(runDirectory, refSample, tumorSample);
-    }
-
-    @NotNull
-    private static SampleContext sampleContextFromRunDirectory(@NotNull final String runDirectory,
-            @NotNull final String sampleId) {
-        String sampleDirectory = runDirectory + File.separator + sampleId;
-
-        String mappingDirectory = sampleDirectory + File.separator + SAMPLE_MAPPING_DIR;
-        String sampleQcDirectory = sampleDirectory + File.separator + SAMPLE_QCSTATS_DIR;
-        String runQcDirectory =
-                runDirectory + File.separator + RUN_QCSTATS_DIR + File.separator + sampleId + RUN_QCSTATS_DIR_SUFFIX;
-        return new SampleContextImpl(sampleId, mappingDirectory, sampleQcDirectory, runQcDirectory);
     }
 }
