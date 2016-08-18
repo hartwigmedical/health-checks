@@ -14,15 +14,12 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import mockit.Mocked;
 
 public class InsertSizeMetricsExtractorTest {
 
@@ -39,9 +36,6 @@ public class InsertSizeMetricsExtractorTest {
     private static final String EMPTY_SAMPLE = "sample3";
     private static final String INCORRECT_SAMPLE = "sample4";
     private static final String NON_EXISTING_SAMPLE = "sample5";
-
-    @Mocked
-    private FileReader reader;
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
