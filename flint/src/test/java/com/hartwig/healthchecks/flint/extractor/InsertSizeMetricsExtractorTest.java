@@ -97,7 +97,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test
     public void realDataWorks() throws IOException, HealthChecksException {
-        final URL runURL = Resources.getResource("run/QCStats2/sample_dedup");
+        final URL runURL = Resources.getResource("run/QCStats/sample_dedup");
         final String runDirectory = runURL.getPath();
 
         RunContext runContext = RunContextFactory.testContext("run", "sample", "sample");
