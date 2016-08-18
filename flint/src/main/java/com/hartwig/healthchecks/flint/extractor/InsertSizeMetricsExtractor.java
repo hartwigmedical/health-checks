@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
@@ -31,22 +30,9 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
 
     @NotNull
     private final RunContext runContext;
-    @NotNull
-    private final FileReader reader;
-    @NotNull
-    private final SamplePathFinder samplePathFinder;
 
     public InsertSizeMetricsExtractor(@NotNull final RunContext runContext) {
-        this(runContext, FileReader.build(), SamplePathFinder.build());
-    }
-
-    @VisibleForTesting
-    InsertSizeMetricsExtractor(@NotNull final RunContext runContext, @NotNull final FileReader reader,
-            @NotNull final SamplePathFinder samplePathFinder) {
-        super();
         this.runContext = runContext;
-        this.reader = reader;
-        this.samplePathFinder = samplePathFinder;
     }
 
     @NotNull
@@ -60,11 +46,12 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     }
 
     @NotNull
-    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
-            throws IOException, HealthChecksException {
-        final String path = getPathForSample(runDirectory, sampleId);
-        Path insertSizeMetricsPath = samplePathFinder.findPath(path, sampleId, INSERT_SIZE_METRICS_EXTENSION);
-        final List<String> lines = reader.readLines(insertSizeMetricsPath);
+    private static List<BaseDataReport> getSampleData(@NotNull final String runDirectory,
+            @NotNull final String sampleId) throws IOException, HealthChecksException {
+        final String basePath = getBasePathForSample(runDirectory, sampleId);
+        Path insertSizeMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId,
+                INSERT_SIZE_METRICS_EXTENSION);
+        final List<String> lines = FileReader.build().readLines(insertSizeMetricsPath);
 
         final BaseDataReport medianReport = getValue(lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
@@ -74,7 +61,7 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     }
 
     @NotNull
-    private static String getPathForSample(@NotNull final String runDirectory, @NotNull final String sampleId) {
+    private static String getBasePathForSample(@NotNull final String runDirectory, @NotNull final String sampleId) {
         return runDirectory + File.separator + RUN_QCSTATS_DIR + File.separator + sampleId + RUN_QCSTATS_DIR_SUFFIX;
     }
 

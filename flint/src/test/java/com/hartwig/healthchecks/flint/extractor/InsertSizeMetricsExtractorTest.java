@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,185 +14,97 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import mockit.Expectations;
 import mockit.Mocked;
 
 public class InsertSizeMetricsExtractorTest {
 
-    private static final String WRONG_SAMPLE_ID = "Wrong Patient ID";
-    private static final String DATA_LINE = "%s\t61\t19\t825\t408.556471\t99.364112\t8376\tFR\t23\t47\t69\t93\t123\t153\t%s\t245\t327\t571\t\t\t\t";
+    private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
-    private static final String HEADER_LINE = "MEDIAN_INSERT_SIZE\tMEDIAN_ABSOLUTE_DEVIATION\tMIN_INSERT_SIZE\t"
-            + "MAX_INSERT_SIZE\tMEAN_INSERT_SIZE\tSTANDARD_DEVIATION\tREAD_PAIRS\tPAIR_ORIENTATION\t"
-            + "WIDTH_OF_10_PERCENT\tWIDTH_OF_20_PERCENT\tWIDTH_OF_30_PERCENT\tWIDTH_OF_40_PERCENT\t"
-            + "WIDTH_OF_50_PERCENT\tWIDTH_OF_60_PERCENT\tWIDTH_OF_70_PERCENT\tWIDTH_OF_80_PERCENT\t"
-            + "WIDTH_OF_90_PERCENT\tWIDTH_OF_99_PERCENT\tSAMPLE\tLIBRARY\tREAD_GROUP";
+    private static final String REF_SAMPLE = "sample1";
+    private static final String REF_MEDIAN_INSERT_SIZE = "409";
+    private static final String REF_WIDTH_OF_70_PERCENT = "195";
 
-    private static final String START_LINE =
-            "# picard.analysis.CollectMultipleMetrics " + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
-                    + "ASSUME_SORTED=true " + "OUTPUT=/sample/output/cancerPanel/QCStats//%s_dedup/"
-                    + "%s_dedup_MultipleMetrics.txt "
-                    + "PROGRAM=[CollectAlignmentSummaryMetrics, CollectBaseDistributionByCycle,"
-                    + " CollectInsertSizeMetrics, MeanQualityByCycle, QualityScoreDistribution, "
-                    + "CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, "
-                    + "QualityScoreDistribution, QualityScoreDistribution, CollectGcBiasMetrics] "
-                    + "TMP_DIR=[/sample/output/cancerPanel/QCStats/tmp] "
-                    + "REFERENCE_SEQUENCE=/data/GENOMES/Homo_sapiens.GRCh37.GATK.illumina/"
-                    + "Homo_sapiens.GRCh37.GATK.illumina.fasta    "
-                    + "STOP_AFTER=0 METRIC_ACCUMULATION_LEVEL=[ALL_READS] "
-                    + "VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT "
-                    + "COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 "
-                    + "CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json";
+    private static final String TUMOR_SAMPLE = "sample2";
+    private static final String TUMOR_MEDIAN_INSERT_SIZE = "410";
+    private static final String TUMOR_WIDTH_OF_70_PERCENT = "196";
 
-    private static final String FILLING_LINE = "bla\tbla\tbla\tbla\tbla\tbla\tbla\tbla\tbla\tbla";
-
-    private static final String TEST_DIR = "Test";
-    private static final String WRONG_DATA = "Wrong Data";
-    private static final String SAMPLE_ID_R = "CPCT12345678R";
-    private static final String SAMPLE_ID_T = "CPCT12345678T";
-    private static final String MEDIAN_INS_SZ_R = "409";
-    private static final String MEDIAN_INS_SZ_T = "309";
-    private static final String WIDTH_OF_70_PER_R = "247";
-    private static final String WIDTH_OF_70_PER_T = "147";
-    private static final String SHOULD_NOT_BE_NULL = "Should not be Null";
-
-    private List<String> refLines;
-    private List<String> tumLines;
-    private List<String> missingLines;
+    private static final String EMPTY_SAMPLE = "sample3";
+    private static final String INCORRECT_SAMPLE = "sample4";
+    private static final String NON_EXISTING_SAMPLE = "sample5";
 
     @Mocked
     private FileReader reader;
-    private final RunContext context = dummyContext();
-    private final SamplePathFinder samplePathFinder = (path, prefix, suffix) -> null;
-
-    @Before
-    public void setUp() {
-        String startLine = String.format(START_LINE, SAMPLE_ID_R, SAMPLE_ID_R, SAMPLE_ID_R, SAMPLE_ID_R);
-        String dataLine = String.format(DATA_LINE, MEDIAN_INS_SZ_R, WIDTH_OF_70_PER_R);
-        refLines = Arrays.asList(FILLING_LINE, startLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
-                dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
-
-        startLine = String.format(START_LINE, SAMPLE_ID_T, SAMPLE_ID_T, SAMPLE_ID_T, SAMPLE_ID_T);
-        dataLine = String.format(DATA_LINE, MEDIAN_INS_SZ_T, WIDTH_OF_70_PER_T);
-        tumLines = Arrays.asList(FILLING_LINE, startLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
-                dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
-
-        missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, HEADER_LINE,
-                dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
-    }
 
     @Test
-    public void realDataWorks() throws IOException, HealthChecksException {
-        final URL runURL = Resources.getResource("run");
-        final String runDirectory = runURL.getPath();
-
-        RunContext runContext = RunContextFactory.testContext(runDirectory, "sample", "sample");
+    public void realDataWorksAsExpected() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
-    }
-
-    @Test
-    public void extractDataFromFile() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
-        new Expectations() {
-            {
-                reader.readLines((Path) any);
-                returns(refLines, tumLines);
-            }
-        };
-        final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
+        final BaseReport report = extractor.extractFromRunDirectory("");
         assertReport(report);
     }
 
     @Test(expected = EmptyFileException.class)
     public void extractDataFromEmptyFile() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
-        new Expectations() {
-            {
-                reader.readLines((Path) any);
-                result = new EmptyFileException("", "");
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
+
+        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test(expected = IOException.class)
     public void extractDataFromFileIoException() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
-        new Expectations() {
-            {
-                reader.readLines((Path) any);
-                result = new IOException();
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
+
+        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test(expected = LineNotFoundException.class)
-    @Ignore
-    public void extractDataLineNotFoundRefExceptionFirstFile() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
-        new Expectations() {
-            {
-                reader.readLines((Path) any);
-                returns(missingLines);
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
-    }
-
-    @Test(expected = LineNotFoundException.class)
-    @Ignore
     public void extractDataLineNotFoundRefException() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
-        new Expectations() {
-            {
-                reader.readLines((Path) any);
-                returns(missingLines, missingLines);
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
+
+        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test(expected = LineNotFoundException.class)
-    public void extractDataLineNotFoundTumException() throws IOException, HealthChecksException {
-        final InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(context, reader, samplePathFinder);
-        new Expectations() {
-            {
-                reader.readLines((Path) any);
-                returns(refLines);
-                reader.readLines((Path) any);
-                result = new LineNotFoundException("", "");
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+    public void extractDataLineNotFoundTumorException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
+
+        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
+    }
+
+    @Test(expected = LineNotFoundException.class)
+    public void extractDataLineNotFoundBothSamples() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
+
+        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     private static void assertReport(@NotNull final BaseReport report) {
         assertEquals("Report with wrong type", CheckType.INSERT_SIZE, report.getCheckType());
-        assertNotNull(SHOULD_NOT_BE_NULL, report);
-        assertField(report, InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE.toString(), MEDIAN_INS_SZ_R,
-                MEDIAN_INS_SZ_T);
-        assertField(report, InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT.toString(), WIDTH_OF_70_PER_R,
-                WIDTH_OF_70_PER_T);
+        assertNotNull(report);
+        assertField(report, InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE.toString(), REF_MEDIAN_INSERT_SIZE,
+                TUMOR_MEDIAN_INSERT_SIZE);
+        assertField(report, InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT.toString(), REF_WIDTH_OF_70_PERCENT,
+                TUMOR_WIDTH_OF_70_PERCENT);
     }
 
     private static void assertField(@NotNull final BaseReport report, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((SampleReport) report).getReferenceSample(), SAMPLE_ID_R, field, refValue);
-        assertBaseData(((SampleReport) report).getTumorSample(), SAMPLE_ID_T, field, tumValue);
+        assertBaseData(((SampleReport) report).getReferenceSample(), REF_SAMPLE, field, refValue);
+        assertBaseData(((SampleReport) report).getTumorSample(), TUMOR_SAMPLE, field, tumValue);
     }
 
     private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String sampleId,
@@ -204,12 +113,7 @@ public class InsertSizeMetricsExtractorTest {
                 p -> p.getCheckName().equals(check)).findFirst();
         assert value.isPresent();
 
-        assertEquals(WRONG_DATA, expectedValue, value.get().getValue());
-        assertEquals(WRONG_SAMPLE_ID, sampleId, value.get().getSampleId());
-    }
-
-    @NotNull
-    private static RunContext dummyContext() {
-        return RunContextFactory.testContext("", SAMPLE_ID_R, SAMPLE_ID_T);
+        assertEquals(expectedValue, value.get().getValue());
+        assertEquals(sampleId, value.get().getSampleId());
     }
 }

@@ -13,15 +13,6 @@ public final class RunContextFactory {
     private static final String REF_SAMPLE_SUFFIX = "R";
     private static final String TUMOR_SAMPLE_SUFFIX = "T";
 
-    private static final String RUN_LOG_DIR = "logs";
-    private static final String RUN_SOMATICS_DIR = "Somatics";
-    private static final String RUN_SOMATICS_DIR_SAMPLE_CONNECTOR = "_";
-
-    private static final String SAMPLE_MAPPING_DIR = "mapping";
-    private static final String SAMPLE_QCSTATS_DIR = "QCStats";
-    private static final String RUN_QCSTATS_DIR = "QCStats";
-    private static final String RUN_QCSTATS_DIR_SUFFIX = "_dedup";
-
     private RunContextFactory() {
     }
 
@@ -51,14 +42,6 @@ public final class RunContextFactory {
 
         String refSample = patient + REF_SAMPLE_SUFFIX;
         String tumorSample = patient + TUMOR_SAMPLE_SUFFIX;
-
-        //        SampleContext refSampleContext = sampleContextFromRunDirectory(runDirectory, refSampleId);
-        //        SampleContext tumorSampleContext = sampleContextFromRunDirectory(runDirectory, tumorSampleId);
-
-        //        String logsDirectory = runDirectory + File.separator + RUN_LOG_DIR;
-        //        String somaticsDirectory = runDirectory + File.separator + RUN_SOMATICS_DIR +
-        // File.separator + refSampleId
-        //                + RUN_SOMATICS_DIR_SAMPLE_CONNECTOR + tumorSampleId;
 
         return new RunContextImpl(runDirectory, refSample, tumorSample);
     }
