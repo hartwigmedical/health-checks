@@ -2,7 +2,7 @@ package com.hartwig.healthchecks.flint.extractor;
 
 import org.jetbrains.annotations.NotNull;
 
-enum CoverageCheck {
+enum WGSMetricsCheck {
     COVERAGE_MEAN("MEAN_COVERAGE", 1),
     COVERAGE_SD("SD_COVERAGE", 2),
     COVERAGE_MEDIAN("MEDIAN_COVERAGE", 3),
@@ -17,7 +17,7 @@ enum CoverageCheck {
     private final String fieldName;
     private final int columnIndex;
 
-    CoverageCheck(@NotNull final String fieldName, final int columnIndex) {
+    WGSMetricsCheck(@NotNull final String fieldName, final int columnIndex) {
         this.fieldName = fieldName;
         this.columnIndex = columnIndex;
     }

@@ -4,184 +4,111 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.path.SamplePathData;
-import com.hartwig.healthchecks.common.io.reader.SampleFinderAndReader;
+import com.hartwig.healthchecks.common.io.path.RunContext;
+import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
 import org.junit.Test;
-
-import mockit.Expectations;
-import mockit.Mocked;
 
 public class SummaryMetricsExtractorTest {
 
-    private static final String WRONG_SAMPLE_ID = "Wrong Sample ID";
+    private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
-    private static final String DATA_LINE =
-            "PAIR\t17920\t17920\t1\t0\t17865\t0.996931\t" + "2678694\t17852\t2677263\t2587040\t0\t%s\t0.005017\t"
-                    + "%s\t151\t17810\t0.996921\t0\t%s\t%s\t%s\t\t\t\t";
+    private static final String REF_SAMPLE = "sample1";
+    private static final String REF_PF_MISMATCH_RATE = "0.006024";
+    private static final String REF_PF_INDEL_RATE = "0.000261";
+    private static final String REF_STRAND_BALANCE = "0.399972";
+    private static final String REF_PCT_CHIMERA = "0.000212";
+    private static final String REF_PCT_ADAPTER = "0.000046";
 
-    private static final String START_LINE = "# picard.analysis.CollectMultipleMetrics "
-            + "INPUT=/sample/output/cancerPanel/%s/mapping/%s_dedup.bam "
-                    + "ASSUME_SORTED=true " + "OUTPUT=/sample/output/cancerPanel/QCStats//%s_dedup/"
-                    + "%s_dedup_MultipleMetrics.txt "
-                    + "PROGRAM=[CollectAlignmentSummaryMetrics, CollectBaseDistributionByCycle,"
-                    + " CollectInsertSizeMetrics, MeanQualityByCycle, QualityScoreDistribution, "
-                    + "CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, "
-                    + "QualityScoreDistribution, QualityScoreDistribution, CollectGcBiasMetrics] "
-                    + "TMP_DIR=[/sample/output/cancerPanel/QCStats/tmp] "
-                    + "REFERENCE_SEQUENCE=/data/GENOMES/Homo_sapiens.GRCh37.GATK.illumina/"
-                    + "Homo_sapiens.GRCh37.GATK.illumina.fasta    "
-                    + "STOP_AFTER=0 METRIC_ACCUMULATION_LEVEL=[ALL_READS] "
-                    + "VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT "
-                    + "COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 "
-                    + "CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json";
+    private static final String TUMOR_SAMPLE = "sample2";
+    private static final String TUMOR_PF_MISMATCH_RATE = "0.005024";
+    private static final String TUMOR_PF_INDEL_RATE = "0.000262";
+    private static final String TUMOR_STRAND_BALANCE = "0.499972";
+    private static final String TUMOR_PCT_CHIMERA = "0.000112";
+    private static final String TUMOR_PCT_ADAPTER = "0.000056";
 
-    private static final String FILLING_LINE = "bla\tbla\tbla\tbla\tbla\tbla\tbla\tbla\tbla\tbla";
-
-    private static final String TEST_DIR = "Test";
-    private static final String WRONG_DATA = "Wrong Data";
-    private static final String SAMPLE_ID_R = "CPCT12345678R";
-    private static final String SAMPLE_ID_T = "CPCT12345678T";
-    private static final String MISMATCH_VALUE_R = "0.005024";
-    private static final String MISMATCH_VALUE_T = "0.004024";
-    private static final String INDEL_VALUE_R = "0.000161";
-    private static final String INDEL_VALUE_T = "0.000162";
-    private static final String STRAND_VALUE_R = "0.499972";
-    private static final String STRAND_VALUE_T = "0.399972";
-    private static final String CHIMERA_VALUE_R = "0.000112";
-    private static final String CHIMERA_VALUE_T = "0.000212";
-    private static final String ADAPTER_VALUE_R = "0.000056";
-    private static final String ADAPTER_VALUE_T = "0.000036";
-    private static final String SHOULD_NOT_BE_NULL = "Should not be Null";
-
-    private List<String> refLines;
-    private List<String> tumLines;
-    private List<String> missingLines;
-
-    @Mocked
-    private SampleFinderAndReader reader;
-
-    @Before
-    public void setUp() {
-        String startLine = String.format(START_LINE, SAMPLE_ID_R, SAMPLE_ID_R, SAMPLE_ID_R, SAMPLE_ID_R);
-        String dataLine = String.format(DATA_LINE, MISMATCH_VALUE_R, INDEL_VALUE_R, STRAND_VALUE_R, CHIMERA_VALUE_R,
-                ADAPTER_VALUE_R);
-        refLines = Arrays.asList(FILLING_LINE, startLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
-                dataLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
-
-        startLine = String.format(START_LINE, SAMPLE_ID_T, SAMPLE_ID_T, SAMPLE_ID_T, SAMPLE_ID_T);
-        dataLine = String.format(DATA_LINE, MISMATCH_VALUE_T, INDEL_VALUE_T, STRAND_VALUE_T, CHIMERA_VALUE_T,
-                ADAPTER_VALUE_T);
-        tumLines = Arrays.asList(FILLING_LINE, startLine, FILLING_LINE, FILLING_LINE, FILLING_LINE, dataLine,
-                FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
-
-        missingLines = Arrays.asList(FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE,
-                FILLING_LINE, FILLING_LINE, FILLING_LINE, FILLING_LINE);
-    }
+    private static final String EMPTY_SAMPLE = "sample3";
+    private static final String INCORRECT_SAMPLE = "sample4";
+    private static final String NON_EXISTING_SAMPLE = "sample5";
 
     @Test
-    public void extractDataFromFile() throws IOException, HealthChecksException {
-        final SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines((SamplePathData) any);
-                returns(refLines, tumLines);
-            }
-        };
-        final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
+    public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+
+        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
+        final BaseReport report = extractor.extractFromRunDirectory("");
         assertReport(report);
     }
 
     @Test(expected = EmptyFileException.class)
-    public void extractDataFromEmptyFile() throws IOException, HealthChecksException {
-        final SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines((SamplePathData) any);
-                result = new EmptyFileException("", "");
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+    public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
+
+        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test(expected = IOException.class)
-    public void extractDataFromFileIoException() throws IOException, HealthChecksException {
-        final SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines((SamplePathData) any);
-                result = new IOException();
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+    public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
+
+        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test(expected = LineNotFoundException.class)
-    public void extractDataLineNotFoundRefExceptionFirstFile() throws IOException, HealthChecksException {
-        final SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines((SamplePathData) any);
-                returns(missingLines);
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+    public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
+
+        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test(expected = LineNotFoundException.class)
-    public void extractDataLineNotFoundRefException() throws IOException, HealthChecksException {
-        final SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines((SamplePathData) any);
-                returns(refLines, missingLines);
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+    public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
+
+        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test(expected = LineNotFoundException.class)
-    public void extractDataLineNotFoundTumException() throws IOException, HealthChecksException {
-        final SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines((SamplePathData) any);
-                returns(refLines);
-                reader.readLines((SamplePathData) any);
-                result = new LineNotFoundException("", "");
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+    public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
+
+        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     private static void assertReport(@NotNull final BaseReport report) {
-        assertEquals("Report with wrong type", CheckType.SUMMARY_METRICS, report.getCheckType());
-        assertNotNull(SHOULD_NOT_BE_NULL, report);
-        assertField(report, SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE.toString(), MISMATCH_VALUE_R,
-                MISMATCH_VALUE_T);
-        assertField(report, SummaryMetricsCheck.MAPPING_PF_INDEL_RATE.toString(), INDEL_VALUE_R, INDEL_VALUE_T);
-        assertField(report, SummaryMetricsCheck.MAPPING_STRAND_BALANCE.toString(), STRAND_VALUE_R, STRAND_VALUE_T);
-        assertField(report, SummaryMetricsCheck.MAPPING_PCT_CHIMERA.toString(), CHIMERA_VALUE_R, CHIMERA_VALUE_T);
-        assertField(report, SummaryMetricsCheck.MAPPING_PCT_ADAPTER.toString(), ADAPTER_VALUE_R, ADAPTER_VALUE_T);
+        assertEquals(CheckType.SUMMARY_METRICS, report.getCheckType());
+        assertNotNull(report);
+        assertField(report, SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE.toString(), REF_PF_MISMATCH_RATE,
+                TUMOR_PF_MISMATCH_RATE);
+        assertField(report, SummaryMetricsCheck.MAPPING_PF_INDEL_RATE.toString(), REF_PF_INDEL_RATE,
+                TUMOR_PF_INDEL_RATE);
+        assertField(report, SummaryMetricsCheck.MAPPING_STRAND_BALANCE.toString(), REF_STRAND_BALANCE,
+                TUMOR_STRAND_BALANCE);
+        assertField(report, SummaryMetricsCheck.MAPPING_PCT_CHIMERA.toString(), REF_PCT_CHIMERA, TUMOR_PCT_CHIMERA);
+        assertField(report, SummaryMetricsCheck.MAPPING_PCT_ADAPTER.toString(), REF_PCT_ADAPTER, TUMOR_PCT_ADAPTER);
     }
 
     private static void assertField(@NotNull final BaseReport report, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((SampleReport) report).getReferenceSample(), SAMPLE_ID_R, field, refValue);
-        assertBaseData(((SampleReport) report).getTumorSample(), SAMPLE_ID_T, field, tumValue);
+        assertBaseData(((SampleReport) report).getReferenceSample(), REF_SAMPLE, field, refValue);
+        assertBaseData(((SampleReport) report).getTumorSample(), TUMOR_SAMPLE, field, tumValue);
     }
 
     private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String sampleId,
@@ -190,7 +117,7 @@ public class SummaryMetricsExtractorTest {
                 p -> p.getCheckName().equals(check)).findFirst();
         assert value.isPresent();
 
-        assertEquals(WRONG_DATA, expectedValue, value.get().getValue());
-        assertEquals(WRONG_SAMPLE_ID, sampleId, value.get().getSampleId());
+        assertEquals(expectedValue, value.get().getValue());
+        assertEquals(sampleId, value.get().getSampleId());
     }
 }
