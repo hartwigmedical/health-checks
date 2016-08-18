@@ -21,7 +21,7 @@ import com.hartwig.healthchecks.flint.extractor.WGSMetricsExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings("unused")
 @ResourceWrapper(type = CheckCategory.FLINT)
 public class FlintAdapter extends AbstractHealthCheckAdapter {
 
