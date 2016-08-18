@@ -53,8 +53,8 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> referenceSample = getSampleData(runDirectory, runContext.refSample());
-        final List<BaseDataReport> tumorSample = getSampleData(runDirectory, runContext.tumorSample());
+        final List<BaseDataReport> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
+        final List<BaseDataReport> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
         return new SampleReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
     }
@@ -75,7 +75,7 @@ public class InsertSizeMetricsExtractor extends AbstractFlintExtractor {
 
     @NotNull
     private static String getPathForSample(@NotNull final String runDirectory, @NotNull final String sampleId) {
-        return runDirectory + RUN_QCSTATS_DIR + File.separator + sampleId + RUN_QCSTATS_DIR_SUFFIX + File.separator;
+        return runDirectory + File.separator + RUN_QCSTATS_DIR + File.separator + sampleId + RUN_QCSTATS_DIR_SUFFIX;
     }
 
     @NotNull
