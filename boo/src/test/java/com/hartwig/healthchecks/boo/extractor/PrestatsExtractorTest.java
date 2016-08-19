@@ -21,13 +21,17 @@ import org.junit.Test;
 
 public class PrestatsExtractorTest {
 
-    private static final String REF_SAMPLE = "sample1";
-    private static final String TUMOR_SAMPLE = "sample2";
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
+
+    private static final String TUMOR_SAMPLE = "sample2";
+    private static final String TUMOR_TOTAL_SEQUENCES = "1450";
 
     private static final String EMPTY_SAMPLE = "sample3";
     private static final String INCORRECT_SAMPLE = "sample4";
     private static final String NON_EXISTING_SAMPLE = "sample5";
+
+    private static final String REF_SAMPLE = "sample1";
+    private static final String REF_TOTAL_SEQUENCES = "700";
     private static final int EXPECTED_CHECKS_NUM = 12;
 
     @Test
@@ -153,7 +157,7 @@ public class PrestatsExtractorTest {
     //        extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
     //    }
 
-    private void assertReport(@NotNull final BaseReport prestatsData) {
+    private static void assertReport(@NotNull final BaseReport prestatsData) {
         assertNotNull(prestatsData);
         assertEquals(CheckType.PRESTATS, prestatsData.getCheckType());
         assertRefSampleData(((SampleReport) prestatsData).getReferenceSample());
@@ -162,7 +166,7 @@ public class PrestatsExtractorTest {
 
     private static void assertRefSampleData(@NotNull final List<BaseDataReport> sampleData) {
         assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, "700", REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, REF_TOTAL_SEQUENCES, REF_SAMPLE);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsExtractor.FAIL,
                 REF_SAMPLE);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.PASS,
@@ -188,14 +192,30 @@ public class PrestatsExtractorTest {
 
     private static void assertTumorSampleData(@NotNull final List<BaseDataReport> sampleData) {
         assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
-        //        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, PrestatsExtractor.FAIL,
-        //                TUMOR_SAMPLE);
-        //        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.WARN,
-        //                TUMOR_SAMPLE);
-        //        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
-        //                PrestatsExtractor.FAIL, TUMOR_SAMPLE);
-        //        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
-        //                PrestatsExtractor.PASS, TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, TUMOR_TOTAL_SEQUENCES,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsExtractor.FAIL,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.PASS,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES,
+                PrestatsExtractor.WARN, TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsExtractor.FAIL,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsExtractor.WARN,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsExtractor.PASS,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
+                PrestatsExtractor.PASS, TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
+                PrestatsExtractor.FAIL, TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsExtractor.FAIL,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsExtractor.FAIL,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsExtractor.PASS,
+                TUMOR_SAMPLE);
     }
 
     private static void assertPrestatsDataReport(@NotNull final List<BaseDataReport> sampleData,
