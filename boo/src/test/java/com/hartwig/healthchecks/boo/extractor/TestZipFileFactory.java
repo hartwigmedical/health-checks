@@ -1,11 +1,15 @@
 package com.hartwig.healthchecks.boo.extractor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class TestZipFileFactory {
+final class TestZipFileFactory {
 
-    public static List<String> getSummaryLines(final String lane, final String suffix, final String perTSQStatus,
+    private TestZipFileFactory() {
+    }
+
+    static List<String> getSummaryLines(final String lane, final String suffix, final String perTSQStatus,
                     final String seqLengthStatus, final String duplicationLevelStatus) {
         final String[] lines = ("PASS\tBasic Statistics\t" + "CPCT12345678" + suffix + "FLOWCELL_S2_" + lane
                         + "_001.fastq.gz, " + "PASS\tPer base sequence quality\t" + "CPCT12345678" + suffix
@@ -27,7 +31,7 @@ public class TestZipFileFactory {
         return Arrays.asList(lines);
     }
 
-    public static List<String> getFastqLines() {
-        return Arrays.asList("Total Sequences\t8951");
+    static List<String> getFastqLines() {
+        return Collections.singletonList("Total Sequences\t8951");
     }
 }
