@@ -38,6 +38,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     private static final String FLAGSTAT_FILE_FILTER = ".realign";
     private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
+    // TODO (KODU): Replace samplePathFinder with proper run context
     @NotNull
     private final FlagStatParser flagstatParser;
     @NotNull
