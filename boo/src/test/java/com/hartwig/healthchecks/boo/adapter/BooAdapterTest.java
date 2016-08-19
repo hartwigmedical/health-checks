@@ -2,7 +2,6 @@ package com.hartwig.healthchecks.boo.adapter;
 
 import java.util.Collections;
 
-import com.hartwig.healthchecks.boo.extractor.PrestatsCheck;
 import com.hartwig.healthchecks.boo.extractor.PrestatsExtractor;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
@@ -27,10 +26,11 @@ public class BooAdapterTest {
     private static final String DUMMY_STATUS = "DummyStatus";
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
     private static final String DUMMY_REPORT = "DummyReport";
+    private static final String DUMMY_CHECK_NAME = "DummyCheckName";
 
     @Test
     public void verifyAdapterRunning(@Mocked final HealthCheckerImpl prestats, @Mocked final Report report,
-                    @Mocked final HealthCheckReportFactory factory, @Mocked final AbstractHealthCheckAdapter mock) {
+            @Mocked final HealthCheckReportFactory factory, @Mocked final AbstractHealthCheckAdapter mock) {
         new NonStrictExpectations() {
             {
                 AbstractHealthCheckAdapter.attachReport(DUMMY_REPORT);
@@ -54,7 +54,6 @@ public class BooAdapterTest {
         adapter.runCheck(RunContextFactory.backwardsCompatible(DUMMY_RUN_DIR), DUMMY_REPORT);
 
         new Verifications() {
-
             {
                 report.addReportData((BaseReport) any);
                 times = 1;
@@ -64,8 +63,7 @@ public class BooAdapterTest {
 
     @NotNull
     private static SampleReport getDummyPrestatsReport() {
-        final BaseDataReport prestatsDataReport = new BaseDataReport(DUMMY_ID, PrestatsCheck.DUMMY.toString(),
-                        DUMMY_STATUS);
+        final BaseDataReport prestatsDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK_NAME, DUMMY_STATUS);
         return new SampleReport(CheckType.PRESTATS, Collections.singletonList(prestatsDataReport),
                 Collections.singletonList(prestatsDataReport));
     }
