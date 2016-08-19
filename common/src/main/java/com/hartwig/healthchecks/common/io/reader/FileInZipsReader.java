@@ -28,7 +28,6 @@ interface FileInZipsReader {
                 throw new EmptyFileException(fileNameInZip, zipPath);
             }
             return fileLines;
-
         };
     }
 

@@ -1,7 +1,5 @@
 package com.hartwig.healthchecks.flint.extractor;
 
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,6 +32,7 @@ public class SummaryMetricsExtractor implements DataExtractor {
     private static final String ALIGNMENT_SUMMARY_METRICS_EXTENSION = ".alignment_summary_metrics";
 
     private static final String PICARD_CATEGORY_TO_READ = "PAIR";
+    private static final String VALUE_SEPARATOR = "\t";
 
     @NotNull
     private final RunContext runContext;
@@ -87,7 +86,7 @@ public class SummaryMetricsExtractor implements DataExtractor {
     @NotNull
     private static BaseDataReport getValue(@NotNull final String line, @NotNull final String sampleId,
             @NotNull final SummaryMetricsCheck check) throws LineNotFoundException {
-        final String value = line.split(SEPARATOR_REGEX)[check.getIndex()];
+        final String value = line.split(VALUE_SEPARATOR)[check.getIndex()];
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
         baseDataReport.log(LOGGER);
         return baseDataReport;

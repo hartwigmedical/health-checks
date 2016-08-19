@@ -2,8 +2,6 @@ package com.hartwig.healthchecks.common.io.extractor;
 
 import static java.util.stream.Collectors.toList;
 
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -17,6 +15,7 @@ public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
 
     private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
     private static final String TOTAL_SEQUENCES_PATTERN = "Total Sequences";
+    private static final String VALUE_SEPARATOR = "\t";
 
     protected static long sumOfTotalSequencesFromFastQC(@NotNull final String basePath,
             @NotNull final ZipFilesReader zipFileReader) throws IOException, HealthChecksException {
@@ -26,7 +25,7 @@ public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
         final List<String> allValues = allLines.stream().map(line -> {
             String totalSequences = null;
             if (line != null) {
-                final String[] values = line.split(SEPARATOR_REGEX);
+                final String[] values = line.split(VALUE_SEPARATOR);
                 totalSequences = values[1];
             }
             return totalSequences;

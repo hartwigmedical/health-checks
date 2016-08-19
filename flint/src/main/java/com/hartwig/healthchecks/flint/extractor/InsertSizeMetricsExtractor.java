@@ -1,7 +1,5 @@
 package com.hartwig.healthchecks.flint.extractor;
 
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -33,6 +31,7 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
     private static final String METRICS_BASE_DIRECTORY = "QCStats";
     private static final String METRICS_SUB_DIRECTORY_SUFFIX = "_dedup";
     private static final String INSERT_SIZE_METRICS_EXTENSION = ".insert_size_metrics";
+    private static final String VALUE_SEPARATOR = "\t";
 
     @NotNull
     private final RunContext runContext;
@@ -86,7 +85,7 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
             final int fieldIndex) throws LineNotFoundException {
         final int index = findLineIndex(lines, filter);
         final String line = lines.get(index + 1);
-        final String[] lineValues = line.split(SEPARATOR_REGEX);
+        final String[] lineValues = line.split(VALUE_SEPARATOR);
         return lineValues[fieldIndex];
     }
 

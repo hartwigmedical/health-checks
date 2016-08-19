@@ -30,15 +30,21 @@ public class SambambaFlagStatParser implements FlagStatParser {
                         .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
                                         && path.getFileName().toString().contains(filter))
                         .findFirst();
+
         if (!filePath.isPresent()) {
             throw new IOException("Could not find flagstat on " + flagstatPath);
         }
 
+        return parseFromFilePath(filePath.get());
+    }
+
+    @NotNull
+    private static FlagStatData parseFromFilePath(@NotNull Path filePath) throws IOException, EmptyFileException {
         final int[] index = { 0 };
         final List<FlagStats> passedStats = new ArrayList<>();
         final List<FlagStats> failedStats = new ArrayList<>();
 
-        Files.lines(filePath.get()).map(line -> {
+        Files.lines(filePath).map(line -> {
             final String qcPassed = line.split(SEPARATOR_REGEX)[QC_PASSED_COLUMN];
             final String qcFailed = line.split(SEPARATOR_REGEX)[QC_FAILED_COLUMN];
 
