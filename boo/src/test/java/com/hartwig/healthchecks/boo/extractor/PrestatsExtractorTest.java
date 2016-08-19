@@ -88,7 +88,7 @@ public class PrestatsExtractorTest {
     //            {
     //                samplePathFinder.findPath(RUN_DIRECTORY, anyString, anyString);
     //                returns(new File(REF_SAMPLE).toPath());
-    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
+    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.FASTQC_CHECKS_FILE_NAME);
     //                returns(summaryDataRef);
     //
     //                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
@@ -96,7 +96,7 @@ public class PrestatsExtractorTest {
     //
     //                samplePathFinder.findPath(RUN_DIRECTORY, anyString, anyString);
     //                returns(new File(TUMOR_SAMPLE).toPath());
-    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
+    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.FASTQC_CHECKS_FILE_NAME);
     //                returns(summaryDataTum);
     //
     //                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
@@ -113,7 +113,7 @@ public class PrestatsExtractorTest {
     //            {
     //                samplePathFinder.findPath(RUN_DIRECTORY, anyString, anyString);
     //                returns(new File(REF_SAMPLE).toPath());
-    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
+    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.FASTQC_CHECKS_FILE_NAME);
     //                returns(emptyList);
     //
     //            }
@@ -128,7 +128,7 @@ public class PrestatsExtractorTest {
     //            {
     //                samplePathFinder.findPath(RUN_DIRECTORY, anyString, anyString);
     //                returns(new File(REF_SAMPLE).toPath());
-    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.SUMMARY_FILE_NAME);
+    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.FASTQC_CHECKS_FILE_NAME);
     //                returns(summaryDataRef);
     //
     //                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
@@ -162,33 +162,47 @@ public class PrestatsExtractorTest {
 
     private static void assertRefSampleData(@NotNull final List<BaseDataReport> sampleData) {
         assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(),
-                PrestatsExtractor.FAIL, REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription(),
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, "700", REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsExtractor.FAIL,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.PASS,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES,
                 PrestatsExtractor.WARN, REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription(),
-                PrestatsExtractor.FAIL, REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription(),
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsExtractor.PASS,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsExtractor.WARN,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsExtractor.PASS,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
                 PrestatsExtractor.PASS, REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
+                PrestatsExtractor.WARN, REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsExtractor.PASS,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsExtractor.WARN,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsExtractor.FAIL, REF_SAMPLE);
     }
 
     private static void assertTumorSampleData(@NotNull final List<BaseDataReport> sampleData) {
         assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS.getDescription(),
-                PrestatsExtractor.FAIL, TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY.getDescription(),
-                PrestatsExtractor.WARN, TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION.getDescription(),
-                PrestatsExtractor.FAIL, TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS.getDescription(),
-                PrestatsExtractor.PASS, TUMOR_SAMPLE);
+        //        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, PrestatsExtractor.FAIL,
+        //                TUMOR_SAMPLE);
+        //        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.WARN,
+        //                TUMOR_SAMPLE);
+        //        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
+        //                PrestatsExtractor.FAIL, TUMOR_SAMPLE);
+        //        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
+        //                PrestatsExtractor.PASS, TUMOR_SAMPLE);
     }
 
     private static void assertPrestatsDataReport(@NotNull final List<BaseDataReport> sampleData,
-            @NotNull final String check, @NotNull final String expectedStatus,
+            @NotNull final PrestatsCheck check, @NotNull final String expectedStatus,
             @NotNull final String expectedSampleId) {
         Optional<BaseDataReport> optCheckReport = sampleData.stream().filter(
-                p -> p.getCheckName().equals(check)).findFirst();
+                p -> p.getCheckName().equals(check.toString())).findFirst();
 
         assert optCheckReport.isPresent();
         final String actualStatus = optCheckReport.get().getValue();
