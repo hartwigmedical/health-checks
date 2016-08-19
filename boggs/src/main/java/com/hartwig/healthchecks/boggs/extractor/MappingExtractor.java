@@ -70,7 +70,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final Path sampleFile = samplePathFinder.findPath(runDirectory, prefix, suffix);
 
         final String sampleId = sampleFile.getFileName().toString();
-        final long totalSequences = sumOfTotalSequencesFromFastQC(sampleFile, zipFileReader);
+        final long totalSequences = sumOfTotalSequencesFromFastQC(sampleFile.toString(), zipFileReader);
         final List<BaseDataReport> mappingChecks = getFlagStatsData(sampleId, sampleFile, totalSequences);
 
         BaseDataReport.log(LOGGER, mappingChecks);

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,7 +61,7 @@ public class MappingExtractorTest {
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(REF_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 
                 flagstatParser.parse(anyString, anyString);
@@ -70,7 +69,7 @@ public class MappingExtractorTest {
 
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(TUMOR_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 
                 flagstatParser.parse(anyString, anyString);
@@ -110,7 +109,7 @@ public class MappingExtractorTest {
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(REF_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
                 returns(emptyList);
             }
         };
@@ -124,7 +123,7 @@ public class MappingExtractorTest {
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(REF_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 
                 flagstatParser.parse(anyString, anyString);
@@ -153,7 +152,7 @@ public class MappingExtractorTest {
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
                 returns(new File(REF_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
+                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 
                 flagstatParser.parse(anyString, anyString);

@@ -24,17 +24,17 @@ public class ZipFilesReader {
     private static final String ZIP_FILES_SUFFIX = ".zip";
 
     @NotNull
-    public List<String> readAllLinesFromZips(@NotNull final Path path, @NotNull final String fileName)
+    public List<String> readAllLinesFromZips(@NotNull final String path, @NotNull final String fileName)
             throws IOException {
-        final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path.toString(), ZIP_FILES_SUFFIX);
+        final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path, ZIP_FILES_SUFFIX);
         return zipPaths.stream().map(zipPath -> readFileFromZip(zipPath.toString(), fileName)).flatMap(
                 Collection::stream).collect(toList());
     }
 
     @NotNull
-    public List<String> readFieldFromZipFiles(@NotNull final Path path, @NotNull final String fileName,
+    public List<String> readFieldFromZipFiles(@NotNull final String path, @NotNull final String fileName,
             @NotNull final String filter) throws IOException {
-        final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path.toString(), ZIP_FILES_SUFFIX);
+        final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path, ZIP_FILES_SUFFIX);
         return zipPaths.stream().map(zipPath -> searchForLineInZip(zipPath, fileName, filter)).filter(
                 line -> line != null).collect(toList());
     }

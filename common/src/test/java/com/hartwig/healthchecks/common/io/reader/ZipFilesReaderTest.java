@@ -3,10 +3,8 @@ package com.hartwig.healthchecks.common.io.reader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.List;
 
 import com.google.common.io.Resources;
@@ -31,8 +29,7 @@ public class ZipFilesReaderTest {
     public void readAllLinesFromZip() throws IOException {
         final URL url = Resources.getResource(TEST_PATH);
         final ZipFilesReader zipFileReader = new ZipFilesReader();
-        final Path path = new File(url.getPath()).toPath();
-        final List<String> lines = zipFileReader.readAllLinesFromZips(path, SUMMARY_FILE_NAME);
+        final List<String> lines = zipFileReader.readAllLinesFromZips(url.getPath(), SUMMARY_FILE_NAME);
         assertEquals(MISSING_LINES_MSG, NUM_SUMMARY_LINES, lines.size());
     }
 
@@ -40,8 +37,7 @@ public class ZipFilesReaderTest {
     public void readAllLinesFromEmptyFileFromZip() throws IOException {
         final URL url = Resources.getResource(TEST_EMPTY_PATH);
         final ZipFilesReader zipFileReader = new ZipFilesReader();
-        final Path path = new File(url.getPath()).toPath();
-        final List<String> lines = zipFileReader.readAllLinesFromZips(path, SUMMARY_FILE_NAME);
+        final List<String> lines = zipFileReader.readAllLinesFromZips(url.getPath(), SUMMARY_FILE_NAME);
         assertTrue(NOT_EMPTY_MSG, lines.isEmpty());
     }
 
@@ -49,8 +45,8 @@ public class ZipFilesReaderTest {
     public void readFieldFromZipFiles() throws IOException {
         final URL url = Resources.getResource(TEST_PATH);
         final ZipFilesReader zipFileReader = new ZipFilesReader();
-        final Path path = new File(url.getPath()).toPath();
-        final List<String> lines = zipFileReader.readFieldFromZipFiles(path, FASTQC_DATA_FILE_NAME, TOTAL_SEQUENCES);
+        final List<String> lines = zipFileReader.readFieldFromZipFiles(url.getPath(), FASTQC_DATA_FILE_NAME,
+                TOTAL_SEQUENCES);
         assertEquals(MISSING_LINES_MSG, NUM_FASTQC_LINES, lines.size());
     }
 
@@ -59,8 +55,8 @@ public class ZipFilesReaderTest {
     public void readFieldFromZipFilesEmpty() throws IOException {
         final URL url = Resources.getResource(TEST_EMPTY_PATH);
         final ZipFilesReader zipFileReader = new ZipFilesReader();
-        final Path path = new File(url.getPath()).toPath();
-        final List<String> lines = zipFileReader.readFieldFromZipFiles(path, FASTQC_DATA_FILE_NAME, TOTAL_SEQUENCES);
+        final List<String> lines = zipFileReader.readFieldFromZipFiles(url.getPath(), FASTQC_DATA_FILE_NAME,
+                TOTAL_SEQUENCES);
         assertTrue(NOT_EMPTY_MSG, lines.isEmpty());
     }
 }
