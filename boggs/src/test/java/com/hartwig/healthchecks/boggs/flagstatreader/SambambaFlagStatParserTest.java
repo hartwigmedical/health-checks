@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,30 +16,30 @@ import org.junit.Test;
 
 public class SambambaFlagStatParserTest {
 
+    private static final String FLAGSTAT_EXAMPLE_PATH = Resources.getResource("flagstat").getPath();
+    private static final String FLAGSTAT_EXAMPLE_FILE_PATTERN = ".example";
+    private static final String FLAGSTAT_EMPTY_FILE_PATTERN = ".empty";
+    private static final String FLAGSTAT_DOES_NOT_EXIST_PATTERN = "this does not exist";
+
     @Test
     public void parseExampleFile() throws IOException, EmptyFileException {
-        final URL exampleFlagStatURL = Resources.getResource("run/sample1/mapping/");
-        final String exampleFlagStatFile = exampleFlagStatURL.getPath();
-
         final FlagStatParser parser = new SambambaFlagStatParser();
-        final FlagStatData flagStatData = parser.parse(exampleFlagStatFile, ".realign");
+        final FlagStatData flagStatData = parser.parse(FLAGSTAT_EXAMPLE_PATH, FLAGSTAT_EXAMPLE_FILE_PATTERN);
 
-        assertFlagStatData(flagStatData.getPassedStats(), 13, 17940.0d);
-        assertFlagStatData(flagStatData.getFailedStats(), 13, 0.0d);
+        assertFlagStatData(flagStatData.getPassedStats(), 13, 1D);
+        assertFlagStatData(flagStatData.getFailedStats(), 13, 20D);
+    }
+
+    @Test(expected = IOException.class)
+    public void parseFileNotFound() throws IOException, EmptyFileException {
+        final FlagStatParser parser = new SambambaFlagStatParser();
+        parser.parse(FLAGSTAT_EXAMPLE_PATH, FLAGSTAT_DOES_NOT_EXIST_PATTERN);
     }
 
     @Test(expected = EmptyFileException.class)
     public void parseEmptyFile() throws IOException, EmptyFileException {
-        final URL exampleFlagStatURL = Resources.getResource("run/sample3/mapping/");
-        final String exampleFlagStatFile = exampleFlagStatURL.getPath();
         final FlagStatParser parser = new SambambaFlagStatParser();
-        parser.parse(exampleFlagStatFile, "realign");
-    }
-
-    @Test(expected = NoSuchFileException.class)
-    public void parseFileNotFound() throws IOException, EmptyFileException {
-        final FlagStatParser parser = new SambambaFlagStatParser();
-        parser.parse("run/sample4/mapping/", "realign");
+        parser.parse(FLAGSTAT_EXAMPLE_PATH, FLAGSTAT_EMPTY_FILE_PATTERN);
     }
 
     private static void assertFlagStatData(@NotNull final List<FlagStats> flagStat, final int expectedSize,
