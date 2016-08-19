@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
@@ -26,9 +27,10 @@ public class PrestatsExtractorTest {
     private static final String TUMOR_SAMPLE = "sample2";
     private static final String TUMOR_TOTAL_SEQUENCES = "1450";
 
-    private static final String EMPTY_SAMPLE = "sample3";
-    private static final String INCORRECT_SAMPLE = "sample4";
-    private static final String NON_EXISTING_SAMPLE = "sample5";
+    private static final String EMPTY_FASTQC_SAMPLE = "sample3";
+    private static final String EMPTY_TOTAL_SEQUENCE_SAMPLE = "sample4";
+    private static final String INCOMPLETE_SAMPLE = "sample5";
+    private static final String NON_EXISTING_SAMPLE = "sample6";
 
     private static final String REF_SAMPLE = "sample1";
     private static final String REF_TOTAL_SEQUENCES = "700";
@@ -43,119 +45,43 @@ public class PrestatsExtractorTest {
         assertReport(report);
     }
 
-    //    @Test(expected = EmptyFileException.class)
-    //    public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-    //        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
-    //
-    //        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-    //        extractor.extractFromRunDirectory("");
-    //    }
-    //
-    //    @Test(expected = IOException.class)
-    //    public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-    //        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
-    //
-    //        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-    //        extractor.extractFromRunDirectory("");
-    //    }
-    //
-    //    @Test(expected = LineNotFoundException.class)
-    //    public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
-    //        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
-    //
-    //        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-    //        extractor.extractFromRunDirectory("");
-    //    }
-    //
-    //    @Test(expected = LineNotFoundException.class)
-    //    public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
-    //        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
-    //
-    //        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-    //        extractor.extractFromRunDirectory("");
-    //    }
-    //
-    //    @Test(expected = LineNotFoundException.class)
-    //    public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
-    //        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
-    //
-    //        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-    //        extractor.extractFromRunDirectory("");
-    //    }
-    //
-    //
-    //    @Test
-    //    @Ignore
-    //    public void canProcessRunDirectoryStructure() throws IOException, HealthChecksException {
-    //        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
-    //        new Expectations() {
-    //            {
-    //                samplePathFinder.findPath(RUN_DIRECTORY, anyString, anyString);
-    //                returns(new File(REF_SAMPLE).toPath());
-    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.FASTQC_CHECKS_FILE_NAME);
-    //                returns(summaryDataRef);
-    //
-    //                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
-    //                returns(fastqLines);
-    //
-    //                samplePathFinder.findPath(RUN_DIRECTORY, anyString, anyString);
-    //                returns(new File(TUMOR_SAMPLE).toPath());
-    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.FASTQC_CHECKS_FILE_NAME);
-    //                returns(summaryDataTum);
-    //
-    //                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
-    //                returns(fastqLines);
-    //            }
-    //        };
-    //        final BaseReport prestatsData = extractor.extractFromRunDirectory(RUN_DIRECTORY);
-    //        assertReport(prestatsData);
-    //    }
-    //
-    //    @Test(expected = EmptyFileException.class)
-    //    public void extractDataEmptySummaryFile() throws IOException, HealthChecksException {
-    //        new Expectations() {
-    //            {
-    //                samplePathFinder.findPath(RUN_DIRECTORY, anyString, anyString);
-    //                returns(new File(REF_SAMPLE).toPath());
-    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.FASTQC_CHECKS_FILE_NAME);
-    //                returns(emptyList);
-    //
-    //            }
-    //        };
-    //        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
-    //        extractor.extractFromRunDirectory(RUN_DIRECTORY);
-    //    }
-    //
-    //    @Test(expected = EmptyFileException.class)
-    //    public void extractDataEmptyFastqFile() throws IOException, HealthChecksException {
-    //        new Expectations() {
-    //            {
-    //                samplePathFinder.findPath(RUN_DIRECTORY, anyString, anyString);
-    //                returns(new File(REF_SAMPLE).toPath());
-    //                zipFileReader.readAllLinesFromZips((Path) any, PrestatsExtractor.FASTQC_CHECKS_FILE_NAME);
-    //                returns(summaryDataRef);
-    //
-    //                zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
-    //                returns(emptyList);
-    //
-    //            }
-    //        };
-    //        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
-    //        extractor.extractFromRunDirectory(RUN_DIRECTORY);
-    //    }
-    //
-    //    @Test(expected = NoSuchFileException.class)
-    //    public void extractDataNoneExistingDir() throws IOException, HealthChecksException {
-    //        new Expectations() {
-    //            {
-    //                samplePathFinder.findPath(DUMMY_RUN_DIR, anyString, anyString);
-    //                result = new NoSuchFileException(DUMMY_RUN_DIR);
-    //
-    //            }
-    //        };
-    //        final PrestatsExtractor extractor = new PrestatsExtractor(zipFileReader, samplePathFinder);
-    //        extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
-    //    }
+    @Test(expected = EmptyFileException.class)
+    public void emptyFastQCFileYieldsEmptyFileException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE, EMPTY_FASTQC_SAMPLE);
+
+        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
+    }
+
+    @Test(expected = EmptyFileException.class)
+    public void emptyTotalSequenceFileYieldsEmptyFileException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
+                EMPTY_TOTAL_SEQUENCE_SAMPLE);
+
+        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
+    }
+
+    @Test
+    public void incompleteInputYieldsIncompleteOutput() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
+
+        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
+        final BaseReport report = extractor.extractFromRunDirectory("");
+        final List<BaseDataReport> sampleReport = ((SampleReport) report).getReferenceSample();
+        assertEquals(EXPECTED_CHECKS_NUM, sampleReport.size());
+
+        assertPrestatsDataReport(sampleReport, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
+                PrestatsExtractor.MISS, INCOMPLETE_SAMPLE);
+    }
+
+    @Test(expected = IOException.class)
+    public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
+
+        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
+        extractor.extractFromRunDirectory("");
+    }
 
     private static void assertReport(@NotNull final BaseReport prestatsData) {
         assertNotNull(prestatsData);

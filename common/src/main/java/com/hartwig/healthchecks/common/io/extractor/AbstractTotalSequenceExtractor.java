@@ -31,6 +31,6 @@ public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
             return totalSequences;
         }).filter(lines -> lines != null).collect(toList());
 
-        return allValues.stream().mapToLong(Long::parseLong).sum();
+        return !allValues.isEmpty() ? allValues.stream().mapToLong(Long::parseLong).sum() : 0L;
     }
 }

@@ -35,14 +35,16 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     static final String WARN = "WARN";
     @VisibleForTesting
     static final String FAIL = "FAIL";
+    @VisibleForTesting
+    static final String MISS = "MISS";
+
+    private static final String PRESTATS_BASE_DIR = "QCStats";
 
     private static final String FASTQC_CHECKS_FILE_NAME = "summary.txt";
     private static final String FASTQC_CHECKS_SEPARATOR = "\t";
-    private static final int FASTQC_CHECKS_EXPECTED_PARTS = 3;
+    private static final int FASTQC_CHECKS_EXPECTED_PARTS_PER_LINE = 3;
 
-    private static final String PRESTATS_BASE_DIR = "QCStats";
     private static final String EMPTY_FILES_ERROR = "File %s was found empty in path -> %s";
-    private static final String MISSING_FASTQC_CHECK = "ERROR";
 
     @NotNull
     private final RunContext runContext;
@@ -98,7 +100,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
                     assert worstReport.isPresent();
                     finalList.add(worstReport.get());
                 } else {
-                    finalList.add(new BaseDataReport(sampleId, check.toString(), MISSING_FASTQC_CHECK));
+                    finalList.add(new BaseDataReport(sampleId, check.toString(), MISS));
                 }
             }
         }
@@ -112,7 +114,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
         return allLines.stream().map(line -> {
             final String[] values = line.trim().split(FASTQC_CHECKS_SEPARATOR);
             BaseDataReport prestatsDataReport = null;
-            if (values.length == FASTQC_CHECKS_EXPECTED_PARTS) {
+            if (values.length == FASTQC_CHECKS_EXPECTED_PARTS_PER_LINE) {
                 final String status = values[0];
                 final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
                 if (check.isPresent()) {

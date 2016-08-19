@@ -14,6 +14,7 @@ import com.hartwig.healthchecks.common.io.path.PathsExtensionFinder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ZipFilesReader {
 
@@ -50,7 +51,7 @@ public class ZipFilesReader {
         return fileLines;
     }
 
-    @NotNull
+    @Nullable
     private static String searchForLineInZip(@NotNull final Path path, @NotNull final String fileName,
             @NotNull final String filter) {
         String searchedLine = null;
