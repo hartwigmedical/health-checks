@@ -2,6 +2,8 @@ package com.hartwig.healthchecks.boggs.flagstatreader;
 
 import java.util.List;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.jetbrains.annotations.NotNull;
 
 public class FlagStatData {
@@ -22,6 +24,7 @@ public class FlagStatData {
     }
 
     @NotNull
+    @VisibleForTesting
     List<FlagStats> getFailedStats() {
         return failedStats;
     }

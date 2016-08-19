@@ -35,10 +35,10 @@ import mockit.Mocked;
 public class MappingExtractorTest {
 
     private static final String FASTQC_DATA_TXT = "fastqc_data.txt";
-    private static final String RUNDIR = "rundir";
+    private static final String RUNDIR = "run";
     private static final String DUMMY_RUN_DIR = "DummyRunDir";
-    private static final String TEST_REF_ID = "CPCT12345678R";
-    private static final String TEST_TUM_ID = "CPCT12345678T";
+    private static final String REF_SAMPLE = "sample1";
+    private static final String TUMOR_SAMPLE = "sample2";
 
     private List<String> fastqLines;
     private List<String> emptyList;
@@ -61,7 +61,7 @@ public class MappingExtractorTest {
         new Expectations() {
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(TEST_REF_ID).toPath());
+                returns(new File(REF_SAMPLE).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 
@@ -69,7 +69,7 @@ public class MappingExtractorTest {
                 returns(dummyData());
 
                 samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(TEST_TUM_ID).toPath());
+                returns(new File(TUMOR_SAMPLE).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 
@@ -81,8 +81,8 @@ public class MappingExtractorTest {
         final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
 
         final BaseReport mappingReport = extractor.extractFromRunDirectory(RUNDIR);
-        assertNotNull("We should have data", mappingReport);
-        assertEquals("Report with wrong type", CheckType.MAPPING, mappingReport.getCheckType());
+        assertNotNull(mappingReport);
+        assertEquals(CheckType.MAPPING, mappingReport.getCheckType());
 
         final List<BaseDataReport> referenceSample = ((SampleReport) mappingReport).getReferenceSample();
         assertMappingData(referenceSample);
@@ -109,7 +109,7 @@ public class MappingExtractorTest {
         new Expectations() {
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(TEST_REF_ID).toPath());
+                returns(new File(REF_SAMPLE).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(emptyList);
             }
@@ -123,7 +123,7 @@ public class MappingExtractorTest {
         new Expectations() {
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(TEST_REF_ID).toPath());
+                returns(new File(REF_SAMPLE).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 
@@ -152,7 +152,7 @@ public class MappingExtractorTest {
         new Expectations() {
             {
                 samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(TEST_REF_ID).toPath());
+                returns(new File(REF_SAMPLE).toPath());
                 zipFileReader.readFieldFromZipFiles((Path) any, FASTQC_DATA_TXT, anyString);
                 returns(fastqLines);
 

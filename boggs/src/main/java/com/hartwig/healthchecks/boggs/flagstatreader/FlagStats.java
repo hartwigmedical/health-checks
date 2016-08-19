@@ -1,5 +1,6 @@
 package com.hartwig.healthchecks.boggs.flagstatreader;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ public class FlagStats {
     }
 
     @NotNull
+    @VisibleForTesting
     FlagStatsType getFlagStatsType() {
         return flagStatsType;
     }

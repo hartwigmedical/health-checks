@@ -36,7 +36,6 @@ public class SambambaFlagStatParser implements FlagStatParser {
         final List<FlagStats> passedStats = new ArrayList<>();
         final List<FlagStats> failedStats = new ArrayList<>();
 
-
         Files.lines(filePath.get()).map(line -> {
             final String qcPassed = line.split(SEPARATOR_REGEX)[QC_PASSED_COLUMN];
             final String qcFailed = line.split(SEPARATOR_REGEX)[QC_FAILED_COLUMN];

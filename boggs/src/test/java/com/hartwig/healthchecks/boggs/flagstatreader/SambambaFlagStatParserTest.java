@@ -22,7 +22,7 @@ public class SambambaFlagStatParserTest {
 
     @Test
     public void parseExampleFile() throws IOException, EmptyFileException {
-        final URL exampleFlagStatURL = Resources.getResource("rundir/CPCT12345678R/mapping/");
+        final URL exampleFlagStatURL = Resources.getResource("run/sample1/mapping/");
         final String exampleFlagStatFile = exampleFlagStatURL.getPath();
 
         final FlagStatParser parser = new SambambaFlagStatParser();

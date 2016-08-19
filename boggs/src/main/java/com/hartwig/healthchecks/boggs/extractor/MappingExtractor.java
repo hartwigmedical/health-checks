@@ -7,16 +7,15 @@ import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TU
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.function.DivisionOperator;
 import com.hartwig.healthchecks.common.io.extractor.AbstractTotalSequenceExtractor;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
@@ -82,102 +81,82 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             final long totalSequences) throws IOException, EmptyFileException {
         final FlagStatData flagstatData = flagstatParser.parse(
                 runDirPath + File.separator + FLAGSTAT_DIRECTORY + File.separator, FLAGSTAT_FILE_FILTER);
-        // KODU: Flagstat data can be null!
+
         if (flagstatData == null) {
             throw new EmptyFileException(FLAGSTAT_SUFFIX, runDirPath.toString());
         }
-        final List<BaseDataReport> mappingDataReports = new ArrayList<>();
+
         final List<FlagStats> passed = flagstatData.getPassedStats();
 
-        final BaseDataReport mappedDataReport = generateMappedDataReport(sampleId, passed);
-        mappingDataReports.add(mappedDataReport);
+        final BaseDataReport isAllReadDataReport = proportionOfReadsUsed(sampleId, totalSequences, passed);
+        final BaseDataReport mappedDataReport = mappedPercentage(sampleId, passed);
+        final BaseDataReport properlyPairedDataReport = properlyPairedPercentage(sampleId, passed);
+        final BaseDataReport singletonDataReport = singletonPercentage(sampleId, passed);
+        final BaseDataReport mateMappedDataReport = mateMappedDiffChrPercentage(sampleId, passed);
+        final BaseDataReport duplicateDataReport = duplicatePercentage(sampleId, passed);
 
-        final BaseDataReport properDataReport = generateProperDataReport(sampleId, passed);
-        mappingDataReports.add(properDataReport);
-
-        final BaseDataReport singletonDataReport = generateSingletonDataReport(sampleId, passed);
-        mappingDataReports.add(singletonDataReport);
-
-        final BaseDataReport mateMappedDataReport = generateMateMappedDataReport(sampleId, passed);
-        mappingDataReports.add(mateMappedDataReport);
-
-        final BaseDataReport duplicateDataReport = generateDuplicateDataReport(sampleId, passed);
-        mappingDataReports.add(duplicateDataReport);
-
-        final BaseDataReport isAllReadDataReport = generateProportionReadDataReport(sampleId, totalSequences, passed);
-        mappingDataReports.add(isAllReadDataReport);
-
-        return mappingDataReports;
+        return Lists.newArrayList(isAllReadDataReport, mappedDataReport, properlyPairedDataReport, singletonDataReport,
+                mateMappedDataReport, duplicateDataReport);
     }
 
     @NotNull
-    private static BaseDataReport generateMappedDataReport(@NotNull final String sampleId,
+    private static BaseDataReport mappedPercentage(@NotNull final String sampleId,
             @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
-        final DivisionOperator mappedStatCalc = FlagStatsType.MAPPED_INDEX.getCalculableInstance();
-        final double mappedPercentage = toPercentage(
-                mappedStatCalc.calculate(mappedStat.getValue(), totalStat.getValue()));
+        final double mappedPercentage = toPercentage(mappedStat.getValue() / totalStat.getValue());
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PERCENTAGE_MAPPED.toString(),
                 String.valueOf(mappedPercentage));
     }
 
     @NotNull
-    private static BaseDataReport generateProperDataReport(@NotNull final String sampleId,
+    private static BaseDataReport properlyPairedPercentage(@NotNull final String sampleId,
             @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats properPaired = passed.get(FlagStatsType.PROPERLY_PAIRED_INDEX.getIndex());
-        final DivisionOperator properStatCalc = FlagStatsType.PROPERLY_PAIRED_INDEX.getCalculableInstance();
-        final double properlyPairedPercentage = toPercentage(
-                properStatCalc.calculate(properPaired.getValue(), mappedStat.getValue()));
+        final double properlyPairedPercentage = toPercentage(properPaired.getValue() / mappedStat.getValue());
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED.toString(),
                 String.valueOf(properlyPairedPercentage));
     }
 
     @NotNull
-    private static BaseDataReport generateSingletonDataReport(@NotNull final String sampleId,
+    private static BaseDataReport singletonPercentage(@NotNull final String sampleId,
             @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGLETONS_INDEX.getIndex());
-        final DivisionOperator singletonStatCalc = FlagStatsType.SINGLETONS_INDEX.getCalculableInstance();
-        final double singletonPercentage = toPercentage(
-                singletonStatCalc.calculate(singletonStat.getValue(), mappedStat.getValue()));
+        final double singletonPercentage = toPercentage(singletonStat.getValue() / mappedStat.getValue());
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPORTION_SINGLETON.toString(),
                 String.valueOf(singletonPercentage));
     }
 
     @NotNull
-    private static BaseDataReport generateMateMappedDataReport(@NotNull final String sampleId,
+    private static BaseDataReport mateMappedDiffChrPercentage(@NotNull final String sampleId,
             @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
-        final DivisionOperator diffPercStatCalc = FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getCalculableInstance();
-        final double mateMappedDiffChrPerc = toPercentage(
-                diffPercStatCalc.calculate(diffPercStat.getValue(), mappedStat.getValue()));
+        final double mateMappedDiffChrPerc = toPercentage(diffPercStat.getValue() / mappedStat.getValue());
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR.toString(),
                 String.valueOf(mateMappedDiffChrPerc));
     }
 
     @NotNull
-    private static BaseDataReport generateDuplicateDataReport(@NotNull final String sampleId,
+    private static BaseDataReport duplicatePercentage(@NotNull final String sampleId,
             @NotNull final List<FlagStats> passed) {
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats duplicateStat = passed.get(FlagStatsType.DUPLICATES_INDEX.getIndex());
-        final DivisionOperator duplicateStatCalc = FlagStatsType.DUPLICATES_INDEX.getCalculableInstance();
-        final double proportionOfDuplicateRead = toPercentage(
-                duplicateStatCalc.calculate(duplicateStat.getValue(), totalStat.getValue()));
+        final double proportionOfDuplicateRead = toPercentage(duplicateStat.getValue() / totalStat.getValue());
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES.toString(),
                 String.valueOf(proportionOfDuplicateRead));
     }
 
     @NotNull
-    private static BaseDataReport generateProportionReadDataReport(@NotNull final String sampleId,
-            final long totalSequences, @NotNull final List<FlagStats> passed) {
+    private static BaseDataReport proportionOfReadsUsed(@NotNull final String sampleId, final long totalSequences,
+            @NotNull final List<FlagStats> passed) {
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats secondaryStat = passed.get(FlagStatsType.SECONDARY_INDEX.getIndex());
         double proportionReadPercentage =
