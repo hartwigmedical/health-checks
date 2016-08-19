@@ -18,8 +18,6 @@ import org.junit.Test;
 
 public class SambambaFlagStatParserTest {
 
-    private static final String DID_NOT_GET_THE_EXPECTED_VALUE = "Did not get the expected value.";
-
     @Test
     public void parseExampleFile() throws IOException, EmptyFileException {
         final URL exampleFlagStatURL = Resources.getResource("run/sample1/mapping/");
@@ -34,7 +32,7 @@ public class SambambaFlagStatParserTest {
 
     @Test(expected = EmptyFileException.class)
     public void parseEmptyFile() throws IOException, EmptyFileException {
-        final URL exampleFlagStatURL = Resources.getResource("emptyFiles/CPCT12345678R/mapping/");
+        final URL exampleFlagStatURL = Resources.getResource("run/sample3/mapping/");
         final String exampleFlagStatFile = exampleFlagStatURL.getPath();
         final FlagStatParser parser = new SambambaFlagStatParser();
         parser.parse(exampleFlagStatFile, "realign");
@@ -43,12 +41,12 @@ public class SambambaFlagStatParserTest {
     @Test(expected = NoSuchFileException.class)
     public void parseFileNotFound() throws IOException, EmptyFileException {
         final FlagStatParser parser = new SambambaFlagStatParser();
-        parser.parse("bla/CPCT12345678R/mapping/", "realign");
+        parser.parse("run/sample4/mapping/", "realign");
     }
 
-    private static void assertFlagStatData(@NotNull final List<FlagStats> flagStat, final int size,
+    private static void assertFlagStatData(@NotNull final List<FlagStats> flagStat, final int expectedSize,
             final double expectedTotalIndex) {
-        assertEquals(DID_NOT_GET_THE_EXPECTED_VALUE, size, flagStat.size());
+        assertEquals(expectedSize, flagStat.size());
 
         final Optional<FlagStats> passedFlagStat = flagStat.stream().filter(
                 flagStats -> flagStats.getFlagStatsType() == FlagStatsType.TOTAL_INDEX).findFirst();
