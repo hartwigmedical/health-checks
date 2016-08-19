@@ -1,23 +1,19 @@
 package com.hartwig.healthchecks.boggs.extractor;
 
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SAMPLE_PREFIX;
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
+import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractTotalSequenceExtractor;
-import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
+import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -34,58 +30,51 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     private static final long MILLIS_FACTOR = 10000L;
     private static final double HUNDRED_FACTOR = 100D;
 
-    private static final String FLAGSTAT_DIRECTORY = "mapping";
+    private static final String FASTQC_BASE_DIRECTORY = "QCStats";
+    private static final String FLAGSTAT_BASE_DIRECTORY = "mapping";
+
     private static final String FLAGSTAT_FILE_FILTER = ".realign";
-    private static final String FLAGSTAT_SUFFIX = ".flagstat";
 
-    // TODO (KODU): Replace samplePathFinder with proper run context
     @NotNull
-    private final FlagStatParser flagstatParser;
+    private final RunContext runContext;
     @NotNull
-    private final ZipFilesReader zipFileReader;
+    private final FlagStatParser flagstatParser = new SambambaFlagStatParser();
     @NotNull
-    private final SamplePathFinder samplePathFinder;
+    private final ZipFilesReader zipFileReader = new ZipFilesReader();
 
-    public MappingExtractor(@NotNull final FlagStatParser flagstatParser, @NotNull final ZipFilesReader zipFileReader,
-            @NotNull final SamplePathFinder samplePathFinder) {
-        super();
-        this.flagstatParser = flagstatParser;
-        this.zipFileReader = zipFileReader;
-        this.samplePathFinder = samplePathFinder;
+    public MappingExtractor(@NotNull final RunContext runContext) {
+        this.runContext = runContext;
     }
 
     @Override
     @NotNull
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> refSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, REF_SAMPLE_SUFFIX);
-        final List<BaseDataReport> tumorSampleData = getSampleData(runDirectory, SAMPLE_PREFIX, TUM_SAMPLE_SUFFIX);
+        final List<BaseDataReport> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
+        final List<BaseDataReport> tumorSampleData = getSampleData(runContext.runDirectory(),
+                runContext.tumorSample());
 
         return new SampleReport(CheckType.MAPPING, refSampleData, tumorSampleData);
     }
 
     @NotNull
-    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String prefix,
-            @NotNull final String suffix) throws IOException, EmptyFileException {
-        final Path sampleFile = samplePathFinder.findPath(runDirectory, prefix, suffix);
+    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
+            throws IOException, HealthChecksException {
 
-        final String sampleId = sampleFile.getFileName().toString();
-        final long totalSequences = sumOfTotalSequencesFromFastQC(sampleFile.toString(), zipFileReader);
-        final List<BaseDataReport> mappingChecks = getFlagStatsData(sampleId, sampleFile, totalSequences);
+        final String basePathForTotalSequences = getBasePathForTotalSequences(runDirectory, sampleId);
+        final long totalSequences = sumOfTotalSequencesFromFastQC(basePathForTotalSequences, zipFileReader);
+
+        final String basePathForFlagStat = getBasePathForFlagStat(runDirectory, sampleId);
+        final List<BaseDataReport> mappingChecks = getFlagStatsData(basePathForFlagStat, sampleId, totalSequences);
 
         BaseDataReport.log(LOGGER, mappingChecks);
         return mappingChecks;
     }
 
     @NotNull
-    private List<BaseDataReport> getFlagStatsData(@NotNull final String sampleId, @NotNull final Path runDirPath,
+    private List<BaseDataReport> getFlagStatsData(@NotNull final String basePath, @NotNull final String sampleId,
             final long totalSequences) throws IOException, EmptyFileException {
-        final FlagStatData flagstatData = flagstatParser.parse(
-                runDirPath + File.separator + FLAGSTAT_DIRECTORY + File.separator, FLAGSTAT_FILE_FILTER);
-
-        if (flagstatData == null) {
-            throw new EmptyFileException(FLAGSTAT_SUFFIX, runDirPath.toString());
-        }
+        final FlagStatData flagstatData = flagstatParser.parse(basePath, FLAGSTAT_FILE_FILTER);
 
         final List<FlagStats> passed = flagstatData.getPassedStats();
 
@@ -169,5 +158,16 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
     private static double toPercentage(final double percentage) {
         return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
+    }
+
+    @NotNull
+    private static String getBasePathForFlagStat(@NotNull final String runDirectory, @NotNull final String sampleId) {
+        return runDirectory + File.separator + sampleId + File.separator + FLAGSTAT_BASE_DIRECTORY;
+    }
+
+    @NotNull
+    private static String getBasePathForTotalSequences(@NotNull final String runDirectory,
+            @NotNull final String sampleId) {
+        return runDirectory + File.separator + sampleId + File.separator + FASTQC_BASE_DIRECTORY;
     }
 }

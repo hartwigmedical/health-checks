@@ -35,5 +35,4 @@ public enum FlagStatsType {
     public int getIndex() {
         return index;
     }
-
 }

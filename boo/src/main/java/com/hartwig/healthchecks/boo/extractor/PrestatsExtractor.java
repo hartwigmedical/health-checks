@@ -38,8 +38,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     @VisibleForTesting
     static final String MISS = "MISS";
 
-    private static final String PRESTATS_BASE_DIR = "QCStats";
-
+    private static final String FASTQ_BASE_DIRECTORY = "QCStats";
     private static final String FASTQC_CHECKS_FILE_NAME = "summary.txt";
     private static final String FASTQC_CHECKS_SEPARATOR = "\t";
     private static final int FASTQC_CHECKS_EXPECTED_PARTS_PER_LINE = 3;
@@ -68,7 +67,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
     @NotNull
     private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
-            throws IOException, EmptyFileException {
+            throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
 
         final List<BaseDataReport> fastqcChecks = extractFastqcChecks(basePath, sampleId);
@@ -144,17 +143,15 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
 
     @NotNull
     private BaseDataReport extractTotalSequenceCheck(@NotNull final String basePath, @NotNull final String sampleId)
-            throws IOException, EmptyFileException {
+            throws IOException, HealthChecksException {
         final long totalSequences = sumOfTotalSequencesFromFastQC(basePath, zipFileReader);
-        if (totalSequences == 0) {
-            throw new EmptyFileException(FASTQC_DATA_FILE_NAME, basePath);
-        }
+
         return new BaseDataReport(sampleId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.toString(),
                 Long.toString(totalSequences));
     }
 
     @NotNull
     private static String getBasePathForSample(@NotNull final String runDirectory, @NotNull final String sampleId) {
-        return runDirectory + File.separator + sampleId + File.separator + PRESTATS_BASE_DIR;
+        return runDirectory + File.separator + sampleId + File.separator + FASTQ_BASE_DIRECTORY;
     }
 }

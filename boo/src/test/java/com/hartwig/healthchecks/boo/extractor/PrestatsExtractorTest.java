@@ -1,7 +1,6 @@
 package com.hartwig.healthchecks.boo.extractor;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -84,7 +83,6 @@ public class PrestatsExtractorTest {
     }
 
     private static void assertReport(@NotNull final BaseReport prestatsData) {
-        assertNotNull(prestatsData);
         assertEquals(CheckType.PRESTATS, prestatsData.getCheckType());
         assertRefSampleData(((SampleReport) prestatsData).getReferenceSample());
         assertTumorSampleData(((SampleReport) prestatsData).getTumorSample());

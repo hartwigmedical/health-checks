@@ -7,20 +7,21 @@ import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SE
 import java.io.IOException;
 import java.util.List;
 
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
 
-    protected static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
-
-    private static final String TOTAL_SEQUENCES = "Total Sequences";
+    private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
+    private static final String TOTAL_SEQUENCES_PATTERN = "Total Sequences";
 
     protected static long sumOfTotalSequencesFromFastQC(@NotNull final String basePath,
-            @NotNull final ZipFilesReader zipFileReader) throws IOException {
+            @NotNull final ZipFilesReader zipFileReader) throws IOException, HealthChecksException {
         final List<String> allLines = zipFileReader.readFieldFromZipFiles(basePath, FASTQC_DATA_FILE_NAME,
-                TOTAL_SEQUENCES);
+                TOTAL_SEQUENCES_PATTERN);
 
         final List<String> allValues = allLines.stream().map(line -> {
             String totalSequences = null;
@@ -31,6 +32,10 @@ public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
             return totalSequences;
         }).filter(lines -> lines != null).collect(toList());
 
-        return !allValues.isEmpty() ? allValues.stream().mapToLong(Long::parseLong).sum() : 0L;
+        long totalSequences = !allValues.isEmpty() ? allValues.stream().mapToLong(Long::parseLong).sum() : 0L;
+        if (totalSequences == 0) {
+            throw new EmptyFileException(FASTQC_DATA_FILE_NAME, basePath);
+        }
+        return totalSequences;
     }
 }

@@ -1,166 +1,122 @@
 package com.hartwig.healthchecks.boggs.extractor;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
+import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
-import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
+import com.hartwig.healthchecks.common.io.path.RunContext;
+import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.Before;
 import org.junit.Test;
-
-import mockit.Expectations;
-import mockit.Mocked;
 
 public class MappingExtractorTest {
 
-    private static final String FASTQC_DATA_TXT = "fastqc_data.txt";
-    private static final String RUNDIR = "run";
-    private static final String DUMMY_RUN_DIR = "DummyRunDir";
+    private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
+
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
-
-    private List<String> fastqLines;
-    private List<String> emptyList;
-
-    @Mocked
-    private ZipFilesReader zipFileReader;
-    @Mocked
-    private FlagStatParser flagstatParser;
-    @Mocked
-    private SamplePathFinder samplePathFinder;
-
-    @Before
-    public void setUp() {
-        fastqLines = Collections.singletonList("Total Sequences\t20000");
-        emptyList = new ArrayList<>();
-    }
+    private static final String EMPTY_FLAGSTAT_SAMPLE = "sample3";
+    private static final String EMPTY_FASTQC_SAMPLE = "sample4";
+    private static final String NON_EXISTING_SAMPLE = "sample5";
 
     @Test
-    public void extractData() throws IOException, HealthChecksException {
-        new Expectations() {
-            {
-                samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(REF_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
-                returns(fastqLines);
+    public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-                flagstatParser.parse(anyString, anyString);
-                returns(dummyData());
-
-                samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(TUMOR_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
-                returns(fastqLines);
-
-                flagstatParser.parse(anyString, anyString);
-                returns(dummyData());
-            }
-        };
-
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
-
-        final BaseReport mappingReport = extractor.extractFromRunDirectory(RUNDIR);
-        assertNotNull(mappingReport);
-        assertEquals(CheckType.MAPPING, mappingReport.getCheckType());
-
-        final List<BaseDataReport> referenceSample = ((SampleReport) mappingReport).getReferenceSample();
-        assertMappingData(referenceSample);
-
-        final List<BaseDataReport> tumorSample = ((SampleReport) mappingReport).getTumorSample();
-        assertMappingData(tumorSample);
-    }
-
-    @Test(expected = NoSuchFileException.class)
-    public void extractDataNoneExistingDir() throws IOException, HealthChecksException {
-        new Expectations() {
-            {
-                samplePathFinder.findPath(DUMMY_RUN_DIR, anyString, anyString);
-                result = new NoSuchFileException(anyString);
-
-            }
-        };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
-        extractor.extractFromRunDirectory(DUMMY_RUN_DIR);
+        MappingExtractor extractor = new MappingExtractor(runContext);
+        final BaseReport report = extractor.extractFromRunDirectory("");
+        assertReport(report);
     }
 
     @Test(expected = EmptyFileException.class)
-    public void extractDataEmptyFastQFile() throws IOException, HealthChecksException {
-        new Expectations() {
-            {
-                samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(REF_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
-                returns(emptyList);
-            }
-        };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
-        extractor.extractFromRunDirectory(RUNDIR);
+    public void emptyFlagStatYieldsEmptyFileException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FLAGSTAT_SAMPLE,
+                EMPTY_FLAGSTAT_SAMPLE);
+
+        MappingExtractor extractor = new MappingExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
     @Test(expected = EmptyFileException.class)
-    public void extractDataEmptyFlagStatsFile() throws IOException, HealthChecksException {
-        new Expectations() {
-            {
-                samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(REF_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
-                returns(fastqLines);
+    public void emptyTotalSequenceFileYieldsEmptyFileException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE, EMPTY_FASTQC_SAMPLE);
 
-                flagstatParser.parse(anyString, anyString);
-                returns(null);
-            }
-        };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
-        extractor.extractFromRunDirectory(RUNDIR);
+        MappingExtractor extractor = new MappingExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void extractDataNoFastQFile() throws IOException, HealthChecksException {
-        new Expectations() {
-            {
-                samplePathFinder.findPath(anyString, anyString, anyString);
-                result = new NoSuchFileException("");
-            }
-        };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
-        extractor.extractFromRunDirectory(RUNDIR);
+    @Test(expected = IOException.class)
+    public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
+
+        MappingExtractor extractor = new MappingExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void extractDataNoFlagStatsFile() throws IOException, HealthChecksException {
-        new Expectations() {
-            {
-                samplePathFinder.findPath(anyString, anyString, anyString);
-                returns(new File(REF_SAMPLE).toPath());
-                zipFileReader.readFieldFromZipFiles((String) any, FASTQC_DATA_TXT, anyString);
-                returns(fastqLines);
+    private static void assertReport(@NotNull final BaseReport report) {
+        assertEquals(CheckType.MAPPING, report.getCheckType());
+        assertRefSampleData(((SampleReport) report).getReferenceSample());
+        assertTumorSampleData(((SampleReport) report).getTumorSample());
+    }
 
-                flagstatParser.parse(anyString, anyString);
-                result = new NoSuchFileException("");
-            }
-        };
-        final MappingExtractor extractor = new MappingExtractor(flagstatParser, zipFileReader, samplePathFinder);
-        extractor.extractFromRunDirectory(RUNDIR);
+    private static void assertRefSampleData(@NotNull final List<BaseDataReport> mapping) {
+        final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
+        assertEquals("96.94", mappedData.getValue());
+        assertEquals(REF_SAMPLE, mappedData.getSampleId());
+
+        final BaseDataReport mateData = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR);
+        assertEquals("1.05", mateData.getValue());
+
+        final BaseDataReport properData = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED);
+        assertEquals("94.74", properData.getValue());
+
+        final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
+        assertEquals("1.05", singletonData.getValue());
+
+        final BaseDataReport duplicateData = extractReportData(mapping,
+                MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
+        assertEquals("10.2", duplicateData.getValue());
+
+        final BaseDataReport proportionRead = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
+        assertEquals("99.0", proportionRead.getValue());
+    }
+
+    private static void assertTumorSampleData(@NotNull final List<BaseDataReport> mapping) {
+        final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
+        assertEquals("87.5", mappedData.getValue());
+        assertEquals(TUMOR_SAMPLE, mappedData.getSampleId());
+
+        final BaseDataReport mateData = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR);
+        assertEquals("2.86", mateData.getValue());
+
+        final BaseDataReport properData = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED);
+        assertEquals("71.43", properData.getValue());
+
+        final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
+        assertEquals("7.14", singletonData.getValue());
+
+        final BaseDataReport duplicateData = extractReportData(mapping,
+                MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
+        assertEquals("12.5", duplicateData.getValue());
+
+        final BaseDataReport proportionRead = extractReportData(mapping,
+                MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
+        assertEquals("90.0", proportionRead.getValue());
     }
 
     @NotNull
@@ -171,53 +127,5 @@ public class MappingExtractorTest {
 
         assert report.isPresent();
         return report.get();
-    }
-
-    private static void assertMappingData(@NotNull final List<BaseDataReport> mapping) {
-        final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
-        assertEquals("99.69", mappedData.getValue());
-
-        final BaseDataReport mateData = extractReportData(mapping,
-                MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR);
-        assertEquals("0.0", mateData.getValue());
-
-        final BaseDataReport properData = extractReportData(mapping,
-                MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED);
-        assertEquals("99.57", properData.getValue());
-
-        final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
-        assertEquals("0.31", singletonData.getValue());
-
-        final BaseDataReport duplicateData = extractReportData(mapping,
-                MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
-        assertEquals("5.95", duplicateData.getValue());
-
-        final BaseDataReport proportionRead = extractReportData(mapping,
-                MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
-        assertEquals("89.8", proportionRead.getValue());
-    }
-
-    @NotNull
-    private static FlagStatData dummyData() throws IOException, EmptyFileException {
-        final FlagStats total = new FlagStats(FlagStatsType.TOTAL_INDEX, 17940d);
-        final FlagStats secondary = new FlagStats(FlagStatsType.SECONDARY_INDEX, 20d);
-        final FlagStats supplementary = new FlagStats(FlagStatsType.SUPPLEMENTARY_INDEX, 0d);
-        final FlagStats duplicate = new FlagStats(FlagStatsType.DUPLICATES_INDEX, 1068d);
-        final FlagStats mapped = new FlagStats(FlagStatsType.MAPPED_INDEX, 17885d);
-        final FlagStats paired = new FlagStats(FlagStatsType.PAIRED_IN_SEQ_INDEX, 17920d);
-        final FlagStats read1 = new FlagStats(FlagStatsType.READ_1_INDEX, 8960d);
-        final FlagStats read2 = new FlagStats(FlagStatsType.READ_2_INDEX, 8960d);
-        final FlagStats proper = new FlagStats(FlagStatsType.PROPERLY_PAIRED_INDEX, 17808d);
-        final FlagStats itself = new FlagStats(FlagStatsType.ITSELF_AND_MATE_INDEX, 17808d);
-        final FlagStats singleton = new FlagStats(FlagStatsType.SINGLETONS_INDEX, 55d);
-        final FlagStats mateMapped = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_INDEX, 0d);
-        final FlagStats q5Index = new FlagStats(FlagStatsType.MATE_MAP_DIF_CHR_Q5_INDEX, 0d);
-
-        final List<FlagStats> passedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped, paired,
-                read1, read2, proper, itself, singleton, mateMapped, q5Index);
-        final List<FlagStats> failedStats = Arrays.asList(total, secondary, supplementary, duplicate, mapped, paired,
-                read1, read2, proper, itself, singleton, mateMapped, q5Index);
-
-        return new FlagStatData(passedStats, failedStats);
     }
 }

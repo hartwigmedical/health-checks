@@ -30,7 +30,9 @@ public class SambambaFlagStatParser implements FlagStatParser {
                         .filter(path -> path.getFileName().toString().endsWith(FLAGSTAT_SUFFIX)
                                         && path.getFileName().toString().contains(filter))
                         .findFirst();
-        assert filePath.isPresent();
+        if (!filePath.isPresent()) {
+            throw new IOException("Could not find flagstat on " + flagstatPath);
+        }
 
         final int[] index = { 0 };
         final List<FlagStats> passedStats = new ArrayList<>();
