@@ -29,7 +29,8 @@ public interface PathExtensionFinder {
         };
     }
 
-    static Optional<Path> getPath(final String path, final String extension) throws IOException {
+    @NotNull
+    static Optional<Path> getPath(@NotNull final String path, @NotNull final String extension) throws IOException {
         try (Stream<Path> paths = Files.walk(new File(path).toPath())) {
             return paths.filter(filePath -> filePath.getFileName().toString().endsWith(extension)).findFirst();
         }

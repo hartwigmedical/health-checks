@@ -3,15 +3,14 @@ package com.hartwig.healthchecks.nesbit.predicate;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
+
+import org.junit.Test;
 
 public class VCFGermlineVariantPredicateTest {
 
     private static final String NOT_VARIANT = "./.:773,0:773";
-
     private static final String VARIANT = "1/1:0,3:3:9:103,9,0";
 
     @Test
@@ -41,5 +40,4 @@ public class VCFGermlineVariantPredicateTest {
         assertFalse(predicate.test(vcfGermlineVariantData));
         assertFalse(predicate.test(vcfGermlineNotVariantData));
     }
-
 }

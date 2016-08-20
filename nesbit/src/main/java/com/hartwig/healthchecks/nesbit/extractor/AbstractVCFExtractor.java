@@ -30,7 +30,7 @@ abstract class AbstractVCFExtractor implements DataExtractor {
     static final int REF_INDEX = 3;
 
     @NotNull
-    String[] getHeaders(@NotNull final List<String> lines, @NotNull final String extension,
+    static String[] getHeaders(@NotNull final List<String> lines, @NotNull final String extension,
             final boolean isGermlineCheck) throws LineNotFoundException, HeaderNotFoundException {
         final String[] headers = lines.get(0).split(SEPARATOR_REGEX);
 

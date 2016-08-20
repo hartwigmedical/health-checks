@@ -54,16 +54,14 @@ public class NesbitAdapterTest {
                 result = somatic;
                 times = 1;
                 variant.runCheck();
-                returns(getSomticDummyReport());
+                returns(getSomaticDummyReport());
                 times = 1;
-
             }
         };
         final AbstractHealthCheckAdapter adapter = new NesbitAdapter();
         adapter.runCheck(RunContextFactory.backwardsCompatible(DUMMY_RUN_DIR), DUMMY_REPORT);
 
         new Verifications() {
-
             {
                 report.addReportData((BaseReport) any);
                 times = 2;
@@ -78,7 +76,7 @@ public class NesbitAdapterTest {
     }
 
     @NotNull
-    private static BaseReport getSomticDummyReport() {
+    private static BaseReport getSomaticDummyReport() {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, REF_VALUE);
         return new PatientMultiChecksReport(CheckType.SOMATIC, Collections.singletonList(testDataReport));
     }

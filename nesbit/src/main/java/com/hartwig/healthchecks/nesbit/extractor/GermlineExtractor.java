@@ -31,13 +31,12 @@ public class GermlineExtractor extends AbstractVCFExtractor {
 
     private static final String GERMLINE_INDELS = "VARIANTS_GERMLINE_INDELS";
     private static final String GERMLINE_SNP = "VARIANTS_GERMLINE_SNP";
-    private static final String EXT = "_Cosmicv76_GoNLv5.vcf";
+    private static final String GERMLINE_VCF_EXTENSION = "_Cosmicv76_GoNLv5.vcf";
 
     @NotNull
     private final ExtensionFinderAndLineReader reader;
 
     public GermlineExtractor(@NotNull final ExtensionFinderAndLineReader reader) {
-        super();
         this.reader = reader;
     }
 
@@ -45,8 +44,11 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<String> headerLines = reader.readLines(runDirectory, EXT, new VCFHeaderLinePredicate());
-        final List<String> lines = reader.readLines(runDirectory, EXT, new VCFPassDataLinePredicate());
+
+        final List<String> headerLines = reader.readLines(runDirectory, GERMLINE_VCF_EXTENSION,
+                new VCFHeaderLinePredicate());
+        final List<String> lines = reader.readLines(runDirectory, GERMLINE_VCF_EXTENSION,
+                new VCFPassDataLinePredicate());
 
         final List<BaseDataReport> refData = getSampleData(headerLines, lines, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumData = getSampleData(headerLines, lines, TUM_SAMPLE_SUFFIX);
@@ -55,10 +57,10 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     }
 
     @NotNull
-    private List<BaseDataReport> getSampleData(@NotNull final List<String> headerLines,
+    private static List<BaseDataReport> getSampleData(@NotNull final List<String> headerLines,
             @NotNull final List<String> lines, @NotNull final String suffix)
             throws IOException, HealthChecksException {
-        final String[] headers = getHeaders(headerLines, EXT, Boolean.TRUE);
+        final String[] headers = getHeaders(headerLines, GERMLINE_VCF_EXTENSION, Boolean.TRUE);
         final String sampleId = getSampleIdFromHeader(headers, suffix);
         boolean isRef = Boolean.TRUE;
         if (suffix.equals(TUM_SAMPLE_SUFFIX)) {

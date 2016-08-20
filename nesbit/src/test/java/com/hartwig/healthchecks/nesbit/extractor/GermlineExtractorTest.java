@@ -4,11 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HeaderNotFoundException;
@@ -18,6 +16,9 @@ import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SampleReport;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -39,23 +40,15 @@ public class GermlineExtractorTest {
                     + "\tCPCT12345678R";
 
     private static final String NOT_VARIANT = "./.:773,0:773";
-
     private static final String VARIANT = "1/1:0,3:3:9:103,9,0";
-
     private static final String REF_VALUE = "CT";
-
     private static final String ALT_VALUE = "CTTTCTTT";
-
     private static final String TEST_DIR = "Test";
-
     private static final String GERMLINE_INDELS = "VARIANTS_GERMLINE_INDELS";
-
     private static final String GERMLINE_SNP = "VARIANTS_GERMLINE_SNP";
 
     private List<String> dataLines;
-
     private List<String> headerLines;
-
     private List<String> missingHeaderValue;
 
     @Mocked
@@ -71,13 +64,12 @@ public class GermlineExtractorTest {
         final String fourDataLine = String.format(DOT_DATA_LINE, REF_VALUE, REF_VALUE, NOT_VARIANT, VARIANT);
         dataLines = Arrays.asList(oneDataLine, twoDataLine, threeDataLine, fourDataLine, oneDataLine, twoDataLine,
                         threeDataLine, fourDataLine);
-        headerLines = Arrays.asList(HEADER_LINE);
-        missingHeaderValue = Arrays.asList(HEADER_NOT_RIGHT);
+        headerLines = Collections.singletonList(HEADER_LINE);
+        missingHeaderValue = Collections.singletonList(HEADER_NOT_RIGHT);
     }
 
     @Test
     public void extractData() throws IOException, HealthChecksException {
-
         final GermlineExtractor extractor = new GermlineExtractor(reader);
         new Expectations() {
 
@@ -93,10 +85,9 @@ public class GermlineExtractorTest {
 
         assertSampleData(refData, "2", "4");
         assertSampleData(tumData, "2", "2");
-
     }
 
-    private void assertSampleData(final List<BaseDataReport> sampleData, final String expectedCountSNP,
+    private static void assertSampleData(final List<BaseDataReport> sampleData, final String expectedCountSNP,
                     final String expectedCountIndels) {
         assertEquals("Wrong number of checks", 2, sampleData.size());
         final String indels = sampleData.stream().filter(data -> data.getCheckName().equals(GERMLINE_INDELS))
