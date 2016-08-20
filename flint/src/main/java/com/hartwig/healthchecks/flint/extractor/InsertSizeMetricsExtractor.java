@@ -54,13 +54,13 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
     private static List<BaseDataReport> getSampleData(@NotNull final String runDirectory,
             @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
-        Path insertSizeMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId,
+        final Path insertSizeMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId,
                 INSERT_SIZE_METRICS_EXTENSION);
         final List<String> lines = FileReader.build().readLines(insertSizeMetricsPath);
 
-        final BaseDataReport medianReport = getValue(lines, sampleId,
+        final BaseDataReport medianReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
-        final BaseDataReport width70PerReport = getValue(lines, sampleId,
+        final BaseDataReport width70PerReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
         return Arrays.asList(medianReport, width70PerReport);
     }
@@ -72,29 +72,29 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
     }
 
     @NotNull
-    private static BaseDataReport getValue(@NotNull final List<String> lines, @NotNull final String sampleId,
-            @NotNull final InsertSizeMetricsCheck check) throws LineNotFoundException {
-        final String value = getValueFromLine(lines, check.getFieldName(), check.getColumnIndex());
+    private static BaseDataReport getValue(@NotNull final String filePath, @NotNull final List<String> lines,
+            @NotNull final String sampleId, @NotNull final InsertSizeMetricsCheck check) throws LineNotFoundException {
+        final String value = getValueFromLine(filePath, lines, check.getFieldName(), check.getColumnIndex());
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
         baseDataReport.log(LOGGER);
         return baseDataReport;
     }
 
     @NotNull
-    private static String getValueFromLine(@NotNull final List<String> lines, @NotNull final String filter,
-            final int fieldIndex) throws LineNotFoundException {
-        final int index = findLineIndex(lines, filter);
+    private static String getValueFromLine(@NotNull final String filePath, @NotNull final List<String> lines,
+            @NotNull final String filter, final int fieldIndex) throws LineNotFoundException {
+        final int index = findLineIndex(filePath, lines, filter);
         final String line = lines.get(index + 1);
         final String[] lineValues = line.split(VALUE_SEPARATOR);
         return lineValues[fieldIndex];
     }
 
-    private static int findLineIndex(@NotNull final List<String> lines, @NotNull final String filter)
-            throws LineNotFoundException {
+    private static int findLineIndex(@NotNull final String filePath, @NotNull final List<String> lines,
+            @NotNull final String filter) throws LineNotFoundException {
         final Optional<Integer> lineNumbers = IntStream.range(0, lines.size()).filter(
                 index -> lines.get(index).contains(filter)).mapToObj(index -> index).findFirst();
         if (!lineNumbers.isPresent()) {
-            throw new LineNotFoundException(filter);
+            throw new LineNotFoundException(filePath, filter);
         }
         return lineNumbers.get();
     }

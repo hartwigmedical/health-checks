@@ -10,6 +10,7 @@ import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.io.dir.FolderChecker;
+import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
@@ -46,15 +47,15 @@ public final class HealthChecksApplication {
     private static final String ALL_CHECKS = "all";
 
     @NotNull
-    private final String runDirectory;
+    private final RunContext runContext;
     @NotNull
     private final String checkType;
     @NotNull
     private final String reportType;
 
-    private HealthChecksApplication(@NotNull final String runDirectory, @NotNull final String checkType,
+    private HealthChecksApplication(@NotNull final RunContext runContext, @NotNull final String checkType,
             @NotNull final String reportType) {
-        this.runDirectory = runDirectory;
+        this.runContext = runContext;
         this.checkType = checkType;
         this.reportType = reportType;
     }
@@ -81,14 +82,16 @@ public final class HealthChecksApplication {
             System.exit(1);
         }
 
+        RunContext runContext = null;
         try {
             runDirectory = FolderChecker.build().checkFolder(runDirectory);
+            runContext = RunContextFactory.fromRunDirectory(runDirectory);
         } catch (IOException | HealthChecksException e) {
             LOGGER.info(e.getMessage());
             System.exit(1);
         }
 
-        final HealthChecksApplication healthChecksApplication = new HealthChecksApplication(runDirectory, checkType,
+        final HealthChecksApplication healthChecksApplication = new HealthChecksApplication(runContext, checkType,
                 reportType);
         healthChecksApplication.processHealthChecks();
     }
@@ -119,7 +122,7 @@ public final class HealthChecksApplication {
             try {
                 final AbstractHealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
 
-                healthCheckAdapter.runCheck(RunContextFactory.backwardsCompatible(runDirectory), reportType);
+                healthCheckAdapter.runCheck(runContext, reportType);
             } catch (final NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -134,8 +137,7 @@ public final class HealthChecksApplication {
         final Observable<AbstractHealthCheckAdapter> adapterObservable = Observable.from(adapters).subscribeOn(
                 Schedulers.io());
 
-        BlockingObservable.from(adapterObservable).subscribe(
-                adapter -> adapter.runCheck(RunContextFactory.backwardsCompatible(runDirectory), reportType),
+        BlockingObservable.from(adapterObservable).subscribe(adapter -> adapter.runCheck(runContext, reportType),
                 (error) -> LOGGER.error(error.getMessage()), this::generateReport);
     }
 
@@ -144,7 +146,7 @@ public final class HealthChecksApplication {
             final HealthCheckReportFactory reportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
             final Report report = reportFactory.create();
 
-            final Optional<String> reportData = report.generateReport(runDirectory);
+            final Optional<String> reportData = report.generateReport(runContext.runDirectory());
             if (reportData.isPresent()) {
                 LOGGER.info(String.format(REPORT_GENERATED_MSG, reportData.get()));
             }

@@ -86,7 +86,7 @@ public class RealignerExtractor implements DataExtractor {
         final Optional<String> mappedLine = lines.stream().filter(
                 line -> line.contains(FLAGSTAT_MAPPED_PATTERN)).findFirst();
         if (!mappedLine.isPresent()) {
-            throw new LineNotFoundException(FLAGSTAT_MAPPED_PATTERN);
+            throw new LineNotFoundException(flagStatPath.toString(), FLAGSTAT_MAPPED_PATTERN);
         }
         final String mapped = mappedLine.get();
         if (!mapped.contains(FLAGSTAT_END_OF_MAPPED_VALUE_PATTERN)) {

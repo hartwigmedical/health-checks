@@ -61,7 +61,7 @@ public class SummaryMetricsExtractor implements DataExtractor {
         final Optional<String> searchedLine = lines.stream().filter(
                 fileLine -> fileLine.startsWith(PICARD_CATEGORY_TO_READ)).findFirst();
         if (!searchedLine.isPresent()) {
-            throw new LineNotFoundException(PICARD_CATEGORY_TO_READ);
+            throw new LineNotFoundException(alignmentSummaryMetricsPath.toString(), PICARD_CATEGORY_TO_READ);
         }
 
         final BaseDataReport pfIndelRate = getValue(searchedLine.get(), sampleId,

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public interface FileReader {
 
     @NotNull
-    List<String> readLines(Path fileToRead) throws IOException, HealthChecksException;
+    List<String> readLines(@NotNull Path fileToRead) throws IOException, HealthChecksException;
 
     @NotNull
     static FileReader build() {
@@ -30,7 +30,8 @@ public interface FileReader {
         };
     }
 
-    static List<String> read(final Path fileToRead) throws IOException {
+    @NotNull
+    static List<String> read(@NotNull final Path fileToRead) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(fileToRead.toString()))) {
             return lines.collect(Collectors.toList());
         }

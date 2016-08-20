@@ -53,19 +53,27 @@ public class WGSMetricsExtractor implements DataExtractor {
     private static List<BaseDataReport> getSampleData(@NotNull final String runDirectory,
             @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
-        Path alignmentSummaryMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId,
-                WGS_METRICS_EXTENSION);
-        final List<String> lines = FileReader.build().readLines(alignmentSummaryMetricsPath);
+        Path wgsMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
+        final List<String> lines = FileReader.build().readLines(wgsMetricsPath);
 
-        final BaseDataReport coverageMean = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_MEAN);
-        final BaseDataReport coverageMedian = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_MEDIAN);
-        final BaseDataReport coverageSD = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_SD);
-        final BaseDataReport coverageBaseQ = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ);
-        final BaseDataReport coverageDupe = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_PCT_EXC_DUPE);
-        final BaseDataReport coverageMapQ = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_PCT_EXC_MAPQ);
-        final BaseDataReport coverageOverlap = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_PCT_EXC_OVERLAP);
-        final BaseDataReport coverageTotal = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_PCT_EXC_TOTAL);
-        final BaseDataReport coverageUnpaired = getValue(lines, sampleId, WGSMetricsCheck.COVERAGE_PCT_EXC_UNPAIRED);
+        final BaseDataReport coverageMean = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_MEAN);
+        final BaseDataReport coverageMedian = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_MEDIAN);
+        final BaseDataReport coverageSD = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_SD);
+        final BaseDataReport coverageBaseQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ);
+        final BaseDataReport coverageDupe = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_DUPE);
+        final BaseDataReport coverageMapQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_MAPQ);
+        final BaseDataReport coverageOverlap = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_OVERLAP);
+        final BaseDataReport coverageTotal = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_TOTAL);
+        final BaseDataReport coverageUnpaired = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_UNPAIRED);
 
         return Arrays.asList(coverageMean, coverageMedian, coverageSD, coverageBaseQ, coverageDupe, coverageMapQ,
                 coverageOverlap, coverageTotal, coverageUnpaired);
@@ -78,29 +86,29 @@ public class WGSMetricsExtractor implements DataExtractor {
     }
 
     @NotNull
-    private static BaseDataReport getValue(@NotNull final List<String> lines, @NotNull final String sampleId,
-            @NotNull final WGSMetricsCheck check) throws LineNotFoundException {
-        final String value = getValueFromLine(lines, check.getFieldName(), check.getColumnIndex());
+    private static BaseDataReport getValue(@NotNull final String filePath, @NotNull final List<String> lines,
+            @NotNull final String sampleId, @NotNull final WGSMetricsCheck check) throws LineNotFoundException {
+        final String value = getValueFromLine(filePath, lines, check.getFieldName(), check.getColumnIndex());
         final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
         baseDataReport.log(LOGGER);
         return baseDataReport;
     }
 
     @NotNull
-    private static String getValueFromLine(@NotNull final List<String> lines, @NotNull final String filter,
-            final int fieldIndex) throws LineNotFoundException {
-        final int index = findLineIndex(lines, filter);
+    private static String getValueFromLine(@NotNull final String filePath, @NotNull final List<String> lines,
+            @NotNull final String filter, final int fieldIndex) throws LineNotFoundException {
+        final int index = findLineIndex(filePath, lines, filter);
         final String line = lines.get(index + 1);
         final String[] lineValues = line.split(VALUE_SEPARATOR);
         return lineValues[fieldIndex];
     }
 
-    private static int findLineIndex(@NotNull final List<String> lines, @NotNull final String filter)
-            throws LineNotFoundException {
+    private static int findLineIndex(@NotNull final String filePath, @NotNull final List<String> lines,
+            @NotNull final String filter) throws LineNotFoundException {
         final Optional<Integer> lineNumbers = IntStream.range(0, lines.size()).filter(
                 index -> lines.get(index).contains(filter)).mapToObj(index -> index).findFirst();
         if (!lineNumbers.isPresent()) {
-            throw new LineNotFoundException(filter);
+            throw new LineNotFoundException(filePath, filter);
         }
         return lineNumbers.get();
     }
