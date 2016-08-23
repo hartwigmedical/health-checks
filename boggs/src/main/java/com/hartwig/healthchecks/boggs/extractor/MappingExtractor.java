@@ -27,9 +27,6 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(MappingExtractor.class);
 
-    private static final long MILLIS_FACTOR = 10000L;
-    private static final double HUNDRED_FACTOR = 100D;
-
     private static final String FASTQC_BASE_DIRECTORY = "QCStats";
     private static final String FLAGSTAT_BASE_DIRECTORY = "mapping";
 
@@ -94,7 +91,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
-        final double mappedPercentage = toPercentage(mappedStat.getValue() / totalStat.getValue());
+        final double mappedPercentage = mappedStat.getValue() / totalStat.getValue();
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PERCENTAGE_MAPPED.toString(),
                 String.valueOf(mappedPercentage));
@@ -105,7 +102,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats properPaired = passed.get(FlagStatsType.PROPERLY_PAIRED_INDEX.getIndex());
-        final double properlyPairedPercentage = toPercentage(properPaired.getValue() / mappedStat.getValue());
+        final double properlyPairedPercentage = properPaired.getValue() / mappedStat.getValue();
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED.toString(),
                 String.valueOf(properlyPairedPercentage));
@@ -116,7 +113,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats singletonStat = passed.get(FlagStatsType.SINGLETONS_INDEX.getIndex());
-        final double singletonPercentage = toPercentage(singletonStat.getValue() / mappedStat.getValue());
+        final double singletonPercentage = singletonStat.getValue() / mappedStat.getValue();
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPORTION_SINGLETON.toString(),
                 String.valueOf(singletonPercentage));
@@ -127,7 +124,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             @NotNull final List<FlagStats> passed) {
         final FlagStats mappedStat = passed.get(FlagStatsType.MAPPED_INDEX.getIndex());
         final FlagStats diffPercStat = passed.get(FlagStatsType.MATE_MAP_DIF_CHR_INDEX.getIndex());
-        final double mateMappedDiffChrPerc = toPercentage(diffPercStat.getValue() / mappedStat.getValue());
+        final double mateMappedDiffChrPerc = diffPercStat.getValue() / mappedStat.getValue();
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR.toString(),
                 String.valueOf(mateMappedDiffChrPerc));
@@ -138,7 +135,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             @NotNull final List<FlagStats> passed) {
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats duplicateStat = passed.get(FlagStatsType.DUPLICATES_INDEX.getIndex());
-        final double proportionOfDuplicateRead = toPercentage(duplicateStat.getValue() / totalStat.getValue());
+        final double proportionOfDuplicateRead = duplicateStat.getValue() / totalStat.getValue();
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES.toString(),
                 String.valueOf(proportionOfDuplicateRead));
@@ -149,15 +146,10 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             @NotNull final List<FlagStats> passed) {
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats secondaryStat = passed.get(FlagStatsType.SECONDARY_INDEX.getIndex());
-        double proportionReadPercentage =
-                toPercentage(totalStat.getValue() + secondaryStat.getValue()) / totalSequences;
+        double proportionReadPercentage = (totalStat.getValue() + secondaryStat.getValue()) / totalSequences;
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES.toString(),
                 String.valueOf(proportionReadPercentage));
-    }
-
-    private static double toPercentage(final double percentage) {
-        return Math.round(percentage * MILLIS_FACTOR) / HUNDRED_FACTOR;
     }
 
     @NotNull

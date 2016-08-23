@@ -71,52 +71,52 @@ public class MappingExtractorTest {
 
     private static void assertRefSampleData(@NotNull final List<BaseDataReport> mapping) {
         final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
-        assertEquals("96.94", mappedData.getValue());
+        assertEquals("0.9693877551020408", mappedData.getValue());
         assertEquals(REF_SAMPLE, mappedData.getSampleId());
 
         final BaseDataReport mateData = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR);
-        assertEquals("1.05", mateData.getValue());
+        assertEquals("0.010526315789473684", mateData.getValue());
 
         final BaseDataReport properData = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED);
-        assertEquals("94.74", properData.getValue());
+        assertEquals("0.9473684210526315", properData.getValue());
 
         final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
-        assertEquals("1.05", singletonData.getValue());
+        assertEquals("0.010526315789473684", singletonData.getValue());
 
         final BaseDataReport duplicateData = extractReportData(mapping,
                 MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
-        assertEquals("10.2", duplicateData.getValue());
+        assertEquals("0.10204081632653061", duplicateData.getValue());
 
         final BaseDataReport proportionRead = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
-        assertEquals("99.0", proportionRead.getValue());
+        assertEquals("0.99", proportionRead.getValue());
     }
 
     private static void assertTumorSampleData(@NotNull final List<BaseDataReport> mapping) {
         final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
-        assertEquals("87.5", mappedData.getValue());
+        assertEquals("0.875", mappedData.getValue());
         assertEquals(TUMOR_SAMPLE, mappedData.getSampleId());
 
         final BaseDataReport mateData = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR);
-        assertEquals("2.86", mateData.getValue());
+        assertEquals("0.02857142857142857", mateData.getValue());
 
         final BaseDataReport properData = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED);
-        assertEquals("71.43", properData.getValue());
+        assertEquals("0.7142857142857143", properData.getValue());
 
         final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
-        assertEquals("7.14", singletonData.getValue());
+        assertEquals("0.07142857142857142", singletonData.getValue());
 
         final BaseDataReport duplicateData = extractReportData(mapping,
                 MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
-        assertEquals("12.5", duplicateData.getValue());
+        assertEquals("0.125", duplicateData.getValue());
 
         final BaseDataReport proportionRead = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
-        assertEquals("90.0", proportionRead.getValue());
+        assertEquals("0.9", proportionRead.getValue());
     }
 
     @NotNull
