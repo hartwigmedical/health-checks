@@ -91,7 +91,7 @@ public class MappingExtractorTest {
 
         final BaseDataReport proportionRead = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
-        assertEquals("0.99", proportionRead.getValue());
+        assertEquals("0.97", proportionRead.getValue());
     }
 
     private static void assertTumorSampleData(@NotNull final List<BaseDataReport> mapping) {
@@ -116,7 +116,7 @@ public class MappingExtractorTest {
 
         final BaseDataReport proportionRead = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
-        assertEquals("0.9", proportionRead.getValue());
+        assertEquals("0.7", proportionRead.getValue());
     }
 
     @NotNull

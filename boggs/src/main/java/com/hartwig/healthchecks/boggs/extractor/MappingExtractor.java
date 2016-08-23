@@ -146,7 +146,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             @NotNull final List<FlagStats> passed) {
         final FlagStats totalStat = passed.get(FlagStatsType.TOTAL_INDEX.getIndex());
         final FlagStats secondaryStat = passed.get(FlagStatsType.SECONDARY_INDEX.getIndex());
-        double proportionReadPercentage = (totalStat.getValue() + secondaryStat.getValue()) / totalSequences;
+        double proportionReadPercentage = (totalStat.getValue() - secondaryStat.getValue()) / totalSequences;
 
         return new BaseDataReport(sampleId, MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES.toString(),
                 String.valueOf(proportionReadPercentage));
