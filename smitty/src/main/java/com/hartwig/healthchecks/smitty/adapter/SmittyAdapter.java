@@ -8,7 +8,6 @@ import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -25,8 +24,7 @@ public class SmittyAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final FileFinderAndReader kinshipReader = FileFinderAndReader.build();
-        final DataExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
+        final DataExtractor kinshipExtractor = new KinshipExtractor(runContext);
         final HealthChecker kinshipChecker = new HealthCheckerImpl(CheckType.KINSHIP, runContext.runDirectory(),
                 kinshipExtractor);
         final BaseReport kinshipReport = kinshipChecker.runCheck();

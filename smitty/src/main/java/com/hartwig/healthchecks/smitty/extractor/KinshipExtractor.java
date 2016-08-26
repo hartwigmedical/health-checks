@@ -1,7 +1,5 @@
 package com.hartwig.healthchecks.smitty.extractor;
 
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +8,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -25,32 +24,34 @@ public class KinshipExtractor implements DataExtractor {
 
     private static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s -> %s lines found was expecting %s";
 
+    private static final String KINSHIP_EXTENSION = ".kinship";
     private static final int EXPECTED_NUM_LINES = 2;
-    private static final int SAMPLE_ID_INDEX = 0;
-    private static final int KINSHIP_INDEX = 7;
-    private static final String KINSHIP_TEST = "KINSHIP_TEST";
-    private static final String KINSHIP = ".kinship";
+    private static final String COLUMN_SEPARATOR = "\t";
+    private static final int KINSHIP_COLUMN = 7;
 
     @NotNull
-    private final FileFinderAndReader kinshipReader;
+    private final FileFinderAndReader kinshipReader = FileFinderAndReader.build();
+    @NotNull
+    private final RunContext runContext;
 
-    public KinshipExtractor(@NotNull final FileFinderAndReader kinshipReader) {
-        super();
-        this.kinshipReader = kinshipReader;
+    public KinshipExtractor(@NotNull final RunContext runContext) {
+        this.runContext = runContext;
     }
 
     @Override
     @NotNull
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
-                    throws IOException, HealthChecksException {
-        final List<String> kinshipLines = kinshipReader.readLines(runDirectory, KINSHIP);
+            throws IOException, HealthChecksException {
+        final List<String> kinshipLines = kinshipReader.readLines(runContext.runDirectory(), KINSHIP_EXTENSION);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
-            throw new MalformedFileException(String.format(MALFORMED_FILE_MSG, KINSHIP_TEST, runDirectory,
+            throw new MalformedFileException(
+                    String.format(MALFORMED_FILE_MSG, KinshipCheck.KINSHIP_TEST.toString(), runDirectory,
                             kinshipLines.size(), EXPECTED_NUM_LINES));
         }
         final Optional<BaseDataReport> optBaseDataReport = kinshipLines.stream().skip(1).map(line -> {
-            final String[] values = line.split(SEPARATOR_REGEX);
-            return new BaseDataReport(values[SAMPLE_ID_INDEX], KINSHIP_TEST, values[KINSHIP_INDEX]);
+            final String[] values = line.split(COLUMN_SEPARATOR);
+            return new BaseDataReport(runContext.tumorSample(), KinshipCheck.KINSHIP_TEST.toString(),
+                    values[KINSHIP_COLUMN]);
         }).findFirst();
 
         assert optBaseDataReport.isPresent();
