@@ -14,7 +14,7 @@ import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.PatientReport;
+import com.hartwig.healthchecks.common.report.SingleValueReport;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -68,7 +68,7 @@ public class SlicedExtractorTest {
         };
         final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
         assertEquals(REPORT_WITH_WRONG_TYPE, CheckType.SLICED, report.getCheckType());
-        final BaseDataReport sampleData = ((PatientReport) report).getSampleData();
+        final BaseDataReport sampleData = ((SingleValueReport) report).getSampleData();
         assertEquals(WRONG_NAME, SLICED_NUM_VARIANTS, sampleData.getCheckName());
         assertEquals("Wrong Sample", "CPCT12345678R", sampleData.getSampleId());
         assertEquals("Wrong value", EXPECTED_VALUE, sampleData.getValue());

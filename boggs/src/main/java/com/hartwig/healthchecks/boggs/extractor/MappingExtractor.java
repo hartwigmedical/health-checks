@@ -17,7 +17,7 @@ import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.SampleReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +51,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
         final List<BaseDataReport> tumorSampleData = getSampleData(runContext.runDirectory(),
                 runContext.tumorSample());
 
-        return new SampleReport(CheckType.MAPPING, refSampleData, tumorSampleData);
+        return new PatientReport(CheckType.MAPPING, refSampleData, tumorSampleData);
     }
 
     @NotNull

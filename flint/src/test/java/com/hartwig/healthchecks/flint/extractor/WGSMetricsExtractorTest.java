@@ -16,7 +16,7 @@ import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.SampleReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -118,8 +118,8 @@ public class WGSMetricsExtractorTest {
 
     private static void assertField(@NotNull final BaseReport report, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((SampleReport) report).getReferenceSample(), REF_SAMPLE, field, refValue);
-        assertBaseData(((SampleReport) report).getTumorSample(), TUMOR_SAMPLE, field, tumValue);
+        assertBaseData(((PatientReport) report).getReferenceSample(), REF_SAMPLE, field, refValue);
+        assertBaseData(((PatientReport) report).getTumorSample(), TUMOR_SAMPLE, field, tumValue);
     }
 
     private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String sampleId,

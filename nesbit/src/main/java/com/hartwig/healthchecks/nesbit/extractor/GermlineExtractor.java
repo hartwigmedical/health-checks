@@ -11,12 +11,13 @@ import java.util.stream.Collectors;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.SampleReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 import com.hartwig.healthchecks.nesbit.predicate.VCFGermlineVariantPredicate;
@@ -34,10 +35,12 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     private static final String GERMLINE_VCF_EXTENSION = "_Cosmicv76_GoNLv5.vcf";
 
     @NotNull
-    private final ExtensionFinderAndLineReader reader;
+    private final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
+    @NotNull
+    private final RunContext runContext;
 
-    public GermlineExtractor(@NotNull final ExtensionFinderAndLineReader reader) {
-        this.reader = reader;
+    public GermlineExtractor(@NotNull final RunContext runContext) {
+        this.runContext = runContext;
     }
 
     @NotNull
@@ -45,15 +48,15 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
 
-        final List<String> headerLines = reader.readLines(runDirectory, GERMLINE_VCF_EXTENSION,
+        final List<String> headerLines = reader.readLines(runContext.runDirectory(), GERMLINE_VCF_EXTENSION,
                 new VCFHeaderLinePredicate());
-        final List<String> lines = reader.readLines(runDirectory, GERMLINE_VCF_EXTENSION,
+        final List<String> lines = reader.readLines(runContext.runDirectory(), GERMLINE_VCF_EXTENSION,
                 new VCFPassDataLinePredicate());
 
         final List<BaseDataReport> refData = getSampleData(headerLines, lines, REF_SAMPLE_SUFFIX);
         final List<BaseDataReport> tumData = getSampleData(headerLines, lines, TUM_SAMPLE_SUFFIX);
 
-        return new SampleReport(CheckType.GERMLINE, refData, tumData);
+        return new PatientReport(CheckType.GERMLINE, refData, tumData);
     }
 
     @NotNull

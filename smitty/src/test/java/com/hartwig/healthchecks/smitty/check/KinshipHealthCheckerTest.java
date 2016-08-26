@@ -13,7 +13,7 @@ import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.ErrorReport;
-import com.hartwig.healthchecks.common.report.PatientReport;
+import com.hartwig.healthchecks.common.report.SingleValueReport;
 import com.hartwig.healthchecks.smitty.extractor.KinshipExtractor;
 
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class KinshipHealthCheckerTest {
     @Test
     public void verifyHealthChecker() throws IOException, HealthChecksException {
         final BaseDataReport testDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, EXPECTED_VALUE);
-        final PatientReport testData = new PatientReport(CheckType.KINSHIP, testDataReport);
+        final SingleValueReport testData = new SingleValueReport(CheckType.KINSHIP, testDataReport);
         new Expectations() {
             {
                 dataExtractor.extractFromRunDirectory(DUMMY_RUN_DIR);
@@ -51,7 +51,7 @@ public class KinshipHealthCheckerTest {
         final HealthChecker checker = new HealthCheckerImpl(CheckType.KINSHIP, DUMMY_RUN_DIR, dataExtractor);
         final BaseReport report = checker.runCheck();
         assertEquals(WRONG_TYPE_MSG, CheckType.KINSHIP, report.getCheckType());
-        final BaseDataReport baseDataReports = ((PatientReport) report).getSampleData();
+        final BaseDataReport baseDataReports = ((SingleValueReport) report).getSampleData();
         assertEquals(WRONG_CHECK_NAME, DUMMY_CHECK, baseDataReports.getCheckName());
         assertEquals(WRONG_CHECK_STATUS, EXPECTED_VALUE, baseDataReports.getValue());
         assertEquals(WRONG_PATIENT_ID_MSG, DUMMY_ID, baseDataReports.getSampleId());

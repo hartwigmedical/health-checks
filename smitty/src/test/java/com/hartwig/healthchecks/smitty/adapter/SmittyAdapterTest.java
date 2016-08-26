@@ -9,7 +9,7 @@ import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.PatientReport;
+import com.hartwig.healthchecks.common.report.SingleValueReport;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -46,6 +46,6 @@ public class SmittyAdapterTest {
     @NotNull
     private static BaseReport getKinshipDummyReport() {
         final BaseDataReport baseDataReport = new BaseDataReport(DUMMY_ID, DUMMY_CHECK, DUMMY_VALUE);
-        return new PatientReport(CheckType.KINSHIP, baseDataReport);
+        return new SingleValueReport(CheckType.KINSHIP, baseDataReport);
     }
 }

@@ -17,7 +17,7 @@ import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.SampleReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +47,7 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
         final List<BaseDataReport> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<BaseDataReport> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
-        return new SampleReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
+        return new PatientReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
     }
 
     @NotNull

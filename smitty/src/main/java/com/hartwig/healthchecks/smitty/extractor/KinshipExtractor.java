@@ -13,7 +13,7 @@ import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.PatientReport;
+import com.hartwig.healthchecks.common.report.SingleValueReport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,6 +56,6 @@ public class KinshipExtractor implements DataExtractor {
         assert optBaseDataReport.isPresent();
 
         optBaseDataReport.get().log(LOGGER);
-        return new PatientReport(CheckType.KINSHIP, optBaseDataReport.get());
+        return new SingleValueReport(CheckType.KINSHIP, optBaseDataReport.get());
     }
 }

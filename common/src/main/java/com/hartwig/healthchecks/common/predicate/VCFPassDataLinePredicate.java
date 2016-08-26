@@ -1,17 +1,16 @@
 package com.hartwig.healthchecks.common.predicate;
 
+import org.jetbrains.annotations.NotNull;
+
 public class VCFPassDataLinePredicate extends VCFDataLinePredicate {
 
     private static final String SEPARATOR_REGEX = "\t";
-
     private static final int FILTER_INDEX = 6;
-
     private static final String DOT = ".";
-
     private static final String PASS = "PASS";
 
     @Override
-    public boolean test(final String line) {
+    public boolean test(@NotNull final String line) {
         boolean isData = false;
         if (super.test(line)) {
             final String[] values = line.split(SEPARATOR_REGEX);
@@ -22,5 +21,4 @@ public class VCFPassDataLinePredicate extends VCFDataLinePredicate {
         }
         return isData;
     }
-
 }

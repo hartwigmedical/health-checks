@@ -1,23 +1,34 @@
 package com.hartwig.healthchecks.common.report;
 
+import java.util.List;
+
 import com.hartwig.healthchecks.common.checks.CheckType;
 
 import org.jetbrains.annotations.NotNull;
 
 public class PatientReport extends BaseReport {
 
-    private static final long serialVersionUID = -5744830259786248569L;
+    private static final long serialVersionUID = -3227613309511119840L;
 
     @NotNull
-    private final BaseDataReport sampleData;
+    private final List<BaseDataReport> referenceSample;
+    @NotNull
+    private final List<BaseDataReport> tumorSample;
 
-    public PatientReport(@NotNull final CheckType checkType, @NotNull final BaseDataReport sampleData) {
+    public PatientReport(final CheckType checkType, @NotNull final List<BaseDataReport> referenceSample,
+                    @NotNull final List<BaseDataReport> tumorSample) {
         super(checkType);
-        this.sampleData = sampleData;
+        this.referenceSample = referenceSample;
+        this.tumorSample = tumorSample;
     }
 
     @NotNull
-    public BaseDataReport getSampleData() {
-        return sampleData;
+    public List<BaseDataReport> getReferenceSample() {
+        return referenceSample;
+    }
+
+    @NotNull
+    public List<BaseDataReport> getTumorSample() {
+        return tumorSample;
     }
 }

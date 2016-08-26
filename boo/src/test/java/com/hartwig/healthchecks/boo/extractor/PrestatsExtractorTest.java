@@ -14,7 +14,7 @@ import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.SampleReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -67,7 +67,7 @@ public class PrestatsExtractorTest {
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
         final BaseReport report = extractor.extractFromRunDirectory("");
-        final List<BaseDataReport> sampleReport = ((SampleReport) report).getReferenceSample();
+        final List<BaseDataReport> sampleReport = ((PatientReport) report).getReferenceSample();
         assertEquals(EXPECTED_CHECKS_NUM, sampleReport.size());
 
         assertPrestatsDataReport(sampleReport, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
@@ -84,8 +84,8 @@ public class PrestatsExtractorTest {
 
     private static void assertReport(@NotNull final BaseReport prestatsData) {
         assertEquals(CheckType.PRESTATS, prestatsData.getCheckType());
-        assertRefSampleData(((SampleReport) prestatsData).getReferenceSample());
-        assertTumorSampleData(((SampleReport) prestatsData).getTumorSample());
+        assertRefSampleData(((PatientReport) prestatsData).getReferenceSample());
+        assertTumorSampleData(((PatientReport) prestatsData).getTumorSample());
     }
 
     private static void assertRefSampleData(@NotNull final List<BaseDataReport> sampleData) {

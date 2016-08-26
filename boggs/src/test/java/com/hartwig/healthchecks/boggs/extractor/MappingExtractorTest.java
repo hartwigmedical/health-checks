@@ -14,7 +14,7 @@ import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.SampleReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -65,8 +65,8 @@ public class MappingExtractorTest {
 
     private static void assertReport(@NotNull final BaseReport report) {
         assertEquals(CheckType.MAPPING, report.getCheckType());
-        assertRefSampleData(((SampleReport) report).getReferenceSample());
-        assertTumorSampleData(((SampleReport) report).getTumorSample());
+        assertRefSampleData(((PatientReport) report).getReferenceSample());
+        assertTumorSampleData(((PatientReport) report).getTumorSample());
     }
 
     private static void assertRefSampleData(@NotNull final List<BaseDataReport> mapping) {

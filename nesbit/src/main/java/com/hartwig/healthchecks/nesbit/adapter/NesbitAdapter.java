@@ -26,8 +26,7 @@ public class NesbitAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final ExtensionFinderAndLineReader germlineReader = ExtensionFinderAndLineReader.build();
-        final DataExtractor germlineExtractor = new GermlineExtractor(germlineReader);
+        final DataExtractor germlineExtractor = new GermlineExtractor(runContext);
         final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, runContext.runDirectory(),
                 germlineExtractor);
         final BaseReport germlineReport = germline.runCheck();

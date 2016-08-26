@@ -19,7 +19,7 @@ import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.SampleReport;
+import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +58,7 @@ public class RealignerExtractor implements DataExtractor {
         final BaseDataReport referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final BaseDataReport tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
-        return new SampleReport(CheckType.REALIGNER, Collections.singletonList(referenceSample),
+        return new PatientReport(CheckType.REALIGNER, Collections.singletonList(referenceSample),
                 Collections.singletonList(tumorSample));
     }
 
