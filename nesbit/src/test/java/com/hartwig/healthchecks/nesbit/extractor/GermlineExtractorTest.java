@@ -23,8 +23,6 @@ public class GermlineExtractorTest {
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
     private static final String REF_SAMPLE = "CPCT11111111R";
     private static final String TUMOR_SAMPLE = "CPCT11111111T";
-    private static final String GERMLINE_INDELS = "VARIANTS_GERMLINE_INDELS";
-    private static final String GERMLINE_SNP = "VARIANTS_GERMLINE_SNP";
 
     @Test
     public void canCountSNPAndIndels() throws IOException, HealthChecksException {
@@ -37,22 +35,22 @@ public class GermlineExtractorTest {
         final List<BaseDataReport> refData = ((PatientReport) report).getReferenceSample();
         final List<BaseDataReport> tumData = ((PatientReport) report).getTumorSample();
 
-        assertSampleData(refData, "55", "4");
-        assertSampleData(tumData, "74", "4");
+        assertSampleData(refData, 55, 4);
+        assertSampleData(tumData, 74, 4);
     }
 
-    private static void assertSampleData(@NotNull final List<BaseDataReport> sampleData,
-            @NotNull final String expectedCountSNP, @NotNull final String expectedCountIndels) {
+    private static void assertSampleData(@NotNull final List<BaseDataReport> sampleData, final long expectedCountSNP,
+            final long expectedCountIndels) {
         assertEquals(2, sampleData.size());
-        final Optional<BaseDataReport> indelReport = sampleData.stream().filter(
-                data -> data.getCheckName().equals(GERMLINE_INDELS)).findFirst();
-        assert indelReport.isPresent();
 
-        assertEquals(expectedCountIndels, indelReport.get().getValue());
         final Optional<BaseDataReport> snpReport = sampleData.stream().filter(
-                data -> data.getCheckName().equals(GERMLINE_SNP)).findFirst();
+                data -> data.getCheckName().equals(GermlineCheck.VARIANTS_GERMLINE_SNP.toString())).findFirst();
         assert snpReport.isPresent();
+        assertEquals(Long.toString(expectedCountSNP), snpReport.get().getValue());
 
-        assertEquals(expectedCountSNP, snpReport.get().getValue());
+        final Optional<BaseDataReport> indelReport = sampleData.stream().filter(
+                data -> data.getCheckName().equals(GermlineCheck.VARIANTS_GERMLINE_INDELS.toString())).findFirst();
+        assert indelReport.isPresent();
+        assertEquals(Long.toString(expectedCountIndels), indelReport.get().getValue());
     }
 }

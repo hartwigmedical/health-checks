@@ -1,9 +1,5 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.REF_SAMPLE_SUFFIX;
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +9,6 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
-import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -30,9 +25,8 @@ public class GermlineExtractor extends AbstractVCFExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(GermlineExtractor.class);
 
-    private static final String GERMLINE_INDELS = "VARIANTS_GERMLINE_INDELS";
-    private static final String GERMLINE_SNP = "VARIANTS_GERMLINE_SNP";
     private static final String GERMLINE_VCF_EXTENSION = "_Cosmicv76_GoNLv5.vcf";
+    private static final String VCF_COLUMN_SEPARATOR = "\t";
 
     @NotNull
     private final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
@@ -47,32 +41,23 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-
-        final List<String> headerLines = reader.readLines(runContext.runDirectory(), GERMLINE_VCF_EXTENSION,
-                new VCFHeaderLinePredicate());
-        final List<String> lines = reader.readLines(runContext.runDirectory(), GERMLINE_VCF_EXTENSION,
+        final List<String> passFilterLines = reader.readLines(runContext.runDirectory(), GERMLINE_VCF_EXTENSION,
                 new VCFPassDataLinePredicate());
+        final List<VCFGermlineData> vcfData = getVCFDataForGermLine(passFilterLines);
 
-        final List<BaseDataReport> refData = getSampleData(headerLines, lines, REF_SAMPLE_SUFFIX);
-        final List<BaseDataReport> tumData = getSampleData(headerLines, lines, TUM_SAMPLE_SUFFIX);
+        final List<BaseDataReport> refData = getSampleData(vcfData, runContext.refSample(), true);
+        final List<BaseDataReport> tumData = getSampleData(vcfData, runContext.tumorSample(), false);
 
         return new PatientReport(CheckType.GERMLINE, refData, tumData);
     }
 
     @NotNull
-    private static List<BaseDataReport> getSampleData(@NotNull final List<String> headerLines,
-            @NotNull final List<String> lines, @NotNull final String suffix)
-            throws IOException, HealthChecksException {
-        final String[] headers = getHeaders(headerLines, GERMLINE_VCF_EXTENSION, Boolean.TRUE);
-        final String sampleId = getSampleIdFromHeader(headers, suffix);
-        boolean isRef = Boolean.TRUE;
-        if (suffix.equals(TUM_SAMPLE_SUFFIX)) {
-            isRef = Boolean.FALSE;
-        }
-        final List<VCFGermlineData> vcfData = getVCFDataForGermLine(lines);
-        final BaseDataReport snp = getGermlineVariantCount(sampleId, vcfData, VCFType.SNP, GERMLINE_SNP, isRef);
-        final BaseDataReport indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS, GERMLINE_INDELS,
-                isRef);
+    private static List<BaseDataReport> getSampleData(@NotNull List<VCFGermlineData> vcfData,
+            @NotNull final String sampleId, final boolean isRefSample) throws IOException, HealthChecksException {
+        final BaseDataReport snp = getGermlineVariantCount(sampleId, vcfData, VCFType.SNP,
+                GermlineCheck.VARIANTS_GERMLINE_SNP, isRefSample);
+        final BaseDataReport indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS,
+                GermlineCheck.VARIANTS_GERMLINE_INDELS, isRefSample);
         final List<BaseDataReport> reports = Arrays.asList(snp, indels);
         BaseDataReport.log(LOGGER, reports);
         return reports;
@@ -81,10 +66,10 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     @NotNull
     private static List<VCFGermlineData> getVCFDataForGermLine(@NotNull final List<String> lines) {
         return lines.stream().map(line -> {
-            final String[] values = line.split(SEPARATOR_REGEX);
+            final String[] values = line.split(VCF_COLUMN_SEPARATOR);
             final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
-            final String refData = values[PATIENT_REF_INDEX];
-            final String tumData = values[PATIENT_TUM_INDEX];
+            final String refData = values[REF_SAMPLE_INDEX];
+            final String tumData = values[TUMOR_SAMPLE_INDEX];
             return new VCFGermlineData(type, refData, tumData);
         }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
     }
@@ -92,8 +77,8 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     @NotNull
     private static BaseDataReport getGermlineVariantCount(@NotNull final String sampleId,
             @NotNull final List<VCFGermlineData> vcfData, @NotNull final VCFType vcfType,
-            @NotNull final String checkName, final boolean refSample) {
-        final Long count = vcfData.stream().filter(new VCFGermlineVariantPredicate(vcfType, refSample)).count();
-        return new BaseDataReport(sampleId, checkName, String.valueOf(count));
+            @NotNull final GermlineCheck check, final boolean isRefSample) {
+        final long count = vcfData.stream().filter(new VCFGermlineVariantPredicate(vcfType, isRefSample)).count();
+        return new BaseDataReport(sampleId, check.toString(), String.valueOf(count));
     }
 }

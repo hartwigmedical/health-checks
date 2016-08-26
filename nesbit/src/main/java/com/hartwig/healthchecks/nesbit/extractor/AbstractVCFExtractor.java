@@ -23,8 +23,8 @@ abstract class AbstractVCFExtractor implements DataExtractor {
     private static final String[] NEEDED_HEADERS_VARIANTS = { "(CPCT)(\\d+)(R)" };
     private static final String COMMA_DELIMITER = ",";
 
-    static final int PATIENT_TUM_INDEX = 10;
-    static final int PATIENT_REF_INDEX = 9;
+    static final int TUMOR_SAMPLE_INDEX = 10;
+    static final int REF_SAMPLE_INDEX = 9;
     static final int INFO_INDEX = 7;
     static final int ALT_INDEX = 4;
     static final int REF_INDEX = 3;

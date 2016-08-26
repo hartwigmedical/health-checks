@@ -9,17 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class VCFGermlineVariantPredicate implements Predicate<VCFGermlineData> {
 
-    private static final String INVALID_2 = "0/0";
-    private static final String INVALID = "./.";
+    private static final String INVALID_VARIANT_1 = "./.";
+    private static final String INVALID_VARIANT_2 = "0/0";
 
     @NotNull
     private final VCFType vcfType;
-    private final boolean refSample;
+    private final boolean isRefSample;
 
-    public VCFGermlineVariantPredicate(@NotNull final VCFType vcfType, final boolean refSample) {
+    public VCFGermlineVariantPredicate(@NotNull final VCFType vcfType, final boolean isRefSample) {
         super();
         this.vcfType = vcfType;
-        this.refSample = refSample;
+        this.isRefSample = isRefSample;
     }
 
     @Override
@@ -28,10 +28,11 @@ public class VCFGermlineVariantPredicate implements Predicate<VCFGermlineData> {
         if (vcfGermlineData.getType() == vcfType) {
             String dataToCheck = vcfGermlineData.getRefData();
 
-            if (!refSample) {
+            if (!isRefSample) {
                 dataToCheck = vcfGermlineData.getTumData();
             }
-            if (!dataToCheck.startsWith(INVALID) && !dataToCheck.startsWith(INVALID_2)) {
+
+            if (!dataToCheck.startsWith(INVALID_VARIANT_1) && !dataToCheck.startsWith(INVALID_VARIANT_2)) {
                 isVariant = true;
             }
         }

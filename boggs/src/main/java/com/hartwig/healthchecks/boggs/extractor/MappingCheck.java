@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.boggs.extractor;
 
-public enum MappingCheck {
+enum MappingCheck {
     MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES,
     MAPPING_PERCENTAGE_MAPPED,
     MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED,
