@@ -1,8 +1,5 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.SEPARATOR_REGEX;
-import static com.hartwig.healthchecks.common.io.extractor.ExtractorConstants.TUM_SAMPLE_SUFFIX;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,10 +10,11 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
-import com.hartwig.healthchecks.common.predicate.VCFHeaderLinePredicate;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
@@ -33,58 +31,56 @@ public class SomaticExtractor extends AbstractVCFExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(SomaticExtractor.class);
 
-    private static final String SET = "set=";
-    private static final String PROPORTION_CHECK_LABEL = "SOMATIC_%s_PROPORTION_VARIANTS_%s_CALLERS";
-    private static final String SENSITIVITY_CHECK_LABEL = "SOMATIC_%s_SENSITIVITY_%s_VARIANTS_2+_CALLERS";
-    private static final String SOMATIC_TYPE_LABEL = "VARIANTS_SOMATIC_%s";
-    private static final String PRECISION_CHECK_LABEL = "SOMATIC_%s_PRECISION_%s_2+_CALLERS";
+    private static final String MELTED_SOMATICS_EXTENSION = "_Cosmicv76_melted.vcf";
+    private static final String VCF_COLUMN_SEPARATOR = "\t";
+
+    @VisibleForTesting
+    static final String MUTECT = "mutect";
+    @VisibleForTesting
+    static final String VARSCAN = "varscan";
+    @VisibleForTesting
+    static final String STRELKA = "strelka";
+    @VisibleForTesting
+    static final String FREEBAYES = "freebayes";
+    private static final List<String> CALLERS = Arrays.asList(MUTECT, VARSCAN, STRELKA, FREEBAYES);
     private static final List<Integer> CALLERS_COUNT = Arrays.asList(1, 2, 3, 4);
-    private static final List<String> CALLERS = Arrays.asList("mutect", "varscan", "strelka", "freebayes");
-    private static final String FILTER_IN = "filterIn";
-    private static final String EXT = "_Cosmicv76_melted.vcf";
-    private static final String EQUAL = "=";
-    private static final String SEMICOLON_DELIMITER = ";";
-    private static final String DASH = "-";
+
+    private static final String VCF_INFO_FIELD_SEPARATOR = ";";
+    private static final String CALLER_ALGO_IDENTIFIER = "set=";
+    private static final String CALLER_ALGO_START = "=";
+    private static final String CALLER_ALGO_SEPARATOR = "-";
+    private static final String CALLER_FILTERED_IDENTIFIER = "filterIn";
 
     @NotNull
-    private final ExtensionFinderAndLineReader reader;
+    private final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
+    @NotNull
+    private final RunContext runContext;
 
-    public SomaticExtractor(@NotNull final ExtensionFinderAndLineReader reader) {
-        super();
-        this.reader = reader;
+    public SomaticExtractor(@NotNull final RunContext runContext) {
+        this.runContext = runContext;
     }
 
     @NotNull
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> sampleData = getSampleData(runDirectory);
-        return new PatientMultiChecksReport(CheckType.SOMATIC, sampleData);
-    }
-
-    @NotNull
-    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory)
-            throws IOException, HealthChecksException {
-        final List<String> headerLines = reader.readLines(runDirectory, EXT, new VCFHeaderLinePredicate());
-        final String[] headers = getHeaders(headerLines, EXT, Boolean.FALSE);
-        final String sampleId = getSampleIdFromHeader(headers, TUM_SAMPLE_SUFFIX);
-
-        final List<String> lines = reader.readLines(runDirectory, EXT, new VCFPassDataLinePredicate());
+        final List<String> lines = reader.readLines(runDirectory, MELTED_SOMATICS_EXTENSION,
+                new VCFPassDataLinePredicate());
         final List<VCFSomaticData> vcfData = getVCFSomaticData(lines);
 
         final List<BaseDataReport> reports = new ArrayList<>();
-        reports.addAll(getTypeChecks(vcfData, sampleId, VCFType.SNP));
-        reports.addAll(getTypeChecks(vcfData, sampleId, VCFType.INDELS));
+        reports.addAll(getTypeChecks(vcfData, runContext.tumorSample(), VCFType.SNP));
+        reports.addAll(getTypeChecks(vcfData, runContext.tumorSample(), VCFType.INDELS));
 
         BaseDataReport.log(LOGGER, reports);
-        return reports;
+        return new PatientMultiChecksReport(CheckType.SOMATIC, reports);
     }
 
     @NotNull
     private static List<BaseDataReport> getTypeChecks(@NotNull final List<VCFSomaticData> vcfData,
             @NotNull final String sampleId, @NotNull final VCFType vcfType) {
         final BaseDataReport countReport = getSomaticVariantCount(sampleId, vcfData, vcfType,
-                String.format(SOMATIC_TYPE_LABEL, vcfType.name()));
+                SomaticCheck.SOMATIC_COUNT.checkName(vcfType.name()));
         final List<BaseDataReport> reports = new ArrayList<>();
         reports.add(countReport);
         final List<VCFSomaticSetData> vcfTypeSetData = getSetDataForType(vcfData, vcfType);
@@ -107,7 +103,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     @NotNull
     private static List<VCFSomaticData> getVCFSomaticData(@NotNull final List<String> lines) {
         return lines.stream().map(line -> {
-            final String[] values = line.split(SEPARATOR_REGEX);
+            final String[] values = line.split(VCF_COLUMN_SEPARATOR);
             final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
             final String info = values[INFO_INDEX];
             return new VCFSomaticData(type, info);
@@ -126,13 +122,14 @@ public class SomaticExtractor extends AbstractVCFExtractor {
             @NotNull final VCFType vcfType) {
         return vcfData.stream().filter(vcf -> vcf.getType().equals(vcfType)).map(vcf -> {
             VCFSomaticSetData vcfSomaticSetData = null;
-            final Optional<String> setValue = Arrays.stream(vcf.getInfo().split(SEMICOLON_DELIMITER)).filter(
-                    infoLine -> infoLine.contains(SET)).map(
-                    infoLine -> infoLine.substring(infoLine.indexOf(EQUAL) + 1, infoLine.length())).findFirst();
+            final Optional<String> setValue = Arrays.stream(vcf.getInfo().split(VCF_INFO_FIELD_SEPARATOR)).filter(
+                    infoLine -> infoLine.contains(CALLER_ALGO_IDENTIFIER)).map(
+                    infoLine -> infoLine.substring(infoLine.indexOf(CALLER_ALGO_START) + 1,
+                            infoLine.length())).findFirst();
             assert setValue.isPresent();
-            final String[] allCallers = setValue.get().split(DASH);
+            final String[] allCallers = setValue.get().split(CALLER_ALGO_SEPARATOR);
             final List<String> filteredCallers = Arrays.stream(allCallers).filter(
-                    caller -> !caller.startsWith(FILTER_IN)).collect(Collectors.toList());
+                    caller -> !caller.startsWith(CALLER_FILTERED_IDENTIFIER)).collect(Collectors.toList());
             if (filteredCallers.size() > 0) {
                 final Map<String, Integer> callersMap = filteredCallers.stream().collect(
                         Collectors.toMap(key -> key, value -> filteredCallers.size() - 1));
@@ -153,7 +150,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
             precision = (double) callerSetsPerCallersCount.size() / callerSets.size();
         }
         return new BaseDataReport(sampleId,
-                String.format(PRECISION_CHECK_LABEL, vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
+                SomaticCheck.PRECISION_CHECK.checkName(vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
                 String.valueOf(precision));
     }
 
@@ -169,7 +166,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
             sensitivity = (double) callerSetsPerCallersCount.size() / setsPerCount.size();
         }
         return new BaseDataReport(sampleId,
-                String.format(SENSITIVITY_CHECK_LABEL, vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
+                SomaticCheck.SENSITIVITY_CHECK.checkName(vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
                 String.valueOf(sensitivity));
     }
 
@@ -184,7 +181,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         }
 
         return new BaseDataReport(sampleId,
-                String.format(PROPORTION_CHECK_LABEL, vcfType.name(), String.valueOf(count)),
+                SomaticCheck.PROPORTION_CHECK.checkName(vcfType.name(), String.valueOf(count)),
                 String.valueOf(proportion));
     }
 
