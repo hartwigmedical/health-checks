@@ -7,7 +7,9 @@ import java.io.IOException;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
@@ -19,58 +21,52 @@ import org.junit.Test;
 
 public class KinshipExtractorTest {
 
-    private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
 
+    private static final String CORRECT_RUN = Resources.getResource("run").getPath();
+    private static final String MALFORMED_RUN = Resources.getResource("run2").getPath();
+    private static final String EMPTY_RUN = Resources.getResource("run3").getPath();
+
     @Test
     public void extractDataFromKinship() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = RunContextFactory.testContext(CORRECT_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
         final BaseReport kinshipReport = kinshipExtractor.extractFromRunDirectory("");
-        assertEquals(CheckType.KINSHIP, kinshipReport.getCheckType());
 
         assertNotNull(kinshipReport);
+        assertEquals(CheckType.KINSHIP, kinshipReport.getCheckType());
         assertKinshipData((SingleValueReport) kinshipReport, "0.4748");
     }
 
-    //    @Test(expected = EmptyFileException.class)
-    //    public void extractDataFromEmptyKinship() throws IOException, HealthChecksException {
-    //        final KinshipExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
-    //        new Expectations() {
-    //            {
-    //                kinshipReader.readLines(anyString, anyString);
-    //                result = new EmptyFileException("", "");
-    //            }
-    //        };
-    //        kinshipExtractor.extractFromRunDirectory(TEST_DIR);
-    //    }
-    //
-    //    @Test(expected = IOException.class)
-    //    public void extractDataFromKinshipIoException() throws IOException, HealthChecksException {
-    //        final KinshipExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
-    //        new Expectations() {
-    //            {
-    //                kinshipReader.readLines(anyString, anyString);
-    //                result = new IOException();
-    //            }
-    //        };
-    //        kinshipExtractor.extractFromRunDirectory(TEST_DIR);
-    //    }
-    //
-    //    @Test(expected = MalformedFileException.class)
-    //    public void extractDataFromKinshipMalformedFileException() throws IOException, HealthChecksException {
-    //        final KinshipExtractor kinshipExtractor = new KinshipExtractor(kinshipReader);
-    //        new Expectations() {
-    //            {
-    //                kinshipReader.readLines(anyString, anyString);
-    //                returns(malformedLines);
-    //            }
-    //        };
-    //        kinshipExtractor.extractFromRunDirectory(TEST_DIR);
-    //    }
+    @Test(expected = MalformedFileException.class)
+    public void cannotReadMalformedKinship() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(MALFORMED_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+
+        final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
+
+        kinshipExtractor.extractFromRunDirectory("");
+    }
+
+    @Test(expected = EmptyFileException.class)
+    public void cannotReadFromEmptyKinship() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(EMPTY_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+
+        final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
+
+        kinshipExtractor.extractFromRunDirectory("");
+    }
+
+    @Test(expected = IOException.class)
+    public void cannotReadFromNonExistingKinship() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext("Does not exist", REF_SAMPLE, TUMOR_SAMPLE);
+
+        final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
+
+        kinshipExtractor.extractFromRunDirectory("");
+    }
 
     private static void assertKinshipData(@NotNull final SingleValueReport kinshipReport,
             @NotNull final String expectedValue) {
