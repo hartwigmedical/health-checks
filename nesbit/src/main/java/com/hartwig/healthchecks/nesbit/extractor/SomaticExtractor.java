@@ -42,6 +42,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     static final String STRELKA = "strelka";
     @VisibleForTesting
     static final String FREEBAYES = "freebayes";
+
     private static final List<String> CALLERS = Arrays.asList(MUTECT, VARSCAN, STRELKA, FREEBAYES);
     private static final List<Integer> CALLERS_COUNT = Arrays.asList(1, 2, 3, 4);
 
@@ -177,7 +178,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
                 isTotalCallersCountEqual(count));
         double proportion = 0D;
         if (!setsPerCount.isEmpty() && !vcfSomaticSetData.isEmpty()) {
-            proportion = setsPerCount.size() / vcfSomaticSetData.size();
+            proportion = (double) setsPerCount.size() / vcfSomaticSetData.size();
         }
 
         return new BaseDataReport(sampleId,
