@@ -15,7 +15,7 @@ public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
 
     private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
     private static final String TOTAL_SEQUENCES_PATTERN = "Total Sequences";
-    private static final String VALUE_SEPARATOR = "\t";
+    private static final String COLUMN_SEPARATOR = "\t";
 
     protected static long sumOfTotalSequencesFromFastQC(@NotNull final String basePath,
             @NotNull final ZipFilesReader zipFileReader) throws IOException, HealthChecksException {
@@ -25,7 +25,7 @@ public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
         final List<String> allValues = allLines.stream().map(line -> {
             String totalSequences = null;
             if (line != null) {
-                final String[] values = line.split(VALUE_SEPARATOR);
+                final String[] values = line.split(COLUMN_SEPARATOR);
                 totalSequences = values[1];
             }
             return totalSequences;
