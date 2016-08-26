@@ -78,6 +78,16 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     }
 
     @NotNull
+    private static List<VCFSomaticData> getVCFSomaticData(@NotNull final List<String> lines) {
+        return lines.stream().map(line -> {
+            final String[] values = line.split(VCF_COLUMN_SEPARATOR);
+            final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
+            final String info = values[INFO_INDEX];
+            return new VCFSomaticData(type, info);
+        }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
+    }
+
+    @NotNull
     private static List<BaseDataReport> getTypeChecks(@NotNull final List<VCFSomaticData> vcfData,
             @NotNull final String sampleId, @NotNull final VCFType vcfType) {
         final BaseDataReport countReport = getSomaticVariantCount(sampleId, vcfData, vcfType,
@@ -99,16 +109,6 @@ public class SomaticExtractor extends AbstractVCFExtractor {
                 Collectors.toList());
         reports.addAll(proportionReports);
         return reports;
-    }
-
-    @NotNull
-    private static List<VCFSomaticData> getVCFSomaticData(@NotNull final List<String> lines) {
-        return lines.stream().map(line -> {
-            final String[] values = line.split(VCF_COLUMN_SEPARATOR);
-            final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
-            final String info = values[INFO_INDEX];
-            return new VCFSomaticData(type, info);
-        }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
     }
 
     @NotNull
