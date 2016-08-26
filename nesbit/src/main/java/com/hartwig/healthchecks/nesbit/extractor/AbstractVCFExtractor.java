@@ -7,9 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractVCFExtractor implements DataExtractor {
 
-    static final int TUMOR_SAMPLE_INDEX = 10;
-    static final int REF_SAMPLE_INDEX = 9;
-    static final int INFO_INDEX = 7;
     static final int ALT_INDEX = 4;
     static final int REF_INDEX = 3;
 

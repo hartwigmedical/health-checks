@@ -27,6 +27,8 @@ public class GermlineExtractor extends AbstractVCFExtractor {
 
     private static final String GERMLINE_VCF_EXTENSION = "_Cosmicv76_GoNLv5.vcf";
     private static final String VCF_COLUMN_SEPARATOR = "\t";
+    private static final int TUMOR_SAMPLE_COLUMN = 10;
+    private static final int REF_SAMPLE_COLUMN = 9;
 
     @NotNull
     private final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
@@ -68,8 +70,8 @@ public class GermlineExtractor extends AbstractVCFExtractor {
         return lines.stream().map(line -> {
             final String[] values = line.split(VCF_COLUMN_SEPARATOR);
             final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
-            final String refData = values[REF_SAMPLE_INDEX];
-            final String tumData = values[TUMOR_SAMPLE_INDEX];
+            final String refData = values[REF_SAMPLE_COLUMN];
+            final String tumData = values[TUMOR_SAMPLE_COLUMN];
             return new VCFGermlineData(type, refData, tumData);
         }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
     }

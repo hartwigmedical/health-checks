@@ -33,6 +33,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
 
     private static final String MELTED_SOMATICS_EXTENSION = "_Cosmicv76_melted.vcf";
     private static final String VCF_COLUMN_SEPARATOR = "\t";
+    private static final int INFO_COLUMN = 7;
 
     @VisibleForTesting
     static final String MUTECT = "mutect";
@@ -82,7 +83,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         return lines.stream().map(line -> {
             final String[] values = line.split(VCF_COLUMN_SEPARATOR);
             final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
-            final String info = values[INFO_INDEX];
+            final String info = values[INFO_COLUMN];
             return new VCFSomaticData(type, info);
         }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
     }

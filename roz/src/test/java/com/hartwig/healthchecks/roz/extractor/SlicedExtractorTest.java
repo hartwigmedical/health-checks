@@ -3,98 +3,43 @@ package com.hartwig.healthchecks.roz.extractor;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Predicate;
 
+import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
+import com.hartwig.healthchecks.common.io.path.RunContext;
+import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.SingleValueReport;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import mockit.Expectations;
-import mockit.Mocked;
 
 public class SlicedExtractorTest {
 
-    private static final String EXPECTED_VALUE = "8";
-    private static final String WRONG_NAME = "Wrong name";
-    private static final String SLICED_NUM_VARIANTS = "SLICED_NUMBER_OF_VARIANTS";
-    private static final String REPORT_WITH_WRONG_TYPE = "Report with wrong type";
-
-    private static final String DATA_LINE = "2\t29940529\trs2246745;COSM4416269\tA\tT\t2627.44\tPASS\t"
-                    + "AC=2;AF=0.500;AN=4;ANN=T|synonymous_variant|LOW|ALK|ENSG00000171094|transcript|ENST00000389048|"
-                    + "protein_coding|2/29|c.702T>A|p.Pro234Pro|1609/6220|702/4863|234/1620||,T|synonymous_variant|"
-                    + "LOW|ALK|ENSG00000171094|transcript|ENST00000431873|protein_coding|2/4|c.702T>A|p.Pro234Pro|"
-                    + "702/1353|702/1353|234/450||,T|sequence_feature|LOW|ALK|ENSG00000171094|"
-                    + "topological_domain:Extracellular|ENST00000389048|protein_coding||c.702T>A||||||"
-                    + ";BaseQRankSum=-1.330e-01;ClippingRankSum=0.996;DB;DP=122;FS=4.615;MLEAC=2;MLEAF=0.500;MQ=60.00;"
-                    + "MQRankSum=0.481;QD=21.54;ReadPosRankSum=0.700;SOR=0.470;GoNLv5_AC=802;GoNLv5_AF=0.804;"
-                    + "GoNLv5_AN=998\tGT:AD:DP:GQ:PL\t0/1:12,17:29:99:500,0,440\t0/1:32,61:93:99:2156,0,1092";
-
-    private static final String HEADER_LINE = "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT"
-                    + "\tCPCT12345678R\tCPCT12345678T";
-
-    private static final String TEST_DIR = "Test";
-
-    private List<String> dataLines;
-    private List<String> headerLines;
-
-    @Mocked
-    private ExtensionFinderAndLineReader reader;
-
-    @Before
-    public void setUp() {
-        dataLines = Arrays.asList(DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE, DATA_LINE,
-                        DATA_LINE);
-        headerLines = Collections.singletonList(HEADER_LINE);
-    }
+    private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
+    private static final String REF_SAMPLE = "CPCT11111111R";
+    private static final String TUMOR_SAMPLE = "CPCT11111111T";
 
     @Test
-    public void extractData() throws IOException, HealthChecksException {
-        final SlicedExtractor extractor = new SlicedExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines(anyString, anyString, (Predicate<String>) any);
-                returns(headerLines, dataLines);
-            }
-        };
-        final BaseReport report = extractor.extractFromRunDirectory(TEST_DIR);
-        assertEquals(REPORT_WITH_WRONG_TYPE, CheckType.SLICED, report.getCheckType());
+    public void canAnalyseTypicalSlicedVCF() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+
+        final SlicedExtractor extractor = new SlicedExtractor(runContext);
+
+        final BaseReport report = extractor.extractFromRunDirectory("");
+        assertEquals(CheckType.SLICED, report.getCheckType());
         final BaseDataReport sampleData = ((SingleValueReport) report).getSampleData();
-        assertEquals(WRONG_NAME, SLICED_NUM_VARIANTS, sampleData.getCheckName());
-        assertEquals("Wrong Sample", "CPCT12345678R", sampleData.getSampleId());
-        assertEquals("Wrong value", EXPECTED_VALUE, sampleData.getValue());
+        assertEquals(SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), sampleData.getCheckName());
+        assertEquals(REF_SAMPLE, sampleData.getSampleId());
+        assertEquals("4", sampleData.getValue());
     }
 
     @Test(expected = IOException.class)
-    public void extractDataFromFileIoException() throws IOException, HealthChecksException {
-        final SlicedExtractor extractor = new SlicedExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines(anyString, anyString, (Predicate<String>) any);
-                result = new IOException();
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
-    }
+    public void readingNonExistingFileYieldsIOException() throws IOException, HealthChecksException {
+        RunContext runContext = RunContextFactory.testContext("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
 
-    @Test(expected = LineNotFoundException.class)
-    public void extractDataMissingHeader() throws IOException, HealthChecksException {
-        final SlicedExtractor extractor = new SlicedExtractor(reader);
-        new Expectations() {
-            {
-                reader.readLines(anyString, anyString, (Predicate<String>) any);
-                result = new LineNotFoundException("", "");
-            }
-        };
-        extractor.extractFromRunDirectory(TEST_DIR);
+        final SlicedExtractor extractor = new SlicedExtractor(runContext);
+        extractor.extractFromRunDirectory("");
     }
 }
