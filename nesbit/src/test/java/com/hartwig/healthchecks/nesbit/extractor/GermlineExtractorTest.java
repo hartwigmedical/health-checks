@@ -8,12 +8,12 @@ import java.util.Optional;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.PatientReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -29,11 +29,11 @@ public class GermlineExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         final GermlineExtractor extractor = new GermlineExtractor(runContext);
-        final BaseReport report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extractFromRunDirectory("");
 
         assertEquals(CheckType.GERMLINE, report.getCheckType());
-        final List<HealthCheck> refData = ((PatientReport) report).getRefSampleChecks();
-        final List<HealthCheck> tumData = ((PatientReport) report).getTumorSampleChecks();
+        final List<HealthCheck> refData = ((PatientResult) report).getRefSampleChecks();
+        final List<HealthCheck> tumData = ((PatientResult) report).getTumorSampleChecks();
 
         assertSampleData(refData, 55, 4);
         assertSampleData(tumData, 74, 4);

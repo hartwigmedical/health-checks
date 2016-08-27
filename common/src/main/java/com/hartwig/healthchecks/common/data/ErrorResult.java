@@ -4,7 +4,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ErrorReport extends BaseReport {
+public class ErrorResult extends BaseResult {
 
     private static final long serialVersionUID = 4309757413253950117L;
 
@@ -13,7 +13,7 @@ public class ErrorReport extends BaseReport {
     @NotNull
     private final String message;
 
-    public ErrorReport(@NotNull final CheckType checkType, @NotNull final String error,
+    public ErrorResult(@NotNull final CheckType checkType, @NotNull final String error,
             @NotNull final String message) {
         super(checkType);
         this.error = error;

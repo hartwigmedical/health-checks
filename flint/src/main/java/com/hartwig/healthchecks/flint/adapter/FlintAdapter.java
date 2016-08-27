@@ -6,7 +6,7 @@ import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
-import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
@@ -29,19 +29,19 @@ public class FlintAdapter extends AbstractHealthCheckAdapter {
         final DataExtractor insertSizeExtractor = new InsertSizeMetricsExtractor(runContext);
         final HealthChecker insertSizeChecker = new HealthCheckerImpl(CheckType.INSERT_SIZE, runContext.runDirectory(),
                 insertSizeExtractor);
-        final BaseReport insertSizeReport = insertSizeChecker.runCheck();
+        final BaseResult insertSizeReport = insertSizeChecker.runCheck();
         report.addReportData(insertSizeReport);
 
         final DataExtractor summaryExtractor = new SummaryMetricsExtractor(runContext);
         final HealthChecker summaryChecker = new HealthCheckerImpl(CheckType.SUMMARY_METRICS,
                 runContext.runDirectory(), summaryExtractor);
-        final BaseReport summaryReport = summaryChecker.runCheck();
+        final BaseResult summaryReport = summaryChecker.runCheck();
         report.addReportData(summaryReport);
 
         final DataExtractor wgsExtractor = new WGSMetricsExtractor(runContext);
         final HealthChecker coverageChecker = new HealthCheckerImpl(CheckType.COVERAGE, runContext.runDirectory(),
                 wgsExtractor);
-        final BaseReport coverageReport = coverageChecker.runCheck();
+        final BaseResult coverageReport = coverageChecker.runCheck();
         report.addReportData(coverageReport);
     }
 }

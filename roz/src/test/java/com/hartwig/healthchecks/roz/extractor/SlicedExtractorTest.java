@@ -6,12 +6,12 @@ import java.io.IOException;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.SingleValueReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.SingleValueResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.junit.Test;
 
@@ -27,9 +27,9 @@ public class SlicedExtractorTest {
 
         final SlicedExtractor extractor = new SlicedExtractor(runContext);
 
-        final BaseReport report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extractFromRunDirectory("");
         assertEquals(CheckType.SLICED, report.getCheckType());
-        final HealthCheck sampleData = ((SingleValueReport) report).getCheck();
+        final HealthCheck sampleData = ((SingleValueResult) report).getCheck();
         assertEquals(SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), sampleData.getCheckName());
         assertEquals(REF_SAMPLE, sampleData.getSampleId());
         assertEquals("4", sampleData.getValue());

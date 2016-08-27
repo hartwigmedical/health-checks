@@ -9,14 +9,14 @@ import java.util.Optional;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.PatientReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        final BaseReport report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extractFromRunDirectory("");
         assertReport(report);
     }
 
@@ -100,7 +100,7 @@ public class WGSMetricsExtractorTest {
         extractor.extractFromRunDirectory("");
     }
 
-    private static void assertReport(@NotNull final BaseReport report) {
+    private static void assertReport(@NotNull final BaseResult report) {
         assertEquals(CheckType.COVERAGE, report.getCheckType());
         assertNotNull(report);
         assertField(report, WGSMetricsCheck.COVERAGE_MEAN.name(), REF_COVERAGE_MEAN, TUMOR_COVERAGE_MEAN);
@@ -116,10 +116,10 @@ public class WGSMetricsExtractorTest {
         assertField(report, WGSMetricsCheck.COVERAGE_PCT_EXC_TOTAL.name(), REF_PCT_EXC_TOTAL, TUMOR_PCT_EXC_TOTAL);
     }
 
-    private static void assertField(@NotNull final BaseReport report, @NotNull final String field,
+    private static void assertField(@NotNull final BaseResult report, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((PatientReport) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
-        assertBaseData(((PatientReport) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
+        assertBaseData(((PatientResult) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
+        assertBaseData(((PatientResult) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
     }
 
     private static void assertBaseData(@NotNull final List<HealthCheck> reports, @NotNull final String sampleId,

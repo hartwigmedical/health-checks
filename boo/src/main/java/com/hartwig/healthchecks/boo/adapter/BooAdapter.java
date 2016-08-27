@@ -7,7 +7,7 @@ import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
-import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -26,7 +26,7 @@ public class BooAdapter extends AbstractHealthCheckAdapter {
         final PrestatsExtractor prestatsExtractor = new PrestatsExtractor(runContext);
         final HealthChecker prestatsHealthChecker = new HealthCheckerImpl(CheckType.PRESTATS,
                 runContext.runDirectory(), prestatsExtractor);
-        final BaseReport prestats = prestatsHealthChecker.runCheck();
+        final BaseResult prestats = prestatsHealthChecker.runCheck();
         report.addReportData(prestats);
     }
 }

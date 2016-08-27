@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
@@ -63,10 +63,10 @@ public class ReportTest {
 
         final Report report = StandardOutputReport.getInstance();
 
-        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
         report.addReportData(baseConfig1);
 
-        final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
+        final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
@@ -105,10 +105,10 @@ public class ReportTest {
 
         final Report report = StandardOutputReport.getInstance();
 
-        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
         report.addReportData(baseConfig1);
 
-        final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
+        final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
@@ -147,10 +147,10 @@ public class ReportTest {
 
         final Report report = StandardOutputReport.getInstance();
 
-        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
         report.addReportData(baseConfig1);
 
-        final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
+        final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
@@ -185,10 +185,10 @@ public class ReportTest {
 
         final Report report = JsonReport.getInstance();
 
-        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
         report.addReportData(baseConfig1);
 
-        final BaseReport baseConfig2 = new BaseReport(CheckType.PRESTATS);
+        final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
         report.addReportData(baseConfig2);
 
         final Optional<String> location = report.generateReport(RUN_DIR);
@@ -237,7 +237,7 @@ public class ReportTest {
         };
         final Report report = JsonReport.getInstance();
 
-        final BaseReport baseConfig1 = new BaseReport(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
         report.addReportData(baseConfig1);
 
         final Optional<String> location = report.generateReport(RUN_DIR);

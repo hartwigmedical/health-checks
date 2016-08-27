@@ -7,7 +7,7 @@ import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
-import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -25,7 +25,7 @@ public class BoggsAdapter extends AbstractHealthCheckAdapter {
         final MappingExtractor mappingExtractor = new MappingExtractor(runContext);
         final HealthChecker mappingHealthChecker = new HealthCheckerImpl(CheckType.MAPPING, runContext.runDirectory(),
                 mappingExtractor);
-        final BaseReport mapping = mappingHealthChecker.runCheck();
+        final BaseResult mapping = mappingHealthChecker.runCheck();
         report.addReportData(mapping);
     }
 }

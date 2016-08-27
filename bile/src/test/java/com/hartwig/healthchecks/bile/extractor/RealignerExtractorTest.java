@@ -9,15 +9,15 @@ import java.util.Optional;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.PatientReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class RealignerExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         RealignerExtractor extractor = new RealignerExtractor(runContext);
-        final BaseReport report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extractFromRunDirectory("");
         assertReport(report);
     }
 
@@ -94,17 +94,17 @@ public class RealignerExtractorTest {
         extractor.extractFromRunDirectory("");
     }
 
-    private static void assertReport(@NotNull final BaseReport report) {
+    private static void assertReport(@NotNull final BaseResult report) {
         assertEquals(CheckType.REALIGNER, report.getCheckType());
         assertNotNull(report);
         assertField(report, RealignerExtractor.REALIGNER_CHECK_NAME, REF_CHANGED_READS_PROPORTION,
                 TUMOR_CHANGED_READS_PROPORTION);
     }
 
-    private static void assertField(@NotNull final BaseReport report, @NotNull final String field,
+    private static void assertField(@NotNull final BaseResult report, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((PatientReport) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
-        assertBaseData(((PatientReport) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
+        assertBaseData(((PatientResult) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
+        assertBaseData(((PatientResult) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
     }
 
     private static void assertBaseData(@NotNull final List<HealthCheck> reports, @NotNull final String sampleId,

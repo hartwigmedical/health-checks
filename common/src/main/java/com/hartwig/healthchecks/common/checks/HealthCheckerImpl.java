@@ -2,8 +2,8 @@ package com.hartwig.healthchecks.common.checks;
 
 import java.io.IOException;
 
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.ErrorReport;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.ErrorResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 
@@ -32,13 +32,13 @@ public class HealthCheckerImpl implements HealthChecker {
 
     @Override
     @NotNull
-    public BaseReport runCheck() {
-        BaseReport report;
+    public BaseResult runCheck() {
+        BaseResult report;
         try {
             report = dataExtractor.extractFromRunDirectory(runDirectory);
         } catch (IOException | HealthChecksException exception) {
             LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
-            report = new ErrorReport(checkType, exception.getClass().getName(), exception.getMessage());
+            report = new ErrorResult(checkType, exception.getClass().getName(), exception.getMessage());
         }
         return report;
     }

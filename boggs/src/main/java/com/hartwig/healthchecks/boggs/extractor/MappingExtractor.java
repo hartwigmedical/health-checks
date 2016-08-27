@@ -10,14 +10,14 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.PatientReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractTotalSequenceExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,13 +45,13 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
 
     @Override
     @NotNull
-    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(),
                 runContext.tumorSample());
 
-        return new PatientReport(CheckType.MAPPING, refSampleData, tumorSampleData);
+        return new PatientResult(CheckType.MAPPING, refSampleData, tumorSampleData);
     }
 
     @NotNull

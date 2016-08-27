@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.SingleValueReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.SingleValueResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +40,7 @@ public class KinshipExtractor implements DataExtractor {
 
     @Override
     @NotNull
-    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final List<String> kinshipLines = kinshipReader.readLines(runContext.runDirectory(), KINSHIP_EXTENSION);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
@@ -57,6 +57,6 @@ public class KinshipExtractor implements DataExtractor {
         assert optBaseDataReport.isPresent();
 
         optBaseDataReport.get().log(LOGGER);
-        return new SingleValueReport(CheckType.KINSHIP, optBaseDataReport.get());
+        return new SingleValueResult(CheckType.KINSHIP, optBaseDataReport.get());
     }
 }

@@ -8,13 +8,13 @@ import java.util.Optional;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.PatientReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class MappingExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        final BaseReport report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extractFromRunDirectory("");
         assertReport(report);
     }
 
@@ -63,10 +63,10 @@ public class MappingExtractorTest {
         extractor.extractFromRunDirectory("");
     }
 
-    private static void assertReport(@NotNull final BaseReport report) {
+    private static void assertReport(@NotNull final BaseResult report) {
         assertEquals(CheckType.MAPPING, report.getCheckType());
-        assertRefSampleData(((PatientReport) report).getRefSampleChecks());
-        assertTumorSampleData(((PatientReport) report).getTumorSampleChecks());
+        assertRefSampleData(((PatientResult) report).getRefSampleChecks());
+        assertTumorSampleData(((PatientResult) report).getTumorSampleChecks());
     }
 
     private static void assertRefSampleData(@NotNull final List<HealthCheck> mapping) {

@@ -12,7 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
@@ -40,10 +40,10 @@ abstract class AbstractJsonBaseReport implements Report {
 
     private static final Logger LOGGER = LogManager.getLogger(Report.class);
 
-    private static final Map<CheckType, BaseReport> HEALTH_CHECKS = new ConcurrentHashMap<>();
+    private static final Map<CheckType, BaseResult> HEALTH_CHECKS = new ConcurrentHashMap<>();
 
     @Override
-    public void addReportData(@NotNull final BaseReport reportData) {
+    public void addReportData(@NotNull final BaseResult reportData) {
         HEALTH_CHECKS.putIfAbsent(reportData.getCheckType(), reportData);
     }
 

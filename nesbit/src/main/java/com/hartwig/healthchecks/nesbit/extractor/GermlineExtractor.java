@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.PatientReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 import com.hartwig.healthchecks.nesbit.predicate.VCFGermlineVariantPredicate;
@@ -41,7 +41,7 @@ public class GermlineExtractor extends AbstractVCFExtractor {
 
     @NotNull
     @Override
-    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final List<String> passFilterLines = reader.readLines(runContext.runDirectory(), GERMLINE_VCF_EXTENSION,
                 new VCFPassDataLinePredicate());
@@ -50,7 +50,7 @@ public class GermlineExtractor extends AbstractVCFExtractor {
         final List<HealthCheck> refData = getSampleData(vcfData, runContext.refSample(), true);
         final List<HealthCheck> tumData = getSampleData(vcfData, runContext.tumorSample(), false);
 
-        return new PatientReport(CheckType.GERMLINE, refData, tumData);
+        return new PatientResult(CheckType.GERMLINE, refData, tumData);
     }
 
     @NotNull

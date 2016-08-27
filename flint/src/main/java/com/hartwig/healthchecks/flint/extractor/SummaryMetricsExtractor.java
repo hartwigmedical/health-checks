@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Optional;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.PatientReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,11 +43,11 @@ public class SummaryMetricsExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
-        return new PatientReport(CheckType.SUMMARY_METRICS, referenceSample, tumorSample);
+        return new PatientResult(CheckType.SUMMARY_METRICS, referenceSample, tumorSample);
     }
 
     @NotNull

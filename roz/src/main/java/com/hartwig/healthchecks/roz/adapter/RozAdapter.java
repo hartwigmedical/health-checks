@@ -6,7 +6,7 @@ import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
-import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
@@ -27,7 +27,7 @@ public class RozAdapter extends AbstractHealthCheckAdapter {
         final DataExtractor extractor = new SlicedExtractor(runContext);
         final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.SLICED, runContext.runDirectory(),
                 extractor);
-        final BaseReport baseReport = healthCheck.runCheck();
-        report.addReportData(baseReport);
+        final BaseResult baseResult = healthCheck.runCheck();
+        report.addReportData(baseResult);
     }
 }

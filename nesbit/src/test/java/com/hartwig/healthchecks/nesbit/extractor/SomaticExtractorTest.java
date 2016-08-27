@@ -8,13 +8,13 @@ import java.util.Optional;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.MultiValueReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.MultiValueResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,8 +39,8 @@ public class SomaticExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
         final DataExtractor extractor = new SomaticExtractor(runContext);
 
-        final BaseReport report = extractor.extractFromRunDirectory("");
-        final List<HealthCheck> checks = ((MultiValueReport) report).getChecks();
+        final BaseResult report = extractor.extractFromRunDirectory("");
+        final List<HealthCheck> checks = ((MultiValueResult) report).getChecks();
 
         assertEquals(CheckType.SOMATIC, report.getCheckType());
         assertEquals(26, checks.size());

@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.MultiValueReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.MultiValueResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticData;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticSetData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
@@ -64,7 +64,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
 
     @NotNull
     @Override
-    public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final List<String> lines = reader.readLines(runDirectory, MELTED_SOMATICS_EXTENSION,
                 new VCFPassDataLinePredicate());
@@ -75,7 +75,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         reports.addAll(getTypeChecks(vcfData, runContext.tumorSample(), VCFType.INDELS));
 
         HealthCheck.log(LOGGER, reports);
-        return new MultiValueReport(CheckType.SOMATIC, reports);
+        return new MultiValueResult(CheckType.SOMATIC, reports);
     }
 
     @NotNull

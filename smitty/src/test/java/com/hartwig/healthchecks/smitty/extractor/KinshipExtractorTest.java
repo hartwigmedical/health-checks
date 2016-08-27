@@ -7,14 +7,14 @@ import java.io.IOException;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.SingleValueReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.SingleValueResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -34,11 +34,11 @@ public class KinshipExtractorTest {
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
-        final BaseReport kinshipReport = kinshipExtractor.extractFromRunDirectory("");
+        final BaseResult kinshipReport = kinshipExtractor.extractFromRunDirectory("");
 
         assertNotNull(kinshipReport);
         assertEquals(CheckType.KINSHIP, kinshipReport.getCheckType());
-        assertKinshipData((SingleValueReport) kinshipReport, "0.4748");
+        assertKinshipData((SingleValueResult) kinshipReport, "0.4748");
     }
 
     @Test(expected = MalformedFileException.class)
@@ -68,7 +68,7 @@ public class KinshipExtractorTest {
         kinshipExtractor.extractFromRunDirectory("");
     }
 
-    private static void assertKinshipData(@NotNull final SingleValueReport kinshipReport,
+    private static void assertKinshipData(@NotNull final SingleValueResult kinshipReport,
             @NotNull final String expectedValue) {
         final HealthCheck healthCheck = kinshipReport.getCheck();
         assertEquals(expectedValue, healthCheck.getValue());

@@ -8,13 +8,13 @@ import java.util.Optional;
 
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseReport;
-import com.hartwig.healthchecks.common.data.PatientReport;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.data.BaseResult;
+import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class PrestatsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        final BaseReport report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extractFromRunDirectory("");
         assertReport(report);
     }
 
@@ -66,8 +66,8 @@ public class PrestatsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        final BaseReport report = extractor.extractFromRunDirectory("");
-        final List<HealthCheck> sampleReport = ((PatientReport) report).getRefSampleChecks();
+        final BaseResult report = extractor.extractFromRunDirectory("");
+        final List<HealthCheck> sampleReport = ((PatientResult) report).getRefSampleChecks();
         assertEquals(EXPECTED_CHECKS_NUM, sampleReport.size());
 
         assertPrestatsDataReport(sampleReport, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
@@ -82,10 +82,10 @@ public class PrestatsExtractorTest {
         extractor.extractFromRunDirectory("");
     }
 
-    private static void assertReport(@NotNull final BaseReport prestatsData) {
+    private static void assertReport(@NotNull final BaseResult prestatsData) {
         assertEquals(CheckType.PRESTATS, prestatsData.getCheckType());
-        assertRefSampleData(((PatientReport) prestatsData).getRefSampleChecks());
-        assertTumorSampleData(((PatientReport) prestatsData).getTumorSampleChecks());
+        assertRefSampleData(((PatientResult) prestatsData).getRefSampleChecks());
+        assertTumorSampleData(((PatientResult) prestatsData).getTumorSampleChecks());
     }
 
     private static void assertRefSampleData(@NotNull final List<HealthCheck> sampleData) {

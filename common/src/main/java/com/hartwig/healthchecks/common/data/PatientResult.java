@@ -3,11 +3,11 @@ package com.hartwig.healthchecks.common.data;
 import java.util.List;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.report.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 
-public class PatientReport extends BaseReport {
+public class PatientResult extends BaseResult {
 
     private static final long serialVersionUID = -3227613309511119840L;
 
@@ -16,7 +16,7 @@ public class PatientReport extends BaseReport {
     @NotNull
     private final List<HealthCheck> tumorSampleChecks;
 
-    public PatientReport(final CheckType checkType, @NotNull final List<HealthCheck> refSampleChecks,
+    public PatientResult(final CheckType checkType, @NotNull final List<HealthCheck> refSampleChecks,
             @NotNull final List<HealthCheck> tumorSampleChecks) {
         super(checkType);
         this.refSampleChecks = refSampleChecks;
