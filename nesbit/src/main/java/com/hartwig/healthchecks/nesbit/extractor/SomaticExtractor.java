@@ -44,7 +44,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     @VisibleForTesting
     static final String FREEBAYES = "freebayes";
 
-    private static final List<String> CALLERS = Arrays.asList(MUTECT, VARSCAN, STRELKA, FREEBAYES);
+    private static final List<String> ALL_CALLERS = Arrays.asList(MUTECT, VARSCAN, STRELKA, FREEBAYES);
     private static final List<Integer> CALLERS_COUNT = Arrays.asList(1, 2, 3, 4);
 
     private static final String VCF_INFO_FIELD_SEPARATOR = ";";
@@ -52,6 +52,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     private static final String CALLER_ALGO_START = "=";
     private static final String CALLER_ALGO_SEPARATOR = "-";
     private static final String CALLER_FILTERED_IDENTIFIER = "filterIn";
+    private static final String CALLER_INTERSECTION_IDENTIFIER = "Intersection";
 
     @NotNull
     private final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
@@ -96,11 +97,11 @@ public class SomaticExtractor extends AbstractVCFExtractor {
         final List<HealthCheck> reports = new ArrayList<>();
         reports.add(countReport);
         final List<VCFSomaticSetData> vcfTypeSetData = getSetDataForType(vcfData, vcfType);
-        final List<HealthCheck> precisionReports = CALLERS.stream().map(
+        final List<HealthCheck> precisionReports = ALL_CALLERS.stream().map(
                 caller -> calculatePrecision(vcfTypeSetData, sampleId, vcfType, caller)).collect(Collectors.toList());
         reports.addAll(precisionReports);
 
-        final List<HealthCheck> sensitivityReports = CALLERS.stream().map(
+        final List<HealthCheck> sensitivityReports = ALL_CALLERS.stream().map(
                 caller -> calculateSensitivity(vcfTypeSetData, sampleId, vcfType, caller)).collect(
                 Collectors.toList());
         reports.addAll(sensitivityReports);
@@ -132,6 +133,9 @@ public class SomaticExtractor extends AbstractVCFExtractor {
             final String[] allCallers = setValue.get().split(CALLER_ALGO_SEPARATOR);
             final List<String> filteredCallers = Arrays.stream(allCallers).filter(
                     caller -> !caller.startsWith(CALLER_FILTERED_IDENTIFIER)).collect(Collectors.toList());
+            if (allCallers.length > 0 && allCallers[0].equals(CALLER_INTERSECTION_IDENTIFIER)) {
+                filteredCallers.addAll(ALL_CALLERS);
+            }
             if (filteredCallers.size() > 0) {
                 final Map<String, Integer> callersMap = filteredCallers.stream().collect(
                         Collectors.toMap(key -> key, value -> filteredCallers.size() - 1));
