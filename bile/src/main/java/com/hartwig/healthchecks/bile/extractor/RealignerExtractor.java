@@ -17,8 +17,8 @@ import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,15 +55,15 @@ public class RealignerExtractor implements DataExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final BaseDataReport referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final BaseDataReport tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
+        final HealthCheck referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
+        final HealthCheck tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
         return new PatientReport(CheckType.REALIGNER, Collections.singletonList(referenceSample),
                 Collections.singletonList(tumorSample));
     }
 
     @NotNull
-    private static BaseDataReport getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
+    private static HealthCheck getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
             throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
 
@@ -74,9 +74,9 @@ public class RealignerExtractor implements DataExtractor {
         final long mappedValue = readMappedFromFlagstat(flagStatPath);
 
         final String value = new DecimalFormat(REALIGNER_CHECK_PRECISION).format((double) diffCount / mappedValue);
-        final BaseDataReport baseDataReport = new BaseDataReport(sampleId, REALIGNER_CHECK_NAME, value);
-        baseDataReport.log(LOGGER);
-        return baseDataReport;
+        final HealthCheck healthCheck = new HealthCheck(sampleId, REALIGNER_CHECK_NAME, value);
+        healthCheck.log(LOGGER);
+        return healthCheck;
     }
 
     private static long readMappedFromFlagstat(@NotNull final Path flagStatPath)

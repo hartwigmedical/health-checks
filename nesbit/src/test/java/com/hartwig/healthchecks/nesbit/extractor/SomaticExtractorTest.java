@@ -12,9 +12,9 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.PatientMultiChecksReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
+import com.hartwig.healthchecks.common.report.MultiValueReport;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ public class SomaticExtractorTest {
         final DataExtractor extractor = new SomaticExtractor(runContext);
 
         final BaseReport report = extractor.extractFromRunDirectory("");
-        final List<BaseDataReport> checks = ((PatientMultiChecksReport) report).getPatientData();
+        final List<HealthCheck> checks = ((MultiValueReport) report).getChecks();
 
         assertEquals(CheckType.SOMATIC, report.getCheckType());
         assertEquals(26, checks.size());
@@ -76,9 +76,9 @@ public class SomaticExtractorTest {
         assertCheck(checks, SomaticCheck.PROPORTION_CHECK.checkName(INDELS, "4"), 0.0);
     }
 
-    private static void assertCheck(@NotNull final List<BaseDataReport> checks, @NotNull final String checkName,
+    private static void assertCheck(@NotNull final List<HealthCheck> checks, @NotNull final String checkName,
             final double expectedValue) {
-        final Optional<BaseDataReport> report = checks.stream().filter(
+        final Optional<HealthCheck> report = checks.stream().filter(
                 data -> data.getCheckName().equals(checkName)).findFirst();
 
         assert report.isPresent();

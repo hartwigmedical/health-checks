@@ -12,8 +12,8 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +67,7 @@ public class PrestatsExtractorTest {
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
         final BaseReport report = extractor.extractFromRunDirectory("");
-        final List<BaseDataReport> sampleReport = ((PatientReport) report).getReferenceSample();
+        final List<HealthCheck> sampleReport = ((PatientReport) report).getRefSampleChecks();
         assertEquals(EXPECTED_CHECKS_NUM, sampleReport.size());
 
         assertPrestatsDataReport(sampleReport, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
@@ -84,11 +84,11 @@ public class PrestatsExtractorTest {
 
     private static void assertReport(@NotNull final BaseReport prestatsData) {
         assertEquals(CheckType.PRESTATS, prestatsData.getCheckType());
-        assertRefSampleData(((PatientReport) prestatsData).getReferenceSample());
-        assertTumorSampleData(((PatientReport) prestatsData).getTumorSample());
+        assertRefSampleData(((PatientReport) prestatsData).getRefSampleChecks());
+        assertTumorSampleData(((PatientReport) prestatsData).getTumorSampleChecks());
     }
 
-    private static void assertRefSampleData(@NotNull final List<BaseDataReport> sampleData) {
+    private static void assertRefSampleData(@NotNull final List<HealthCheck> sampleData) {
         assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, REF_TOTAL_SEQUENCES, REF_SAMPLE);
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsExtractor.FAIL,
@@ -114,7 +114,7 @@ public class PrestatsExtractorTest {
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsExtractor.FAIL, REF_SAMPLE);
     }
 
-    private static void assertTumorSampleData(@NotNull final List<BaseDataReport> sampleData) {
+    private static void assertTumorSampleData(@NotNull final List<HealthCheck> sampleData) {
         assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, TUMOR_TOTAL_SEQUENCES,
                 TUMOR_SAMPLE);
@@ -142,10 +142,10 @@ public class PrestatsExtractorTest {
                 TUMOR_SAMPLE);
     }
 
-    private static void assertPrestatsDataReport(@NotNull final List<BaseDataReport> sampleData,
+    private static void assertPrestatsDataReport(@NotNull final List<HealthCheck> sampleData,
             @NotNull final PrestatsCheck check, @NotNull final String expectedStatus,
             @NotNull final String expectedSampleId) {
-        Optional<BaseDataReport> optCheckReport = sampleData.stream().filter(
+        Optional<HealthCheck> optCheckReport = sampleData.stream().filter(
                 p -> p.getCheckName().equals(check.toString())).findFirst();
 
         assert optCheckReport.isPresent();

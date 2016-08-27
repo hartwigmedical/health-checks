@@ -14,8 +14,8 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.jetbrains.annotations.NotNull;
@@ -107,13 +107,13 @@ public class SummaryMetricsExtractorTest {
 
     private static void assertField(@NotNull final BaseReport report, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((PatientReport) report).getReferenceSample(), REF_SAMPLE, field, refValue);
-        assertBaseData(((PatientReport) report).getTumorSample(), TUMOR_SAMPLE, field, tumValue);
+        assertBaseData(((PatientReport) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
+        assertBaseData(((PatientReport) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
     }
 
-    private static void assertBaseData(@NotNull final List<BaseDataReport> reports, @NotNull final String sampleId,
+    private static void assertBaseData(@NotNull final List<HealthCheck> reports, @NotNull final String sampleId,
             @NotNull final String check, @NotNull final String expectedValue) {
-        final Optional<BaseDataReport> value = reports.stream().filter(
+        final Optional<HealthCheck> value = reports.stream().filter(
                 p -> p.getCheckName().equals(check)).findFirst();
         assert value.isPresent();
 

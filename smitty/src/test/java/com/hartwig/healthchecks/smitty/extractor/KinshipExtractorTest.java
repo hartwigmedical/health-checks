@@ -12,8 +12,8 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.SingleValueReport;
 
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +70,7 @@ public class KinshipExtractorTest {
 
     private static void assertKinshipData(@NotNull final SingleValueReport kinshipReport,
             @NotNull final String expectedValue) {
-        final BaseDataReport baseDataReport = kinshipReport.getSampleData();
-        assertEquals(expectedValue, baseDataReport.getValue());
+        final HealthCheck healthCheck = kinshipReport.getCheck();
+        assertEquals(expectedValue, healthCheck.getValue());
     }
 }

@@ -10,8 +10,8 @@ import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.SingleValueReport;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,9 +48,9 @@ public class KinshipExtractor implements DataExtractor {
                     String.format(MALFORMED_FILE_MSG, KinshipCheck.KINSHIP_TEST.toString(), runDirectory,
                             kinshipLines.size(), EXPECTED_NUM_LINES));
         }
-        final Optional<BaseDataReport> optBaseDataReport = kinshipLines.stream().skip(1).map(line -> {
+        final Optional<HealthCheck> optBaseDataReport = kinshipLines.stream().skip(1).map(line -> {
             final String[] values = line.split(COLUMN_SEPARATOR);
-            return new BaseDataReport(runContext.tumorSample(), KinshipCheck.KINSHIP_TEST.toString(),
+            return new HealthCheck(runContext.tumorSample(), KinshipCheck.KINSHIP_TEST.toString(),
                     values[KINSHIP_COLUMN]);
         }).findFirst();
 

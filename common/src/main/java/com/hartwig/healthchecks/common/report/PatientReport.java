@@ -11,24 +11,24 @@ public class PatientReport extends BaseReport {
     private static final long serialVersionUID = -3227613309511119840L;
 
     @NotNull
-    private final List<BaseDataReport> referenceSample;
+    private final List<HealthCheck> refSampleChecks;
     @NotNull
-    private final List<BaseDataReport> tumorSample;
+    private final List<HealthCheck> tumorSampleChecks;
 
-    public PatientReport(final CheckType checkType, @NotNull final List<BaseDataReport> referenceSample,
-                    @NotNull final List<BaseDataReport> tumorSample) {
+    public PatientReport(final CheckType checkType, @NotNull final List<HealthCheck> refSampleChecks,
+            @NotNull final List<HealthCheck> tumorSampleChecks) {
         super(checkType);
-        this.referenceSample = referenceSample;
-        this.tumorSample = tumorSample;
+        this.refSampleChecks = refSampleChecks;
+        this.tumorSampleChecks = tumorSampleChecks;
     }
 
     @NotNull
-    public List<BaseDataReport> getReferenceSample() {
-        return referenceSample;
+    public List<HealthCheck> getRefSampleChecks() {
+        return refSampleChecks;
     }
 
     @NotNull
-    public List<BaseDataReport> getTumorSample() {
-        return tumorSample;
+    public List<HealthCheck> getTumorSampleChecks() {
+        return tumorSampleChecks;
     }
 }

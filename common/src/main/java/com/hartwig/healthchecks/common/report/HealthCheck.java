@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class BaseDataReport {
+public class HealthCheck {
 
     private static final String LOG_MSG = "Check '%s' for sample '%s' has value '%s'";
 
@@ -16,7 +16,7 @@ public class BaseDataReport {
     @NotNull
     private final String value;
 
-    public BaseDataReport(@NotNull final String sampleId, @NotNull final String checkName,
+    public HealthCheck(@NotNull final String sampleId, @NotNull final String checkName,
             @NotNull final String value) {
         this.sampleId = sampleId;
         this.checkName = checkName;
@@ -42,8 +42,8 @@ public class BaseDataReport {
         logger.info(String.format(LOG_MSG, checkName, sampleId, value));
     }
 
-    public static void log(@NotNull Logger logger, @NotNull List<BaseDataReport> reports) {
-        for (BaseDataReport report : reports) {
+    public static void log(@NotNull Logger logger, @NotNull List<HealthCheck> reports) {
+        for (HealthCheck report : reports) {
             report.log(logger);
         }
     }

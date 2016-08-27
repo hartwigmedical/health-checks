@@ -15,8 +15,8 @@ import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,23 +44,23 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<BaseDataReport> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
+        final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
         return new PatientReport(CheckType.INSERT_SIZE, referenceSample, tumorSample);
     }
 
     @NotNull
-    private static List<BaseDataReport> getSampleData(@NotNull final String runDirectory,
+    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory,
             @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         final Path insertSizeMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId,
                 INSERT_SIZE_METRICS_EXTENSION);
         final List<String> lines = FileReader.build().readLines(insertSizeMetricsPath);
 
-        final BaseDataReport medianReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
+        final HealthCheck medianReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
-        final BaseDataReport width70PerReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
+        final HealthCheck width70PerReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
         return Arrays.asList(medianReport, width70PerReport);
     }
@@ -72,12 +72,12 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
     }
 
     @NotNull
-    private static BaseDataReport getValue(@NotNull final String filePath, @NotNull final List<String> lines,
+    private static HealthCheck getValue(@NotNull final String filePath, @NotNull final List<String> lines,
             @NotNull final String sampleId, @NotNull final InsertSizeMetricsCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(filePath, lines, check.getFieldName(), check.getColumnIndex());
-        final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
-        baseDataReport.log(LOGGER);
-        return baseDataReport;
+        final HealthCheck healthCheck = new HealthCheck(sampleId, check.toString(), value);
+        healthCheck.log(LOGGER);
+        return healthCheck;
     }
 
     @NotNull

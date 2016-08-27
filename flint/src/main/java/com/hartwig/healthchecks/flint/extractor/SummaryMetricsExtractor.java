@@ -14,8 +14,8 @@ import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.apache.logging.log4j.LogManager;
@@ -45,13 +45,13 @@ public class SummaryMetricsExtractor implements DataExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<BaseDataReport> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
+        final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
         return new PatientReport(CheckType.SUMMARY_METRICS, referenceSample, tumorSample);
     }
 
     @NotNull
-    private static List<BaseDataReport> getSampleData(@NotNull final String runDirectory,
+    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory,
             @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         Path alignmentSummaryMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId,
@@ -64,15 +64,15 @@ public class SummaryMetricsExtractor implements DataExtractor {
             throw new LineNotFoundException(alignmentSummaryMetricsPath.toString(), PICARD_CATEGORY_TO_READ);
         }
 
-        final BaseDataReport pfIndelRate = getValue(searchedLine.get(), sampleId,
+        final HealthCheck pfIndelRate = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_INDEL_RATE);
-        final BaseDataReport pctAdapter = getValue(searchedLine.get(), sampleId,
+        final HealthCheck pctAdapter = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PCT_ADAPTER);
-        final BaseDataReport pctChimeras = getValue(searchedLine.get(), sampleId,
+        final HealthCheck pctChimeras = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PCT_CHIMERA);
-        final BaseDataReport pfMisMatch = getValue(searchedLine.get(), sampleId,
+        final HealthCheck pfMisMatch = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE);
-        final BaseDataReport strandBalance = getValue(searchedLine.get(), sampleId,
+        final HealthCheck strandBalance = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_STRAND_BALANCE);
         return Arrays.asList(pfIndelRate, pctAdapter, pctChimeras, pfMisMatch, strandBalance);
     }
@@ -84,11 +84,11 @@ public class SummaryMetricsExtractor implements DataExtractor {
     }
 
     @NotNull
-    private static BaseDataReport getValue(@NotNull final String line, @NotNull final String sampleId,
+    private static HealthCheck getValue(@NotNull final String line, @NotNull final String sampleId,
             @NotNull final SummaryMetricsCheck check) throws LineNotFoundException {
         final String value = line.split(VALUE_SEPARATOR)[check.getIndex()];
-        final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
-        baseDataReport.log(LOGGER);
-        return baseDataReport;
+        final HealthCheck healthCheck = new HealthCheck(sampleId, check.toString(), value);
+        healthCheck.log(LOGGER);
+        return healthCheck;
     }
 }

@@ -11,8 +11,8 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,23 +32,23 @@ public class GermlineExtractorTest {
         final BaseReport report = extractor.extractFromRunDirectory("");
 
         assertEquals(CheckType.GERMLINE, report.getCheckType());
-        final List<BaseDataReport> refData = ((PatientReport) report).getReferenceSample();
-        final List<BaseDataReport> tumData = ((PatientReport) report).getTumorSample();
+        final List<HealthCheck> refData = ((PatientReport) report).getRefSampleChecks();
+        final List<HealthCheck> tumData = ((PatientReport) report).getTumorSampleChecks();
 
         assertSampleData(refData, 55, 4);
         assertSampleData(tumData, 74, 4);
     }
 
-    private static void assertSampleData(@NotNull final List<BaseDataReport> sampleData, final long expectedCountSNP,
+    private static void assertSampleData(@NotNull final List<HealthCheck> sampleData, final long expectedCountSNP,
             final long expectedCountIndels) {
         assertEquals(2, sampleData.size());
 
-        final Optional<BaseDataReport> snpReport = sampleData.stream().filter(
+        final Optional<HealthCheck> snpReport = sampleData.stream().filter(
                 data -> data.getCheckName().equals(GermlineCheck.VARIANTS_GERMLINE_SNP.toString())).findFirst();
         assert snpReport.isPresent();
         assertEquals(Long.toString(expectedCountSNP), snpReport.get().getValue());
 
-        final Optional<BaseDataReport> indelReport = sampleData.stream().filter(
+        final Optional<HealthCheck> indelReport = sampleData.stream().filter(
                 data -> data.getCheckName().equals(GermlineCheck.VARIANTS_GERMLINE_INDELS.toString())).findFirst();
         assert indelReport.isPresent();
         assertEquals(Long.toString(expectedCountIndels), indelReport.get().getValue());

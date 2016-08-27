@@ -10,8 +10,8 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
@@ -47,21 +47,21 @@ public class GermlineExtractor extends AbstractVCFExtractor {
                 new VCFPassDataLinePredicate());
         final List<VCFGermlineData> vcfData = getVCFDataForGermLine(passFilterLines);
 
-        final List<BaseDataReport> refData = getSampleData(vcfData, runContext.refSample(), true);
-        final List<BaseDataReport> tumData = getSampleData(vcfData, runContext.tumorSample(), false);
+        final List<HealthCheck> refData = getSampleData(vcfData, runContext.refSample(), true);
+        final List<HealthCheck> tumData = getSampleData(vcfData, runContext.tumorSample(), false);
 
         return new PatientReport(CheckType.GERMLINE, refData, tumData);
     }
 
     @NotNull
-    private static List<BaseDataReport> getSampleData(@NotNull List<VCFGermlineData> vcfData,
+    private static List<HealthCheck> getSampleData(@NotNull List<VCFGermlineData> vcfData,
             @NotNull final String sampleId, final boolean isRefSample) throws IOException, HealthChecksException {
-        final BaseDataReport snp = getGermlineVariantCount(sampleId, vcfData, VCFType.SNP,
+        final HealthCheck snp = getGermlineVariantCount(sampleId, vcfData, VCFType.SNP,
                 GermlineCheck.VARIANTS_GERMLINE_SNP, isRefSample);
-        final BaseDataReport indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS,
+        final HealthCheck indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS,
                 GermlineCheck.VARIANTS_GERMLINE_INDELS, isRefSample);
-        final List<BaseDataReport> reports = Arrays.asList(snp, indels);
-        BaseDataReport.log(LOGGER, reports);
+        final List<HealthCheck> reports = Arrays.asList(snp, indels);
+        HealthCheck.log(LOGGER, reports);
         return reports;
     }
 
@@ -77,10 +77,10 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     }
 
     @NotNull
-    private static BaseDataReport getGermlineVariantCount(@NotNull final String sampleId,
+    private static HealthCheck getGermlineVariantCount(@NotNull final String sampleId,
             @NotNull final List<VCFGermlineData> vcfData, @NotNull final VCFType vcfType,
             @NotNull final GermlineCheck check, final boolean isRefSample) {
         final long count = vcfData.stream().filter(new VCFGermlineVariantPredicate(vcfType, isRefSample)).count();
-        return new BaseDataReport(sampleId, check.toString(), String.valueOf(count));
+        return new HealthCheck(sampleId, check.toString(), String.valueOf(count));
     }
 }

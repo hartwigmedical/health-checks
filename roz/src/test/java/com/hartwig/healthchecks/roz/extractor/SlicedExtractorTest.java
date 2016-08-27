@@ -9,8 +9,8 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.SingleValueReport;
 
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class SlicedExtractorTest {
 
         final BaseReport report = extractor.extractFromRunDirectory("");
         assertEquals(CheckType.SLICED, report.getCheckType());
-        final BaseDataReport sampleData = ((SingleValueReport) report).getSampleData();
+        final HealthCheck sampleData = ((SingleValueReport) report).getCheck();
         assertEquals(SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), sampleData.getCheckName());
         assertEquals(REF_SAMPLE, sampleData.getSampleId());
         assertEquals("4", sampleData.getValue());

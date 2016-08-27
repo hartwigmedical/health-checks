@@ -17,8 +17,8 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.AbstractTotalSequenceExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.apache.logging.log4j.LogManager;
@@ -58,48 +58,48 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     @NotNull
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<BaseDataReport> tumorSampleData = getSampleData(runContext.runDirectory(),
+        final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(),
                 runContext.tumorSample());
 
         return new PatientReport(CheckType.PRESTATS, refSampleData, tumorSampleData);
     }
 
     @NotNull
-    private List<BaseDataReport> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
+    private List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
             throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
 
-        final List<BaseDataReport> fastqcChecks = extractFastqcChecks(basePath, sampleId);
-        final BaseDataReport totalSequenceCheck = extractTotalSequenceCheck(basePath, sampleId);
+        final List<HealthCheck> fastqcChecks = extractFastqcChecks(basePath, sampleId);
+        final HealthCheck totalSequenceCheck = extractTotalSequenceCheck(basePath, sampleId);
 
         fastqcChecks.add(totalSequenceCheck);
-        BaseDataReport.log(LOGGER, fastqcChecks);
+        HealthCheck.log(LOGGER, fastqcChecks);
         return fastqcChecks;
     }
 
     @NotNull
-    private List<BaseDataReport> extractFastqcChecks(@NotNull final String basePath, @NotNull final String sampleId)
+    private List<HealthCheck> extractFastqcChecks(@NotNull final String basePath, @NotNull final String sampleId)
             throws IOException, EmptyFileException {
         final List<String> allLines = zipFileReader.readAllLinesFromZips(basePath, FASTQC_CHECKS_FILE_NAME);
-        final Map<String, List<BaseDataReport>> data = getFastqcCheckData(allLines, sampleId);
+        final Map<String, List<HealthCheck>> data = getFastqcCheckData(allLines, sampleId);
 
         if (data == null || data.isEmpty()) {
             LOGGER.error(String.format(EMPTY_FILES_ERROR, FASTQC_CHECKS_FILE_NAME, basePath));
             throw new EmptyFileException(FASTQC_CHECKS_FILE_NAME, basePath);
         }
 
-        final List<BaseDataReport> finalList = Lists.newArrayList();
+        final List<HealthCheck> finalList = Lists.newArrayList();
         for (PrestatsCheck check : PrestatsCheck.values()) {
             if (check != PrestatsCheck.PRESTATS_NUMBER_OF_READS) {
-                List<BaseDataReport> checkData = data.get(check.toString());
+                List<HealthCheck> checkData = data.get(check.toString());
                 if (checkData != null && checkData.size() > 0) {
-                    Optional<BaseDataReport> worstReport = checkData.stream().min((isStatusWorse()));
+                    Optional<HealthCheck> worstReport = checkData.stream().min((isStatusWorse()));
                     // KODU: Safe to do since we checked that checkData contains > 0 elements.
                     assert worstReport.isPresent();
                     finalList.add(worstReport.get());
                 } else {
-                    finalList.add(new BaseDataReport(sampleId, check.toString(), MISS));
+                    finalList.add(new HealthCheck(sampleId, check.toString(), MISS));
                 }
             }
         }
@@ -108,24 +108,24 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private static Map<String, List<BaseDataReport>> getFastqcCheckData(@NotNull final List<String> allLines,
+    private static Map<String, List<HealthCheck>> getFastqcCheckData(@NotNull final List<String> allLines,
             @NotNull final String sampleId) throws IOException {
         return allLines.stream().map(line -> {
             final String[] values = line.trim().split(FASTQC_CHECKS_SEPARATOR);
-            BaseDataReport prestatsDataReport = null;
+            HealthCheck prestatsDataReport = null;
             if (values.length == FASTQC_CHECKS_EXPECTED_PARTS_PER_LINE) {
                 final String status = values[0];
                 final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
                 if (check.isPresent()) {
-                    prestatsDataReport = new BaseDataReport(sampleId, check.get().toString(), status);
+                    prestatsDataReport = new HealthCheck(sampleId, check.get().toString(), status);
                 }
             }
             return prestatsDataReport;
-        }).filter(prestatsDataReport -> prestatsDataReport != null).collect(groupingBy(BaseDataReport::getCheckName));
+        }).filter(prestatsDataReport -> prestatsDataReport != null).collect(groupingBy(HealthCheck::getCheckName));
     }
 
     @NotNull
-    private static Comparator<BaseDataReport> isStatusWorse() {
+    private static Comparator<HealthCheck> isStatusWorse() {
         return (firstData, secondData) -> {
             final String firstStatus = firstData.getValue();
             final String secondStatus = secondData.getValue();
@@ -142,11 +142,11 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     }
 
     @NotNull
-    private BaseDataReport extractTotalSequenceCheck(@NotNull final String basePath, @NotNull final String sampleId)
+    private HealthCheck extractTotalSequenceCheck(@NotNull final String basePath, @NotNull final String sampleId)
             throws IOException, HealthChecksException {
         final long totalSequences = sumOfTotalSequencesFromFastQC(basePath, zipFileReader);
 
-        return new BaseDataReport(sampleId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.toString(),
+        return new HealthCheck(sampleId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.toString(),
                 Long.toString(totalSequences));
     }
 

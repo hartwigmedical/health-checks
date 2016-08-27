@@ -8,8 +8,8 @@ import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.SingleValueReport;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +37,7 @@ public class SlicedExtractor implements DataExtractor {
             throws IOException, HealthChecksException {
         final long value = reader.readLines(runContext.runDirectory(), SLICED_VCF_EXTENSION,
                 new VCFDataLinePredicate()).stream().count();
-        BaseDataReport sampleData = new BaseDataReport(runContext.refSample(),
+        HealthCheck sampleData = new HealthCheck(runContext.refSample(),
                 SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), String.valueOf(value));
         sampleData.log(LOGGER);
         return new SingleValueReport(CheckType.SLICED, sampleData);

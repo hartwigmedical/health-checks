@@ -15,8 +15,8 @@ import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,35 +44,35 @@ public class WGSMetricsExtractor implements DataExtractor {
     @Override
     public BaseReport extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
-        final List<BaseDataReport> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<BaseDataReport> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
+        final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
         return new PatientReport(CheckType.COVERAGE, referenceSample, tumorSample);
     }
 
     @NotNull
-    private static List<BaseDataReport> getSampleData(@NotNull final String runDirectory,
+    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory,
             @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         Path wgsMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
         final List<String> lines = FileReader.build().readLines(wgsMetricsPath);
 
-        final BaseDataReport coverageMean = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageMean = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_MEAN);
-        final BaseDataReport coverageMedian = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageMedian = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_MEDIAN);
-        final BaseDataReport coverageSD = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageSD = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_SD);
-        final BaseDataReport coverageBaseQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageBaseQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ);
-        final BaseDataReport coverageDupe = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageDupe = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_DUPE);
-        final BaseDataReport coverageMapQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageMapQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_MAPQ);
-        final BaseDataReport coverageOverlap = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageOverlap = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_OVERLAP);
-        final BaseDataReport coverageTotal = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageTotal = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_TOTAL);
-        final BaseDataReport coverageUnpaired = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageUnpaired = getValue(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_UNPAIRED);
 
         return Arrays.asList(coverageMean, coverageMedian, coverageSD, coverageBaseQ, coverageDupe, coverageMapQ,
@@ -86,12 +86,12 @@ public class WGSMetricsExtractor implements DataExtractor {
     }
 
     @NotNull
-    private static BaseDataReport getValue(@NotNull final String filePath, @NotNull final List<String> lines,
+    private static HealthCheck getValue(@NotNull final String filePath, @NotNull final List<String> lines,
             @NotNull final String sampleId, @NotNull final WGSMetricsCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(filePath, lines, check.getFieldName(), check.getColumnIndex());
-        final BaseDataReport baseDataReport = new BaseDataReport(sampleId, check.toString(), value);
-        baseDataReport.log(LOGGER);
-        return baseDataReport;
+        final HealthCheck healthCheck = new HealthCheck(sampleId, check.toString(), value);
+        healthCheck.log(LOGGER);
+        return healthCheck;
     }
 
     @NotNull

@@ -9,15 +9,15 @@ public class SingleValueReport extends BaseReport {
     private static final long serialVersionUID = -5744830259786248569L;
 
     @NotNull
-    private final BaseDataReport sampleData;
+    private final HealthCheck check;
 
-    public SingleValueReport(@NotNull final CheckType checkType, @NotNull final BaseDataReport sampleData) {
+    public SingleValueReport(@NotNull final CheckType checkType, @NotNull final HealthCheck check) {
         super(checkType);
-        this.sampleData = sampleData;
+        this.check = check;
     }
 
     @NotNull
-    public BaseDataReport getSampleData() {
-        return sampleData;
+    public HealthCheck getCheck() {
+        return check;
     }
 }

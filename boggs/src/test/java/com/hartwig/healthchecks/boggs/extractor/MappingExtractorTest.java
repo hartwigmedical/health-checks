@@ -12,8 +12,8 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
-import com.hartwig.healthchecks.common.report.BaseDataReport;
 import com.hartwig.healthchecks.common.report.BaseReport;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 import com.hartwig.healthchecks.common.report.PatientReport;
 
 import org.jetbrains.annotations.NotNull;
@@ -65,64 +65,64 @@ public class MappingExtractorTest {
 
     private static void assertReport(@NotNull final BaseReport report) {
         assertEquals(CheckType.MAPPING, report.getCheckType());
-        assertRefSampleData(((PatientReport) report).getReferenceSample());
-        assertTumorSampleData(((PatientReport) report).getTumorSample());
+        assertRefSampleData(((PatientReport) report).getRefSampleChecks());
+        assertTumorSampleData(((PatientReport) report).getTumorSampleChecks());
     }
 
-    private static void assertRefSampleData(@NotNull final List<BaseDataReport> mapping) {
-        final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
+    private static void assertRefSampleData(@NotNull final List<HealthCheck> mapping) {
+        final HealthCheck mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
         assertEquals("0.9693877551020408", mappedData.getValue());
         assertEquals(REF_SAMPLE, mappedData.getSampleId());
 
-        final BaseDataReport mateData = extractReportData(mapping,
+        final HealthCheck mateData = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR);
         assertEquals("0.010526315789473684", mateData.getValue());
 
-        final BaseDataReport properData = extractReportData(mapping,
+        final HealthCheck properData = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED);
         assertEquals("0.9473684210526315", properData.getValue());
 
-        final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
+        final HealthCheck singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
         assertEquals("0.010526315789473684", singletonData.getValue());
 
-        final BaseDataReport duplicateData = extractReportData(mapping,
+        final HealthCheck duplicateData = extractReportData(mapping,
                 MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
         assertEquals("0.10204081632653061", duplicateData.getValue());
 
-        final BaseDataReport proportionRead = extractReportData(mapping,
+        final HealthCheck proportionRead = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
         assertEquals("0.97", proportionRead.getValue());
     }
 
-    private static void assertTumorSampleData(@NotNull final List<BaseDataReport> mapping) {
-        final BaseDataReport mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
+    private static void assertTumorSampleData(@NotNull final List<HealthCheck> mapping) {
+        final HealthCheck mappedData = extractReportData(mapping, MappingCheck.MAPPING_PERCENTAGE_MAPPED);
         assertEquals("0.875", mappedData.getValue());
         assertEquals(TUMOR_SAMPLE, mappedData.getSampleId());
 
-        final BaseDataReport mateData = extractReportData(mapping,
+        final HealthCheck mateData = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_MAPPED_DIFFERENT_CHR);
         assertEquals("0.02857142857142857", mateData.getValue());
 
-        final BaseDataReport properData = extractReportData(mapping,
+        final HealthCheck properData = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPERLY_PAIRED_PROPORTION_OF_MAPPED);
         assertEquals("0.7142857142857143", properData.getValue());
 
-        final BaseDataReport singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
+        final HealthCheck singletonData = extractReportData(mapping, MappingCheck.MAPPING_PROPORTION_SINGLETON);
         assertEquals("0.07142857142857142", singletonData.getValue());
 
-        final BaseDataReport duplicateData = extractReportData(mapping,
+        final HealthCheck duplicateData = extractReportData(mapping,
                 MappingCheck.MAPPING_MARKDUP_PROPORTION_DUPLICATES);
         assertEquals("0.125", duplicateData.getValue());
 
-        final BaseDataReport proportionRead = extractReportData(mapping,
+        final HealthCheck proportionRead = extractReportData(mapping,
                 MappingCheck.MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES);
         assertEquals("0.7", proportionRead.getValue());
     }
 
     @NotNull
-    private static BaseDataReport extractReportData(@NotNull final List<BaseDataReport> mapping,
+    private static HealthCheck extractReportData(@NotNull final List<HealthCheck> mapping,
             @NotNull final MappingCheck check) {
-        Optional<BaseDataReport> report = mapping.stream().filter(
+        Optional<HealthCheck> report = mapping.stream().filter(
                 baseDataReport -> baseDataReport.getCheckName().equals(check.toString())).findFirst();
 
         assert report.isPresent();
