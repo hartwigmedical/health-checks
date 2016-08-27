@@ -15,7 +15,8 @@ import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.extractor.AbstractTotalSequenceExtractor;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.ExtractorFunctions;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class MappingExtractor extends AbstractTotalSequenceExtractor {
+public class MappingExtractor implements DataExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(MappingExtractor.class);
 
@@ -48,8 +49,7 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
     public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(),
-                runContext.tumorSample());
+        final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
         return new PatientResult(CheckType.MAPPING, refSampleData, tumorSampleData);
     }
@@ -59,7 +59,8 @@ public class MappingExtractor extends AbstractTotalSequenceExtractor {
             throws IOException, HealthChecksException {
 
         final String basePathForTotalSequences = getBasePathForTotalSequences(runDirectory, sampleId);
-        final long totalSequences = sumOfTotalSequencesFromFastQC(basePathForTotalSequences, zipFileReader);
+        final long totalSequences = ExtractorFunctions.sumOfTotalSequencesFromFastQC(basePathForTotalSequences,
+                zipFileReader);
 
         final String basePathForFlagStat = getBasePathForFlagStat(runDirectory, sampleId);
         final List<HealthCheck> mappingChecks = getFlagStatsData(basePathForFlagStat, sampleId, totalSequences);

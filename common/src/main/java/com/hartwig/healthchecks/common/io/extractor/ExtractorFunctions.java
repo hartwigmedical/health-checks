@@ -11,13 +11,16 @@ import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractTotalSequenceExtractor implements DataExtractor {
+public final class ExtractorFunctions {
 
     private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
     private static final String TOTAL_SEQUENCES_PATTERN = "Total Sequences";
     private static final String COLUMN_SEPARATOR = "\t";
 
-    protected static long sumOfTotalSequencesFromFastQC(@NotNull final String basePath,
+    private ExtractorFunctions() {
+    }
+
+    public static long sumOfTotalSequencesFromFastQC(@NotNull final String basePath,
             @NotNull final ZipFilesReader zipFileReader) throws IOException, HealthChecksException {
         final List<String> allLines = zipFileReader.readFieldFromZipFiles(basePath, FASTQC_DATA_FILE_NAME,
                 TOTAL_SEQUENCES_PATTERN);

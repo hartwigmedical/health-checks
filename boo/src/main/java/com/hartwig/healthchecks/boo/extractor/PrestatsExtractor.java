@@ -17,7 +17,8 @@ import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.data.PatientResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.extractor.AbstractTotalSequenceExtractor;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.extractor.ExtractorFunctions;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 
@@ -25,7 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
+public class PrestatsExtractor implements DataExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
 
@@ -144,7 +145,7 @@ public class PrestatsExtractor extends AbstractTotalSequenceExtractor {
     @NotNull
     private HealthCheck extractTotalSequenceCheck(@NotNull final String basePath, @NotNull final String sampleId)
             throws IOException, HealthChecksException {
-        final long totalSequences = sumOfTotalSequencesFromFastQC(basePath, zipFileReader);
+        final long totalSequences = ExtractorFunctions.sumOfTotalSequencesFromFastQC(basePath, zipFileReader);
 
         return new HealthCheck(sampleId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.toString(),
                 Long.toString(totalSequences));
