@@ -1,27 +1,24 @@
 package com.hartwig.healthchecks.nesbit.model;
 
-import java.util.Map;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
 public class VCFSomaticSetData {
 
-    private final int totalCallerCount;
     @NotNull
-    private final Map<String, Integer> callersCountPerCaller;
+    private final List<String> callers;
 
-    public VCFSomaticSetData(final int totalCallerCount, @NotNull final Map<String, Integer> callersCountPerCaller) {
-        super();
-        this.totalCallerCount = totalCallerCount;
-        this.callersCountPerCaller = callersCountPerCaller;
+    public VCFSomaticSetData(@NotNull final List<String> callers) {
+        this.callers = callers;
     }
 
     @NotNull
-    public Map<String, Integer> getCallersCountPerCaller() {
-        return callersCountPerCaller;
+    public List<String> getCallers() {
+        return callers;
     }
 
-    public int getTotalCallerCount() {
-        return totalCallerCount;
+    public int getCallerCount() {
+        return callers.size();
     }
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -141,9 +140,7 @@ public class SomaticExtractor implements DataExtractor {
             }
 
             if (finalCallers.size() > 0) {
-                final Map<String, Integer> callersMap = finalCallers.stream().collect(
-                        Collectors.toMap(key -> key, value -> finalCallers.size() - 1));
-                vcfSomaticSetData = new VCFSomaticSetData(finalCallers.size(), callersMap);
+                vcfSomaticSetData = new VCFSomaticSetData(finalCallers);
             }
             return vcfSomaticSetData;
         }).filter(vcfSomaticSetData -> vcfSomaticSetData != null).collect(Collectors.toList());
@@ -199,16 +196,14 @@ public class SomaticExtractor implements DataExtractor {
     private static List<VCFSomaticSetData> getSetForCallerWithMoreThanOneCaller(
             @NotNull final List<VCFSomaticSetData> vcfSomaticSetData, @NotNull final String caller) {
         final List<VCFSomaticSetData> callerSets = getSetsForCaller(vcfSomaticSetData, caller);
-        return callerSets.stream().filter(
-                vcfSomaticSet -> vcfSomaticSet.getCallersCountPerCaller().get(caller) > 1).collect(
+        return callerSets.stream().filter(vcfSomaticSet -> vcfSomaticSet.getCallerCount() > 1).collect(
                 Collectors.toList());
     }
 
     @NotNull
     private static List<VCFSomaticSetData> getSetsForCaller(@NotNull final List<VCFSomaticSetData> vcfSomaticSetData,
             @NotNull final String caller) {
-        return vcfSomaticSetData.stream().filter(
-                vcfSomaticSet -> vcfSomaticSet.getCallersCountPerCaller().containsKey(caller)).collect(
+        return vcfSomaticSetData.stream().filter(vcfSomaticSet -> vcfSomaticSet.getCallers().contains(caller)).collect(
                 Collectors.toList());
     }
 
@@ -221,11 +216,11 @@ public class SomaticExtractor implements DataExtractor {
 
     @NotNull
     private static Predicate<VCFSomaticSetData> isTotalCallersCountMoreThan(final int count) {
-        return vcfSomaticSet -> vcfSomaticSet.getTotalCallerCount() > count;
+        return vcfSomaticSet -> vcfSomaticSet.getCallerCount() > count;
     }
 
     @NotNull
     private static Predicate<VCFSomaticSetData> isTotalCallersCountEqual(final int count) {
-        return vcfSomaticSet -> vcfSomaticSet.getTotalCallerCount() == count;
+        return vcfSomaticSet -> vcfSomaticSet.getCallerCount() == count;
     }
 }
