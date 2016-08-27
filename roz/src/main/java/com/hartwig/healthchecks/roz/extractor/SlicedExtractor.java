@@ -3,14 +3,14 @@ package com.hartwig.healthchecks.roz.extractor;
 import java.io.IOException;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.SingleValueReport;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
-import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.HealthCheck;
-import com.hartwig.healthchecks.common.report.SingleValueReport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

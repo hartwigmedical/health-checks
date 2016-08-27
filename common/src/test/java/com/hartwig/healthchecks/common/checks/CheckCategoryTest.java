@@ -1,8 +1,6 @@
-package com.hartwig.healthchecks.common.report;
+package com.hartwig.healthchecks.common.checks;
 
 import java.util.Optional;
-
-import com.hartwig.healthchecks.common.checks.CheckCategory;
 
 import org.junit.Assert;
 import org.junit.Test;

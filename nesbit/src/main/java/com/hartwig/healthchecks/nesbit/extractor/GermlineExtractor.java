@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.PatientReport;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
-import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.HealthCheck;
-import com.hartwig.healthchecks.common.report.PatientReport;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 import com.hartwig.healthchecks.nesbit.predicate.VCFGermlineVariantPredicate;

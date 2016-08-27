@@ -1,8 +1,8 @@
-package com.hartwig.healthchecks.common.report;
-
-import org.jetbrains.annotations.NotNull;
+package com.hartwig.healthchecks.common.data;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
+
+import org.jetbrains.annotations.NotNull;
 
 public class ErrorReport extends BaseReport {
 

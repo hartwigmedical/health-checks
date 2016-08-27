@@ -2,9 +2,10 @@ package com.hartwig.healthchecks.common.report;
 
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
-
+import com.hartwig.healthchecks.common.data.BaseReport;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
+
+import org.jetbrains.annotations.NotNull;
 
 public interface Report {
 

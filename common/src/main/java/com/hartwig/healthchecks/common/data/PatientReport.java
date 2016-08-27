@@ -1,8 +1,9 @@
-package com.hartwig.healthchecks.common.report;
+package com.hartwig.healthchecks.common.data;
 
 import java.util.List;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.report.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 

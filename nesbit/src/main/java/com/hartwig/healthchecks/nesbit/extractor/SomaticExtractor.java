@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.MultiValueReport;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
-import com.hartwig.healthchecks.common.report.BaseReport;
 import com.hartwig.healthchecks.common.report.HealthCheck;
-import com.hartwig.healthchecks.common.report.MultiValueReport;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticData;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticSetData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;

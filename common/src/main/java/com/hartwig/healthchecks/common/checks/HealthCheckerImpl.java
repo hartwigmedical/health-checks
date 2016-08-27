@@ -2,10 +2,10 @@ package com.hartwig.healthchecks.common.checks;
 
 import java.io.IOException;
 
+import com.hartwig.healthchecks.common.data.BaseReport;
+import com.hartwig.healthchecks.common.data.ErrorReport;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.report.BaseReport;
-import com.hartwig.healthchecks.common.report.ErrorReport;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
