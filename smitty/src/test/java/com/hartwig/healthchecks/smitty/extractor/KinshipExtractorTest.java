@@ -8,13 +8,13 @@ import java.io.IOException;
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
-import com.hartwig.healthchecks.common.data.BaseResult;
-import com.hartwig.healthchecks.common.data.SingleValueResult;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.path.RunContextFactory;
+import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.SingleValueResult;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;

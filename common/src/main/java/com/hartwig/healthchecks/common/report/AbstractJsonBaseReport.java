@@ -12,12 +12,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
 import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
+import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 import org.apache.logging.log4j.LogManager;

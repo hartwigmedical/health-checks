@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
-import com.hartwig.healthchecks.common.data.BaseResult;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
 import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
+import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 import org.junit.Test;

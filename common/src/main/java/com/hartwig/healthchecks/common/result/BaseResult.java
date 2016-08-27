@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.data;
+package com.hartwig.healthchecks.common.result;
 
 import java.io.Serializable;
 
