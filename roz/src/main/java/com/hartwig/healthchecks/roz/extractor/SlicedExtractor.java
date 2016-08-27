@@ -33,7 +33,7 @@ public class SlicedExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extract()
             throws IOException, HealthChecksException {
         final long value = reader.readLines(runContext.runDirectory(), SLICED_VCF_EXTENSION,
                 new VCFDataLinePredicate()).stream().count();

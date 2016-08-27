@@ -34,7 +34,7 @@ public class KinshipExtractorTest {
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
-        final BaseResult kinshipReport = kinshipExtractor.extractFromRunDirectory("");
+        final BaseResult kinshipReport = kinshipExtractor.extract();
 
         assertNotNull(kinshipReport);
         assertEquals(CheckType.KINSHIP, kinshipReport.getCheckType());
@@ -47,7 +47,7 @@ public class KinshipExtractorTest {
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
-        kinshipExtractor.extractFromRunDirectory("");
+        kinshipExtractor.extract();
     }
 
     @Test(expected = EmptyFileException.class)
@@ -56,7 +56,7 @@ public class KinshipExtractorTest {
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
-        kinshipExtractor.extractFromRunDirectory("");
+        kinshipExtractor.extract();
     }
 
     @Test(expected = IOException.class)
@@ -65,7 +65,7 @@ public class KinshipExtractorTest {
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
-        kinshipExtractor.extractFromRunDirectory("");
+        kinshipExtractor.extract();
     }
 
     private static void assertKinshipData(@NotNull final SingleValueResult kinshipReport,

@@ -10,6 +10,6 @@ import org.jetbrains.annotations.NotNull;
 public interface DataExtractor {
 
     @NotNull
-    BaseResult extractFromRunDirectory(@NotNull final String runDirectory) throws IOException, HealthChecksException;
+    BaseResult extract() throws IOException, HealthChecksException;
 }
 

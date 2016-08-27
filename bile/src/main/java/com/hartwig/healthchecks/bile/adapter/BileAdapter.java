@@ -26,8 +26,7 @@ public class BileAdapter extends AbstractHealthCheckAdapter {
 
         final DataExtractor extractor = new RealignerExtractor(runContext);
 
-        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.REALIGNER, runContext.runDirectory(),
-                extractor);
+        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.REALIGNER, extractor);
         final BaseResult baseResult = healthCheck.runCheck();
         report.addReportData(baseResult);
     }

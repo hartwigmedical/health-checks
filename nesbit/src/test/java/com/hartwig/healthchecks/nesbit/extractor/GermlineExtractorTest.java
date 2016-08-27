@@ -29,7 +29,7 @@ public class GermlineExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         final GermlineExtractor extractor = new GermlineExtractor(runContext);
-        final BaseResult report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extract();
 
         assertEquals(CheckType.GERMLINE, report.getCheckType());
         final List<HealthCheck> refData = ((PatientResult) report).getRefSampleChecks();

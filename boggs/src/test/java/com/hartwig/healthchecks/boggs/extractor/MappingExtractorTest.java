@@ -34,7 +34,7 @@ public class MappingExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        final BaseResult report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extract();
         assertReport(report);
     }
 
@@ -44,7 +44,7 @@ public class MappingExtractorTest {
                 EMPTY_FLAGSTAT_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = EmptyFileException.class)
@@ -52,7 +52,7 @@ public class MappingExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE, EMPTY_FASTQC_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = IOException.class)
@@ -60,7 +60,7 @@ public class MappingExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

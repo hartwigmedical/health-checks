@@ -40,7 +40,7 @@ public class PrestatsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        final BaseResult report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extract();
         assertReport(report);
     }
 
@@ -49,7 +49,7 @@ public class PrestatsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE, EMPTY_FASTQC_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = EmptyFileException.class)
@@ -58,7 +58,7 @@ public class PrestatsExtractorTest {
                 EMPTY_TOTAL_SEQUENCE_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test
@@ -66,7 +66,7 @@ public class PrestatsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        final BaseResult report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extract();
         final List<HealthCheck> sampleReport = ((PatientResult) report).getRefSampleChecks();
         assertEquals(EXPECTED_CHECKS_NUM, sampleReport.size());
 
@@ -79,7 +79,7 @@ public class PrestatsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     private static void assertReport(@NotNull final BaseResult prestatsData) {

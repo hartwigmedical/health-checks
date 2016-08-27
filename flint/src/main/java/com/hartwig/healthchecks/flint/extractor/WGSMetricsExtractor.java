@@ -42,16 +42,15 @@ public class WGSMetricsExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
-            throws IOException, HealthChecksException {
+    public BaseResult extract() throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
         return new PatientResult(CheckType.COVERAGE, referenceSample, tumorSample);
     }
 
     @NotNull
-    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory,
-            @NotNull final String sampleId) throws IOException, HealthChecksException {
+    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
+            throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         Path wgsMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
         final List<String> lines = FileReader.build().readLines(wgsMetricsPath);

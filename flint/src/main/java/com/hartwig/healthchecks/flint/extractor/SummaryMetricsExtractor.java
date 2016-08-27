@@ -43,16 +43,15 @@ public class SummaryMetricsExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
-            throws IOException, HealthChecksException {
+    public BaseResult extract() throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
         return new PatientResult(CheckType.SUMMARY_METRICS, referenceSample, tumorSample);
     }
 
     @NotNull
-    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory,
-            @NotNull final String sampleId) throws IOException, HealthChecksException {
+    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
+            throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         Path alignmentSummaryMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId,
                 ALIGNMENT_SUMMARY_METRICS_EXTENSION);
@@ -66,8 +65,7 @@ public class SummaryMetricsExtractor implements DataExtractor {
 
         final HealthCheck pfIndelRate = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_INDEL_RATE);
-        final HealthCheck pctAdapter = getValue(searchedLine.get(), sampleId,
-                SummaryMetricsCheck.MAPPING_PCT_ADAPTER);
+        final HealthCheck pctAdapter = getValue(searchedLine.get(), sampleId, SummaryMetricsCheck.MAPPING_PCT_ADAPTER);
         final HealthCheck pctChimeras = getValue(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PCT_CHIMERA);
         final HealthCheck pfMisMatch = getValue(searchedLine.get(), sampleId,

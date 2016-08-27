@@ -64,9 +64,9 @@ public class SomaticExtractor extends AbstractVCFExtractor {
 
     @NotNull
     @Override
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extract()
             throws IOException, HealthChecksException {
-        final List<String> lines = reader.readLines(runDirectory, MELTED_SOMATICS_EXTENSION,
+        final List<String> lines = reader.readLines(runContext.runDirectory(), MELTED_SOMATICS_EXTENSION,
                 new VCFPassDataLinePredicate());
         final List<VCFSomaticData> vcfData = getVCFSomaticData(lines);
 

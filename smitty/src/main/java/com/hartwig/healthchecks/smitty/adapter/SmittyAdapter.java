@@ -15,7 +15,7 @@ import com.hartwig.healthchecks.smitty.extractor.KinshipExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings("unused")
 @ResourceWrapper(type = CheckCategory.SMITTY)
 public class SmittyAdapter extends AbstractHealthCheckAdapter {
 
@@ -25,8 +25,7 @@ public class SmittyAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final DataExtractor kinshipExtractor = new KinshipExtractor(runContext);
-        final HealthChecker kinshipChecker = new HealthCheckerImpl(CheckType.KINSHIP, runContext.runDirectory(),
-                kinshipExtractor);
+        final HealthChecker kinshipChecker = new HealthCheckerImpl(CheckType.KINSHIP, kinshipExtractor);
         final BaseResult kinshipReport = kinshipChecker.runCheck();
         report.addReportData(kinshipReport);
     }

@@ -42,7 +42,7 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extract()
             throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());

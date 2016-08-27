@@ -42,7 +42,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        final BaseResult report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extract();
         assertReport(report);
     }
 
@@ -51,7 +51,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = IOException.class)
@@ -59,7 +59,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -67,7 +67,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -75,7 +75,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -83,7 +83,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

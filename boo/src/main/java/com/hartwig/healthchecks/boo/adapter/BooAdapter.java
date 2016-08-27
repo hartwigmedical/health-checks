@@ -24,8 +24,7 @@ public class BooAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final PrestatsExtractor prestatsExtractor = new PrestatsExtractor(runContext);
-        final HealthChecker prestatsHealthChecker = new HealthCheckerImpl(CheckType.PRESTATS,
-                runContext.runDirectory(), prestatsExtractor);
+        final HealthChecker prestatsHealthChecker = new HealthCheckerImpl(CheckType.PRESTATS, prestatsExtractor);
         final BaseResult prestats = prestatsHealthChecker.runCheck();
         report.addReportData(prestats);
     }

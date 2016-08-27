@@ -15,7 +15,7 @@ import com.hartwig.healthchecks.roz.extractor.SlicedExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings("unused")
 @ResourceWrapper(type = CheckCategory.ROZ)
 public class RozAdapter extends AbstractHealthCheckAdapter {
 
@@ -25,8 +25,7 @@ public class RozAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final DataExtractor extractor = new SlicedExtractor(runContext);
-        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.SLICED, runContext.runDirectory(),
-                extractor);
+        final HealthChecker healthCheck = new HealthCheckerImpl(CheckType.SLICED, extractor);
         final BaseResult baseResult = healthCheck.runCheck();
         report.addReportData(baseResult);
     }

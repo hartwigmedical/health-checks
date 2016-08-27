@@ -39,7 +39,7 @@ public class SomaticExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
         final DataExtractor extractor = new SomaticExtractor(runContext);
 
-        final BaseResult report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extract();
         final List<HealthCheck> checks = ((MultiValueResult) report).getChecks();
 
         assertEquals(CheckType.SOMATIC, report.getCheckType());

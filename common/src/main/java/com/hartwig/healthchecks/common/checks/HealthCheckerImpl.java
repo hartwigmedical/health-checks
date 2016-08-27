@@ -19,14 +19,10 @@ public class HealthCheckerImpl implements HealthChecker {
     @NotNull
     private final CheckType checkType;
     @NotNull
-    private final String runDirectory;
-    @NotNull
     private final DataExtractor dataExtractor;
 
-    public HealthCheckerImpl(@NotNull final CheckType checkType, @NotNull final String runDirectory,
-            @NotNull final DataExtractor dataExtractor) {
+    public HealthCheckerImpl(@NotNull final CheckType checkType, @NotNull final DataExtractor dataExtractor) {
         this.checkType = checkType;
-        this.runDirectory = runDirectory;
         this.dataExtractor = dataExtractor;
     }
 
@@ -35,7 +31,7 @@ public class HealthCheckerImpl implements HealthChecker {
     public BaseResult runCheck() {
         BaseResult report;
         try {
-            report = dataExtractor.extractFromRunDirectory(runDirectory);
+            report = dataExtractor.extract();
         } catch (IOException | HealthChecksException exception) {
             LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
             report = new ErrorResult(checkType, exception.getClass().getName(), exception.getMessage());

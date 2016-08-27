@@ -41,7 +41,7 @@ public class GermlineExtractor extends AbstractVCFExtractor {
 
     @NotNull
     @Override
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extract()
             throws IOException, HealthChecksException {
         final List<String> passFilterLines = reader.readLines(runContext.runDirectory(), GERMLINE_VCF_EXTENSION,
                 new VCFPassDataLinePredicate());

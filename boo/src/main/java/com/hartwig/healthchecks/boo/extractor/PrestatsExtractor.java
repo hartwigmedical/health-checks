@@ -57,7 +57,7 @@ public class PrestatsExtractor implements DataExtractor {
 
     @Override
     @NotNull
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extract()
             throws IOException, HealthChecksException {
         final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(),

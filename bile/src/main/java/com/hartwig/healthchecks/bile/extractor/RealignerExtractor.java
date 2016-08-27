@@ -53,7 +53,7 @@ public class RealignerExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extract()
             throws IOException, HealthChecksException {
         final HealthCheck referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final HealthCheck tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());

@@ -40,12 +40,12 @@ public class KinshipExtractor implements DataExtractor {
 
     @Override
     @NotNull
-    public BaseResult extractFromRunDirectory(@NotNull final String runDirectory)
+    public BaseResult extract()
             throws IOException, HealthChecksException {
         final List<String> kinshipLines = kinshipReader.readLines(runContext.runDirectory(), KINSHIP_EXTENSION);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
             throw new MalformedFileException(
-                    String.format(MALFORMED_FILE_MSG, KinshipCheck.KINSHIP_TEST.toString(), runDirectory,
+                    String.format(MALFORMED_FILE_MSG, KinshipCheck.KINSHIP_TEST.toString(), runContext.runDirectory(),
                             kinshipLines.size(), EXPECTED_NUM_LINES));
         }
         final Optional<HealthCheck> optBaseDataReport = kinshipLines.stream().skip(1).map(line -> {

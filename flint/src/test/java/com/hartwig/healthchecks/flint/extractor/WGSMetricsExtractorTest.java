@@ -56,7 +56,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        final BaseResult report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extract();
         assertReport(report);
     }
 
@@ -65,7 +65,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = IOException.class)
@@ -73,7 +73,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -81,7 +81,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -89,7 +89,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -97,7 +97,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

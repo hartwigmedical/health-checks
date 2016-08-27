@@ -27,20 +27,17 @@ public class FlintAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final DataExtractor insertSizeExtractor = new InsertSizeMetricsExtractor(runContext);
-        final HealthChecker insertSizeChecker = new HealthCheckerImpl(CheckType.INSERT_SIZE, runContext.runDirectory(),
-                insertSizeExtractor);
+        final HealthChecker insertSizeChecker = new HealthCheckerImpl(CheckType.INSERT_SIZE, insertSizeExtractor);
         final BaseResult insertSizeReport = insertSizeChecker.runCheck();
         report.addReportData(insertSizeReport);
 
         final DataExtractor summaryExtractor = new SummaryMetricsExtractor(runContext);
-        final HealthChecker summaryChecker = new HealthCheckerImpl(CheckType.SUMMARY_METRICS,
-                runContext.runDirectory(), summaryExtractor);
+        final HealthChecker summaryChecker = new HealthCheckerImpl(CheckType.SUMMARY_METRICS, summaryExtractor);
         final BaseResult summaryReport = summaryChecker.runCheck();
         report.addReportData(summaryReport);
 
         final DataExtractor wgsExtractor = new WGSMetricsExtractor(runContext);
-        final HealthChecker coverageChecker = new HealthCheckerImpl(CheckType.COVERAGE, runContext.runDirectory(),
-                wgsExtractor);
+        final HealthChecker coverageChecker = new HealthCheckerImpl(CheckType.COVERAGE, wgsExtractor);
         final BaseResult coverageReport = coverageChecker.runCheck();
         report.addReportData(coverageReport);
     }

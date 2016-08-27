@@ -16,7 +16,7 @@ import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
 
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings("unused")
 @ResourceWrapper(type = CheckCategory.NESBIT)
 public class NesbitAdapter extends AbstractHealthCheckAdapter {
 
@@ -26,14 +26,12 @@ public class NesbitAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final DataExtractor germlineExtractor = new GermlineExtractor(runContext);
-        final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, runContext.runDirectory(),
-                germlineExtractor);
+        final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, germlineExtractor);
         final BaseResult germlineReport = germline.runCheck();
         report.addReportData(germlineReport);
 
         final DataExtractor somaticExtractor = new SomaticExtractor(runContext);
-        final HealthChecker somatic = new HealthCheckerImpl(CheckType.SOMATIC, runContext.runDirectory(),
-                somaticExtractor);
+        final HealthChecker somatic = new HealthCheckerImpl(CheckType.SOMATIC, somaticExtractor);
         final BaseResult somaticReport = somatic.runCheck();
         report.addReportData(somaticReport);
     }

@@ -27,7 +27,7 @@ public class SlicedExtractorTest {
 
         final SlicedExtractor extractor = new SlicedExtractor(runContext);
 
-        final BaseResult report = extractor.extractFromRunDirectory("");
+        final BaseResult report = extractor.extract();
         assertEquals(CheckType.SLICED, report.getCheckType());
         final HealthCheck sampleData = ((SingleValueResult) report).getCheck();
         assertEquals(SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), sampleData.getCheckName());
@@ -40,6 +40,6 @@ public class SlicedExtractorTest {
         RunContext runContext = RunContextFactory.testContext("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
 
         final SlicedExtractor extractor = new SlicedExtractor(runContext);
-        extractor.extractFromRunDirectory("");
+        extractor.extract();
     }
 }
