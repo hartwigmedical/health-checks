@@ -34,7 +34,7 @@ public class HealthCheckerImpl implements HealthChecker {
             report = dataExtractor.extract();
         } catch (IOException | HealthChecksException exception) {
             LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
-            report = new ErrorResult(checkType, exception.getClass().getName(), exception.getMessage());
+            report = new ErrorResult(checkType, exception.getClass().getName());
         }
         return report;
     }

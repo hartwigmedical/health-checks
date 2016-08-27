@@ -10,23 +10,14 @@ public class ErrorResult extends BaseResult {
 
     @NotNull
     private final String error;
-    @NotNull
-    private final String message;
 
-    public ErrorResult(@NotNull final CheckType checkType, @NotNull final String error,
-            @NotNull final String message) {
+    public ErrorResult(@NotNull final CheckType checkType, @NotNull final String error) {
         super(checkType);
         this.error = error;
-        this.message = message;
     }
 
     @NotNull
     public String getError() {
         return error;
-    }
-
-    @NotNull
-    public String getMessage() {
-        return message;
     }
 }
