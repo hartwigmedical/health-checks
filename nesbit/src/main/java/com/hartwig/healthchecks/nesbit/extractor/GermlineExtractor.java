@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
@@ -21,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class GermlineExtractor extends AbstractVCFExtractor {
+public class GermlineExtractor implements DataExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(GermlineExtractor.class);
 
@@ -69,7 +70,7 @@ public class GermlineExtractor extends AbstractVCFExtractor {
     private static List<VCFGermlineData> getVCFDataForGermLine(@NotNull final List<String> lines) {
         return lines.stream().map(line -> {
             final String[] values = line.split(VCF_COLUMN_SEPARATOR);
-            final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
+            final VCFType type = VCFExtractorFunctions.getVCFType(values);
             final String refData = values[REF_SAMPLE_COLUMN];
             final String tumData = values[TUMOR_SAMPLE_COLUMN];
             return new VCFGermlineData(type, refData, tumData);

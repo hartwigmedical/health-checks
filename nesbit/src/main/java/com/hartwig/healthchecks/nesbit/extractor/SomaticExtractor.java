@@ -14,6 +14,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class SomaticExtractor extends AbstractVCFExtractor {
+public class SomaticExtractor implements DataExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger(SomaticExtractor.class);
 
@@ -65,8 +66,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
 
     @NotNull
     @Override
-    public BaseResult extract()
-            throws IOException, HealthChecksException {
+    public BaseResult extract() throws IOException, HealthChecksException {
         final List<String> lines = reader.readLines(runContext.runDirectory(), MELTED_SOMATICS_EXTENSION,
                 new VCFPassDataLinePredicate());
         final List<VCFSomaticData> vcfData = getVCFSomaticData(lines);
@@ -83,7 +83,7 @@ public class SomaticExtractor extends AbstractVCFExtractor {
     private static List<VCFSomaticData> getVCFSomaticData(@NotNull final List<String> lines) {
         return lines.stream().map(line -> {
             final String[] values = line.split(VCF_COLUMN_SEPARATOR);
-            final VCFType type = getVCFType(values[REF_INDEX], values[ALT_INDEX]);
+            final VCFType type = VCFExtractorFunctions.getVCFType(values);
             final String info = values[INFO_COLUMN];
             return new VCFSomaticData(type, info);
         }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
