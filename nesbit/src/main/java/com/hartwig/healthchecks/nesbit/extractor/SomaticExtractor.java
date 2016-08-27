@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -131,15 +132,18 @@ public class SomaticExtractor implements DataExtractor {
                             infoLine.length())).findFirst();
             assert setValue.isPresent();
             final String[] allCallers = setValue.get().split(CALLER_ALGO_SEPARATOR);
-            final List<String> filteredCallers = Arrays.stream(allCallers).filter(
-                    caller -> !caller.startsWith(CALLER_FILTERED_IDENTIFIER)).collect(Collectors.toList());
+            List<String> finalCallers = Lists.newArrayList();
             if (allCallers.length > 0 && allCallers[0].equals(CALLER_INTERSECTION_IDENTIFIER)) {
-                filteredCallers.addAll(ALL_CALLERS);
+                finalCallers.addAll(ALL_CALLERS);
+            } else {
+                finalCallers.addAll(Arrays.stream(allCallers).filter(
+                        caller -> !caller.startsWith(CALLER_FILTERED_IDENTIFIER)).collect(Collectors.toList()));
             }
-            if (filteredCallers.size() > 0) {
-                final Map<String, Integer> callersMap = filteredCallers.stream().collect(
-                        Collectors.toMap(key -> key, value -> filteredCallers.size() - 1));
-                vcfSomaticSetData = new VCFSomaticSetData(filteredCallers.size(), callersMap);
+
+            if (finalCallers.size() > 0) {
+                final Map<String, Integer> callersMap = finalCallers.stream().collect(
+                        Collectors.toMap(key -> key, value -> finalCallers.size() - 1));
+                vcfSomaticSetData = new VCFSomaticSetData(finalCallers.size(), callersMap);
             }
             return vcfSomaticSetData;
         }).filter(vcfSomaticSetData -> vcfSomaticSetData != null).collect(Collectors.toList());
