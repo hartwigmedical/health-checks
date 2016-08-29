@@ -20,15 +20,13 @@ final class VCFExtractorFunctions {
 
         final String[] allAlts = altValue.split(MULTIPLE_ALTS_IDENTIFIER);
 
-        return allAlts[0].length() != refValue.length() ? VCFType.INDELS : VCFType.SNP;
+        VCFType type = VCFType.SNP;
 
-        //        VCFType type = VCFType.SNP;
-        //
-        //        for (String alt : allAlts) {
-        //            if (refValue.length() != alt.length()) {
-        //                type = VCFType.INDELS;
-        //            }
-        //        }
-        //        return type;
+        for (String alt : allAlts) {
+            if (refValue.length() != alt.length()) {
+                type = VCFType.INDELS;
+            }
+        }
+        return type;
     }
 }
