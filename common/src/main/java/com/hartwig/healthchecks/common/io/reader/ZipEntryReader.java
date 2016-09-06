@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 interface ZipEntryReader {
 
-    String ERROR_MSG = "Error occurred when" + " reading file. Will return empty stream. Error -> %s";
+    String ERROR_MSG = "Error occurred when reading file. Will return empty stream. Error -> %s";
 
     Logger LOGGER = LogManager.getLogger(ZipEntryReader.class);
 
