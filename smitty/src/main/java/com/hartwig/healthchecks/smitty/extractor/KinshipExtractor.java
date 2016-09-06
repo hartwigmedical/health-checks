@@ -10,7 +10,7 @@ import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
-import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
+import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.path.RunContext;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -41,7 +41,7 @@ public class KinshipExtractor implements DataExtractor {
     @Override
     @NotNull
     public BaseResult extract() throws IOException, HealthChecksException {
-        Path kinshipPath = PathPrefixSuffixFinder.build().findPath(runContext.runDirectory(), "", KINSHIP_EXTENSION);
+        Path kinshipPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), KINSHIP_EXTENSION);
         final List<String> kinshipLines = FileReader.build().readLines(kinshipPath);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
             throw new MalformedFileException(
