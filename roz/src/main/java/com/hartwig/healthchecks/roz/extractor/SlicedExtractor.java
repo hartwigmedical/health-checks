@@ -1,13 +1,15 @@
 package com.hartwig.healthchecks.roz.extractor;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
+import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.SingleValueResult;
@@ -23,8 +25,6 @@ public class SlicedExtractor implements DataExtractor {
     private static final String SLICED_VCF_EXTENSION = "_Cosmicv76_GoNLv5_sliced.vcf";
 
     @NotNull
-    private final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
-    @NotNull
     private final RunContext runContext;
 
     public SlicedExtractor(@NotNull final RunContext runContext) {
@@ -33,10 +33,10 @@ public class SlicedExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extract()
-            throws IOException, HealthChecksException {
-        final long value = reader.readLines(runContext.runDirectory(), SLICED_VCF_EXTENSION,
-                new VCFDataLinePredicate()).stream().count();
+    public BaseResult extract() throws IOException, HealthChecksException {
+        final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), SLICED_VCF_EXTENSION);
+        final long value = LineReader.build().readLines(vcfPath, new VCFDataLinePredicate()).stream().count();
+
         HealthCheck sampleData = new HealthCheck(runContext.refSample(),
                 SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), String.valueOf(value));
         sampleData.log(LOGGER);

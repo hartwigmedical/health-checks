@@ -1,6 +1,7 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,8 +16,9 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
+import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
@@ -56,8 +58,6 @@ public class SomaticExtractor implements DataExtractor {
     private static final String CALLER_INTERSECTION_IDENTIFIER = "Intersection";
 
     @NotNull
-    private final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
-    @NotNull
     private final RunContext runContext;
 
     public SomaticExtractor(@NotNull final RunContext runContext) {
@@ -67,8 +67,9 @@ public class SomaticExtractor implements DataExtractor {
     @NotNull
     @Override
     public BaseResult extract() throws IOException, HealthChecksException {
-        final List<String> lines = reader.readLines(runContext.runDirectory(), MELTED_SOMATICS_EXTENSION,
-                new VCFPassDataLinePredicate());
+        final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(),
+                MELTED_SOMATICS_EXTENSION);
+        final List<String> lines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
         final List<VCFSomaticData> vcfData = getVCFSomaticData(lines);
 
         final List<HealthCheck> reports = new ArrayList<>();

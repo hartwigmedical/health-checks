@@ -1,6 +1,7 @@
 package com.hartwig.healthchecks.nesbit.extractor;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,8 +10,9 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.reader.ExtensionFinderAndLineReader;
+import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
@@ -32,8 +34,6 @@ public class GermlineExtractor implements DataExtractor {
     private static final int REF_SAMPLE_COLUMN = 9;
 
     @NotNull
-    private final ExtensionFinderAndLineReader reader = ExtensionFinderAndLineReader.build();
-    @NotNull
     private final RunContext runContext;
 
     public GermlineExtractor(@NotNull final RunContext runContext) {
@@ -42,10 +42,9 @@ public class GermlineExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extract()
-            throws IOException, HealthChecksException {
-        final List<String> passFilterLines = reader.readLines(runContext.runDirectory(), GERMLINE_VCF_EXTENSION,
-                new VCFPassDataLinePredicate());
+    public BaseResult extract() throws IOException, HealthChecksException {
+        final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), GERMLINE_VCF_EXTENSION);
+        final List<String> passFilterLines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
         final List<VCFGermlineData> vcfData = getVCFDataForGermLine(passFilterLines);
 
         final List<HealthCheck> refData = getSampleData(vcfData, runContext.refSample(), true);

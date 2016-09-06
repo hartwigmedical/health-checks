@@ -14,37 +14,31 @@ import org.junit.Test;
 
 public class LineInZipsReaderTest {
 
-    private static final String WRONG_VALUE_OF_LINE = "Wrong Value Of Line";
-    private static final String TOTAL_SEQUENCES_9952 = "9952";
-    private static final String EMPTY_ZIP = "CPCT12345678T_FLOWCELL_S2_L001_R1_001_fastqc.zip";
-    private static final String ZIP_FILE = "CPCT12345678T_FLOWCELL_S2_L002_R2_001_fastqc.zip";
-    private static final String TOTAL_SEQUENCES = "Total Sequences";
-    private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
-    private static final String SAMPLE = "CPCT12345678T";
-    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
-    private static final String QC_STATS = "QCStats";
+    private static final String ZIP_DIRECTORY = "zipfiles";
+    private static final String FILE = "helloworld";
+    private static final String FILE_CONTENT = "helloworld";
+    private static final String ZIP_FILE = FILE + ".zip";
+
+    private static final String EMPTY_FILE = "emptyfile";
+    private static final String EMPTY_ZIP = EMPTY_FILE + ".zip";
 
     @Test
     public void readLine() throws IOException, HealthChecksException {
-        final URL testPath = Resources.getResource(
-                TEST_DIR + File.separator + SAMPLE + File.separator + QC_STATS + File.separator + ZIP_FILE);
-        final String line = LineInZipsReader.build().readLines(testPath.getPath(), FASTQC_DATA_FILE_NAME,
-                        TOTAL_SEQUENCES);
-        assertTrue(WRONG_VALUE_OF_LINE, line.startsWith(TOTAL_SEQUENCES));
-        assertTrue(WRONG_VALUE_OF_LINE, line.endsWith(TOTAL_SEQUENCES_9952));
+        final URL testPath = Resources.getResource(ZIP_DIRECTORY + File.separator + ZIP_FILE);
+        final String line = LineInZipsReader.build().readLines(testPath.getPath(), FILE, FILE_CONTENT);
+        assertTrue(line.startsWith(FILE_CONTENT));
+        assertTrue(line.endsWith(FILE_CONTENT));
     }
 
     @Test(expected = LineNotFoundException.class)
     public void readLinesEmptyFiles() throws IOException, HealthChecksException {
-        final URL testPath = Resources.getResource("emptyFiles" + File.separator + SAMPLE + File.separator + QC_STATS
-                        + File.separator + EMPTY_ZIP);
-        LineInZipsReader.build().readLines(testPath.getPath(), FASTQC_DATA_FILE_NAME, TOTAL_SEQUENCES);
+        final URL testPath = Resources.getResource(ZIP_DIRECTORY + File.separator + EMPTY_ZIP);
+        LineInZipsReader.build().readLines(testPath.getPath(), EMPTY_FILE, "try to find me");
     }
 
     @Test(expected = LineNotFoundException.class)
     public void readLineNotInFile() throws IOException, HealthChecksException {
-        final URL testPath = Resources.getResource(
-                TEST_DIR + File.separator + SAMPLE + File.separator + QC_STATS + File.separator + ZIP_FILE);
-        LineInZipsReader.build().readLines(testPath.getPath(), FASTQC_DATA_FILE_NAME, "bla");
+        final URL testPath = Resources.getResource(ZIP_DIRECTORY + File.separator + ZIP_FILE);
+        LineInZipsReader.build().readLines(testPath.getPath(), FILE, "try to find me");
     }
 }

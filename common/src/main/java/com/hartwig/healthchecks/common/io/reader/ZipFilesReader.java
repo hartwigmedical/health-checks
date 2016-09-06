@@ -22,12 +22,12 @@ public class ZipFilesReader {
             "Error occurred when reading file %s. " + "Will return empty stream. Error -> %s";
 
     private static final Logger LOGGER = LogManager.getLogger(ZipFilesReader.class);
-    private static final String ZIP_FILES_SUFFIX = ".zip";
+    private static final String ZIP_EXTENSION = ".zip";
 
     @NotNull
     public List<String> readAllLinesFromZips(@NotNull final String path, @NotNull final String fileName)
             throws IOException {
-        final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path, ZIP_FILES_SUFFIX);
+        final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path, ZIP_EXTENSION);
         return zipPaths.stream().map(zipPath -> readFileFromZip(zipPath.toString(), fileName)).flatMap(
                 Collection::stream).collect(toList());
     }
@@ -35,7 +35,7 @@ public class ZipFilesReader {
     @NotNull
     public List<String> readFieldFromZipFiles(@NotNull final String path, @NotNull final String fileName,
             @NotNull final String filter) throws IOException {
-        final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path, ZIP_FILES_SUFFIX);
+        final List<Path> zipPaths = PathsExtensionFinder.build().findPaths(path, ZIP_EXTENSION);
         return zipPaths.stream().map(zipPath -> searchForLineInZip(zipPath, fileName, filter)).filter(
                 line -> line != null).collect(toList());
     }
