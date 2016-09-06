@@ -47,6 +47,7 @@ abstract class AbstractJsonBaseReport implements Report {
         HEALTH_CHECKS.putIfAbsent(reportData.getCheckType(), reportData);
     }
 
+    @NotNull
     JsonArray computeElements(@NotNull final String runDirectory) {
         final JsonArray reportArray = new JsonArray();
         final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
@@ -73,7 +74,7 @@ abstract class AbstractJsonBaseReport implements Report {
     }
 
     @Nullable
-    private static JsonObject getMetadata(final String runDirectory) {
+    private static JsonObject getMetadata(@NotNull final String runDirectory) {
         JsonObject element = null;
 
         try {
