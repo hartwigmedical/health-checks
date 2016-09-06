@@ -17,34 +17,32 @@ import org.junit.Test;
 
 public class FileInZipsReaderTest {
 
-    private static final String ZIP_FILE = "CPCT12345678T_FLOWCELL_S2_L002_R2_001_fastqc.zip";
-    private static final String SAMPLE = "CPCT12345678T";
-    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
-    private static final String QC_STATS = "QCStats";
-    private static final String SUMMARY_FILE_NAME = "summary.txt";
-    private static final String WRONG_NUM_LINES = "Wrong # of Lines";
-    private static final String NOT_NULL = "Should not Be null";
-    private static final int EXPECTED_NUM_LINES = 13;
+    private static final String ZIP_DIRECTORY = "zipfiles";
+
+    private static final String FILE = "helloworld";
+    private static final String FILE_ZIPPED = FILE + ".zip";
+    private static final int FILE_EXPECTED_NUM_LINES = 1;
+
+    private static final String EMPTY_FILE = "emptyfile";
+    private static final String EMPTY_FILE_ZIPPED = EMPTY_FILE + ".zip";
 
     @Test
     public void readLines() throws IOException, HealthChecksException {
-        final URL testPath = Resources.getResource(
-                TEST_DIR + File.separator + SAMPLE + File.separator + QC_STATS + File.separator + ZIP_FILE);
-        final List<String> readLines = FileInZipsReader.build().readLines(testPath.getPath(), SUMMARY_FILE_NAME);
-        assertNotNull(NOT_NULL, readLines);
-        assertEquals(WRONG_NUM_LINES, EXPECTED_NUM_LINES, readLines.size());
+        final URL testPath = Resources.getResource(ZIP_DIRECTORY + File.separator + FILE_ZIPPED);
+        final List<String> readLines = FileInZipsReader.build().readLines(testPath.getPath(), FILE);
+        assertNotNull(readLines);
+        assertEquals(FILE_EXPECTED_NUM_LINES, readLines.size());
     }
 
     @Test(expected = EmptyFileException.class)
     public void readLinesEmptyFiles() throws IOException, HealthChecksException {
-        final URL testPath = Resources.getResource("emptyFile.zip");
-        FileInZipsReader.build().readLines(testPath.getPath(), "emptyFile");
+        final URL testPath = Resources.getResource(ZIP_DIRECTORY + File.separator + EMPTY_FILE_ZIPPED);
+        FileInZipsReader.build().readLines(testPath.getPath(), EMPTY_FILE);
     }
 
     @Test(expected = FileNotFoundException.class)
     public void readLinesFileNotInZip() throws IOException, HealthChecksException {
-        final URL testPath = Resources.getResource(
-                TEST_DIR + File.separator + SAMPLE + File.separator + QC_STATS + File.separator + ZIP_FILE);
+        final URL testPath = Resources.getResource(ZIP_DIRECTORY + File.separator + FILE_ZIPPED);
         FileInZipsReader.build().readLines(testPath.getPath(), "bla");
     }
 }
