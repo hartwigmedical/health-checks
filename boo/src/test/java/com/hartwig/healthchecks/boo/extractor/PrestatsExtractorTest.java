@@ -11,8 +11,8 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.path.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
@@ -37,7 +37,7 @@ public class PrestatsExtractorTest {
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
         final BaseResult report = extractor.extract();
@@ -46,7 +46,8 @@ public class PrestatsExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void emptyFastQCFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE, EMPTY_FASTQC_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
+                EMPTY_FASTQC_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
         extractor.extract();
@@ -54,7 +55,7 @@ public class PrestatsExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void emptyTotalSequenceFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
                 EMPTY_TOTAL_SEQUENCE_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
@@ -63,7 +64,7 @@ public class PrestatsExtractorTest {
 
     @Test
     public void incompleteInputYieldsIncompleteOutput() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
         final BaseResult report = extractor.extract();
@@ -76,7 +77,8 @@ public class PrestatsExtractorTest {
 
     @Test(expected = IOException.class)
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
+                NON_EXISTING_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
         extractor.extract();

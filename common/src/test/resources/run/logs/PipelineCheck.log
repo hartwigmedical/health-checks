@@ -1,13 +1,13 @@
-Check and cleanup for run: 160601_HMFreg0055_FR10306057_FR10306058_CPCT12345678 
+Check and cleanup for run: run
 Pipeline version: v1.7
  
 
-Sample: CPCT12345678R
+Sample: sample1
 	 PreStats: done 
 	 Mapping: done 
 	 Indel realignment: done 
 
-Sample: CPCT12345678T
+Sample: sample2
 	 PreStats: done 
 	 Mapping: done 
 	 Indel realignment: done 
@@ -15,9 +15,9 @@ Sample: CPCT12345678T
 PostStats: done 
 Variant caller: done 
 Somatic variants:
-	 CPCT12345678R_CPCT12345678T: done 
+	 sample1_sample2: done
 Copy number analysis:
-	 CPCT12345678R_CPCT12345678T: done 
+	 sample1_sample2: done
 Variant filter: done 
 Variant annotation: done 
 VCF Utils: done 

@@ -10,8 +10,8 @@ import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.path.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
@@ -26,7 +26,7 @@ public class GermlineExtractorTest {
 
     @Test
     public void canCountSNPAndIndels() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         final GermlineExtractor extractor = new GermlineExtractor(runContext);
         final BaseResult report = extractor.extract();

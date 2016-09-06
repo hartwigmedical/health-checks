@@ -22,15 +22,15 @@ public class ReportsFlyweightTest {
     @Test
     public void getReport() throws IOException, HealthChecksException {
         Report report = ReportsFlyweight.getInstance().getReport(STDOUT);
-        assertNotNull("STDOUT Report is null", report);
-        assertTrue("WRONG REPORT TYPE", report instanceof StandardOutputReport);
+        assertNotNull(report);
+        assertTrue(report instanceof StandardOutputReport);
 
         report = ReportsFlyweight.getInstance().getReport(JSON);
-        assertNotNull("JSON Report is null", report);
-        assertTrue("WRONG REPORT TYPE", report instanceof JsonReport);
+        assertNotNull(report);
+        assertTrue(report instanceof JsonReport);
 
         report = ReportsFlyweight.getInstance().getReport(BLA);
-        assertNotNull("JSON Report is null", report);
-        assertTrue("WRONG REPORT TYPE", report instanceof StandardOutputReport);
+        assertNotNull(report);
+        assertTrue(report instanceof StandardOutputReport);
     }
 }

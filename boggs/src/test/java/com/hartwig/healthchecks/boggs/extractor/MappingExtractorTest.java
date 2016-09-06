@@ -11,8 +11,8 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.path.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
@@ -31,7 +31,7 @@ public class MappingExtractorTest {
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
         final BaseResult report = extractor.extract();
@@ -40,7 +40,7 @@ public class MappingExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void emptyFlagStatYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FLAGSTAT_SAMPLE,
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FLAGSTAT_SAMPLE,
                 EMPTY_FLAGSTAT_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
@@ -49,7 +49,8 @@ public class MappingExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void emptyTotalSequenceFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE, EMPTY_FASTQC_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
+                EMPTY_FASTQC_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
         extractor.extract();
@@ -57,7 +58,8 @@ public class MappingExtractorTest {
 
     @Test(expected = IOException.class)
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
+                NON_EXISTING_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
         extractor.extract();

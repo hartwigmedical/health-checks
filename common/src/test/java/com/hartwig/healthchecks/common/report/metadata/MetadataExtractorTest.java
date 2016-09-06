@@ -32,8 +32,8 @@ public class MetadataExtractorTest {
                     + "160704_HMFregCPCT_FR10301986_FR12244591_CPCT02020306.filtered_variants.vcf\t"
                     + "hmfpcompute-foxtrot1-15";
 
-    private static final String DUMMY_DIR = "bla";
-    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
+    private static final String NON_EXISTING_DIRECTORY = "bla";
+    private static final String RUN_DIRECTORY = "run";
 
     @Mocked
     private PathRegexFinder pathFinder;
@@ -47,21 +47,21 @@ public class MetadataExtractorTest {
         new Expectations() {
             {
                 pathFinder.findPath(anyString, anyString);
-                returns(new File(TEST_DIR).toPath());
-                lineReader.readLines(new File(TEST_DIR).toPath(), (Predicate<String>) any);
+                returns(new File(RUN_DIRECTORY).toPath());
+                lineReader.readLines(new File(RUN_DIRECTORY).toPath(), (Predicate<String>) any);
                 returns(Collections.singletonList(DATA));
 
                 pathFinder.findPath(anyString, anyString);
-                returns(new File(TEST_DIR).toPath());
-                lineReader.readLines(new File(TEST_DIR).toPath(), (Predicate<String>) any);
+                returns(new File(RUN_DIRECTORY).toPath());
+                lineReader.readLines(new File(RUN_DIRECTORY).toPath(), (Predicate<String>) any);
                 returns(Collections.singletonList(PIPELINE_VERSION_V1_7));
             }
         };
-        final ReportMetadata reportMetadata = extractor.extractMetadata(TEST_DIR);
+        final ReportMetadata reportMetadata = extractor.extractMetadata(RUN_DIRECTORY);
         assertNotNull(reportMetadata);
 
-        assertEquals("Wrong Date", EXPECTED_DATE, reportMetadata.getDate());
-        assertEquals("Wrong Version", EXPECTED_VERSION, reportMetadata.getPipelineVersion());
+        assertEquals(EXPECTED_DATE, reportMetadata.getDate());
+        assertEquals(EXPECTED_VERSION, reportMetadata.getPipelineVersion());
     }
 
     @Test
@@ -70,22 +70,22 @@ public class MetadataExtractorTest {
         new Expectations() {
             {
                 pathFinder.findPath(anyString, anyString);
-                returns(new File(TEST_DIR).toPath());
-                lineReader.readLines(new File(TEST_DIR).toPath(), (Predicate<String>) any);
+                returns(new File(RUN_DIRECTORY).toPath());
+                lineReader.readLines(new File(RUN_DIRECTORY).toPath(), (Predicate<String>) any);
                 returns(Collections.singletonList(DATA));
 
                 pathFinder.findPath(anyString, anyString);
-                returns(new File(TEST_DIR).toPath());
-                lineReader.readLines(new File(TEST_DIR).toPath(), (Predicate<String>) any);
+                returns(new File(RUN_DIRECTORY).toPath());
+                lineReader.readLines(new File(RUN_DIRECTORY).toPath(), (Predicate<String>) any);
                 returns(Collections.singletonList(PIPELINE_VERSION_V1_7));
             }
         };
-        final URL testPath = Resources.getResource(TEST_DIR);
+        final URL testPath = Resources.getResource(RUN_DIRECTORY);
         final ReportMetadata reportMetadata = extractor.extractMetadata(testPath.getPath());
 
         assertNotNull(reportMetadata);
-        assertEquals("Wrong Date", EXPECTED_DATE, reportMetadata.getDate());
-        assertEquals("Wrong Version", EXPECTED_VERSION, reportMetadata.getPipelineVersion());
+        assertEquals(EXPECTED_DATE, reportMetadata.getDate());
+        assertEquals(EXPECTED_VERSION, reportMetadata.getPipelineVersion());
     }
 
     @Test(expected = FileNotFoundException.class)
@@ -97,7 +97,7 @@ public class MetadataExtractorTest {
                 result = new FileNotFoundException();
             }
         };
-        extractor.extractMetadata(TEST_DIR);
+        extractor.extractMetadata(RUN_DIRECTORY);
     }
 
     @Test(expected = NoSuchFileException.class)
@@ -109,7 +109,7 @@ public class MetadataExtractorTest {
                 result = new NoSuchFileException("");
             }
         };
-        extractor.extractMetadata(DUMMY_DIR);
+        extractor.extractMetadata(NON_EXISTING_DIRECTORY);
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -118,12 +118,12 @@ public class MetadataExtractorTest {
         new Expectations() {
             {
                 pathFinder.findPath(anyString, anyString);
-                returns(new File(DUMMY_DIR).toPath());
-                lineReader.readLines(new File(DUMMY_DIR).toPath(), (Predicate<String>) any);
+                returns(new File(NON_EXISTING_DIRECTORY).toPath());
+                lineReader.readLines(new File(NON_EXISTING_DIRECTORY).toPath(), (Predicate<String>) any);
                 result = new LineNotFoundException("", "");
 
             }
         };
-        extractor.extractMetadata(TEST_DIR);
+        extractor.extractMetadata(RUN_DIRECTORY);
     }
 }

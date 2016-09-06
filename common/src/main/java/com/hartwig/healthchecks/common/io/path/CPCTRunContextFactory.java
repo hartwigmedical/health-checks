@@ -1,24 +1,20 @@
 package com.hartwig.healthchecks.common.io.path;
 
-import java.io.IOException;
-
+import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.exception.MalformedRunDirException;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class RunContextFactory {
+public final class CPCTRunContextFactory {
 
     private static final int PATIENT_NAME_LENGTH = 12;
 
-    private static final String REF_SAMPLE_SUFFIX = "R";
-    private static final String TUMOR_SAMPLE_SUFFIX = "T";
+    @VisibleForTesting
+    static final String REF_SAMPLE_SUFFIX = "R";
+    @VisibleForTesting
+    static final String TUMOR_SAMPLE_SUFFIX = "T";
 
-    private RunContextFactory() {
-    }
-
-    @NotNull
-    public static RunContext backwardsCompatible(@NotNull final String runDirectory) {
-        return new RunContextImpl(runDirectory, null, null);
+    private CPCTRunContextFactory() {
     }
 
     @NotNull
@@ -29,8 +25,7 @@ public final class RunContextFactory {
     }
 
     @NotNull
-    public static RunContext fromRunDirectory(@NotNull final String runDirectory)
-            throws MalformedRunDirException, IOException {
+    public static RunContext fromRunDirectory(@NotNull final String runDirectory) throws MalformedRunDirException {
         int patientPosition = runDirectory.indexOf("_CPCT");
         if (patientPosition == -1) {
             throw new MalformedRunDirException(runDirectory);

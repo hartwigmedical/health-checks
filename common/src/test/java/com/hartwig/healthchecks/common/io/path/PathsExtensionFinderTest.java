@@ -15,23 +15,22 @@ import org.junit.Test;
 
 public class PathsExtensionFinderTest {
 
-    private static final String PATIENT = "CPCT12345678T";
-    private static final String ZIP = ".zip";
-    private static final String TEST_DIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
-    private static final String QC_STATS = "QCStats";
+    private static final String RUN_DIRECTORY = "run";
+    private static final String LOG_DIRECTORY = "logs";
+
+    private static final String EXISTING_EXTENSION = ".log";
+    private static final String NON_EXISTING_EXTENSION = ".bla";
 
     @Test
     public void findPaths() throws IOException {
-        final URL testPath = Resources
-                        .getResource(TEST_DIR + File.separator + PATIENT + File.separator + QC_STATS + File.separator);
-        final List<Path> paths = PathsExtensionFinder.build().findPaths(testPath.getPath(), ZIP);
-        assertTrue("Files Not Found", !paths.isEmpty());
+        final URL testPath = Resources.getResource(RUN_DIRECTORY + File.separator + LOG_DIRECTORY + File.separator);
+        final List<Path> paths = PathsExtensionFinder.build().findPaths(testPath.getPath(), EXISTING_EXTENSION);
+        assertTrue(!paths.isEmpty());
     }
 
     @Test(expected = FileNotFoundException.class)
     public void findPathsFilesNotFound() throws IOException {
-        final URL testPath = Resources
-                        .getResource(TEST_DIR + File.separator + PATIENT + File.separator + QC_STATS + File.separator);
-        PathsExtensionFinder.build().findPaths(testPath.getPath(), ".bla");
+        final URL testPath = Resources.getResource(RUN_DIRECTORY + File.separator + LOG_DIRECTORY + File.separator);
+        PathsExtensionFinder.build().findPaths(testPath.getPath(), NON_EXISTING_EXTENSION);
     }
 }

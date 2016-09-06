@@ -11,8 +11,8 @@ import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
+import com.hartwig.healthchecks.common.io.path.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.SingleValueResult;
 
@@ -30,7 +30,7 @@ public class KinshipExtractorTest {
 
     @Test
     public void extractDataFromKinship() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(CORRECT_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(CORRECT_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
@@ -43,7 +43,7 @@ public class KinshipExtractorTest {
 
     @Test(expected = MalformedFileException.class)
     public void cannotReadMalformedKinship() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(MALFORMED_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(MALFORMED_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
@@ -52,7 +52,7 @@ public class KinshipExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void cannotReadFromEmptyKinship() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(EMPTY_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(EMPTY_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 
@@ -61,7 +61,7 @@ public class KinshipExtractorTest {
 
     @Test(expected = IOException.class)
     public void cannotReadFromNonExistingKinship() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext("Does not exist", REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext("Does not exist", REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipExtractor kinshipExtractor = new KinshipExtractor(runContext);
 

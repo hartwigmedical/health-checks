@@ -13,8 +13,8 @@ import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
+import com.hartwig.healthchecks.common.io.path.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
@@ -39,7 +39,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
         final BaseResult report = extractor.extract();
@@ -48,7 +48,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test(expected = EmptyFileException.class)
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
         extractor.extract();
@@ -56,7 +56,8 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test(expected = IOException.class)
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE, NON_EXISTING_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
+                NON_EXISTING_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
         extractor.extract();
@@ -64,7 +65,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
         extractor.extract();
@@ -72,7 +73,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
         extractor.extract();
@@ -80,7 +81,7 @@ public class InsertSizeMetricsExtractorTest {
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
         extractor.extract();

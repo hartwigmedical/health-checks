@@ -11,8 +11,8 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.RunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
@@ -36,7 +36,7 @@ public class SomaticExtractorTest {
 
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {
-        RunContext runContext = RunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
         final DataExtractor extractor = new SomaticExtractor(runContext);
 
         final BaseResult result = extractor.extract();
