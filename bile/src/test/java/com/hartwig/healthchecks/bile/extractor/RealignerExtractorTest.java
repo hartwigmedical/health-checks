@@ -14,8 +14,8 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
-import com.hartwig.healthchecks.common.io.path.CPCTRunContextFactory;
-import com.hartwig.healthchecks.common.io.path.RunContext;
+import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
+import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 

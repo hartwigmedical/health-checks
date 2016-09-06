@@ -1,6 +1,7 @@
 package com.hartwig.healthchecks.common.adapter;
 
-import com.hartwig.healthchecks.common.io.path.RunContext;
+import com.hartwig.healthchecks.common.io.dir.RunContext;
+import com.hartwig.healthchecks.common.report.ReportsFlyweight;
 
 import org.jetbrains.annotations.NotNull;
 

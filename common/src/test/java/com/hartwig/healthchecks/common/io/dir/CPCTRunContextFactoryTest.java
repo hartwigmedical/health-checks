@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.io.path;
+package com.hartwig.healthchecks.common.io.dir;
 
 import static org.junit.Assert.assertEquals;
 

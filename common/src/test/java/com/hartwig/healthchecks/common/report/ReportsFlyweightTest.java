@@ -1,15 +1,11 @@
-package com.hartwig.healthchecks.common.io.dir;
+package com.hartwig.healthchecks.common.report;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import com.hartwig.healthchecks.common.adapter.ReportsFlyweight;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.report.JsonReport;
-import com.hartwig.healthchecks.common.report.Report;
-import com.hartwig.healthchecks.common.report.StandardOutputReport;
 
 import org.junit.Test;
 

@@ -1,11 +1,7 @@
-package com.hartwig.healthchecks.common.adapter;
+package com.hartwig.healthchecks.common.report;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.hartwig.healthchecks.common.report.JsonReport;
-import com.hartwig.healthchecks.common.report.Report;
-import com.hartwig.healthchecks.common.report.StandardOutputReport;
 
 import org.jetbrains.annotations.NotNull;
 

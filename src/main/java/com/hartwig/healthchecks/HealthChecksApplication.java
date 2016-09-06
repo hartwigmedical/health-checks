@@ -9,9 +9,9 @@ import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
+import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.dir.FolderChecker;
-import com.hartwig.healthchecks.common.io.path.CPCTRunContextFactory;
-import com.hartwig.healthchecks.common.io.path.RunContext;
+import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 

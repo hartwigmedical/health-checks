@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.io.path;
+package com.hartwig.healthchecks.common.io.dir;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.exception.MalformedRunDirException;

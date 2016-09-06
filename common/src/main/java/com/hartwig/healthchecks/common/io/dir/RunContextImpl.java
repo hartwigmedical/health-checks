@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.io.path;
+package com.hartwig.healthchecks.common.io.dir;
 
 import org.jetbrains.annotations.NotNull;
 
