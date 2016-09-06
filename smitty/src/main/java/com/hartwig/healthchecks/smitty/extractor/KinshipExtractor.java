@@ -1,6 +1,7 @@
 package com.hartwig.healthchecks.smitty.extractor;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +10,9 @@ import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.reader.FileFinderAndReader;
+import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.SingleValueResult;
 
@@ -30,8 +32,6 @@ public class KinshipExtractor implements DataExtractor {
     private static final int KINSHIP_COLUMN = 7;
 
     @NotNull
-    private final FileFinderAndReader kinshipReader = FileFinderAndReader.build();
-    @NotNull
     private final RunContext runContext;
 
     public KinshipExtractor(@NotNull final RunContext runContext) {
@@ -40,9 +40,9 @@ public class KinshipExtractor implements DataExtractor {
 
     @Override
     @NotNull
-    public BaseResult extract()
-            throws IOException, HealthChecksException {
-        final List<String> kinshipLines = kinshipReader.readLines(runContext.runDirectory(), KINSHIP_EXTENSION);
+    public BaseResult extract() throws IOException, HealthChecksException {
+        Path kinshipPath = PathPrefixSuffixFinder.build().findPath(runContext.runDirectory(), "", KINSHIP_EXTENSION);
+        final List<String> kinshipLines = FileReader.build().readLines(kinshipPath);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
             throw new MalformedFileException(
                     String.format(MALFORMED_FILE_MSG, KinshipCheck.KINSHIP_TEST.toString(), runContext.runDirectory(),

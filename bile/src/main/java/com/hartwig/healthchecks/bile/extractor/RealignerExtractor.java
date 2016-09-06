@@ -15,8 +15,8 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
@@ -67,10 +67,10 @@ public class RealignerExtractor implements DataExtractor {
             throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
 
-        final Path bamDiffPath = SamplePathFinder.build().findPath(basePath, sampleId, BAM_DIFF_EXTENSION);
+        final Path bamDiffPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId, BAM_DIFF_EXTENSION);
         final long diffCount = readDiffCountFromBamDiff(bamDiffPath);
 
-        final Path flagStatPath = SamplePathFinder.build().findPath(basePath, sampleId, FLAGSTAT_EXTENSION);
+        final Path flagStatPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId, FLAGSTAT_EXTENSION);
         final long mappedValue = readMappedFromFlagstat(flagStatPath);
 
         final String value = new DecimalFormat(REALIGNER_CHECK_PRECISION).format((double) diffCount / mappedValue);

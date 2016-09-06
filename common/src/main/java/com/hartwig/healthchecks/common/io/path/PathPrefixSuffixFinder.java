@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
-public interface SamplePathFinder {
+public interface PathPrefixSuffixFinder {
 
     String FILE_S_NOT_FOUND_MSG = "File %s not found in path %s";
 
@@ -20,7 +20,7 @@ public interface SamplePathFinder {
             throws IOException;
 
     @NotNull
-    static SamplePathFinder build() {
+    static PathPrefixSuffixFinder build() {
         return (path, prefix, suffix) -> {
             final Optional<Path> fileFound = getPath(path, prefix, suffix);
             if (!fileFound.isPresent()) {

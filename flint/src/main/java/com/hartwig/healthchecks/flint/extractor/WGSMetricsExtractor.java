@@ -13,8 +13,8 @@ import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
+import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.path.RunContext;
-import com.hartwig.healthchecks.common.io.path.SamplePathFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
@@ -52,7 +52,7 @@ public class WGSMetricsExtractor implements DataExtractor {
     private static List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
             throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
-        Path wgsMetricsPath = SamplePathFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
+        Path wgsMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
         final List<String> lines = FileReader.build().readLines(wgsMetricsPath);
 
         final HealthCheck coverageMean = getValue(wgsMetricsPath.toString(), lines, sampleId,
