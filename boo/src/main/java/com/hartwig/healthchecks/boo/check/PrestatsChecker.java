@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boo.extractor;
+package com.hartwig.healthchecks.boo.check;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -26,9 +26,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class PrestatsExtractor implements HealthChecker {
+public class PrestatsChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(PrestatsChecker.class);
 
     @VisibleForTesting
     static final String PASS = "PASS";
@@ -51,7 +51,7 @@ public class PrestatsExtractor implements HealthChecker {
     @NotNull
     private final ZipFilesReader zipFileReader = new ZipFilesReader();
 
-    public PrestatsExtractor(@NotNull final RunContext runContext) {
+    public PrestatsChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 

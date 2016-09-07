@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.boo.adapter;
 
-import com.hartwig.healthchecks.boo.extractor.PrestatsExtractor;
+import com.hartwig.healthchecks.boo.check.PrestatsChecker;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
@@ -23,7 +23,7 @@ public class BooAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final HealthChecker prestatsExtractor = new PrestatsExtractor(runContext);
+        final HealthChecker prestatsExtractor = new PrestatsChecker(runContext);
         final ErrorHandlingChecker prestatsHealthChecker = new ErrorHandlingChecker(CheckType.PRESTATS,
                 prestatsExtractor);
         final BaseResult prestats = prestatsHealthChecker.checkedRun();

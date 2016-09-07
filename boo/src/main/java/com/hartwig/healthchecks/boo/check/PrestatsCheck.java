@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boo.extractor;
+package com.hartwig.healthchecks.boo.check;
 
 import java.util.Arrays;
 import java.util.Optional;

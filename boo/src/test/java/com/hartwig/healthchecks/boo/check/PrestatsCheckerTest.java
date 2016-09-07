@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boo.extractor;
+package com.hartwig.healthchecks.boo.check;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,7 +19,7 @@ import com.hartwig.healthchecks.common.result.PatientResult;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class PrestatsExtractorTest {
+public class PrestatsCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
@@ -39,9 +39,9 @@ public class PrestatsExtractorTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        final BaseResult report = extractor.run();
-        assertReport(report);
+        PrestatsChecker checker = new PrestatsChecker(runContext);
+        final BaseResult result = checker.run();
+        assertReport(result);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -49,8 +49,8 @@ public class PrestatsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
                 EMPTY_FASTQC_SAMPLE);
 
-        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.run();
+        PrestatsChecker checker = new PrestatsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = EmptyFileException.class)
@@ -58,21 +58,21 @@ public class PrestatsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
                 EMPTY_TOTAL_SEQUENCE_SAMPLE);
 
-        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.run();
+        PrestatsChecker checker = new PrestatsChecker(runContext);
+        checker.run();
     }
 
     @Test
     public void incompleteInputYieldsIncompleteOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
 
-        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        final BaseResult report = extractor.run();
-        final List<HealthCheck> sampleReport = ((PatientResult) report).getRefSampleChecks();
-        assertEquals(EXPECTED_CHECKS_NUM, sampleReport.size());
+        PrestatsChecker extractor = new PrestatsChecker(runContext);
+        final BaseResult result = extractor.run();
+        final List<HealthCheck> refResults = ((PatientResult) result).getRefSampleChecks();
+        assertEquals(EXPECTED_CHECKS_NUM, refResults.size());
 
-        assertPrestatsDataReport(sampleReport, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
-                PrestatsExtractor.MISS, INCOMPLETE_SAMPLE);
+        assertPrestatsDataReport(refResults, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.MISS,
+                INCOMPLETE_SAMPLE);
     }
 
     @Test(expected = IOException.class)
@@ -80,8 +80,8 @@ public class PrestatsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.run();
+        PrestatsChecker checker = new PrestatsChecker(runContext);
+        checker.run();
     }
 
     private static void assertReport(@NotNull final BaseResult prestatsData) {
@@ -93,54 +93,54 @@ public class PrestatsExtractorTest {
     private static void assertRefSampleData(@NotNull final List<HealthCheck> sampleData) {
         assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, REF_TOTAL_SEQUENCES, REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsExtractor.FAIL,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsChecker.FAIL,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.PASS,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsChecker.PASS,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES,
-                PrestatsExtractor.WARN, REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsExtractor.PASS,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES, PrestatsChecker.WARN,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsExtractor.WARN,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsChecker.PASS,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsExtractor.PASS,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsChecker.WARN,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
-                PrestatsExtractor.PASS, REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
-                PrestatsExtractor.WARN, REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsExtractor.PASS,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsChecker.PASS,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsExtractor.WARN,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION, PrestatsChecker.PASS,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsExtractor.FAIL, REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.WARN,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsChecker.PASS,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsChecker.WARN,
+                REF_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsChecker.FAIL, REF_SAMPLE);
     }
 
     private static void assertTumorSampleData(@NotNull final List<HealthCheck> sampleData) {
         assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
         assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, TUMOR_TOTAL_SEQUENCES,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsExtractor.FAIL,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsChecker.FAIL,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsExtractor.PASS,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsChecker.PASS,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES,
-                PrestatsExtractor.WARN, TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsExtractor.FAIL,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES, PrestatsChecker.WARN,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsExtractor.WARN,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsChecker.FAIL,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsExtractor.PASS,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsChecker.WARN,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION,
-                PrestatsExtractor.PASS, TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS,
-                PrestatsExtractor.FAIL, TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsExtractor.FAIL,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsChecker.PASS,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsExtractor.FAIL,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION, PrestatsChecker.PASS,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsExtractor.PASS,
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.FAIL,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsChecker.FAIL,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsChecker.FAIL,
+                TUMOR_SAMPLE);
+        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsChecker.PASS,
                 TUMOR_SAMPLE);
     }
 
