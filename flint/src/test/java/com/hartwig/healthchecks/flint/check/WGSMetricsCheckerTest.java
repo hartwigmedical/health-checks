@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.flint.extractor;
+package com.hartwig.healthchecks.flint.check;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,7 +21,7 @@ import com.hartwig.healthchecks.common.result.PatientResult;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class WGSMetricsExtractorTest {
+public class WGSMetricsCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
@@ -55,17 +55,17 @@ public class WGSMetricsExtractorTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        final BaseResult report = extractor.run();
-        assertReport(report);
+        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
+        final BaseResult result = checker.run();
+        assertResult(result);
     }
 
     @Test(expected = EmptyFileException.class)
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = IOException.class)
@@ -73,60 +73,60 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
+        checker.run();
     }
 
-    private static void assertReport(@NotNull final BaseResult report) {
-        assertEquals(CheckType.COVERAGE, report.getCheckType());
-        assertNotNull(report);
-        assertField(report, WGSMetricsCheck.COVERAGE_MEAN.name(), REF_COVERAGE_MEAN, TUMOR_COVERAGE_MEAN);
-        assertField(report, WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ.name(), REF_PCT_EXC_BASEQ, TUMOR_PCT_EXC_BASEQ);
-        assertField(report, WGSMetricsCheck.COVERAGE_PCT_EXC_DUPE.name(), REF_PCT_EXC_DUPE, TUMOR_PCT_EXC_DUPE);
-        assertField(report, WGSMetricsCheck.COVERAGE_PCT_EXC_MAPQ.name(), REF_PCT_EXC_MAPQ, TUMOR_PCT_EXC_MAPQ);
-        assertField(report, WGSMetricsCheck.COVERAGE_MEDIAN.name(), REF_COVERAGE_MEDIAN, TUMOR_COVERAGE_MEDIAN);
-        assertField(report, WGSMetricsCheck.COVERAGE_PCT_EXC_OVERLAP.name(), REF_PCT_EXC_OVERLAP,
+    private static void assertResult(@NotNull final BaseResult result) {
+        assertEquals(CheckType.COVERAGE, result.getCheckType());
+        assertNotNull(result);
+        assertField(result, WGSMetricsCheck.COVERAGE_MEAN.name(), REF_COVERAGE_MEAN, TUMOR_COVERAGE_MEAN);
+        assertField(result, WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ.name(), REF_PCT_EXC_BASEQ, TUMOR_PCT_EXC_BASEQ);
+        assertField(result, WGSMetricsCheck.COVERAGE_PCT_EXC_DUPE.name(), REF_PCT_EXC_DUPE, TUMOR_PCT_EXC_DUPE);
+        assertField(result, WGSMetricsCheck.COVERAGE_PCT_EXC_MAPQ.name(), REF_PCT_EXC_MAPQ, TUMOR_PCT_EXC_MAPQ);
+        assertField(result, WGSMetricsCheck.COVERAGE_MEDIAN.name(), REF_COVERAGE_MEDIAN, TUMOR_COVERAGE_MEDIAN);
+        assertField(result, WGSMetricsCheck.COVERAGE_PCT_EXC_OVERLAP.name(), REF_PCT_EXC_OVERLAP,
                 TUMOR_PCT_EXC_OVERLAP);
-        assertField(report, WGSMetricsCheck.COVERAGE_SD.name(), REF_COVERAGE_SD, TUMOR_COVERAGE_SD);
-        assertField(report, WGSMetricsCheck.COVERAGE_PCT_EXC_UNPAIRED.name(), REF_PCT_EXC_UNPAIRED,
+        assertField(result, WGSMetricsCheck.COVERAGE_SD.name(), REF_COVERAGE_SD, TUMOR_COVERAGE_SD);
+        assertField(result, WGSMetricsCheck.COVERAGE_PCT_EXC_UNPAIRED.name(), REF_PCT_EXC_UNPAIRED,
                 TUMOR_PCT_EXC_UNPAIRED);
-        assertField(report, WGSMetricsCheck.COVERAGE_PCT_EXC_TOTAL.name(), REF_PCT_EXC_TOTAL, TUMOR_PCT_EXC_TOTAL);
+        assertField(result, WGSMetricsCheck.COVERAGE_PCT_EXC_TOTAL.name(), REF_PCT_EXC_TOTAL, TUMOR_PCT_EXC_TOTAL);
     }
 
-    private static void assertField(@NotNull final BaseResult report, @NotNull final String field,
+    private static void assertField(@NotNull final BaseResult result, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((PatientResult) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
-        assertBaseData(((PatientResult) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
+        assertBaseData(((PatientResult) result).getRefSampleChecks(), REF_SAMPLE, field, refValue);
+        assertBaseData(((PatientResult) result).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
     }
 
-    private static void assertBaseData(@NotNull final List<HealthCheck> reports, @NotNull final String sampleId,
-            @NotNull final String check, @NotNull final String expectedValue) {
-        final Optional<HealthCheck> value = reports.stream().filter(
-                p -> p.getCheckName().equals(check)).findFirst();
+    private static void assertBaseData(@NotNull final List<HealthCheck> checks, @NotNull final String sampleId,
+            @NotNull final String checkName, @NotNull final String expectedValue) {
+        final Optional<HealthCheck> value = checks.stream().filter(
+                p -> p.getCheckName().equals(checkName)).findFirst();
         assert value.isPresent();
 
         assertEquals(expectedValue, value.get().getValue());

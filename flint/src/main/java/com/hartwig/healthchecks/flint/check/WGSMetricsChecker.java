@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.flint.extractor;
+package com.hartwig.healthchecks.flint.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,45 +23,59 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class InsertSizeMetricsExtractor implements HealthChecker {
+public class WGSMetricsChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(InsertSizeMetricsExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(WGSMetricsChecker.class);
 
-    // KODU: metrics files stores in {run}/QCStats/{sample}_dedup/{sample}<>.insert_size_metrics
+    // KODU: metrics files stores in {run}/QCStats/{sample}_dedup/{sample}_dedup_WGSMetrics.txt
     private static final String METRICS_BASE_DIRECTORY = "QCStats";
     private static final String METRICS_SUB_DIRECTORY_SUFFIX = "_dedup";
-    private static final String INSERT_SIZE_METRICS_EXTENSION = ".insert_size_metrics";
+    private static final String WGS_METRICS_EXTENSION = "_WGSMetrics.txt";
     private static final String VALUE_SEPARATOR = "\t";
 
     @NotNull
     private final RunContext runContext;
 
-    public InsertSizeMetricsExtractor(@NotNull final RunContext runContext) {
+    public WGSMetricsChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 
-    @NotNull
     @Override
+    @NotNull
     public BaseResult run() throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
-
-        return new PatientResult(CheckType.INSERT_SIZE, referenceSample, tumorSample);
+        return new PatientResult(CheckType.COVERAGE, referenceSample, tumorSample);
     }
 
     @NotNull
     private static List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
             throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
-        final Path insertSizeMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId,
-                INSERT_SIZE_METRICS_EXTENSION);
-        final List<String> lines = FileReader.build().readLines(insertSizeMetricsPath);
+        Path wgsMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
+        final List<String> lines = FileReader.build().readLines(wgsMetricsPath);
 
-        final HealthCheck medianReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
-                InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
-        final HealthCheck width70PerReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
-                InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
-        return Arrays.asList(medianReport, width70PerReport);
+        final HealthCheck coverageMean = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_MEAN);
+        final HealthCheck coverageMedian = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_MEDIAN);
+        final HealthCheck coverageSD = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_SD);
+        final HealthCheck coverageBaseQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ);
+        final HealthCheck coverageDupe = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_DUPE);
+        final HealthCheck coverageMapQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_MAPQ);
+        final HealthCheck coverageOverlap = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_OVERLAP);
+        final HealthCheck coverageTotal = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_TOTAL);
+        final HealthCheck coverageUnpaired = getValue(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_PCT_EXC_UNPAIRED);
+
+        return Arrays.asList(coverageMean, coverageMedian, coverageSD, coverageBaseQ, coverageDupe, coverageMapQ,
+                coverageOverlap, coverageTotal, coverageUnpaired);
     }
 
     @NotNull
@@ -72,7 +86,7 @@ public class InsertSizeMetricsExtractor implements HealthChecker {
 
     @NotNull
     private static HealthCheck getValue(@NotNull final String filePath, @NotNull final List<String> lines,
-            @NotNull final String sampleId, @NotNull final InsertSizeMetricsCheck check) throws LineNotFoundException {
+            @NotNull final String sampleId, @NotNull final WGSMetricsCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(filePath, lines, check.getFieldName(), check.getColumnIndex());
         final HealthCheck healthCheck = new HealthCheck(sampleId, check.toString(), value);
         healthCheck.log(LOGGER);

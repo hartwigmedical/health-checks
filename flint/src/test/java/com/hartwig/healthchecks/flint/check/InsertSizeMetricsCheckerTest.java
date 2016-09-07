@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.flint.extractor;
+package com.hartwig.healthchecks.flint.check;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,7 +21,7 @@ import com.hartwig.healthchecks.common.result.PatientResult;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class InsertSizeMetricsExtractorTest {
+public class InsertSizeMetricsCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
@@ -41,17 +41,17 @@ public class InsertSizeMetricsExtractorTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        final BaseResult report = extractor.run();
-        assertReport(report);
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
+        final BaseResult result = checker.run();
+        assertResult(result);
     }
 
     @Test(expected = EmptyFileException.class)
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = IOException.class)
@@ -59,53 +59,53 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
+        checker.run();
     }
 
-    private static void assertReport(@NotNull final BaseResult report) {
-        assertEquals(CheckType.INSERT_SIZE, report.getCheckType());
-        assertNotNull(report);
-        assertField(report, InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE.toString(), REF_MEDIAN_INSERT_SIZE,
+    private static void assertResult(@NotNull final BaseResult result) {
+        assertEquals(CheckType.INSERT_SIZE, result.getCheckType());
+        assertNotNull(result);
+        assertField(result, InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE.toString(), REF_MEDIAN_INSERT_SIZE,
                 TUMOR_MEDIAN_INSERT_SIZE);
-        assertField(report, InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT.toString(), REF_WIDTH_OF_70_PERCENT,
+        assertField(result, InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT.toString(), REF_WIDTH_OF_70_PERCENT,
                 TUMOR_WIDTH_OF_70_PERCENT);
     }
 
-    private static void assertField(@NotNull final BaseResult report, @NotNull final String field,
+    private static void assertField(@NotNull final BaseResult result, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((PatientResult) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
-        assertBaseData(((PatientResult) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
+        assertBaseData(((PatientResult) result).getRefSampleChecks(), REF_SAMPLE, field, refValue);
+        assertBaseData(((PatientResult) result).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
     }
 
-    private static void assertBaseData(@NotNull final List<HealthCheck> reports, @NotNull final String sampleId,
-            @NotNull final String check, @NotNull final String expectedValue) {
-        final Optional<HealthCheck> value = reports.stream().filter(
-                p -> p.getCheckName().equals(check)).findFirst();
+    private static void assertBaseData(@NotNull final List<HealthCheck> checks, @NotNull final String sampleId,
+            @NotNull final String checkName, @NotNull final String expectedValue) {
+        final Optional<HealthCheck> value = checks.stream().filter(
+                p -> p.getCheckName().equals(checkName)).findFirst();
         assert value.isPresent();
 
         assertEquals(expectedValue, value.get().getValue());

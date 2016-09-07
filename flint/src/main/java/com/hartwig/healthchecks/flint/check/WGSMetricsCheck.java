@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.flint.extractor;
+package com.hartwig.healthchecks.flint.check;
 
 import org.jetbrains.annotations.NotNull;
 

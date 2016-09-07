@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.flint.extractor;
+package com.hartwig.healthchecks.flint.check;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,7 +21,7 @@ import com.hartwig.healthchecks.common.result.PatientResult;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class SummaryMetricsExtractorTest {
+public class SummaryMetricsCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
@@ -47,17 +47,17 @@ public class SummaryMetricsExtractorTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        final BaseResult report = extractor.run();
-        assertReport(report);
+        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
+        final BaseResult result = checker.run();
+        assertResult(result);
     }
 
     @Test(expected = EmptyFileException.class)
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = IOException.class)
@@ -65,57 +65,57 @@ public class SummaryMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
+        checker.run();
     }
 
-    private static void assertReport(@NotNull final BaseResult report) {
-        assertEquals(CheckType.SUMMARY_METRICS, report.getCheckType());
-        assertNotNull(report);
-        assertField(report, SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE.toString(), REF_PF_MISMATCH_RATE,
+    private static void assertResult(@NotNull final BaseResult result) {
+        assertEquals(CheckType.SUMMARY_METRICS, result.getCheckType());
+        assertNotNull(result);
+        assertField(result, SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE.toString(), REF_PF_MISMATCH_RATE,
                 TUMOR_PF_MISMATCH_RATE);
-        assertField(report, SummaryMetricsCheck.MAPPING_PF_INDEL_RATE.toString(), REF_PF_INDEL_RATE,
+        assertField(result, SummaryMetricsCheck.MAPPING_PF_INDEL_RATE.toString(), REF_PF_INDEL_RATE,
                 TUMOR_PF_INDEL_RATE);
-        assertField(report, SummaryMetricsCheck.MAPPING_STRAND_BALANCE.toString(), REF_STRAND_BALANCE,
+        assertField(result, SummaryMetricsCheck.MAPPING_STRAND_BALANCE.toString(), REF_STRAND_BALANCE,
                 TUMOR_STRAND_BALANCE);
-        assertField(report, SummaryMetricsCheck.MAPPING_PCT_CHIMERA.toString(), REF_PCT_CHIMERA, TUMOR_PCT_CHIMERA);
-        assertField(report, SummaryMetricsCheck.MAPPING_PCT_ADAPTER.toString(), REF_PCT_ADAPTER, TUMOR_PCT_ADAPTER);
+        assertField(result, SummaryMetricsCheck.MAPPING_PCT_CHIMERA.toString(), REF_PCT_CHIMERA, TUMOR_PCT_CHIMERA);
+        assertField(result, SummaryMetricsCheck.MAPPING_PCT_ADAPTER.toString(), REF_PCT_ADAPTER, TUMOR_PCT_ADAPTER);
     }
 
-    private static void assertField(@NotNull final BaseResult report, @NotNull final String field,
+    private static void assertField(@NotNull final BaseResult result, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((PatientResult) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
-        assertBaseData(((PatientResult) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
+        assertBaseData(((PatientResult) result).getRefSampleChecks(), REF_SAMPLE, field, refValue);
+        assertBaseData(((PatientResult) result).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
     }
 
-    private static void assertBaseData(@NotNull final List<HealthCheck> reports, @NotNull final String sampleId,
-            @NotNull final String check, @NotNull final String expectedValue) {
-        final Optional<HealthCheck> value = reports.stream().filter(
-                p -> p.getCheckName().equals(check)).findFirst();
+    private static void assertBaseData(@NotNull final List<HealthCheck> checks, @NotNull final String sampleId,
+            @NotNull final String checkName, @NotNull final String expectedValue) {
+        final Optional<HealthCheck> value = checks.stream().filter(
+                p -> p.getCheckName().equals(checkName)).findFirst();
         assert value.isPresent();
 
         assertEquals(expectedValue, value.get().getValue());

@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.flint.extractor;
+package com.hartwig.healthchecks.flint.check;
 
 enum SummaryMetricsCheck {
     MAPPING_PF_MISMATCH_RATE(12),

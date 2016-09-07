@@ -10,9 +10,9 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.flint.extractor.InsertSizeMetricsExtractor;
-import com.hartwig.healthchecks.flint.extractor.SummaryMetricsExtractor;
-import com.hartwig.healthchecks.flint.extractor.WGSMetricsExtractor;
+import com.hartwig.healthchecks.flint.check.InsertSizeMetricsChecker;
+import com.hartwig.healthchecks.flint.check.SummaryMetricsChecker;
+import com.hartwig.healthchecks.flint.check.WGSMetricsChecker;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,19 +25,19 @@ public class FlintAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final HealthChecker insertSizeExtractor = new InsertSizeMetricsExtractor(runContext);
+        final HealthChecker insertSizeExtractor = new InsertSizeMetricsChecker(runContext);
         final ErrorHandlingChecker insertSizeChecker = new ErrorHandlingChecker(CheckType.INSERT_SIZE,
                 insertSizeExtractor);
         final BaseResult insertSizeReport = insertSizeChecker.checkedRun();
         report.addReportData(insertSizeReport);
 
-        final HealthChecker summaryExtractor = new SummaryMetricsExtractor(runContext);
+        final HealthChecker summaryExtractor = new SummaryMetricsChecker(runContext);
         final ErrorHandlingChecker summaryChecker = new ErrorHandlingChecker(CheckType.SUMMARY_METRICS,
                 summaryExtractor);
         final BaseResult summaryReport = summaryChecker.checkedRun();
         report.addReportData(summaryReport);
 
-        final HealthChecker wgsExtractor = new WGSMetricsExtractor(runContext);
+        final HealthChecker wgsExtractor = new WGSMetricsChecker(runContext);
         final ErrorHandlingChecker coverageChecker = new ErrorHandlingChecker(CheckType.COVERAGE, wgsExtractor);
         final BaseResult coverageReport = coverageChecker.checkedRun();
         report.addReportData(coverageReport);

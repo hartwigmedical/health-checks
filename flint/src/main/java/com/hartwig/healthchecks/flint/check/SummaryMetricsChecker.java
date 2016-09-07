@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.flint.extractor;
+package com.hartwig.healthchecks.flint.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +22,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class SummaryMetricsExtractor implements HealthChecker {
+public class SummaryMetricsChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(SummaryMetricsExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(SummaryMetricsChecker.class);
 
     // KODU: metrics files stores in {run}/QCStats/{sample}_dedup/{sample}<>.alignment_summary_metrics
     private static final String METRICS_BASE_DIRECTORY = "QCStats";
@@ -37,7 +37,7 @@ public class SummaryMetricsExtractor implements HealthChecker {
     @NotNull
     private final RunContext runContext;
 
-    public SummaryMetricsExtractor(@NotNull final RunContext runContext) {
+    public SummaryMetricsChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 
