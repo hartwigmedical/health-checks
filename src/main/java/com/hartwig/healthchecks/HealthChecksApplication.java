@@ -143,8 +143,7 @@ public final class HealthChecksApplication {
 
     private void generateReport() {
         try {
-            final HealthCheckReportFactory reportFactory = HealthCheckRunFunctions.attachReport(reportType);
-            final Report report = reportFactory.create();
+            final Report report = HealthCheckReportFactory.create(reportType);
 
             final Optional<String> reportData = report.generateReport(runContext.runDirectory());
             if (reportData.isPresent()) {

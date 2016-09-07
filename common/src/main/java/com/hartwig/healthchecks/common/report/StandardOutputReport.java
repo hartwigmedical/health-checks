@@ -8,7 +8,7 @@ import com.hartwig.healthchecks.common.exception.GenerateReportException;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class StandardOutputReport extends AbstractJsonBaseReport {
+final class StandardOutputReport extends AbstractJsonBaseReport {
 
     private static final StandardOutputReport INSTANCE = new StandardOutputReport();
 

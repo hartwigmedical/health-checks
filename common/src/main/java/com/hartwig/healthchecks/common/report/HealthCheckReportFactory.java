@@ -1,7 +1,14 @@
 package com.hartwig.healthchecks.common.report;
 
-@FunctionalInterface
-public interface HealthCheckReportFactory {
+import org.jetbrains.annotations.NotNull;
 
-    Report create();
+public final class HealthCheckReportFactory {
+
+    private HealthCheckReportFactory() {
+    }
+
+    @NotNull
+    public static Report create(@NotNull String reportType) {
+        return ReportsFlyweight.getInstance().getReport(reportType);
+    }
 }

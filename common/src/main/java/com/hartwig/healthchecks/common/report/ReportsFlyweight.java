@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class ReportsFlyweight {
+final class ReportsFlyweight {
 
     private static final String STDOUT = "stdout";
     private static final String JSON = "json";
@@ -26,7 +26,7 @@ public final class ReportsFlyweight {
     }
 
     @NotNull
-    public Report getReport(@NotNull final String reportType) {
+    Report getReport(@NotNull final String reportType) {
         Report defaultReport = StandardOutputReport.getInstance();
 
         if (FLYWEIGHT.containsKey(reportType)) {
