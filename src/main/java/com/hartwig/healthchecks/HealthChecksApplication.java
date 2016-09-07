@@ -65,7 +65,7 @@ public final class HealthChecksApplication {
      * To Run Healthchecks over files in a dir
      *
      * @param args - Arguments on how to run the health-checks should contain:
-     *             -rundir [run-directory] -checktype [boggs - all] -reporttype
+     *             -rundir [run-directory] -checktype [somatic - all] -reporttype
      *             [json - stdout]
      * @throws ParseException - In case commandline's arguments could not be parsed.
      */
