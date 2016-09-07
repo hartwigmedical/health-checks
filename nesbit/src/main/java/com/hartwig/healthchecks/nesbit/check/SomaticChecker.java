@@ -77,7 +77,13 @@ public class SomaticChecker implements HealthChecker {
         reports.addAll(getTypeChecks(vcfData, runContext.tumorSample(), VCFType.INDELS));
 
         HealthCheck.log(LOGGER, reports);
-        return new MultiValueResult(CheckType.SOMATIC, reports);
+        return new MultiValueResult(checkType(), reports);
+    }
+
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.SOMATIC;
     }
 
     @NotNull

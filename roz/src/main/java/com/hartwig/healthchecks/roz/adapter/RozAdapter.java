@@ -26,6 +26,6 @@ public class RozAdapter extends AbstractHealthCheckAdapter {
         final HealthChecker checker = new SlicedChecker(runContext);
         final ErrorHandlingChecker healthCheck = new ErrorHandlingChecker(CheckType.SLICED, checker);
         final BaseResult baseResult = healthCheck.checkedRun();
-        report.addReportData(baseResult);
+        report.addResult(baseResult);
     }
 }

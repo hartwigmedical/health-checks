@@ -57,8 +57,14 @@ public class RealignerChecker implements HealthChecker {
         final HealthCheck referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final HealthCheck tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
-        return new PatientResult(CheckType.REALIGNER, Collections.singletonList(referenceSample),
+        return new PatientResult(checkType(), Collections.singletonList(referenceSample),
                 Collections.singletonList(tumorSample));
+    }
+
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.REALIGNER;
     }
 
     @NotNull

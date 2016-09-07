@@ -43,8 +43,8 @@ abstract class AbstractJsonBaseReport implements Report {
     private static final Map<CheckType, BaseResult> HEALTH_CHECKS = new ConcurrentHashMap<>();
 
     @Override
-    public void addReportData(@NotNull final BaseResult reportData) {
-        HEALTH_CHECKS.putIfAbsent(reportData.getCheckType(), reportData);
+    public void addResult(@NotNull final BaseResult result) {
+        HEALTH_CHECKS.putIfAbsent(result.getCheckType(), result);
     }
 
     @NotNull

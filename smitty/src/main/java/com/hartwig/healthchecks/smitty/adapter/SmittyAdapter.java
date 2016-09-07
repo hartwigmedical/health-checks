@@ -26,6 +26,6 @@ public class SmittyAdapter extends AbstractHealthCheckAdapter {
         final HealthChecker checker = new KinshipChecker(runContext);
         final ErrorHandlingChecker kinshipChecker = new ErrorHandlingChecker(CheckType.KINSHIP, checker);
         final BaseResult kinshipReport = kinshipChecker.checkedRun();
-        report.addReportData(kinshipReport);
+        report.addResult(kinshipReport);
     }
 }

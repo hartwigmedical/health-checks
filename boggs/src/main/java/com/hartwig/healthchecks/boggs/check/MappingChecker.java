@@ -50,7 +50,13 @@ public class MappingChecker implements HealthChecker {
         final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
-        return new PatientResult(CheckType.MAPPING, refSampleData, tumorSampleData);
+        return new PatientResult(checkType(), refSampleData, tumorSampleData);
+    }
+
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.MAPPING;
     }
 
     @NotNull

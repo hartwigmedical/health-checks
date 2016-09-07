@@ -27,6 +27,6 @@ public class BileAdapter extends AbstractHealthCheckAdapter {
 
         final ErrorHandlingChecker healthCheck = new ErrorHandlingChecker(CheckType.REALIGNER, checker);
         final BaseResult baseResult = healthCheck.checkedRun();
-        report.addReportData(baseResult);
+        report.addResult(baseResult);
     }
 }

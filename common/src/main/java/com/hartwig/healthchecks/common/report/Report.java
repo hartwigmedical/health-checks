@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface Report {
 
-    void addReportData(@NotNull BaseResult reportData);
+    void addResult(@NotNull BaseResult result);
 
     @NotNull
     Optional<String> generateReport(@NotNull String runDirectory) throws GenerateReportException;

@@ -40,6 +40,12 @@ public class SlicedChecker implements HealthChecker {
         HealthCheck sampleData = new HealthCheck(runContext.refSample(),
                 SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), String.valueOf(value));
         sampleData.log(LOGGER);
-        return new SingleValueResult(CheckType.SLICED, sampleData);
+        return new SingleValueResult(checkType(), sampleData);
+    }
+
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.SLICED;
     }
 }

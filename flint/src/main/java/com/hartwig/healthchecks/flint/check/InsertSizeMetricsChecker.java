@@ -46,7 +46,13 @@ public class InsertSizeMetricsChecker implements HealthChecker {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
-        return new PatientResult(CheckType.INSERT_SIZE, referenceSample, tumorSample);
+        return new PatientResult(checkType(), referenceSample, tumorSample);
+    }
+
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.INSERT_SIZE;
     }
 
     @NotNull

@@ -48,15 +48,21 @@ public class KinshipChecker implements HealthChecker {
                     String.format(MALFORMED_FILE_MSG, KinshipCheck.KINSHIP_TEST.toString(), runContext.runDirectory(),
                             kinshipLines.size(), EXPECTED_NUM_LINES));
         }
-        final Optional<HealthCheck> optBaseDataReport = kinshipLines.stream().skip(1).map(line -> {
+        final Optional<HealthCheck> optCheck = kinshipLines.stream().skip(1).map(line -> {
             final String[] values = line.split(COLUMN_SEPARATOR);
             return new HealthCheck(runContext.tumorSample(), KinshipCheck.KINSHIP_TEST.toString(),
                     values[KINSHIP_COLUMN]);
         }).findFirst();
 
-        assert optBaseDataReport.isPresent();
+        assert optCheck.isPresent();
 
-        optBaseDataReport.get().log(LOGGER);
-        return new SingleValueResult(CheckType.KINSHIP, optBaseDataReport.get());
+        optCheck.get().log(LOGGER);
+        return new SingleValueResult(checkType(), optCheck.get());
+    }
+
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.KINSHIP;
     }
 }

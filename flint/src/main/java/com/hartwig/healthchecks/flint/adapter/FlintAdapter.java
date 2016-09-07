@@ -29,17 +29,17 @@ public class FlintAdapter extends AbstractHealthCheckAdapter {
         final ErrorHandlingChecker insertSizeChecker = new ErrorHandlingChecker(CheckType.INSERT_SIZE,
                 insertSizeExtractor);
         final BaseResult insertSizeReport = insertSizeChecker.checkedRun();
-        report.addReportData(insertSizeReport);
+        report.addResult(insertSizeReport);
 
         final HealthChecker summaryExtractor = new SummaryMetricsChecker(runContext);
         final ErrorHandlingChecker summaryChecker = new ErrorHandlingChecker(CheckType.SUMMARY_METRICS,
                 summaryExtractor);
         final BaseResult summaryReport = summaryChecker.checkedRun();
-        report.addReportData(summaryReport);
+        report.addResult(summaryReport);
 
         final HealthChecker wgsExtractor = new WGSMetricsChecker(runContext);
         final ErrorHandlingChecker coverageChecker = new ErrorHandlingChecker(CheckType.COVERAGE, wgsExtractor);
         final BaseResult coverageReport = coverageChecker.checkedRun();
-        report.addReportData(coverageReport);
+        report.addResult(coverageReport);
     }
 }

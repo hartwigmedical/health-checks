@@ -26,6 +26,6 @@ public class BoggsAdapter extends AbstractHealthCheckAdapter {
         final ErrorHandlingChecker mappingHealthChecker = new ErrorHandlingChecker(CheckType.MAPPING,
                 mappingExtractor);
         final BaseResult mapping = mappingHealthChecker.checkedRun();
-        report.addReportData(mapping);
+        report.addResult(mapping);
     }
 }

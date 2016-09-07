@@ -27,6 +27,6 @@ public class BooAdapter extends AbstractHealthCheckAdapter {
         final ErrorHandlingChecker prestatsHealthChecker = new ErrorHandlingChecker(CheckType.PRESTATS,
                 prestatsExtractor);
         final BaseResult prestats = prestatsHealthChecker.checkedRun();
-        report.addReportData(prestats);
+        report.addResult(prestats);
     }
 }

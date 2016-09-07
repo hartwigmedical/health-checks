@@ -42,6 +42,12 @@ public class GermlineChecker implements HealthChecker {
 
     @NotNull
     @Override
+    public CheckType checkType() {
+        return CheckType.GERMLINE;
+    }
+
+    @NotNull
+    @Override
     public BaseResult run() throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), GERMLINE_VCF_EXTENSION);
         final List<String> passFilterLines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
@@ -50,7 +56,7 @@ public class GermlineChecker implements HealthChecker {
         final List<HealthCheck> refData = getSampleData(vcfData, runContext.refSample(), true);
         final List<HealthCheck> tumData = getSampleData(vcfData, runContext.tumorSample(), false);
 
-        return new PatientResult(CheckType.GERMLINE, refData, tumData);
+        return new PatientResult(checkType(), refData, tumData);
     }
 
     @NotNull

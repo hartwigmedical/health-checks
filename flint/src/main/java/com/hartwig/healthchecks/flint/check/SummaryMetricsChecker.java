@@ -46,7 +46,13 @@ public class SummaryMetricsChecker implements HealthChecker {
     public BaseResult run() throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
-        return new PatientResult(CheckType.SUMMARY_METRICS, referenceSample, tumorSample);
+        return new PatientResult(checkType(), referenceSample, tumorSample);
+    }
+
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.SUMMARY_METRICS;
     }
 
     @NotNull

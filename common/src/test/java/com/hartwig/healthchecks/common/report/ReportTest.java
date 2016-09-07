@@ -64,10 +64,10 @@ public class ReportTest {
         final Report report = StandardOutputReport.getInstance();
 
         final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
-        report.addReportData(baseConfig1);
+        report.addResult(baseConfig1);
 
         final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
-        report.addReportData(baseConfig2);
+        report.addResult(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
         assertNotNull(jsonOptional);
@@ -106,10 +106,10 @@ public class ReportTest {
         final Report report = StandardOutputReport.getInstance();
 
         final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
-        report.addReportData(baseConfig1);
+        report.addResult(baseConfig1);
 
         final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
-        report.addReportData(baseConfig2);
+        report.addResult(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
         assertNotNull(jsonOptional);
@@ -148,10 +148,10 @@ public class ReportTest {
         final Report report = StandardOutputReport.getInstance();
 
         final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
-        report.addReportData(baseConfig1);
+        report.addResult(baseConfig1);
 
         final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
-        report.addReportData(baseConfig2);
+        report.addResult(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
         assertNotNull(jsonOptional);
@@ -186,10 +186,10 @@ public class ReportTest {
         final Report report = JsonReport.getInstance();
 
         final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
-        report.addReportData(baseConfig1);
+        report.addResult(baseConfig1);
 
         final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
-        report.addReportData(baseConfig2);
+        report.addResult(baseConfig2);
 
         final Optional<String> location = report.generateReport(RUN_DIR);
         assertNotNull(location);
@@ -238,7 +238,7 @@ public class ReportTest {
         final Report report = JsonReport.getInstance();
 
         final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
-        report.addReportData(baseConfig1);
+        report.addResult(baseConfig1);
 
         final Optional<String> location = report.generateReport(RUN_DIR);
 

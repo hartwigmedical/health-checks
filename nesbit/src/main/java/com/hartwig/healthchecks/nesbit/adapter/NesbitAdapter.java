@@ -24,14 +24,14 @@ public class NesbitAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final HealthChecker germlineExtractor = new GermlineChecker(runContext);
-        final ErrorHandlingChecker germline = new ErrorHandlingChecker(CheckType.GERMLINE, germlineExtractor);
-        final BaseResult germlineReport = germline.checkedRun();
-        report.addReportData(germlineReport);
+        final HealthChecker germlineChecker = new GermlineChecker(runContext);
+        final ErrorHandlingChecker germline = new ErrorHandlingChecker(CheckType.GERMLINE, germlineChecker);
+        final BaseResult germlineResult = germline.checkedRun();
+        report.addResult(germlineResult);
 
-        final HealthChecker somaticExtractor = new SomaticChecker(runContext);
-        final ErrorHandlingChecker somatic = new ErrorHandlingChecker(CheckType.SOMATIC, somaticExtractor);
-        final BaseResult somaticReport = somatic.checkedRun();
-        report.addReportData(somaticReport);
+        final HealthChecker somaticChecker = new SomaticChecker(runContext);
+        final ErrorHandlingChecker somatic = new ErrorHandlingChecker(CheckType.SOMATIC, somaticChecker);
+        final BaseResult somaticResult = somatic.checkedRun();
+        report.addResult(somaticResult);
     }
 }
