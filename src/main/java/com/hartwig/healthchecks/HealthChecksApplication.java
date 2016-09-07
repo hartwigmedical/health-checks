@@ -124,7 +124,7 @@ public final class HealthChecksApplication {
                 final HealthChecker checker = flyweight.getChecker(checkType);
 
                 final Report report = HealthCheckReportFactory.create(reportType);
-                report.addResult(HealthCheckRunner.runCheck(runContext, checker));
+                report.addResult(HealthCheckRunner.run(runContext, checker));
             } catch (final NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -146,7 +146,7 @@ public final class HealthChecksApplication {
     private Action1<? super HealthChecker> createHealthCheckerAction() {
         return (Action1<HealthChecker>) healthChecker -> {
             final Report report = HealthCheckReportFactory.create(reportType);
-            report.addResult(HealthCheckRunner.runCheck(runContext, healthChecker));
+            report.addResult(HealthCheckRunner.run(runContext, healthChecker));
         };
     }
 

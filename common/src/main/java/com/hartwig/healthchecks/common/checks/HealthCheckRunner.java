@@ -11,7 +11,7 @@ public final class HealthCheckRunner {
     }
 
     @NotNull
-    public static BaseResult runCheck(@NotNull final RunContext runContext, @NotNull final HealthChecker checker) {
+    public static BaseResult run(@NotNull final RunContext runContext, @NotNull final HealthChecker checker) {
         final ErrorHandlingChecker errorHandlingChecker = new ErrorHandlingChecker(checker);
         return errorHandlingChecker.checkedRun(runContext);
     }
