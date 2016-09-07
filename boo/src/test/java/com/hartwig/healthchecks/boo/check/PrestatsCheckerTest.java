@@ -11,8 +11,8 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
+import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
@@ -37,16 +37,16 @@ public class PrestatsCheckerTest {
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         PrestatsChecker checker = new PrestatsChecker();
         final BaseResult result = checker.run(runContext);
-        assertReport(result);
+        assertResult(result);
     }
 
     @Test(expected = EmptyFileException.class)
     public void emptyFastQCFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
+        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
                 EMPTY_FASTQC_SAMPLE);
 
         PrestatsChecker checker = new PrestatsChecker();
@@ -55,7 +55,7 @@ public class PrestatsCheckerTest {
 
     @Test(expected = EmptyFileException.class)
     public void emptyTotalSequenceFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
+        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
                 EMPTY_TOTAL_SEQUENCE_SAMPLE);
 
         PrestatsChecker checker = new PrestatsChecker();
@@ -64,91 +64,84 @@ public class PrestatsCheckerTest {
 
     @Test
     public void incompleteInputYieldsIncompleteOutput() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
 
         PrestatsChecker checker = new PrestatsChecker();
         final BaseResult result = checker.run(runContext);
         final List<HealthCheck> refResults = ((PatientResult) result).getRefSampleChecks();
         assertEquals(EXPECTED_CHECKS_NUM, refResults.size());
 
-        assertPrestatsDataReport(refResults, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.MISS,
+        assertPrestatsResult(refResults, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.MISS,
                 INCOMPLETE_SAMPLE);
     }
 
     @Test(expected = IOException.class)
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
+        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
         PrestatsChecker checker = new PrestatsChecker();
         checker.run(runContext);
     }
 
-    private static void assertReport(@NotNull final BaseResult prestatsData) {
-        assertEquals(CheckType.PRESTATS, prestatsData.getCheckType());
-        assertRefSampleData(((PatientResult) prestatsData).getRefSampleChecks());
-        assertTumorSampleData(((PatientResult) prestatsData).getTumorSampleChecks());
+    private static void assertResult(@NotNull final BaseResult result) {
+        assertEquals(CheckType.PRESTATS, result.getCheckType());
+        assertRefSampleData(((PatientResult) result).getRefSampleChecks());
+        assertTumorSampleData(((PatientResult) result).getTumorSampleChecks());
     }
 
-    private static void assertRefSampleData(@NotNull final List<HealthCheck> sampleData) {
-        assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, REF_TOTAL_SEQUENCES, REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsChecker.FAIL,
+    private static void assertRefSampleData(@NotNull final List<HealthCheck> checks) {
+        assertEquals(EXPECTED_CHECKS_NUM, checks.size());
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_NUMBER_OF_READS, REF_TOTAL_SEQUENCES, REF_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsChecker.FAIL,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsChecker.PASS,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsChecker.PASS,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES, PrestatsChecker.WARN,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES, PrestatsChecker.WARN,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsChecker.PASS,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsChecker.PASS,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsChecker.WARN,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsChecker.WARN, REF_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsChecker.PASS, REF_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION, PrestatsChecker.PASS,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsChecker.PASS,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.WARN,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION, PrestatsChecker.PASS,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsChecker.PASS,
                 REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.WARN,
-                REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsChecker.PASS,
-                REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsChecker.WARN,
-                REF_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsChecker.FAIL, REF_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsChecker.WARN, REF_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsChecker.FAIL, REF_SAMPLE);
     }
 
-    private static void assertTumorSampleData(@NotNull final List<HealthCheck> sampleData) {
-        assertEquals(EXPECTED_CHECKS_NUM, sampleData.size());
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_NUMBER_OF_READS, TUMOR_TOTAL_SEQUENCES,
+    private static void assertTumorSampleData(@NotNull final List<HealthCheck> checks) {
+        assertEquals(EXPECTED_CHECKS_NUM, checks.size());
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_NUMBER_OF_READS, TUMOR_TOTAL_SEQUENCES, TUMOR_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsChecker.FAIL,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_QUALITY, PrestatsChecker.FAIL,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsChecker.PASS,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_TILE_SEQUENCE_QUALITY, PrestatsChecker.PASS,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES, PrestatsChecker.WARN,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_QUALITY_SCORES, PrestatsChecker.WARN,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsChecker.FAIL,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_SEQUENCE_CONTENT, PrestatsChecker.FAIL,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsChecker.WARN,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_SEQUENCE_GC_CONTENT, PrestatsChecker.WARN,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsChecker.PASS, TUMOR_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION, PrestatsChecker.PASS,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_PER_BASE_N_CONTENT, PrestatsChecker.PASS,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.FAIL,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_LENGTH_DISTRIBUTION, PrestatsChecker.PASS,
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsChecker.FAIL,
                 TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsChecker.FAIL,
-                TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_OVERREPRESENTED_SEQUENCES, PrestatsChecker.FAIL,
-                TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsChecker.FAIL,
-                TUMOR_SAMPLE);
-        assertPrestatsDataReport(sampleData, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsChecker.PASS,
-                TUMOR_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_ADAPTER_CONTENT, PrestatsChecker.FAIL, TUMOR_SAMPLE);
+        assertPrestatsResult(checks, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsChecker.PASS, TUMOR_SAMPLE);
     }
 
-    private static void assertPrestatsDataReport(@NotNull final List<HealthCheck> sampleData,
-            @NotNull final PrestatsCheck check, @NotNull final String expectedStatus,
+    private static void assertPrestatsResult(@NotNull final List<HealthCheck> checks,
+            @NotNull final PrestatsCheck checkName, @NotNull final String expectedStatus,
             @NotNull final String expectedSampleId) {
-        Optional<HealthCheck> optCheckReport = sampleData.stream().filter(
-                p -> p.getCheckName().equals(check.toString())).findFirst();
+        Optional<HealthCheck> optCheckReport = checks.stream().filter(
+                p -> p.getCheckName().equals(checkName.toString())).findFirst();
 
         assert optCheckReport.isPresent();
         final String actualStatus = optCheckReport.get().getValue();

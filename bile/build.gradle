@@ -1,5 +1,6 @@
 group 'com.hartwig.healthchecks.bile'
 
 dependencies {
+    testCompile project(":common").sourceSets.test.output
     compile project(":common")
 }

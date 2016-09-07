@@ -1,5 +1,6 @@
 group 'com.hartwig.healthchecks.smitty'
 
 dependencies {
+    testCompile project(":common").sourceSets.test.output
     compile project(":common")
 }

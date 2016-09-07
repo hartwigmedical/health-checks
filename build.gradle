@@ -23,7 +23,6 @@ allprojects {
     version tag + '-SNAPSHOT'
 
     apply plugin: 'java'
-    apply plugin: 'eclipse'
     apply plugin: 'idea'
     apply plugin: "jacoco"
     apply plugin: 'checkstyle'

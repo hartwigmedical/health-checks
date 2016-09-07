@@ -1,5 +1,6 @@
 group 'com.hartwig.healthchecks.nesbit'
 
 dependencies {
+    testCompile project(":common").sourceSets.test.output
     compile project(":common")
 }

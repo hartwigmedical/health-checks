@@ -10,6 +10,7 @@ import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
+import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.SingleValueResult;
 
@@ -23,7 +24,7 @@ public class SlicedCheckerTest {
 
     @Test
     public void canAnalyseTypicalSlicedVCF() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         final SlicedChecker checker = new SlicedChecker();
 
@@ -37,7 +38,7 @@ public class SlicedCheckerTest {
 
     @Test(expected = IOException.class)
     public void readingNonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
 
         final SlicedChecker checker = new SlicedChecker();
         checker.run(runContext);

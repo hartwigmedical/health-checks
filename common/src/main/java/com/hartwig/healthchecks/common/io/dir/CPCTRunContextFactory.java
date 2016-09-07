@@ -18,13 +18,6 @@ public final class CPCTRunContextFactory {
     }
 
     @NotNull
-    // TODO (KODU): Belongs in test-package
-    public static RunContext testContext(@NotNull final String runDirectory, @NotNull final String refSample,
-            @NotNull final String tumorSample) {
-        return new RunContextImpl(runDirectory, refSample, tumorSample);
-    }
-
-    @NotNull
     public static RunContext fromRunDirectory(@NotNull final String runDirectory) throws MalformedRunDirException {
         int patientPosition = runDirectory.indexOf("_CPCT");
         if (patientPosition == -1) {

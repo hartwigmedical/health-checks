@@ -13,6 +13,7 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
+import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.SingleValueResult;
 
@@ -30,7 +31,7 @@ public class KinshipCheckerTest {
 
     @Test
     public void extractDataFromKinship() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(CORRECT_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext(CORRECT_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipChecker checker = new KinshipChecker();
 
@@ -43,7 +44,7 @@ public class KinshipCheckerTest {
 
     @Test(expected = MalformedFileException.class)
     public void cannotReadMalformedKinship() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(MALFORMED_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext(MALFORMED_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipChecker checker = new KinshipChecker();
 
@@ -52,7 +53,7 @@ public class KinshipCheckerTest {
 
     @Test(expected = EmptyFileException.class)
     public void cannotReadFromEmptyKinship() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(EMPTY_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext(EMPTY_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipChecker checker = new KinshipChecker();
 
@@ -61,16 +62,16 @@ public class KinshipCheckerTest {
 
     @Test(expected = IOException.class)
     public void cannotReadFromNonExistingKinship() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext("Does not exist", REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext("Does not exist", REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipChecker checker = new KinshipChecker();
 
         checker.run(runContext);
     }
 
-    private static void assertKinshipData(@NotNull final SingleValueResult kinshipReport,
+    private static void assertKinshipData(@NotNull final SingleValueResult result,
             @NotNull final String expectedValue) {
-        final HealthCheck healthCheck = kinshipReport.getCheck();
+        final HealthCheck healthCheck = result.getCheck();
         assertEquals(expectedValue, healthCheck.getValue());
     }
 }

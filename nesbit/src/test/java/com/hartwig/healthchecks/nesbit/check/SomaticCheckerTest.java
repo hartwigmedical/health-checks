@@ -13,6 +13,7 @@ import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
+import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
@@ -36,7 +37,7 @@ public class SomaticCheckerTest {
 
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {
-        RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
         final HealthChecker checker = new SomaticChecker();
 
         final BaseResult result = checker.run(runContext);
