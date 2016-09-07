@@ -1,6 +1,6 @@
 package com.hartwig.healthchecks.bile.adapter;
 
-import com.hartwig.healthchecks.bile.extractor.RealignerChecker;
+import com.hartwig.healthchecks.bile.check.RealignerChecker;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;

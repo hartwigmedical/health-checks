@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.bile.extractor;
+package com.hartwig.healthchecks.bile.check;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,8 +41,8 @@ public class RealignerCheckerTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        RealignerChecker extractor = new RealignerChecker(runContext);
-        final BaseResult report = extractor.run();
+        RealignerChecker checker = new RealignerChecker(runContext);
+        final BaseResult report = checker.run();
         assertReport(report);
     }
 
@@ -50,8 +50,8 @@ public class RealignerCheckerTest {
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        RealignerChecker extractor = new RealignerChecker(runContext);
-        extractor.run();
+        RealignerChecker checker = new RealignerChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = IOException.class)
@@ -59,59 +59,59 @@ public class RealignerCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        RealignerChecker extractor = new RealignerChecker(runContext);
-        extractor.run();
+        RealignerChecker checker = new RealignerChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        RealignerChecker extractor = new RealignerChecker(runContext);
-        extractor.run();
+        RealignerChecker checker = new RealignerChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        RealignerChecker extractor = new RealignerChecker(runContext);
-        extractor.run();
+        RealignerChecker checker = new RealignerChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        RealignerChecker extractor = new RealignerChecker(runContext);
-        extractor.run();
+        RealignerChecker checker = new RealignerChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = MalformedFileException.class)
     public void malformedLineYieldsMalformedFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, MALFORMED_SAMPLE, MALFORMED_SAMPLE);
 
-        RealignerChecker extractor = new RealignerChecker(runContext);
-        extractor.run();
+        RealignerChecker checker = new RealignerChecker(runContext);
+        checker.run();
     }
 
-    private static void assertReport(@NotNull final BaseResult report) {
-        assertEquals(CheckType.REALIGNER, report.getCheckType());
-        assertNotNull(report);
-        assertField(report, RealignerChecker.REALIGNER_CHECK_NAME, REF_CHANGED_READS_PROPORTION,
+    private static void assertReport(@NotNull final BaseResult result) {
+        assertEquals(CheckType.REALIGNER, result.getCheckType());
+        assertNotNull(result);
+        assertField(result, RealignerChecker.REALIGNER_CHECK_NAME, REF_CHANGED_READS_PROPORTION,
                 TUMOR_CHANGED_READS_PROPORTION);
     }
 
-    private static void assertField(@NotNull final BaseResult report, @NotNull final String field,
+    private static void assertField(@NotNull final BaseResult result, @NotNull final String field,
             @NotNull final String refValue, @NotNull final String tumValue) {
-        assertBaseData(((PatientResult) report).getRefSampleChecks(), REF_SAMPLE, field, refValue);
-        assertBaseData(((PatientResult) report).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
+        assertBaseData(((PatientResult) result).getRefSampleChecks(), REF_SAMPLE, field, refValue);
+        assertBaseData(((PatientResult) result).getTumorSampleChecks(), TUMOR_SAMPLE, field, tumValue);
     }
 
-    private static void assertBaseData(@NotNull final List<HealthCheck> reports, @NotNull final String sampleId,
-            @NotNull final String check, @NotNull final String expectedValue) {
-        final Optional<HealthCheck> value = reports.stream().filter(
-                p -> p.getCheckName().equals(check)).findFirst();
+    private static void assertBaseData(@NotNull final List<HealthCheck> checks, @NotNull final String sampleId,
+            @NotNull final String checkName, @NotNull final String expectedValue) {
+        final Optional<HealthCheck> value = checks.stream().filter(
+                p -> p.getCheckName().equals(checkName)).findFirst();
         assert value.isPresent();
 
         assertEquals(expectedValue, value.get().getValue());

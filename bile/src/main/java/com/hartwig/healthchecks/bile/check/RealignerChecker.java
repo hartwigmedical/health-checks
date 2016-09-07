@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.bile.extractor;
+package com.hartwig.healthchecks.bile.check;
 
 import java.io.File;
 import java.io.IOException;
