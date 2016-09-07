@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.roz.extractor;
+package com.hartwig.healthchecks.roz.check;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,16 +18,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class SlicedExtractor implements HealthChecker {
+public class SlicedChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(SlicedExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(SlicedChecker.class);
 
     private static final String SLICED_VCF_EXTENSION = "_Cosmicv76_GoNLv5_sliced.vcf";
 
     @NotNull
     private final RunContext runContext;
 
-    public SlicedExtractor(@NotNull final RunContext runContext) {
+    public SlicedChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 

@@ -66,8 +66,8 @@ public class PrestatsCheckerTest {
     public void incompleteInputYieldsIncompleteOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
 
-        PrestatsChecker extractor = new PrestatsChecker(runContext);
-        final BaseResult result = extractor.run();
+        PrestatsChecker checker = new PrestatsChecker(runContext);
+        final BaseResult result = checker.run();
         final List<HealthCheck> refResults = ((PatientResult) result).getRefSampleChecks();
         assertEquals(EXPECTED_CHECKS_NUM, refResults.size());
 

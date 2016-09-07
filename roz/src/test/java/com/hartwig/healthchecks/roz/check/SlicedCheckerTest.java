@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.roz.extractor;
+package com.hartwig.healthchecks.roz.check;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,7 +15,7 @@ import com.hartwig.healthchecks.common.result.SingleValueResult;
 
 import org.junit.Test;
 
-public class SlicedExtractorTest {
+public class SlicedCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
     private static final String REF_SAMPLE = "CPCT11111111R";
@@ -25,11 +25,11 @@ public class SlicedExtractorTest {
     public void canAnalyseTypicalSlicedVCF() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        final SlicedExtractor extractor = new SlicedExtractor(runContext);
+        final SlicedChecker checker = new SlicedChecker(runContext);
 
-        final BaseResult report = extractor.run();
-        assertEquals(CheckType.SLICED, report.getCheckType());
-        final HealthCheck sampleData = ((SingleValueResult) report).getCheck();
+        final BaseResult result = checker.run();
+        assertEquals(CheckType.SLICED, result.getCheckType());
+        final HealthCheck sampleData = ((SingleValueResult) result).getCheck();
         assertEquals(SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), sampleData.getCheckName());
         assertEquals(REF_SAMPLE, sampleData.getSampleId());
         assertEquals("4", sampleData.getValue());
@@ -39,7 +39,7 @@ public class SlicedExtractorTest {
     public void readingNonExistingFileYieldsIOException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
 
-        final SlicedExtractor extractor = new SlicedExtractor(runContext);
-        extractor.run();
+        final SlicedChecker checker = new SlicedChecker(runContext);
+        checker.run();
     }
 }

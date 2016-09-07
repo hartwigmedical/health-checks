@@ -10,7 +10,7 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.smitty.extractor.KinshipExtractor;
+import com.hartwig.healthchecks.smitty.check.KinshipChecker;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ public class SmittyAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final HealthChecker checker = new KinshipExtractor(runContext);
+        final HealthChecker checker = new KinshipChecker(runContext);
         final ErrorHandlingChecker kinshipChecker = new ErrorHandlingChecker(CheckType.KINSHIP, checker);
         final BaseResult kinshipReport = kinshipChecker.checkedRun();
         report.addReportData(kinshipReport);

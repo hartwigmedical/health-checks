@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.smitty.extractor;
+package com.hartwig.healthchecks.smitty.check;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,9 +20,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class KinshipExtractor implements HealthChecker {
+public class KinshipChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(KinshipExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(KinshipChecker.class);
 
     private static final String MALFORMED_FILE_MSG = "Malformed %s file is path %s -> %s lines found was expecting %s";
 
@@ -34,7 +34,7 @@ public class KinshipExtractor implements HealthChecker {
     @NotNull
     private final RunContext runContext;
 
-    public KinshipExtractor(@NotNull final RunContext runContext) {
+    public KinshipChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 

@@ -10,7 +10,7 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.roz.extractor.SlicedExtractor;
+import com.hartwig.healthchecks.roz.check.SlicedChecker;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ public class RozAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final HealthChecker checker = new SlicedExtractor(runContext);
+        final HealthChecker checker = new SlicedChecker(runContext);
         final ErrorHandlingChecker healthCheck = new ErrorHandlingChecker(CheckType.SLICED, checker);
         final BaseResult baseResult = healthCheck.checkedRun();
         report.addReportData(baseResult);
