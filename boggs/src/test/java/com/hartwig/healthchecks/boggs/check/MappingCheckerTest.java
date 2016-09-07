@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.extractor;
+package com.hartwig.healthchecks.boggs.check;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,7 +19,7 @@ import com.hartwig.healthchecks.common.result.PatientResult;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class MappingExtractorTest {
+public class MappingCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
@@ -33,8 +33,8 @@ public class MappingExtractorTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        MappingExtractor extractor = new MappingExtractor(runContext);
-        final BaseResult report = extractor.run();
+        MappingChecker checker = new MappingChecker(runContext);
+        final BaseResult report = checker.run();
         assertReport(report);
     }
 
@@ -43,8 +43,8 @@ public class MappingExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FLAGSTAT_SAMPLE,
                 EMPTY_FLAGSTAT_SAMPLE);
 
-        MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.run();
+        MappingChecker checker = new MappingChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = EmptyFileException.class)
@@ -52,8 +52,8 @@ public class MappingExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
                 EMPTY_FASTQC_SAMPLE);
 
-        MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.run();
+        MappingChecker checker = new MappingChecker(runContext);
+        checker.run();
     }
 
     @Test(expected = IOException.class)
@@ -61,8 +61,8 @@ public class MappingExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.run();
+        MappingChecker checker = new MappingChecker(runContext);
+        checker.run();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

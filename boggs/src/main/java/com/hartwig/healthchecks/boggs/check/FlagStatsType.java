@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.extractor;
+package com.hartwig.healthchecks.boggs.check;
 
 import java.util.Arrays;
 import java.util.Optional;

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.io.Resources;
-import com.hartwig.healthchecks.boggs.extractor.FlagStatsType;
+import com.hartwig.healthchecks.boggs.check.FlagStatsType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 import org.jetbrains.annotations.NotNull;

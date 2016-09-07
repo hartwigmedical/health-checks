@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.extractor;
+package com.hartwig.healthchecks.boggs.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +24,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class MappingExtractor implements HealthChecker {
+public class MappingChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(MappingExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(MappingChecker.class);
 
     private static final String FASTQC_BASE_DIRECTORY = "QCStats";
     private static final String FLAGSTAT_BASE_DIRECTORY = "mapping";
@@ -40,7 +40,7 @@ public class MappingExtractor implements HealthChecker {
     @NotNull
     private final ZipFilesReader zipFileReader = new ZipFilesReader();
 
-    public MappingExtractor(@NotNull final RunContext runContext) {
+    public MappingChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 

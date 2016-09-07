@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.extractor;
+package com.hartwig.healthchecks.boggs.check;
 
 enum MappingCheck {
     MAPPING_PROPORTION_READ_VS_TOTAL_SEQUENCES,
