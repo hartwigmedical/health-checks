@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.SLICED)
 public class SlicedChecker implements HealthChecker {
 
@@ -26,16 +27,12 @@ public class SlicedChecker implements HealthChecker {
 
     private static final String SLICED_VCF_EXTENSION = "_Cosmicv76_GoNLv5_sliced.vcf";
 
-    @NotNull
-    private final RunContext runContext;
-
-    public SlicedChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public SlicedChecker() {
     }
 
     @NotNull
     @Override
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), SLICED_VCF_EXTENSION);
         final long value = LineReader.build().readLines(vcfPath, new VCFDataLinePredicate()).stream().count();
 

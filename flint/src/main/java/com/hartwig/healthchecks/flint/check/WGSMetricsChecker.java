@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.WGS_METRICS)
 public class WGSMetricsChecker implements HealthChecker {
 
@@ -35,16 +36,12 @@ public class WGSMetricsChecker implements HealthChecker {
     private static final String WGS_METRICS_EXTENSION = "_WGSMetrics.txt";
     private static final String VALUE_SEPARATOR = "\t";
 
-    @NotNull
-    private final RunContext runContext;
-
-    public WGSMetricsChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public WGSMetricsChecker() {
     }
 
     @Override
     @NotNull
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
         return new PatientResult(checkType(), referenceSample, tumorSample);

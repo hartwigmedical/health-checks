@@ -33,8 +33,8 @@ public class MappingCheckerTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        MappingChecker checker = new MappingChecker(runContext);
-        final BaseResult report = checker.run();
+        MappingChecker checker = new MappingChecker();
+        final BaseResult report = checker.run(runContext);
         assertReport(report);
     }
 
@@ -43,8 +43,8 @@ public class MappingCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FLAGSTAT_SAMPLE,
                 EMPTY_FLAGSTAT_SAMPLE);
 
-        MappingChecker checker = new MappingChecker(runContext);
-        checker.run();
+        MappingChecker checker = new MappingChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -52,8 +52,8 @@ public class MappingCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
                 EMPTY_FASTQC_SAMPLE);
 
-        MappingChecker checker = new MappingChecker(runContext);
-        checker.run();
+        MappingChecker checker = new MappingChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = IOException.class)
@@ -61,8 +61,8 @@ public class MappingCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        MappingChecker checker = new MappingChecker(runContext);
-        checker.run();
+        MappingChecker checker = new MappingChecker();
+        checker.run(runContext);
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

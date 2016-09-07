@@ -31,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.SOMATIC)
 public class SomaticChecker implements HealthChecker {
 
@@ -59,16 +60,12 @@ public class SomaticChecker implements HealthChecker {
     private static final String CALLER_FILTERED_IDENTIFIER = "filterIn";
     private static final String CALLER_INTERSECTION_IDENTIFIER = "Intersection";
 
-    @NotNull
-    private final RunContext runContext;
-
-    public SomaticChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public SomaticChecker() {
     }
 
     @NotNull
     @Override
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(),
                 MELTED_SOMATICS_EXTENSION);
         final List<String> lines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());

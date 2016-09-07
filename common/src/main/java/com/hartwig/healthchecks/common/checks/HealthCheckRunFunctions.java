@@ -15,6 +15,6 @@ public final class HealthCheckRunFunctions {
             @NotNull final HealthChecker checker) {
         final Report report = HealthCheckReportFactory.create(reportType);
         final ErrorHandlingChecker errorHandlingChecker = new ErrorHandlingChecker(checker);
-        report.addResult(errorHandlingChecker.checkedRun());
+        report.addResult(errorHandlingChecker.checkedRun(runContext));
     }
 }

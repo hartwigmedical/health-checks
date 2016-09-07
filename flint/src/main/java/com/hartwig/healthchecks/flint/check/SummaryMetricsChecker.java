@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.SUMMARY_METRICS)
 public class SummaryMetricsChecker implements HealthChecker {
 
@@ -37,15 +38,8 @@ public class SummaryMetricsChecker implements HealthChecker {
     private static final String VALUE_SEPARATOR = "\t";
 
     @NotNull
-    private final RunContext runContext;
-
-    public SummaryMetricsChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
-    }
-
-    @NotNull
     @Override
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
         return new PatientResult(checkType(), referenceSample, tumorSample);

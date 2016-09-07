@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.PRESTATS)
 public class PrestatsChecker implements HealthChecker {
 
@@ -49,17 +50,14 @@ public class PrestatsChecker implements HealthChecker {
     private static final String EMPTY_FILES_ERROR = "File %s was found empty in path -> %s";
 
     @NotNull
-    private final RunContext runContext;
-    @NotNull
     private final ZipFilesReader zipFileReader = new ZipFilesReader();
 
-    public PrestatsChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public PrestatsChecker() {
     }
 
     @Override
     @NotNull
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 

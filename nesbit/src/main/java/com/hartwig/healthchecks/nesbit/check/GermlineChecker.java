@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.GERMLINE)
 public class GermlineChecker implements HealthChecker {
 
@@ -35,11 +36,7 @@ public class GermlineChecker implements HealthChecker {
     private static final int TUMOR_SAMPLE_COLUMN = 10;
     private static final int REF_SAMPLE_COLUMN = 9;
 
-    @NotNull
-    private final RunContext runContext;
-
-    public GermlineChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public GermlineChecker() {
     }
 
     @NotNull
@@ -50,7 +47,7 @@ public class GermlineChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), GERMLINE_VCF_EXTENSION);
         final List<String> passFilterLines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
         final List<VCFGermlineData> vcfData = getVCFDataForGermLine(passFilterLines);

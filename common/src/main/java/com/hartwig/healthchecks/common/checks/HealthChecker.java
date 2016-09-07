@@ -3,6 +3,7 @@ package com.hartwig.healthchecks.common.checks;
 import java.io.IOException;
 
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.result.BaseResult;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,5 +14,5 @@ public interface HealthChecker {
     CheckType checkType();
 
     @NotNull
-    BaseResult run() throws IOException, HealthChecksException;
+    BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException;
 }

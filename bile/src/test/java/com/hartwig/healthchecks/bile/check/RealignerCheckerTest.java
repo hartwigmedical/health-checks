@@ -41,8 +41,8 @@ public class RealignerCheckerTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        RealignerChecker checker = new RealignerChecker(runContext);
-        final BaseResult report = checker.run();
+        RealignerChecker checker = new RealignerChecker();
+        final BaseResult report = checker.run(runContext);
         assertReport(report);
     }
 
@@ -50,8 +50,8 @@ public class RealignerCheckerTest {
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        RealignerChecker checker = new RealignerChecker(runContext);
-        checker.run();
+        RealignerChecker checker = new RealignerChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = IOException.class)
@@ -59,40 +59,40 @@ public class RealignerCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        RealignerChecker checker = new RealignerChecker(runContext);
-        checker.run();
+        RealignerChecker checker = new RealignerChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        RealignerChecker checker = new RealignerChecker(runContext);
-        checker.run();
+        RealignerChecker checker = new RealignerChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        RealignerChecker checker = new RealignerChecker(runContext);
-        checker.run();
+        RealignerChecker checker = new RealignerChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        RealignerChecker checker = new RealignerChecker(runContext);
-        checker.run();
+        RealignerChecker checker = new RealignerChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = MalformedFileException.class)
     public void malformedLineYieldsMalformedFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, MALFORMED_SAMPLE, MALFORMED_SAMPLE);
 
-        RealignerChecker checker = new RealignerChecker(runContext);
-        checker.run();
+        RealignerChecker checker = new RealignerChecker();
+        checker.run(runContext);
     }
 
     private static void assertReport(@NotNull final BaseResult result) {

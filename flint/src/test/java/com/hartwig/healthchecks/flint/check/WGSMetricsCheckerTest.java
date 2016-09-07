@@ -55,8 +55,8 @@ public class WGSMetricsCheckerTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
-        final BaseResult result = checker.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker();
+        final BaseResult result = checker.run(runContext);
         assertResult(result);
     }
 
@@ -64,8 +64,8 @@ public class WGSMetricsCheckerTest {
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
-        checker.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = IOException.class)
@@ -73,32 +73,32 @@ public class WGSMetricsCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
-        checker.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
-        checker.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
-        checker.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        WGSMetricsChecker checker = new WGSMetricsChecker(runContext);
-        checker.run();
+        WGSMetricsChecker checker = new WGSMetricsChecker();
+        checker.run(runContext);
     }
 
     private static void assertResult(@NotNull final BaseResult result) {

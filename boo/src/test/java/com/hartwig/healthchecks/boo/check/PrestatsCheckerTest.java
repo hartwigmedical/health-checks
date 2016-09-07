@@ -39,8 +39,8 @@ public class PrestatsCheckerTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        PrestatsChecker checker = new PrestatsChecker(runContext);
-        final BaseResult result = checker.run();
+        PrestatsChecker checker = new PrestatsChecker();
+        final BaseResult result = checker.run(runContext);
         assertReport(result);
     }
 
@@ -49,8 +49,8 @@ public class PrestatsCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
                 EMPTY_FASTQC_SAMPLE);
 
-        PrestatsChecker checker = new PrestatsChecker(runContext);
-        checker.run();
+        PrestatsChecker checker = new PrestatsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = EmptyFileException.class)
@@ -58,16 +58,16 @@ public class PrestatsCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
                 EMPTY_TOTAL_SEQUENCE_SAMPLE);
 
-        PrestatsChecker checker = new PrestatsChecker(runContext);
-        checker.run();
+        PrestatsChecker checker = new PrestatsChecker();
+        checker.run(runContext);
     }
 
     @Test
     public void incompleteInputYieldsIncompleteOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
 
-        PrestatsChecker checker = new PrestatsChecker(runContext);
-        final BaseResult result = checker.run();
+        PrestatsChecker checker = new PrestatsChecker();
+        final BaseResult result = checker.run(runContext);
         final List<HealthCheck> refResults = ((PatientResult) result).getRefSampleChecks();
         assertEquals(EXPECTED_CHECKS_NUM, refResults.size());
 
@@ -80,8 +80,8 @@ public class PrestatsCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        PrestatsChecker checker = new PrestatsChecker(runContext);
-        checker.run();
+        PrestatsChecker checker = new PrestatsChecker();
+        checker.run(runContext);
     }
 
     private static void assertReport(@NotNull final BaseResult prestatsData) {

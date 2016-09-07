@@ -37,9 +37,9 @@ public class SomaticCheckerTest {
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final HealthChecker checker = new SomaticChecker(runContext);
+        final HealthChecker checker = new SomaticChecker();
 
-        final BaseResult result = checker.run();
+        final BaseResult result = checker.run(runContext);
         final List<HealthCheck> checks = ((MultiValueResult) result).getChecks();
 
         assertEquals(CheckType.SOMATIC, result.getCheckType());

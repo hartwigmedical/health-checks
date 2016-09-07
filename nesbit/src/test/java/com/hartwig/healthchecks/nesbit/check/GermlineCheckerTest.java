@@ -28,8 +28,8 @@ public class GermlineCheckerTest {
     public void canCountSNPAndIndels() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        final GermlineChecker checker = new GermlineChecker(runContext);
-        final BaseResult result = checker.run();
+        final GermlineChecker checker = new GermlineChecker();
+        final BaseResult result = checker.run(runContext);
 
         assertEquals(CheckType.GERMLINE, result.getCheckType());
         final List<HealthCheck> refData = ((PatientResult) result).getRefSampleChecks();

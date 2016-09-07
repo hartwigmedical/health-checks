@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.INSERT_SIZE)
 public class InsertSizeMetricsChecker implements HealthChecker {
 
@@ -35,16 +36,12 @@ public class InsertSizeMetricsChecker implements HealthChecker {
     private static final String INSERT_SIZE_METRICS_EXTENSION = ".insert_size_metrics";
     private static final String VALUE_SEPARATOR = "\t";
 
-    @NotNull
-    private final RunContext runContext;
-
-    public InsertSizeMetricsChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public InsertSizeMetricsChecker() {
     }
 
     @NotNull
     @Override
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 

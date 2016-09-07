@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.MAPPING)
 public class MappingChecker implements HealthChecker {
 
@@ -36,19 +37,16 @@ public class MappingChecker implements HealthChecker {
     private static final String FLAGSTAT_FILE_FILTER = ".realign";
 
     @NotNull
-    private final RunContext runContext;
-    @NotNull
     private final FlagStatParser flagstatParser = new SambambaFlagStatParser();
     @NotNull
     private final ZipFilesReader zipFileReader = new ZipFilesReader();
 
-    public MappingChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public MappingChecker() {
     }
 
     @Override
     @NotNull
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 

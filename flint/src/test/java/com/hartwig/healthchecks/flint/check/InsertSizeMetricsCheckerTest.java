@@ -41,8 +41,8 @@ public class InsertSizeMetricsCheckerTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
-        final BaseResult result = checker.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker();
+        final BaseResult result = checker.run(runContext);
         assertResult(result);
     }
 
@@ -50,8 +50,8 @@ public class InsertSizeMetricsCheckerTest {
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
-        checker.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = IOException.class)
@@ -59,32 +59,32 @@ public class InsertSizeMetricsCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
-        checker.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
-        checker.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
-        checker.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker(runContext);
-        checker.run();
+        InsertSizeMetricsChecker checker = new InsertSizeMetricsChecker();
+        checker.run(runContext);
     }
 
     private static void assertResult(@NotNull final BaseResult result) {

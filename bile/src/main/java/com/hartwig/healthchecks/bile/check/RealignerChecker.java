@@ -26,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.REALIGNER)
 public class RealignerChecker implements HealthChecker {
 
@@ -46,16 +47,12 @@ public class RealignerChecker implements HealthChecker {
     private static final String FLAGSTAT_MAPPED_PATTERN = "mapped";
     private static final String FLAGSTAT_END_OF_MAPPED_VALUE_PATTERN = "+";
 
-    @NotNull
-    private final RunContext runContext;
-
-    public RealignerChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public RealignerChecker() {
     }
 
     @NotNull
     @Override
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final HealthCheck referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final HealthCheck tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 

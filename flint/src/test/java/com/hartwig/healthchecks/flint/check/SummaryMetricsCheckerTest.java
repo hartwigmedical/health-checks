@@ -47,8 +47,8 @@ public class SummaryMetricsCheckerTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
-        final BaseResult result = checker.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker();
+        final BaseResult result = checker.run(runContext);
         assertResult(result);
     }
 
@@ -56,8 +56,8 @@ public class SummaryMetricsCheckerTest {
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
-        checker.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = IOException.class)
@@ -65,32 +65,32 @@ public class SummaryMetricsCheckerTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
-        checker.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
-        checker.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
-        checker.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker();
+        checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        SummaryMetricsChecker checker = new SummaryMetricsChecker(runContext);
-        checker.run();
+        SummaryMetricsChecker checker = new SummaryMetricsChecker();
+        checker.run(runContext);
     }
 
     private static void assertResult(@NotNull final BaseResult result) {

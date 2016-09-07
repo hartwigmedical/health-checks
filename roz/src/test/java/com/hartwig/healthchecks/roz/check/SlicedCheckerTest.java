@@ -25,9 +25,9 @@ public class SlicedCheckerTest {
     public void canAnalyseTypicalSlicedVCF() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        final SlicedChecker checker = new SlicedChecker(runContext);
+        final SlicedChecker checker = new SlicedChecker();
 
-        final BaseResult result = checker.run();
+        final BaseResult result = checker.run(runContext);
         assertEquals(CheckType.SLICED, result.getCheckType());
         final HealthCheck sampleData = ((SingleValueResult) result).getCheck();
         assertEquals(SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), sampleData.getCheckName());
@@ -39,7 +39,7 @@ public class SlicedCheckerTest {
     public void readingNonExistingFileYieldsIOException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
 
-        final SlicedChecker checker = new SlicedChecker(runContext);
-        checker.run();
+        final SlicedChecker checker = new SlicedChecker();
+        checker.run(runContext);
     }
 }

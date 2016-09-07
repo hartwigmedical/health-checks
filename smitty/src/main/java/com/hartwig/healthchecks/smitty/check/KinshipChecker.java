@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.KINSHIP)
 public class KinshipChecker implements HealthChecker {
 
@@ -33,16 +34,12 @@ public class KinshipChecker implements HealthChecker {
     private static final String COLUMN_SEPARATOR = "\t";
     private static final int KINSHIP_COLUMN = 7;
 
-    @NotNull
-    private final RunContext runContext;
-
-    public KinshipChecker(@NotNull final RunContext runContext) {
-        this.runContext = runContext;
+    public KinshipChecker() {
     }
 
     @Override
     @NotNull
-    public BaseResult run() throws IOException, HealthChecksException {
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         Path kinshipPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), KINSHIP_EXTENSION);
         final List<String> kinshipLines = FileReader.build().readLines(kinshipPath);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
