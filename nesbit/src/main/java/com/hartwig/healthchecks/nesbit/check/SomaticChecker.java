@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.nesbit.extractor;
+package com.hartwig.healthchecks.nesbit.check;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -30,9 +30,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class SomaticExtractor implements HealthChecker {
+public class SomaticChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(SomaticExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(SomaticChecker.class);
 
     private static final String MELTED_SOMATICS_EXTENSION = "_Cosmicv76_melted.vcf";
     private static final String VCF_COLUMN_SEPARATOR = "\t";
@@ -60,7 +60,7 @@ public class SomaticExtractor implements HealthChecker {
     @NotNull
     private final RunContext runContext;
 
-    public SomaticExtractor(@NotNull final RunContext runContext) {
+    public SomaticChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 

@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.nesbit.extractor;
+package com.hartwig.healthchecks.nesbit.check;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,7 +20,7 @@ import com.hartwig.healthchecks.nesbit.model.VCFType;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class SomaticExtractorTest {
+public class SomaticCheckerTest {
 
     private static final double EPSILON = 1.0e-4;
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
@@ -29,17 +29,17 @@ public class SomaticExtractorTest {
 
     private static final String INDELS = VCFType.INDELS.toString();
     private static final String SNP = VCFType.SNP.toString();
-    private static final String MUTECT = SomaticExtractor.MUTECT.toUpperCase();
-    private static final String FREEBAYES = SomaticExtractor.FREEBAYES.toUpperCase();
-    private static final String STRELKA = SomaticExtractor.STRELKA.toUpperCase();
-    private static final String VARSCAN = SomaticExtractor.VARSCAN.toUpperCase();
+    private static final String MUTECT = SomaticChecker.MUTECT.toUpperCase();
+    private static final String FREEBAYES = SomaticChecker.FREEBAYES.toUpperCase();
+    private static final String STRELKA = SomaticChecker.STRELKA.toUpperCase();
+    private static final String VARSCAN = SomaticChecker.VARSCAN.toUpperCase();
 
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final HealthChecker extractor = new SomaticExtractor(runContext);
+        final HealthChecker checker = new SomaticChecker(runContext);
 
-        final BaseResult result = extractor.run();
+        final BaseResult result = checker.run();
         final List<HealthCheck> checks = ((MultiValueResult) result).getChecks();
 
         assertEquals(CheckType.SOMATIC, result.getCheckType());

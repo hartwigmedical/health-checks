@@ -10,8 +10,8 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.nesbit.extractor.GermlineExtractor;
-import com.hartwig.healthchecks.nesbit.extractor.SomaticExtractor;
+import com.hartwig.healthchecks.nesbit.check.GermlineChecker;
+import com.hartwig.healthchecks.nesbit.check.SomaticChecker;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,12 +24,12 @@ public class NesbitAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final HealthChecker germlineExtractor = new GermlineExtractor(runContext);
+        final HealthChecker germlineExtractor = new GermlineChecker(runContext);
         final ErrorHandlingChecker germline = new ErrorHandlingChecker(CheckType.GERMLINE, germlineExtractor);
         final BaseResult germlineReport = germline.checkedRun();
         report.addReportData(germlineReport);
 
-        final HealthChecker somaticExtractor = new SomaticExtractor(runContext);
+        final HealthChecker somaticExtractor = new SomaticChecker(runContext);
         final ErrorHandlingChecker somatic = new ErrorHandlingChecker(CheckType.SOMATIC, somaticExtractor);
         final BaseResult somaticReport = somatic.checkedRun();
         report.addReportData(somaticReport);

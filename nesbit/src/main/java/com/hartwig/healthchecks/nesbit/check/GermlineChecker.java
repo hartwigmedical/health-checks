@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.nesbit.extractor;
+package com.hartwig.healthchecks.nesbit.check;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,9 +24,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class GermlineExtractor implements HealthChecker {
+public class GermlineChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(GermlineExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(GermlineChecker.class);
 
     private static final String GERMLINE_VCF_EXTENSION = "_Cosmicv76_GoNLv5.vcf";
     private static final String VCF_COLUMN_SEPARATOR = "\t";
@@ -36,7 +36,7 @@ public class GermlineExtractor implements HealthChecker {
     @NotNull
     private final RunContext runContext;
 
-    public GermlineExtractor(@NotNull final RunContext runContext) {
+    public GermlineChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 

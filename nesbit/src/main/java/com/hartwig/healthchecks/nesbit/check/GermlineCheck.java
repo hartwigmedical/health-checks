@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.nesbit.extractor;
+package com.hartwig.healthchecks.nesbit.check;
 
 enum GermlineCheck {
     VARIANTS_GERMLINE_INDELS,
