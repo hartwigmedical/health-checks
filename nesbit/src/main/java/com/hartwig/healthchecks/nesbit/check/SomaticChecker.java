@@ -20,6 +20,7 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticData;
@@ -30,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@ResourceWrapper(type = CheckType.SOMATIC)
 public class SomaticChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(SomaticChecker.class);

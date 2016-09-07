@@ -5,11 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.hartwig.healthchecks.common.checks.CheckCategory;
+import com.hartwig.healthchecks.common.checks.CheckType;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResourceWrapper {
 
-    CheckCategory type();
+    CheckType type();
 }

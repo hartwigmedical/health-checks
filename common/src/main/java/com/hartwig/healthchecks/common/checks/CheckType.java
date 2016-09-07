@@ -1,14 +1,27 @@
 package com.hartwig.healthchecks.common.checks;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.jetbrains.annotations.NotNull;
+
 public enum CheckType {
     MAPPING,
     PRESTATS,
     KINSHIP,
     INSERT_SIZE,
     SUMMARY_METRICS,
-    COVERAGE,
+    WGS_METRICS,
     SOMATIC,
     SLICED,
     REALIGNER,
-    GERMLINE
+    GERMLINE;
+
+    @NotNull
+    public static Optional<CheckType> getByCategory(@NotNull final String typeToCheck) {
+        final List<CheckType> types = Arrays.asList(CheckType.values());
+
+        return types.stream().filter(type -> type.toString().equalsIgnoreCase(typeToCheck)).findFirst();
+    }
 }

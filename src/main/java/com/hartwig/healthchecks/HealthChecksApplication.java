@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
+import com.hartwig.healthchecks.common.checks.HealthCheckRunFunctions;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
@@ -13,7 +15,6 @@ import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.dir.FolderChecker;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.report.Report;
-import com.hartwig.healthchecks.util.adapter.HealthChecksFlyweight;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -120,9 +121,9 @@ public final class HealthChecksApplication {
         } else {
             final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
             try {
-                final AbstractHealthCheckAdapter healthCheckAdapter = flyweight.getAdapter(checkType);
+                final HealthChecker checker = flyweight.getChecker(checkType);
 
-                healthCheckAdapter.runCheck(runContext, reportType);
+                HealthCheckRunFunctions.runCheck(runContext, reportType, checker);
             } catch (final NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -132,12 +133,12 @@ public final class HealthChecksApplication {
 
     private void executeAllChecks() {
         final HealthChecksFlyweight flyweight = HealthChecksFlyweight.getInstance();
-        final Collection<AbstractHealthCheckAdapter> adapters = flyweight.getAllAdapters();
+        final Collection<HealthChecker> checkers = flyweight.getAllCheckers();
 
-        final Observable<AbstractHealthCheckAdapter> adapterObservable = Observable.from(adapters).subscribeOn(
-                Schedulers.io());
+        final Observable<HealthChecker> checkerObservable = Observable.from(checkers).subscribeOn(Schedulers.io());
 
-        BlockingObservable.from(adapterObservable).subscribe(adapter -> adapter.runCheck(runContext, reportType),
+        BlockingObservable.from(checkerObservable).subscribe(
+                checker -> HealthCheckRunFunctions.runCheck(runContext, reportType, checker),
                 (error) -> LOGGER.error(error.getMessage()), this::generateReport);
     }
 

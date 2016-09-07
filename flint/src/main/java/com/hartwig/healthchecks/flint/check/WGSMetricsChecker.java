@@ -16,6 +16,7 @@ import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
@@ -23,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@ResourceWrapper(type = CheckType.WGS_METRICS)
 public class WGSMetricsChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(WGSMetricsChecker.class);
@@ -51,7 +53,7 @@ public class WGSMetricsChecker implements HealthChecker {
     @NotNull
     @Override
     public CheckType checkType() {
-        return CheckType.COVERAGE;
+        return CheckType.WGS_METRICS;
     }
 
     @NotNull

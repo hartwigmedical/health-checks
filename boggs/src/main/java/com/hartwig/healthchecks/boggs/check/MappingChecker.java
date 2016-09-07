@@ -17,6 +17,7 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@ResourceWrapper(type = CheckType.MAPPING)
 public class MappingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(MappingChecker.class);

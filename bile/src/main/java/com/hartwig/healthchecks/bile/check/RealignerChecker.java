@@ -18,6 +18,7 @@ import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+@ResourceWrapper(type = CheckType.REALIGNER)
 public class RealignerChecker implements HealthChecker {
 
     @VisibleForTesting

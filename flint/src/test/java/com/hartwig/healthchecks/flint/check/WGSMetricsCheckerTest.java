@@ -102,7 +102,7 @@ public class WGSMetricsCheckerTest {
     }
 
     private static void assertResult(@NotNull final BaseResult result) {
-        assertEquals(CheckType.COVERAGE, result.getCheckType());
+        assertEquals(CheckType.WGS_METRICS, result.getCheckType());
         assertNotNull(result);
         assertField(result, WGSMetricsCheck.COVERAGE_MEAN.name(), REF_COVERAGE_MEAN, TUMOR_COVERAGE_MEAN);
         assertField(result, WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ.name(), REF_PCT_EXC_BASEQ, TUMOR_PCT_EXC_BASEQ);
