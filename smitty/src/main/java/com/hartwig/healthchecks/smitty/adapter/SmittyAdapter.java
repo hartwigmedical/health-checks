@@ -3,7 +3,6 @@ package com.hartwig.healthchecks.smitty.adapter;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
-import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -24,7 +23,7 @@ public class SmittyAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final HealthChecker checker = new KinshipChecker(runContext);
-        final ErrorHandlingChecker kinshipChecker = new ErrorHandlingChecker(CheckType.KINSHIP, checker);
+        final ErrorHandlingChecker kinshipChecker = new ErrorHandlingChecker(checker);
         final BaseResult kinshipReport = kinshipChecker.checkedRun();
         report.addResult(kinshipReport);
     }

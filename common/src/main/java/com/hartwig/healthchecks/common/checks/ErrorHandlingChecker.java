@@ -16,12 +16,9 @@ public class ErrorHandlingChecker {
     private static final String ERROR_MSG = "Got an exception with message: %s";
 
     @NotNull
-    private final CheckType checkType;
-    @NotNull
     private final HealthChecker checker;
 
-    public ErrorHandlingChecker(@NotNull final CheckType checkType, @NotNull final HealthChecker checker) {
-        this.checkType = checkType;
+    public ErrorHandlingChecker(@NotNull final HealthChecker checker) {
         this.checker = checker;
     }
 
@@ -32,7 +29,7 @@ public class ErrorHandlingChecker {
             result = checker.run();
         } catch (IOException | HealthChecksException exception) {
             LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
-            result = new ErrorResult(checkType, exception.getClass().getName());
+            result = new ErrorResult(checker.checkType(), exception.getClass().getName());
         }
         return result;
     }

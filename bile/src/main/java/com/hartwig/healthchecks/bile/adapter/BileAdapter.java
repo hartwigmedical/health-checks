@@ -4,7 +4,6 @@ import com.hartwig.healthchecks.bile.check.RealignerChecker;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
-import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -25,7 +24,7 @@ public class BileAdapter extends AbstractHealthCheckAdapter {
 
         final HealthChecker checker = new RealignerChecker(runContext);
 
-        final ErrorHandlingChecker healthCheck = new ErrorHandlingChecker(CheckType.REALIGNER, checker);
+        final ErrorHandlingChecker healthCheck = new ErrorHandlingChecker(checker);
         final BaseResult baseResult = healthCheck.checkedRun();
         report.addResult(baseResult);
     }

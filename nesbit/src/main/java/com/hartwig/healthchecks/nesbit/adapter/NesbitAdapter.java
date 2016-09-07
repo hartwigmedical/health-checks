@@ -3,7 +3,6 @@ package com.hartwig.healthchecks.nesbit.adapter;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
-import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -25,12 +24,12 @@ public class NesbitAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final HealthChecker germlineChecker = new GermlineChecker(runContext);
-        final ErrorHandlingChecker germline = new ErrorHandlingChecker(CheckType.GERMLINE, germlineChecker);
+        final ErrorHandlingChecker germline = new ErrorHandlingChecker(germlineChecker);
         final BaseResult germlineResult = germline.checkedRun();
         report.addResult(germlineResult);
 
         final HealthChecker somaticChecker = new SomaticChecker(runContext);
-        final ErrorHandlingChecker somatic = new ErrorHandlingChecker(CheckType.SOMATIC, somaticChecker);
+        final ErrorHandlingChecker somatic = new ErrorHandlingChecker(somaticChecker);
         final BaseResult somaticResult = somatic.checkedRun();
         report.addResult(somaticResult);
     }

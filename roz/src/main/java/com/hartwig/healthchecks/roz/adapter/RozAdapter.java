@@ -3,7 +3,6 @@ package com.hartwig.healthchecks.roz.adapter;
 import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
-import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -24,7 +23,7 @@ public class RozAdapter extends AbstractHealthCheckAdapter {
         final Report report = healthCheckReportFactory.create();
 
         final HealthChecker checker = new SlicedChecker(runContext);
-        final ErrorHandlingChecker healthCheck = new ErrorHandlingChecker(CheckType.SLICED, checker);
+        final ErrorHandlingChecker healthCheck = new ErrorHandlingChecker(checker);
         final BaseResult baseResult = healthCheck.checkedRun();
         report.addResult(baseResult);
     }
