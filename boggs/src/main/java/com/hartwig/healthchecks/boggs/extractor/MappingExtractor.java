@@ -11,11 +11,11 @@ import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckFunctions;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.ExtractorFunctions;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
@@ -58,7 +58,7 @@ public class MappingExtractor implements HealthChecker {
             throws IOException, HealthChecksException {
 
         final String basePathForTotalSequences = getBasePathForTotalSequences(runDirectory, sampleId);
-        final long totalSequences = ExtractorFunctions.sumOfTotalSequencesFromFastQC(basePathForTotalSequences,
+        final long totalSequences = HealthCheckFunctions.sumOfTotalSequencesFromFastQC(basePathForTotalSequences,
                 zipFileReader);
 
         final String basePathForFlagStat = getBasePathForFlagStat(runDirectory, sampleId);

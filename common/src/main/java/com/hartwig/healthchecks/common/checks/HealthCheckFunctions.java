@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.io.extractor;
+package com.hartwig.healthchecks.common.checks;
 
 import static java.util.stream.Collectors.toList;
 
@@ -11,13 +11,13 @@ import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class ExtractorFunctions {
+public final class HealthCheckFunctions {
 
     private static final String FASTQC_DATA_FILE_NAME = "fastqc_data.txt";
     private static final String TOTAL_SEQUENCES_PATTERN = "Total Sequences";
     private static final String COLUMN_SEPARATOR = "\t";
 
-    private ExtractorFunctions() {
+    private HealthCheckFunctions() {
     }
 
     public static long sumOfTotalSequencesFromFastQC(@NotNull final String basePath,

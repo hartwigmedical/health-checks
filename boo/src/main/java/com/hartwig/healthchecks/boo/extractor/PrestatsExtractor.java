@@ -13,11 +13,11 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckFunctions;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.ExtractorFunctions;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
@@ -143,7 +143,7 @@ public class PrestatsExtractor implements HealthChecker {
     @NotNull
     private HealthCheck extractTotalSequenceCheck(@NotNull final String basePath, @NotNull final String sampleId)
             throws IOException, HealthChecksException {
-        final long totalSequences = ExtractorFunctions.sumOfTotalSequencesFromFastQC(basePath, zipFileReader);
+        final long totalSequences = HealthCheckFunctions.sumOfTotalSequencesFromFastQC(basePath, zipFileReader);
 
         return new HealthCheck(sampleId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.toString(),
                 Long.toString(totalSequences));
