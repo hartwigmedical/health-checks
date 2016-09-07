@@ -1,7 +1,7 @@
 package com.hartwig.healthchecks.common.checks;
 
-import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
+import com.hartwig.healthchecks.common.report.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.report.ReportsFlyweight;
 

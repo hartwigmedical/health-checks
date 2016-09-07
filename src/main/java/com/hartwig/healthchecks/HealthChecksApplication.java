@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
-import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.HealthCheckRunFunctions;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
@@ -14,6 +12,7 @@ import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.dir.FolderChecker;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
+import com.hartwig.healthchecks.common.report.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.report.Report;
 
 import org.apache.commons.cli.CommandLine;
@@ -144,7 +143,7 @@ public final class HealthChecksApplication {
 
     private void generateReport() {
         try {
-            final HealthCheckReportFactory reportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
+            final HealthCheckReportFactory reportFactory = HealthCheckRunFunctions.attachReport(reportType);
             final Report report = reportFactory.create();
 
             final Optional<String> reportData = report.generateReport(runContext.runDirectory());
