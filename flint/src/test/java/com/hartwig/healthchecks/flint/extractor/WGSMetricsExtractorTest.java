@@ -56,7 +56,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        final BaseResult report = extractor.extract();
+        final BaseResult report = extractor.run();
         assertReport(report);
     }
 
@@ -65,7 +65,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = IOException.class)
@@ -74,7 +74,7 @@ public class WGSMetricsExtractorTest {
                 NON_EXISTING_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -82,7 +82,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -90,7 +90,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -98,7 +98,7 @@ public class WGSMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
         WGSMetricsExtractor extractor = new WGSMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

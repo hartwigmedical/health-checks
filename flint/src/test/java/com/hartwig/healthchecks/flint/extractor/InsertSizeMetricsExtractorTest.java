@@ -42,7 +42,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        final BaseResult report = extractor.extract();
+        final BaseResult report = extractor.run();
         assertReport(report);
     }
 
@@ -51,7 +51,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = IOException.class)
@@ -60,7 +60,7 @@ public class InsertSizeMetricsExtractorTest {
                 NON_EXISTING_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -68,7 +68,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -76,7 +76,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -84,7 +84,7 @@ public class InsertSizeMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
         InsertSizeMetricsExtractor extractor = new InsertSizeMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

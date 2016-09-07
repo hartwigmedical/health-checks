@@ -7,10 +7,10 @@ import java.util.Optional;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class KinshipExtractor implements DataExtractor {
+public class KinshipExtractor implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(KinshipExtractor.class);
 
@@ -40,7 +40,7 @@ public class KinshipExtractor implements DataExtractor {
 
     @Override
     @NotNull
-    public BaseResult extract() throws IOException, HealthChecksException {
+    public BaseResult run() throws IOException, HealthChecksException {
         Path kinshipPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), KINSHIP_EXTENSION);
         final List<String> kinshipLines = FileReader.build().readLines(kinshipPath);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {

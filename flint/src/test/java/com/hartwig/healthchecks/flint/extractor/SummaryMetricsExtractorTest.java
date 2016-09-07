@@ -48,7 +48,7 @@ public class SummaryMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        final BaseResult report = extractor.extract();
+        final BaseResult report = extractor.run();
         assertReport(report);
     }
 
@@ -57,7 +57,7 @@ public class SummaryMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
         SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = IOException.class)
@@ -66,7 +66,7 @@ public class SummaryMetricsExtractorTest {
                 NON_EXISTING_SAMPLE);
 
         SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -74,7 +74,7 @@ public class SummaryMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
         SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -82,7 +82,7 @@ public class SummaryMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
         SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
@@ -90,7 +90,7 @@ public class SummaryMetricsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
         SummaryMetricsExtractor extractor = new SummaryMetricsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

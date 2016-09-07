@@ -4,10 +4,9 @@ import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -25,14 +24,14 @@ public class NesbitAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final DataExtractor germlineExtractor = new GermlineExtractor(runContext);
-        final HealthChecker germline = new HealthCheckerImpl(CheckType.GERMLINE, germlineExtractor);
-        final BaseResult germlineReport = germline.runCheck();
+        final HealthChecker germlineExtractor = new GermlineExtractor(runContext);
+        final ErrorHandlingChecker germline = new ErrorHandlingChecker(CheckType.GERMLINE, germlineExtractor);
+        final BaseResult germlineReport = germline.checkedRun();
         report.addReportData(germlineReport);
 
-        final DataExtractor somaticExtractor = new SomaticExtractor(runContext);
-        final HealthChecker somatic = new HealthCheckerImpl(CheckType.SOMATIC, somaticExtractor);
-        final BaseResult somaticReport = somatic.runCheck();
+        final HealthChecker somaticExtractor = new SomaticExtractor(runContext);
+        final ErrorHandlingChecker somatic = new ErrorHandlingChecker(CheckType.SOMATIC, somaticExtractor);
+        final BaseResult somaticReport = somatic.checkedRun();
         report.addReportData(somaticReport);
     }
 }

@@ -10,10 +10,10 @@ import java.util.stream.IntStream;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class WGSMetricsExtractor implements DataExtractor {
+public class WGSMetricsExtractor implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(WGSMetricsExtractor.class);
 
@@ -40,9 +40,9 @@ public class WGSMetricsExtractor implements DataExtractor {
         this.runContext = runContext;
     }
 
-    @NotNull
     @Override
-    public BaseResult extract() throws IOException, HealthChecksException {
+    @NotNull
+    public BaseResult run() throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
         return new PatientResult(CheckType.COVERAGE, referenceSample, tumorSample);

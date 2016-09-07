@@ -22,7 +22,7 @@ import com.hartwig.healthchecks.common.result.PatientResult;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class RealignerExtractorTest {
+public class RealignerCheckerTest {
 
     private static final String REF_CHANGED_READS_PROPORTION = "0.04000";
     private static final String TUMOR_CHANGED_READS_PROPORTION = "0.04444";
@@ -41,8 +41,8 @@ public class RealignerExtractorTest {
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        RealignerExtractor extractor = new RealignerExtractor(runContext);
-        final BaseResult report = extractor.extract();
+        RealignerChecker extractor = new RealignerChecker(runContext);
+        final BaseResult report = extractor.run();
         assertReport(report);
     }
 
@@ -50,8 +50,8 @@ public class RealignerExtractorTest {
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
-        RealignerExtractor extractor = new RealignerExtractor(runContext);
-        extractor.extract();
+        RealignerChecker extractor = new RealignerChecker(runContext);
+        extractor.run();
     }
 
     @Test(expected = IOException.class)
@@ -59,46 +59,46 @@ public class RealignerExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
-        RealignerExtractor extractor = new RealignerExtractor(runContext);
-        extractor.extract();
+        RealignerChecker extractor = new RealignerChecker(runContext);
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
-        RealignerExtractor extractor = new RealignerExtractor(runContext);
-        extractor.extract();
+        RealignerChecker extractor = new RealignerChecker(runContext);
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
-        RealignerExtractor extractor = new RealignerExtractor(runContext);
-        extractor.extract();
+        RealignerChecker extractor = new RealignerChecker(runContext);
+        extractor.run();
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
-        RealignerExtractor extractor = new RealignerExtractor(runContext);
-        extractor.extract();
+        RealignerChecker extractor = new RealignerChecker(runContext);
+        extractor.run();
     }
 
     @Test(expected = MalformedFileException.class)
     public void malformedLineYieldsMalformedFileException() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, MALFORMED_SAMPLE, MALFORMED_SAMPLE);
 
-        RealignerExtractor extractor = new RealignerExtractor(runContext);
-        extractor.extract();
+        RealignerChecker extractor = new RealignerChecker(runContext);
+        extractor.run();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {
         assertEquals(CheckType.REALIGNER, report.getCheckType());
         assertNotNull(report);
-        assertField(report, RealignerExtractor.REALIGNER_CHECK_NAME, REF_CHANGED_READS_PROPORTION,
+        assertField(report, RealignerChecker.REALIGNER_CHECK_NAME, REF_CHANGED_READS_PROPORTION,
                 TUMOR_CHANGED_READS_PROPORTION);
     }
 

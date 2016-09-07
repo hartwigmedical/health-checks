@@ -4,10 +4,9 @@ import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -24,9 +23,9 @@ public class SmittyAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final DataExtractor kinshipExtractor = new KinshipExtractor(runContext);
-        final HealthChecker kinshipChecker = new HealthCheckerImpl(CheckType.KINSHIP, kinshipExtractor);
-        final BaseResult kinshipReport = kinshipChecker.runCheck();
+        final HealthChecker checker = new KinshipExtractor(runContext);
+        final ErrorHandlingChecker kinshipChecker = new ErrorHandlingChecker(CheckType.KINSHIP, checker);
+        final BaseResult kinshipReport = kinshipChecker.checkedRun();
         report.addReportData(kinshipReport);
     }
 }

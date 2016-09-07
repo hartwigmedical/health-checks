@@ -13,10 +13,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.extractor.ExtractorFunctions;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class PrestatsExtractor implements DataExtractor {
+public class PrestatsExtractor implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(PrestatsExtractor.class);
 
@@ -57,11 +57,9 @@ public class PrestatsExtractor implements DataExtractor {
 
     @Override
     @NotNull
-    public BaseResult extract()
-            throws IOException, HealthChecksException {
+    public BaseResult run() throws IOException, HealthChecksException {
         final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(),
-                runContext.tumorSample());
+        final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
         return new PatientResult(CheckType.PRESTATS, refSampleData, tumorSampleData);
     }

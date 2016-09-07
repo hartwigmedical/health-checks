@@ -14,9 +14,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class SomaticExtractor implements DataExtractor {
+public class SomaticExtractor implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(SomaticExtractor.class);
 
@@ -66,7 +66,7 @@ public class SomaticExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extract() throws IOException, HealthChecksException {
+    public BaseResult run() throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(),
                 MELTED_SOMATICS_EXTENSION);
         final List<String> lines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());

@@ -34,7 +34,7 @@ public class MappingExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        final BaseResult report = extractor.extract();
+        final BaseResult report = extractor.run();
         assertReport(report);
     }
 
@@ -44,7 +44,7 @@ public class MappingExtractorTest {
                 EMPTY_FLAGSTAT_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = EmptyFileException.class)
@@ -53,7 +53,7 @@ public class MappingExtractorTest {
                 EMPTY_FASTQC_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = IOException.class)
@@ -62,7 +62,7 @@ public class MappingExtractorTest {
                 NON_EXISTING_SAMPLE);
 
         MappingExtractor extractor = new MappingExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     private static void assertReport(@NotNull final BaseResult report) {

@@ -4,10 +4,9 @@ import com.hartwig.healthchecks.common.adapter.AbstractHealthCheckAdapter;
 import com.hartwig.healthchecks.common.adapter.HealthCheckReportFactory;
 import com.hartwig.healthchecks.common.checks.CheckCategory;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.checks.HealthCheckerImpl;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.report.Report;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -26,19 +25,21 @@ public class FlintAdapter extends AbstractHealthCheckAdapter {
         final HealthCheckReportFactory healthCheckReportFactory = AbstractHealthCheckAdapter.attachReport(reportType);
         final Report report = healthCheckReportFactory.create();
 
-        final DataExtractor insertSizeExtractor = new InsertSizeMetricsExtractor(runContext);
-        final HealthChecker insertSizeChecker = new HealthCheckerImpl(CheckType.INSERT_SIZE, insertSizeExtractor);
-        final BaseResult insertSizeReport = insertSizeChecker.runCheck();
+        final HealthChecker insertSizeExtractor = new InsertSizeMetricsExtractor(runContext);
+        final ErrorHandlingChecker insertSizeChecker = new ErrorHandlingChecker(CheckType.INSERT_SIZE,
+                insertSizeExtractor);
+        final BaseResult insertSizeReport = insertSizeChecker.checkedRun();
         report.addReportData(insertSizeReport);
 
-        final DataExtractor summaryExtractor = new SummaryMetricsExtractor(runContext);
-        final HealthChecker summaryChecker = new HealthCheckerImpl(CheckType.SUMMARY_METRICS, summaryExtractor);
-        final BaseResult summaryReport = summaryChecker.runCheck();
+        final HealthChecker summaryExtractor = new SummaryMetricsExtractor(runContext);
+        final ErrorHandlingChecker summaryChecker = new ErrorHandlingChecker(CheckType.SUMMARY_METRICS,
+                summaryExtractor);
+        final BaseResult summaryReport = summaryChecker.checkedRun();
         report.addReportData(summaryReport);
 
-        final DataExtractor wgsExtractor = new WGSMetricsExtractor(runContext);
-        final HealthChecker coverageChecker = new HealthCheckerImpl(CheckType.COVERAGE, wgsExtractor);
-        final BaseResult coverageReport = coverageChecker.runCheck();
+        final HealthChecker wgsExtractor = new WGSMetricsExtractor(runContext);
+        final ErrorHandlingChecker coverageChecker = new ErrorHandlingChecker(CheckType.COVERAGE, wgsExtractor);
+        final BaseResult coverageReport = coverageChecker.checkedRun();
         report.addReportData(coverageReport);
     }
 }

@@ -40,7 +40,7 @@ public class PrestatsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        final BaseResult report = extractor.extract();
+        final BaseResult report = extractor.run();
         assertReport(report);
     }
 
@@ -50,7 +50,7 @@ public class PrestatsExtractorTest {
                 EMPTY_FASTQC_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test(expected = EmptyFileException.class)
@@ -59,7 +59,7 @@ public class PrestatsExtractorTest {
                 EMPTY_TOTAL_SEQUENCE_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     @Test
@@ -67,7 +67,7 @@ public class PrestatsExtractorTest {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        final BaseResult report = extractor.extract();
+        final BaseResult report = extractor.run();
         final List<HealthCheck> sampleReport = ((PatientResult) report).getRefSampleChecks();
         assertEquals(EXPECTED_CHECKS_NUM, sampleReport.size());
 
@@ -81,7 +81,7 @@ public class PrestatsExtractorTest {
                 NON_EXISTING_SAMPLE);
 
         PrestatsExtractor extractor = new PrestatsExtractor(runContext);
-        extractor.extract();
+        extractor.run();
     }
 
     private static void assertReport(@NotNull final BaseResult prestatsData) {

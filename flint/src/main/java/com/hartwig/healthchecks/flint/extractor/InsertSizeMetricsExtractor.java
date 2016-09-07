@@ -10,10 +10,10 @@ import java.util.stream.IntStream;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class InsertSizeMetricsExtractor implements DataExtractor {
+public class InsertSizeMetricsExtractor implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(InsertSizeMetricsExtractor.class);
 
@@ -42,8 +42,7 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extract()
-            throws IOException, HealthChecksException {
+    public BaseResult run() throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 
@@ -51,8 +50,8 @@ public class InsertSizeMetricsExtractor implements DataExtractor {
     }
 
     @NotNull
-    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory,
-            @NotNull final String sampleId) throws IOException, HealthChecksException {
+    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
+            throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         final Path insertSizeMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId,
                 INSERT_SIZE_METRICS_EXTENSION);

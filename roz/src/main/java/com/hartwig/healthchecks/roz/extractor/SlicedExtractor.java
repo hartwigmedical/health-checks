@@ -5,9 +5,9 @@ import java.nio.file.Path;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
@@ -18,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class SlicedExtractor implements DataExtractor {
+public class SlicedExtractor implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(SlicedExtractor.class);
 
@@ -33,7 +33,7 @@ public class SlicedExtractor implements DataExtractor {
 
     @NotNull
     @Override
-    public BaseResult extract() throws IOException, HealthChecksException {
+    public BaseResult run() throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), SLICED_VCF_EXTENSION);
         final long value = LineReader.build().readLines(vcfPath, new VCFDataLinePredicate()).stream().count();
 

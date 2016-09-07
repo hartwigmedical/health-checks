@@ -11,11 +11,11 @@ import java.util.Optional;
 import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -25,12 +25,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class RealignerExtractor implements DataExtractor {
+public class RealignerChecker implements HealthChecker {
 
     @VisibleForTesting
     static final String REALIGNER_CHECK_NAME = "MAPPING_REALIGNER_CHANGED_ALIGNMENTS";
 
-    private static final Logger LOGGER = LogManager.getLogger(RealignerExtractor.class);
+    private static final Logger LOGGER = LogManager.getLogger(RealignerChecker.class);
 
     private static final String REALIGNER_CHECK_PRECISION = "#0.00000";
     private static final String MALFORMED_FILE_MSG = "Malformed %s path was expecting %s in file";
@@ -47,14 +47,13 @@ public class RealignerExtractor implements DataExtractor {
     @NotNull
     private final RunContext runContext;
 
-    public RealignerExtractor(@NotNull final RunContext runContext) {
+    public RealignerChecker(@NotNull final RunContext runContext) {
         this.runContext = runContext;
     }
 
     @NotNull
     @Override
-    public BaseResult extract()
-            throws IOException, HealthChecksException {
+    public BaseResult run() throws IOException, HealthChecksException {
         final HealthCheck referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final HealthCheck tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
 

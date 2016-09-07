@@ -9,10 +9,10 @@ import java.util.Optional;
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.CPCTRunContextFactory;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.extractor.DataExtractor;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
@@ -37,9 +37,9 @@ public class SomaticExtractorTest {
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {
         RunContext runContext = CPCTRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final DataExtractor extractor = new SomaticExtractor(runContext);
+        final HealthChecker extractor = new SomaticExtractor(runContext);
 
-        final BaseResult result = extractor.extract();
+        final BaseResult result = extractor.run();
         final List<HealthCheck> checks = ((MultiValueResult) result).getChecks();
 
         assertEquals(CheckType.SOMATIC, result.getCheckType());
