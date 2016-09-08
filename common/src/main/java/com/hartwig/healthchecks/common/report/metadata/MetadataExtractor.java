@@ -28,7 +28,7 @@ public class MetadataExtractor {
 
     private static final String PIPELINE_LOG_REGEX = "PipelineCheck.log";
     private static final String PIPELINE_VERSION = "Pipeline version:";
-    private static final String COLON = ":";
+    private static final String PIPELINE_VERSION_LINE_SEPARATOR = ":";
 
     @NotNull
     private final PathRegexFinder pathFinder;
@@ -40,6 +40,7 @@ public class MetadataExtractor {
         this.lineReader = lineReader;
     }
 
+    @NotNull
     public ReportMetadata extractMetadata(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         String folderName = runDirectory;
@@ -55,11 +56,12 @@ public class MetadataExtractor {
 
         final Path pipelineLog = pathFinder.findPath(runDirectory, PIPELINE_LOG_REGEX);
         final List<String> versionsLines = lineReader.readLines(pipelineLog, doesLineStartWith(PIPELINE_VERSION));
-        final String pipelineVersion = versionsLines.get(ZERO).split(COLON)[ONE];
+        final String pipelineVersion = versionsLines.get(ZERO).split(PIPELINE_VERSION_LINE_SEPARATOR)[ONE];
         return new ReportMetadata(formattedDate.format(outFormatter), pipelineVersion.trim());
     }
 
-    private static Predicate<String> doesLineStartWith(final String prefix) {
+    @NotNull
+    private static Predicate<String> doesLineStartWith(@NotNull final String prefix) {
         return line -> line.startsWith(prefix);
     }
 }

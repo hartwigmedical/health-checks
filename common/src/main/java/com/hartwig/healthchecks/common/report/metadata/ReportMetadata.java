@@ -14,7 +14,6 @@ public class ReportMetadata implements Serializable {
     private final String pipelineVersion;
 
     public ReportMetadata(@NotNull final String date, @NotNull final String pipelineVersion) {
-        super();
         this.date = date;
         this.pipelineVersion = pipelineVersion;
     }
