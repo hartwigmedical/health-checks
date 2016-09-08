@@ -89,7 +89,7 @@ public class PrestatsChecker implements HealthChecker {
         final List<String> allLines = zipFileReader.readAllLinesFromZips(basePath, FASTQC_CHECKS_FILE_NAME);
         final Map<String, List<HealthCheck>> data = getFastqcCheckData(allLines, sampleId);
 
-        if (data == null || data.isEmpty()) {
+        if (data.isEmpty()) {
             LOGGER.error(String.format(EMPTY_FILES_ERROR, FASTQC_CHECKS_FILE_NAME, basePath));
             throw new EmptyFileException(FASTQC_CHECKS_FILE_NAME, basePath);
         }

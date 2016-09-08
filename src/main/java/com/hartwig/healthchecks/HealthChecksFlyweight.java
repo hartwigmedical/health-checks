@@ -43,6 +43,7 @@ final class HealthChecksFlyweight {
     private HealthChecksFlyweight() {
     }
 
+    @NotNull
     static HealthChecksFlyweight getInstance() {
         return INSTANCE;
     }
@@ -56,6 +57,7 @@ final class HealthChecksFlyweight {
         return FLYWEIGHT.get(checkType.get());
     }
 
+    @NotNull
     Collection<HealthChecker> getAllCheckers() {
         return FLYWEIGHT.values();
     }
