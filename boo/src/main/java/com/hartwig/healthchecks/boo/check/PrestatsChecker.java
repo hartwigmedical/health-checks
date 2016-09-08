@@ -1,16 +1,14 @@
 package com.hartwig.healthchecks.boo.check;
 
-import static java.util.stream.Collectors.groupingBy;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthCheckFunctions;
@@ -33,21 +31,12 @@ public class PrestatsChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(PrestatsChecker.class);
 
-    @VisibleForTesting
-    static final String PASS = "PASS";
-    @VisibleForTesting
-    static final String WARN = "WARN";
-    @VisibleForTesting
-    static final String FAIL = "FAIL";
-    @VisibleForTesting
-    static final String MISS = "MISS";
-
     private static final String FASTQ_BASE_DIRECTORY = "QCStats";
     private static final String FASTQC_CHECKS_FILE_NAME = "summary.txt";
     private static final String FASTQC_CHECKS_SEPARATOR = "\t";
     private static final int FASTQC_CHECKS_EXPECTED_PARTS_PER_LINE = 3;
 
-    private static final String EMPTY_FILES_ERROR = "File %s was found empty in path -> %s";
+    private static final String PRESTATS_CHECK_FORMAT = "%s_%s";
 
     @NotNull
     private final ZipFilesReader zipFileReader = new ZipFilesReader();
@@ -87,25 +76,20 @@ public class PrestatsChecker implements HealthChecker {
     private List<HealthCheck> extractFastqcChecks(@NotNull final String basePath, @NotNull final String sampleId)
             throws IOException, EmptyFileException {
         final List<String> allLines = zipFileReader.readAllLinesFromZips(basePath, FASTQC_CHECKS_FILE_NAME);
-        final Map<String, List<HealthCheck>> data = getFastqcCheckData(allLines, sampleId);
-
-        if (data.isEmpty()) {
-            LOGGER.error(String.format(EMPTY_FILES_ERROR, FASTQC_CHECKS_FILE_NAME, basePath));
-            throw new EmptyFileException(FASTQC_CHECKS_FILE_NAME, basePath);
-        }
+        final Map<PrestatsCheck, List<PrestatsCheckValue>> data = getFastqcCheckData(allLines);
 
         final List<HealthCheck> finalList = Lists.newArrayList();
-        for (PrestatsCheck check : PrestatsCheck.values()) {
-            if (check != PrestatsCheck.PRESTATS_NUMBER_OF_READS) {
-                List<HealthCheck> checkData = data.get(check.toString());
-                if (checkData != null && checkData.size() > 0) {
-                    Optional<HealthCheck> worstReport = checkData.stream().min((isStatusWorse()));
-                    // KODU: Safe to do since we checked that checkData contains > 0 elements.
-                    assert worstReport.isPresent();
-                    finalList.add(worstReport.get());
-                } else {
-                    finalList.add(new HealthCheck(sampleId, check.toString(), MISS));
-                }
+
+        for (PrestatsCheck check : PrestatsCheck.valuesToIncludeInCount()) {
+            final Map<PrestatsCheckValue, Integer> valueCounts = initializeToZeroCounts();
+            final List<PrestatsCheckValue> values = data.get(check);
+            for (PrestatsCheckValue value : values) {
+                valueCounts.put(value, valueCounts.get(value) + 1);
+            }
+
+            for (Map.Entry<PrestatsCheckValue, Integer> countedValue : valueCounts.entrySet()) {
+                finalList.add(new HealthCheck(sampleId, toCheckName(check, countedValue.getKey()),
+                        Integer.toString(countedValue.getValue())));
             }
         }
 
@@ -113,37 +97,46 @@ public class PrestatsChecker implements HealthChecker {
     }
 
     @NotNull
-    private static Map<String, List<HealthCheck>> getFastqcCheckData(@NotNull final List<String> allLines,
-            @NotNull final String sampleId) {
-        return allLines.stream().map(line -> {
-            final String[] values = line.trim().split(FASTQC_CHECKS_SEPARATOR);
-            HealthCheck prestatsDataReport = null;
-            if (values.length == FASTQC_CHECKS_EXPECTED_PARTS_PER_LINE) {
-                final String status = values[0];
-                final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
-                if (check.isPresent()) {
-                    prestatsDataReport = new HealthCheck(sampleId, check.get().toString(), status);
-                }
-            }
-            return prestatsDataReport;
-        }).filter(prestatsDataReport -> prestatsDataReport != null).collect(groupingBy(HealthCheck::getCheckName));
+    @VisibleForTesting
+    static String toCheckName(@NotNull final PrestatsCheck check, @NotNull final PrestatsCheckValue value) {
+        return String.format(PRESTATS_CHECK_FORMAT, check.toString(), value.toString());
     }
 
     @NotNull
-    private static Comparator<HealthCheck> isStatusWorse() {
-        return (firstData, secondData) -> {
-            final String firstStatus = firstData.getValue();
-            final String secondStatus = secondData.getValue();
-            int status = 1;
-            if (firstStatus.equals(secondStatus)) {
-                status = 0;
-            } else if (FAIL.equals(firstStatus)) {
-                status = -1;
-            } else if (WARN.equals(firstStatus) && PASS.equals(secondStatus)) {
-                status = -1;
+    private static Map<PrestatsCheck, List<PrestatsCheckValue>> getFastqcCheckData(
+            @NotNull final List<String> allLines) {
+        final Map<PrestatsCheck, List<PrestatsCheckValue>> results = initializeToEmptyLists();
+        for (String line : allLines) {
+            final String[] values = line.trim().split(FASTQC_CHECKS_SEPARATOR);
+            if (values.length == FASTQC_CHECKS_EXPECTED_PARTS_PER_LINE) {
+                final Optional<PrestatsCheck> check = PrestatsCheck.getByDescription(values[1]);
+                final PrestatsCheckValue value = PrestatsCheckValue.valueOf(values[0]);
+                if (check.isPresent()) {
+                    List<PrestatsCheckValue> currentValues = results.get(check.get());
+                    currentValues.add(value);
+                    results.put(check.get(), currentValues);
+                }
             }
-            return status;
-        };
+        }
+        return results;
+    }
+
+    @NotNull
+    private static Map<PrestatsCheck, List<PrestatsCheckValue>> initializeToEmptyLists() {
+        final Map<PrestatsCheck, List<PrestatsCheckValue>> emptyLists = Maps.newHashMap();
+        for (PrestatsCheck check : PrestatsCheck.valuesToIncludeInCount()) {
+            emptyLists.put(check, Lists.newArrayList());
+        }
+        return emptyLists;
+    }
+
+    @NotNull
+    private static Map<PrestatsCheckValue, Integer> initializeToZeroCounts() {
+        final Map<PrestatsCheckValue, Integer> zeroCounts = Maps.newHashMap();
+        for (PrestatsCheckValue value : PrestatsCheckValue.values()) {
+            zeroCounts.put(value, 0);
+        }
+        return zeroCounts;
     }
 
     @NotNull
