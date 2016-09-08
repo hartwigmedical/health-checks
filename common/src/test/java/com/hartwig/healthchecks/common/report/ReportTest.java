@@ -78,8 +78,7 @@ public class ReportTest {
 
     @Test
     public void generateReportMetadataIOException(@Mocked final MetadataExtractor metadataExtractor,
-            @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
-            throws IOException, HealthChecksException {
+            @Mocked final PropertiesUtil propertiesUtil) throws IOException, HealthChecksException {
         new NonStrictExpectations() {
             {
                 PropertiesUtil.getInstance();
@@ -119,8 +118,7 @@ public class ReportTest {
 
     @Test
     public void generateReportMetadataHealthCheckException(@Mocked final MetadataExtractor metadataExtractor,
-            @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
-            throws IOException, HealthChecksException {
+            @Mocked final PropertiesUtil propertiesUtil) throws IOException, HealthChecksException {
         new NonStrictExpectations() {
             {
                 PropertiesUtil.getInstance();

@@ -26,13 +26,9 @@ enum PrestatsCheck {
         this.description = description;
     }
 
+    @NotNull
     public static Optional<PrestatsCheck> getByDescription(@NotNull final String description) {
         return Arrays.stream(PrestatsCheck.values())
                         .filter(prestatsCheck -> prestatsCheck.description.equalsIgnoreCase(description)).findFirst();
-    }
-
-    @NotNull
-    public String getDescription() {
-        return description;
     }
 }

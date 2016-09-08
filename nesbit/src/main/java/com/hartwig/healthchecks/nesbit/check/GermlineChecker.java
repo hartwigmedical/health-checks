@@ -60,7 +60,7 @@ public class GermlineChecker implements HealthChecker {
 
     @NotNull
     private static List<HealthCheck> getSampleData(@NotNull List<VCFGermlineData> vcfData,
-            @NotNull final String sampleId, final boolean isRefSample) throws IOException, HealthChecksException {
+            @NotNull final String sampleId, final boolean isRefSample) {
         final HealthCheck snp = getGermlineVariantCount(sampleId, vcfData, VCFType.SNP,
                 GermlineCheck.VARIANTS_GERMLINE_SNP, isRefSample);
         final HealthCheck indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS,

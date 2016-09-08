@@ -18,8 +18,6 @@ interface FileInZipsFinder {
 
     String FILE_NOT_FOUND = "File %s not found in %s";
 
-    Logger LOGGER = LogManager.getLogger(FileInZipsFinder.class);
-
     @NotNull
     List<? extends ZipEntry> findFileInZip(@NotNull final ZipFile zipFile, @NotNull final String fileNameInZip)
             throws IOException;

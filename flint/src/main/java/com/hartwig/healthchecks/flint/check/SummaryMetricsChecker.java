@@ -85,7 +85,7 @@ public class SummaryMetricsChecker implements HealthChecker {
 
     @NotNull
     private static HealthCheck getValue(@NotNull final String line, @NotNull final String sampleId,
-            @NotNull final SummaryMetricsCheck check) throws LineNotFoundException {
+            @NotNull final SummaryMetricsCheck check) {
         final String value = line.split(VALUE_SEPARATOR)[check.getIndex()];
         final HealthCheck healthCheck = new HealthCheck(sampleId, check.toString(), value);
         healthCheck.log(LOGGER);

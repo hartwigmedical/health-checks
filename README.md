@@ -105,11 +105,11 @@ The Following Checks still not fully defined , dus not implemented yet:
        
         * MELT_PROPORTION_OF_VARIANTS_WITH_CONFLICTING_ALLELES
         * MELT_PROPORTION_OF_MERGED_VARIANT_POSITIONS
-        * MELT_PROPORTION_OF_OVERLAPPING_DISTINCT_ALLLELES            
+        * MELT_PROPORTION_OF_OVERLAPPING_DISTINCT_ALLELES
             
 # Logs location
 
-After a succesful run, the logs can be found under the sub-modules logs directory.
+After a successful run, the logs can be found under the sub-modules logs directory.
 
 Here is a sample of a run with the existing Health Checks:
 
@@ -143,7 +143,7 @@ sbpltk1zffh04:health-checks wrodrigues$ cat boggs/logs/healthchecks-trace.log
 
 # Reports
 
-The current version of the Health Checks generates a JSON file with information about the executed checks. The reports are genrated under ```/tmp``` directory with the prefixed name ```health-checks_[timestamp]```.
+The current version of the Health Checks generates a JSON file with information about the executed checks. The reports are generated under ```/tmp``` directory with the prefixed name ```health-checks_[timestamp]```.
 
 The location of the reports can be changed via the ```config.properties``` file located under the **resources** directory of the **common** module.
 

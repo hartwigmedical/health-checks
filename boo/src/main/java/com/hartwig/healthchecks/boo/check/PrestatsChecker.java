@@ -114,7 +114,7 @@ public class PrestatsChecker implements HealthChecker {
 
     @NotNull
     private static Map<String, List<HealthCheck>> getFastqcCheckData(@NotNull final List<String> allLines,
-            @NotNull final String sampleId) throws IOException {
+            @NotNull final String sampleId) {
         return allLines.stream().map(line -> {
             final String[] values = line.trim().split(FASTQC_CHECKS_SEPARATOR);
             HealthCheck prestatsDataReport = null;
