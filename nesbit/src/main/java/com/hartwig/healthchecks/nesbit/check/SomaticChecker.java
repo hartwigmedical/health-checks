@@ -72,33 +72,27 @@ public class SomaticChecker implements HealthChecker {
 
     @NotNull
     private static List<HealthCheck> getTypeChecks(@NotNull final List<VCFSomaticData> vcfData,
-            @NotNull final String sampleId, @NotNull final VCFType vcfType) {
-        final HealthCheck countReport = getSomaticVariantCount(sampleId, vcfData, vcfType,
-                SomaticCheck.COUNT.checkName(vcfType.name()));
-        final List<HealthCheck> reports = new ArrayList<>();
-        reports.add(countReport);
+            @NotNull final String sampleId, @NotNull final VCFType type) {
+        final List<HealthCheck> checks = new ArrayList<>();
+        final List<VCFSomaticData> vcfForType = filter(vcfData, hasVCFType(type));
 
-        final List<VCFSomaticData> filteredData = filterByVCFType(vcfData, vcfType);
-        final List<HealthCheck> precisionReports = VCFConstants.ALL_CALLERS.stream().map(
-                caller -> calculatePrecision(filteredData, sampleId, vcfType, caller)).collect(Collectors.toList());
-        reports.addAll(precisionReports);
+        final HealthCheck vcfCountCheck = new HealthCheck(sampleId, SomaticCheck.COUNT.checkName(type.name()),
+                String.valueOf(vcfForType.size()));
+        checks.add(vcfCountCheck);
 
-        final List<HealthCheck> sensitivityReports = VCFConstants.ALL_CALLERS.stream().map(
-                caller -> calculateSensitivity(filteredData, sampleId, vcfType, caller)).collect(Collectors.toList());
-        reports.addAll(sensitivityReports);
+        final List<HealthCheck> precisionChecks = VCFConstants.ALL_CALLERS.stream().map(
+                caller -> calculatePrecision(vcfForType, sampleId, type, caller)).collect(Collectors.toList());
+        checks.addAll(precisionChecks);
 
-        final List<HealthCheck> proportionReports = CALLERS_COUNT.stream().map(
-                callerCount -> calculateProportion(filteredData, sampleId, vcfType, callerCount)).collect(
+        final List<HealthCheck> sensitivityChecks = VCFConstants.ALL_CALLERS.stream().map(
+                caller -> calculateSensitivity(vcfForType, sampleId, type, caller)).collect(Collectors.toList());
+        checks.addAll(sensitivityChecks);
+
+        final List<HealthCheck> proportionChecks = CALLERS_COUNT.stream().map(
+                callerCount -> calculateProportion(vcfForType, sampleId, type, callerCount)).collect(
                 Collectors.toList());
-        reports.addAll(proportionReports);
-        return reports;
-    }
-
-    @NotNull
-    private static HealthCheck getSomaticVariantCount(@NotNull final String sampleId,
-            @NotNull final List<VCFSomaticData> vcfData, final VCFType vcfType, final String checkName) {
-        final Long count = vcfData.stream().filter(data -> data.type().equals(vcfType)).count();
-        return new HealthCheck(sampleId, checkName, String.valueOf(count));
+        checks.addAll(proportionChecks);
+        return checks;
     }
 
     @NotNull
@@ -107,85 +101,74 @@ public class SomaticChecker implements HealthChecker {
     }
 
     @NotNull
-    private static HealthCheck calculatePrecision(@NotNull final List<VCFSomaticData> vcfData,
-            @NotNull final String sampleId, @NotNull final VCFType vcfType, @NotNull final String caller) {
-        final List<VCFSomaticData> callerSets = getSetsForCaller(vcfData, caller);
-        final List<VCFSomaticData> callerSetsPerCallersCount = getSetForCallerWithMoreThanOneCaller(callerSets,
-                caller);
+    private static HealthCheck calculatePrecision(@NotNull final List<VCFSomaticData> variants,
+            @NotNull final String sampleId, @NotNull final VCFType type, @NotNull final String caller) {
+        final List<VCFSomaticData> variantsForCaller = filter(variants, hasCaller(caller));
+        final List<VCFSomaticData> variantsForCallerWithMoreThanOneCaller = filter(variantsForCaller,
+                isTotalCallersCountMoreThan(1));
+
         double precision = 0D;
-        if (!callerSetsPerCallersCount.isEmpty() && !callerSets.isEmpty()) {
-            precision = (double) callerSetsPerCallersCount.size() / callerSets.size();
+        if (!variantsForCallerWithMoreThanOneCaller.isEmpty() && !variantsForCaller.isEmpty()) {
+            precision = (double) variantsForCallerWithMoreThanOneCaller.size() / variantsForCaller.size();
         }
         return new HealthCheck(sampleId,
-                SomaticCheck.PRECISION_CHECK.checkName(vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
+                SomaticCheck.PRECISION_CHECK.checkName(type.name(), caller.toUpperCase(Locale.ENGLISH)),
                 String.valueOf(precision));
     }
 
     @NotNull
-    private static HealthCheck calculateSensitivity(@NotNull final List<VCFSomaticData> vcfSomaticSetData,
-            @NotNull final String sampleId, @NotNull final VCFType vcfType, @NotNull final String caller) {
-        final List<VCFSomaticData> callerSetsPerCallersCount = getSetForCallerWithMoreThanOneCaller(vcfSomaticSetData,
-                caller);
-        final List<VCFSomaticData> setsPerCount = getSetsFilteredByCount(vcfSomaticSetData,
-                isTotalCallersCountMoreThan(1));
+    private static HealthCheck calculateSensitivity(@NotNull final List<VCFSomaticData> variants,
+            @NotNull final String sampleId, @NotNull final VCFType type, @NotNull final String caller) {
+        final List<VCFSomaticData> variantsWithMoreThanOneCaller = filter(variants, isTotalCallersCountMoreThan(1));
+        final List<VCFSomaticData> variantsForCallerWithMoreThanOneCaller = filter(variantsWithMoreThanOneCaller,
+                hasCaller(caller));
+
         double sensitivity = 0D;
-        if (!callerSetsPerCallersCount.isEmpty() && !setsPerCount.isEmpty()) {
-            sensitivity = (double) callerSetsPerCallersCount.size() / setsPerCount.size();
+        if (!variantsForCallerWithMoreThanOneCaller.isEmpty() && !variantsWithMoreThanOneCaller.isEmpty()) {
+            sensitivity =
+                    (double) variantsForCallerWithMoreThanOneCaller.size() / variantsWithMoreThanOneCaller.size();
         }
         return new HealthCheck(sampleId,
-                SomaticCheck.SENSITIVITY_CHECK.checkName(vcfType.name(), caller.toUpperCase(Locale.ENGLISH)),
+                SomaticCheck.SENSITIVITY_CHECK.checkName(type.name(), caller.toUpperCase(Locale.ENGLISH)),
                 String.valueOf(sensitivity));
     }
 
     @NotNull
-    private static HealthCheck calculateProportion(@NotNull final List<VCFSomaticData> vcfSomaticSetData,
-            @NotNull final String sampleId, @NotNull final VCFType vcfType, final int count) {
-        final List<VCFSomaticData> setsPerCount = getSetsFilteredByCount(vcfSomaticSetData,
-                isTotalCallersCountEqual(count));
+    private static HealthCheck calculateProportion(@NotNull final List<VCFSomaticData> variants,
+            @NotNull final String sampleId, @NotNull final VCFType type, final int count) {
+        final List<VCFSomaticData> variantsWithCallerCount = filter(variants, isTotalCallersCountEqual(count));
         double proportion = 0D;
-        if (!setsPerCount.isEmpty() && !vcfSomaticSetData.isEmpty()) {
-            proportion = (double) setsPerCount.size() / vcfSomaticSetData.size();
+        if (!variantsWithCallerCount.isEmpty() && !variants.isEmpty()) {
+            proportion = (double) variantsWithCallerCount.size() / variants.size();
         }
 
-        return new HealthCheck(sampleId,
-                SomaticCheck.PROPORTION_CHECK.checkName(vcfType.name(), String.valueOf(count)),
+        return new HealthCheck(sampleId, SomaticCheck.PROPORTION_CHECK.checkName(type.name(), String.valueOf(count)),
                 String.valueOf(proportion));
     }
 
     @NotNull
-    private static List<VCFSomaticData> getSetForCallerWithMoreThanOneCaller(
-            @NotNull final List<VCFSomaticData> vcfSomaticSetData, @NotNull final String caller) {
-        final List<VCFSomaticData> callerSets = getSetsForCaller(vcfSomaticSetData, caller);
-        return callerSets.stream().filter(vcfSomaticSet -> vcfSomaticSet.callerCount() > 1).collect(
-                Collectors.toList());
+    private static List<VCFSomaticData> filter(@NotNull final List<VCFSomaticData> variants,
+            @NotNull final Predicate<VCFSomaticData> filter) {
+        return variants.stream().filter(filter).collect(Collectors.toList());
     }
 
     @NotNull
-    private static List<VCFSomaticData> getSetsForCaller(@NotNull final List<VCFSomaticData> vcfSomaticData,
-            @NotNull final String caller) {
-        return vcfSomaticData.stream().filter(vcfData -> vcfData.callers().contains(caller)).collect(
-                Collectors.toList());
+    private static Predicate<VCFSomaticData> hasVCFType(@NotNull final VCFType type) {
+        return vcf -> vcf.type().equals(type);
     }
 
     @NotNull
-    private static List<VCFSomaticData> getSetsFilteredByCount(@NotNull final List<VCFSomaticData> vcfSomaticSetData,
-            @NotNull final Predicate<VCFSomaticData> countFilter) {
-        return vcfSomaticSetData.stream().filter(countFilter).collect(Collectors.toList());
-    }
-
-    @NotNull
-    private static List<VCFSomaticData> filterByVCFType(@NotNull final List<VCFSomaticData> vcfData,
-            @NotNull final VCFType type) {
-        return vcfData.stream().filter(vcf -> vcf.type().equals(type)).collect(Collectors.toList());
+    private static Predicate<VCFSomaticData> hasCaller(@NotNull final String caller) {
+        return vcf -> vcf.callers().contains(caller);
     }
 
     @NotNull
     private static Predicate<VCFSomaticData> isTotalCallersCountMoreThan(final int count) {
-        return vcfSomaticSet -> vcfSomaticSet.callerCount() > count;
+        return vcf -> vcf.callerCount() > count;
     }
 
     @NotNull
     private static Predicate<VCFSomaticData> isTotalCallersCountEqual(final int count) {
-        return vcfSomaticSet -> vcfSomaticSet.callerCount() == count;
+        return vcf -> vcf.callerCount() == count;
     }
 }
