@@ -78,7 +78,7 @@ public class CopynumberChecker implements HealthChecker {
                 CopynumberCheck.COPYNUMBER_GENOME_GAIN.toString(), String.valueOf(totalGain));
         final HealthCheck lossCheck = new HealthCheck(runContext.tumorSample(),
                 CopynumberCheck.COPYNUMBER_GENOME_LOSS.toString(), String.valueOf(totalLoss));
-        List<HealthCheck> checks = Lists.newArrayList(gainCheck, lossCheck);
+        final List<HealthCheck> checks = Lists.newArrayList(gainCheck, lossCheck);
         HealthCheck.log(LOGGER, checks);
         return new MultiValueResult(checkType(), checks);
     }
