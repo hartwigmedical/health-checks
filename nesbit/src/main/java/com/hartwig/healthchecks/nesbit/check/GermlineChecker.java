@@ -17,8 +17,8 @@ import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
-import com.hartwig.healthchecks.nesbit.model.VCFExtractorFunctions;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
+import com.hartwig.healthchecks.nesbit.model.VCFGermlineDataFactory;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 import com.hartwig.healthchecks.nesbit.predicate.VCFGermlineVariantPredicate;
 
@@ -33,9 +33,6 @@ public class GermlineChecker implements HealthChecker {
     private static final Logger LOGGER = LogManager.getLogger(GermlineChecker.class);
 
     private static final String GERMLINE_VCF_EXTENSION = "_Cosmicv76_GoNLv5.vcf";
-    private static final String VCF_COLUMN_SEPARATOR = "\t";
-    private static final int TUMOR_SAMPLE_COLUMN = 10;
-    private static final int REF_SAMPLE_COLUMN = 9;
 
     public GermlineChecker() {
     }
@@ -73,13 +70,7 @@ public class GermlineChecker implements HealthChecker {
 
     @NotNull
     private static List<VCFGermlineData> getVCFDataForGermLine(@NotNull final List<String> lines) {
-        return lines.stream().map(line -> {
-            final String[] values = line.split(VCF_COLUMN_SEPARATOR);
-            final VCFType type = VCFExtractorFunctions.extractVCFType(values);
-            final String refData = values[REF_SAMPLE_COLUMN];
-            final String tumData = values[TUMOR_SAMPLE_COLUMN];
-            return new VCFGermlineData(type, refData, tumData);
-        }).filter(vcfData -> vcfData != null).collect(Collectors.toList());
+        return lines.stream().map(VCFGermlineDataFactory::fromVCFLine).collect(Collectors.toList());
     }
 
     @NotNull

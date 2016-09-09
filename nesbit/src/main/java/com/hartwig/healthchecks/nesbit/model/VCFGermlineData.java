@@ -7,13 +7,14 @@ public class VCFGermlineData {
     @NotNull
     private final String refData;
     @NotNull
-    private final String tumData;
+    private final String tumorData;
     @NotNull
     private final VCFType type;
 
-    public VCFGermlineData(@NotNull final VCFType type, @NotNull final String refData, @NotNull final String tumData) {
+    public VCFGermlineData(@NotNull final VCFType type, @NotNull final String refData,
+            @NotNull final String tumorData) {
         this.refData = refData;
-        this.tumData = tumData;
+        this.tumorData = tumorData;
         this.type = type;
     }
 
@@ -28,7 +29,7 @@ public class VCFGermlineData {
     }
 
     @NotNull
-    public String getTumData() {
-        return tumData;
+    public String getTumorData() {
+        return tumorData;
     }
 }

@@ -17,7 +17,6 @@ public class VCFGermlineVariantPredicate implements Predicate<VCFGermlineData> {
     private final boolean isRefSample;
 
     public VCFGermlineVariantPredicate(@NotNull final VCFType vcfType, final boolean isRefSample) {
-        super();
         this.vcfType = vcfType;
         this.isRefSample = isRefSample;
     }
@@ -29,7 +28,7 @@ public class VCFGermlineVariantPredicate implements Predicate<VCFGermlineData> {
             String dataToCheck = vcfGermlineData.getRefData();
 
             if (!isRefSample) {
-                dataToCheck = vcfGermlineData.getTumData();
+                dataToCheck = vcfGermlineData.getTumorData();
             }
 
             if (!dataToCheck.startsWith(INVALID_VARIANT_1) && !dataToCheck.startsWith(INVALID_VARIANT_2)) {
