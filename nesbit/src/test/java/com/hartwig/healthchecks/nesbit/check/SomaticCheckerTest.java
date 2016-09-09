@@ -30,15 +30,16 @@ public class SomaticCheckerTest {
 
     private static final String INDELS = VCFType.INDELS.toString();
     private static final String SNP = VCFType.SNP.toString();
+
     private static final String MUTECT = VCFConstants.MUTECT.toUpperCase();
     private static final String FREEBAYES = VCFConstants.FREEBAYES.toUpperCase();
     private static final String STRELKA = VCFConstants.STRELKA.toUpperCase();
     private static final String VARSCAN = VCFConstants.VARSCAN.toUpperCase();
 
+    private final HealthChecker checker = new SomaticChecker();
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {
         RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final HealthChecker checker = new SomaticChecker();
 
         final BaseResult result = checker.run(runContext);
         final List<HealthCheck> checks = ((MultiValueResult) result).getChecks();
