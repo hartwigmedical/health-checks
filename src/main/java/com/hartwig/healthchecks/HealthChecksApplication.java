@@ -36,6 +36,7 @@ public final class HealthChecksApplication {
     private static final String RUN_DIR_ARG_DESC = "The path containing the data for a single run";
     private static final String CHECK_TYPE_ARGS_DESC = "The type of check to be executed for a single run";
     private static final String REPORT_TYPE_ARGS_DESC = "The type of report to be generated: json or stdout.";
+    private static final String REPORT_OUTPUT_PATH_ARGS_DESC = "The path where reports are written to.";
 
     private static final String REPORT_GENERATED_MSG = "Report generated -> \n%s";
 
@@ -44,6 +45,7 @@ public final class HealthChecksApplication {
     private static final String RUN_DIRECTORY = "rundir";
     private static final String CHECK_TYPE = "checktype";
     private static final String REPORT_TYPE = "reporttype";
+    private static final String REPORT_OUTPUT_PATH = "reportout";
 
     private static final String ALL_CHECKS = "all";
 
@@ -53,12 +55,15 @@ public final class HealthChecksApplication {
     private final String checkType;
     @NotNull
     private final String reportType;
+    @NotNull
+    private final String reportOutputPath;
 
     private HealthChecksApplication(@NotNull final RunContext runContext, @NotNull final String checkType,
-            @NotNull final String reportType) {
+            @NotNull final String reportType, @NotNull final String reportOutputPath) {
         this.runContext = runContext;
         this.checkType = checkType;
         this.reportType = reportType;
+        this.reportOutputPath = reportOutputPath;
     }
 
     /**
@@ -66,7 +71,7 @@ public final class HealthChecksApplication {
      *
      * @param args - Arguments on how to run the health-checks should contain:
      *             -rundir [run-directory] -checktype [somatic - all] -reporttype
-     *             [json - stdout]
+     *             [json - stdout] -reportout /path/to/reports/
      * @throws ParseException - In case commandline's arguments could not be parsed.
      */
     public static void main(final String... args) throws ParseException {
@@ -76,6 +81,7 @@ public final class HealthChecksApplication {
         String runDirectory = cmd.getOptionValue(RUN_DIRECTORY);
         final String checkType = cmd.getOptionValue(CHECK_TYPE);
         final String reportType = cmd.getOptionValue(REPORT_TYPE);
+        final String reportOutputPath = cmd.getOptionValue(REPORT_OUTPUT_PATH);
 
         if (runDirectory == null || checkType == null || reportType == null) {
             final HelpFormatter formatter = new HelpFormatter();
@@ -93,7 +99,7 @@ public final class HealthChecksApplication {
         }
 
         final HealthChecksApplication healthChecksApplication = new HealthChecksApplication(runContext, checkType,
-                reportType);
+                reportType, reportOutputPath);
         healthChecksApplication.processHealthChecks();
     }
 
@@ -104,6 +110,7 @@ public final class HealthChecksApplication {
         options.addOption(RUN_DIRECTORY, true, RUN_DIR_ARG_DESC);
         options.addOption(CHECK_TYPE, true, CHECK_TYPE_ARGS_DESC);
         options.addOption(REPORT_TYPE, true, REPORT_TYPE_ARGS_DESC);
+        options.addOption(REPORT_OUTPUT_PATH, true, REPORT_OUTPUT_PATH_ARGS_DESC);
 
         return options;
     }
@@ -159,7 +166,7 @@ public final class HealthChecksApplication {
         try {
             final Report report = HealthCheckReportFactory.create(reportType);
 
-            final Optional<String> reportData = report.generateReport(runContext.runDirectory());
+            final Optional<String> reportData = report.generateReport(runContext.runDirectory(), reportOutputPath);
             if (reportData.isPresent()) {
                 LOGGER.info(String.format(REPORT_GENERATED_MSG, reportData.get()));
             }

@@ -5,41 +5,39 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
-import com.hartwig.healthchecks.common.util.PropertiesUtil;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public final class JsonReport extends AbstractJsonBaseReport {
 
     private static final JsonReport INSTANCE = new JsonReport();
 
     private static final Logger LOGGER = LogManager.getLogger(JsonReport.class);
-    private static final String REPORT_DIR = "report.dir";
-    private static final String REPORT_NAME = "health-checks_%s.json";
+    private static final String REPORT_NAME = "%s_health-checks_%s.json";
 
     private static final String ERROR_GENERATING_REPORT = "Error occurred whilst generating reports. Error -> %s";
 
     private JsonReport() {
     }
 
-    public static JsonReport getInstance() {
+    static JsonReport getInstance() {
         return INSTANCE;
     }
 
     @NotNull
     @Override
-    public Optional<String> generateReport(@NotNull final String runDirectory) throws GenerateReportException {
-        final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
+    public Optional<String> generateReport(@NotNull final String runDirectory, @NotNull final String outputPath)
+            throws GenerateReportException {
         final JsonArray reportArray = computeElements(runDirectory);
 
-        final String reportDir = propertiesUtil.getProperty(REPORT_DIR);
-        final String fileName = String.format("%s/%s", reportDir,
-                        String.format(REPORT_NAME, System.currentTimeMillis()));
+        final String runName = toName(runDirectory);
+        final String fileName = String.format("%s/%s", outputPath,
+                String.format(REPORT_NAME, runName, System.currentTimeMillis()));
 
         try (FileWriter fileWriter = new FileWriter(new File(fileName))) {
             final JsonObject reportJson = new JsonObject();
@@ -51,5 +49,11 @@ public final class JsonReport extends AbstractJsonBaseReport {
             throw (GenerateReportException) new GenerateReportException(e.getMessage()).initCause(e);
         }
         return Optional.of(fileName);
+    }
+
+    @NotNull
+    private static String toName(@NotNull final String runDirectory) {
+        final String[] parts = runDirectory.split("/");
+        return parts[parts.length - 1];
     }
 }

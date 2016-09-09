@@ -12,5 +12,6 @@ public interface Report {
     void addResult(@NotNull BaseResult result);
 
     @NotNull
-    Optional<String> generateReport(@NotNull String runDirectory) throws GenerateReportException;
+    Optional<String> generateReport(@NotNull final String runDirectory, @NotNull final String outputPath)
+            throws GenerateReportException;
 }

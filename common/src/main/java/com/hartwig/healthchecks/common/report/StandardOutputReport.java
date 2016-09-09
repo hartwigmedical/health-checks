@@ -15,13 +15,14 @@ final class StandardOutputReport extends AbstractJsonBaseReport {
     private StandardOutputReport() {
     }
 
-    public static StandardOutputReport getInstance() {
+    static StandardOutputReport getInstance() {
         return INSTANCE;
     }
 
     @NotNull
     @Override
-    public Optional<String> generateReport(@NotNull final String runDirectory) throws GenerateReportException {
+    public Optional<String> generateReport(@NotNull final String runDirectory, @NotNull final String outputPath)
+            throws GenerateReportException {
         final JsonArray reportArray = computeElements(runDirectory);
 
         final JsonObject reportJson = new JsonObject();
