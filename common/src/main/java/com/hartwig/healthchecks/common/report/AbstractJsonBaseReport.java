@@ -18,7 +18,6 @@ import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
 import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,9 +28,6 @@ abstract class AbstractJsonBaseReport implements Report {
 
     static final Gson GSON = new GsonBuilder().setPrettyPrinting()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).disableHtmlEscaping().create();
-
-    private static final String ADD_META_DATA = "add.metadata";
-    private static final String ADD_META_DATA_TRUE = "1";
 
     private static final String PIPELINE_VERSION = "PipelineVersion";
     private static final String RUN_DATE = "RunDate";
@@ -50,15 +46,10 @@ abstract class AbstractJsonBaseReport implements Report {
     @NotNull
     JsonArray computeElements(@NotNull final String runDirectory) {
         final JsonArray reportArray = new JsonArray();
-        final PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
 
-        final String addMetaData = propertiesUtil.getProperty(ADD_META_DATA);
-
-        if (addMetaData.equals(ADD_META_DATA_TRUE)) {
-            final JsonObject element = getMetadata(runDirectory);
-            if (element != null) {
-                reportArray.add(element);
-            }
+        final JsonObject metadataElement = getMetadata(runDirectory);
+        if (metadataElement != null) {
+            reportArray.add(metadataElement);
         }
 
         HEALTH_CHECKS.forEach((checkType, baseReport) -> {

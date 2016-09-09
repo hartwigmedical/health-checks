@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
-import mockit.Verifications;
 
 public class ReportTest {
 
@@ -35,23 +34,15 @@ public class ReportTest {
     private static final String ONE = "1";
     private static final String RUN_DIR = "runDir";
     private static final String REPORT_DIR = "report.dir";
-    private static final String ADD_META_DATA = "add.metadata";
 
     @Test
     public void generateStOutReport(@Mocked final MetadataExtractor metadataExtractor,
             @Mocked final PropertiesUtil propertiesUtil) throws IOException, HealthChecksException {
         new NonStrictExpectations() {
             {
-                PropertiesUtil.getInstance();
-                result = propertiesUtil;
-                times = 1;
-
                 new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
                 result = metadataExtractor;
                 times = 1;
-
-                propertiesUtil.getProperty(ADD_META_DATA);
-                returns(ONE);
 
                 propertiesUtil.getProperty(REPORT_DIR);
                 returns(TMP_DIR);
@@ -82,16 +73,9 @@ public class ReportTest {
             @Mocked final PropertiesUtil propertiesUtil) throws IOException, HealthChecksException {
         new NonStrictExpectations() {
             {
-                PropertiesUtil.getInstance();
-                result = propertiesUtil;
-                times = 1;
-
                 new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
                 result = metadataExtractor;
                 times = 1;
-
-                propertiesUtil.getProperty(ADD_META_DATA);
-                returns(ONE);
 
                 propertiesUtil.getProperty(REPORT_DIR);
                 returns(TMP_DIR);
@@ -122,16 +106,9 @@ public class ReportTest {
             @Mocked final PropertiesUtil propertiesUtil) throws IOException, HealthChecksException {
         new NonStrictExpectations() {
             {
-                PropertiesUtil.getInstance();
-                result = propertiesUtil;
-                times = 1;
-
                 new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
                 result = metadataExtractor;
                 times = 1;
-
-                propertiesUtil.getProperty(ADD_META_DATA);
-                returns(ONE);
 
                 propertiesUtil.getProperty(REPORT_DIR);
                 returns(TMP_DIR);
@@ -157,48 +134,6 @@ public class ReportTest {
         assertFalse(json.contains(SOME_VERSION));
     }
 
-    @Test
-    public void generateReportNoMeta(@Mocked final MetadataExtractor metadataExtractor,
-            @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
-            throws IOException, HealthChecksException {
-        new NonStrictExpectations() {
-            {
-                PropertiesUtil.getInstance();
-                result = propertiesUtil;
-                times = 2;
-
-                propertiesUtil.getProperty(ADD_META_DATA);
-                returns(ZERO);
-
-                propertiesUtil.getProperty(REPORT_DIR);
-                returns(TMP_DIR);
-
-                new FileWriter(new File(anyString));
-                result = fileWriter;
-                times = 1;
-            }
-        };
-
-        final Report report = JsonReport.getInstance();
-
-        final BaseResult baseConfig1 = new TestResult(CheckType.MAPPING);
-        report.addResult(baseConfig1);
-
-        final BaseResult baseConfig2 = new TestResult(CheckType.PRESTATS);
-        report.addResult(baseConfig2);
-
-        final Optional<String> location = report.generateReport(RUN_DIR);
-        assertNotNull(location);
-        assertTrue(location.isPresent());
-
-        new Verifications() {
-            {
-                metadataExtractor.extractMetadata(RUN_DIR);
-                times = 0;
-            }
-        };
-    }
-
     @Test(expected = GenerateReportException.class)
     public void generateReportException(@Mocked final MetadataExtractor metadataExtractor,
             @Mocked final PropertiesUtil propertiesUtil, @Mocked final FileWriter fileWriter)
@@ -207,14 +142,11 @@ public class ReportTest {
             {
                 PropertiesUtil.getInstance();
                 result = propertiesUtil;
-                times = 2;
+                times = 1;
 
                 new MetadataExtractor((PathRegexFinder) any, (LineReader) any);
                 result = metadataExtractor;
                 times = 1;
-
-                propertiesUtil.getProperty(ADD_META_DATA);
-                returns(ONE);
 
                 propertiesUtil.getProperty(REPORT_DIR);
                 returns(TMP_DIR);
