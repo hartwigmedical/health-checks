@@ -40,7 +40,7 @@ public class KinshipChecker implements HealthChecker {
     @Override
     @NotNull
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        Path kinshipPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), KINSHIP_EXTENSION);
+        final Path kinshipPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), KINSHIP_EXTENSION);
         final List<String> kinshipLines = FileReader.build().readLines(kinshipPath);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
             throw new MalformedFileException(

@@ -6,7 +6,7 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 
 import org.jetbrains.annotations.NotNull;
 
-public class BaseResult implements Serializable {
+public abstract class BaseResult implements Serializable {
 
     private static final long serialVersionUID = -4752339157661751000L;
 

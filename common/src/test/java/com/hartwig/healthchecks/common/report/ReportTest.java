@@ -19,6 +19,7 @@ import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.util.PropertiesUtil;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import mockit.Mocked;
@@ -62,10 +63,10 @@ public class ReportTest {
 
         final Report report = StandardOutputReport.getInstance();
 
-        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new TestResult(CheckType.MAPPING);
         report.addResult(baseConfig1);
 
-        final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
+        final BaseResult baseConfig2 = new TestResult(CheckType.PRESTATS);
         report.addResult(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
@@ -102,10 +103,10 @@ public class ReportTest {
 
         final Report report = StandardOutputReport.getInstance();
 
-        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new TestResult(CheckType.MAPPING);
         report.addResult(baseConfig1);
 
-        final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
+        final BaseResult baseConfig2 = new TestResult(CheckType.PRESTATS);
         report.addResult(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
@@ -142,10 +143,10 @@ public class ReportTest {
 
         final Report report = StandardOutputReport.getInstance();
 
-        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new TestResult(CheckType.MAPPING);
         report.addResult(baseConfig1);
 
-        final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
+        final BaseResult baseConfig2 = new TestResult(CheckType.PRESTATS);
         report.addResult(baseConfig2);
 
         final Optional<String> jsonOptional = report.generateReport(RUN_DIR);
@@ -180,10 +181,10 @@ public class ReportTest {
 
         final Report report = JsonReport.getInstance();
 
-        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new TestResult(CheckType.MAPPING);
         report.addResult(baseConfig1);
 
-        final BaseResult baseConfig2 = new BaseResult(CheckType.PRESTATS);
+        final BaseResult baseConfig2 = new TestResult(CheckType.PRESTATS);
         report.addResult(baseConfig2);
 
         final Optional<String> location = report.generateReport(RUN_DIR);
@@ -232,12 +233,18 @@ public class ReportTest {
         };
         final Report report = JsonReport.getInstance();
 
-        final BaseResult baseConfig1 = new BaseResult(CheckType.MAPPING);
+        final BaseResult baseConfig1 = new TestResult(CheckType.MAPPING);
         report.addResult(baseConfig1);
 
         final Optional<String> location = report.generateReport(RUN_DIR);
 
         assertNotNull(location);
         assertFalse(location.isPresent());
+    }
+
+    private static class TestResult extends BaseResult {
+        TestResult(@NotNull final CheckType checkType) {
+            super(checkType);
+        }
     }
 }

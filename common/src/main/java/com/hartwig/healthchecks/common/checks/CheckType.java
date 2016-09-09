@@ -16,7 +16,8 @@ public enum CheckType {
     SOMATIC,
     SLICED,
     REALIGNER,
-    GERMLINE;
+    GERMLINE,
+    COPYNUMBER;
 
     @NotNull
     public static Optional<CheckType> getByCategory(@NotNull final String typeToCheck) {
