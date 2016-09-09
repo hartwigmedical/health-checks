@@ -166,9 +166,9 @@ public final class HealthChecksApplication {
         try {
             final Report report = HealthCheckReportFactory.create(reportType);
 
-            final Optional<String> reportData = report.generateReport(runContext.runDirectory(), reportOutputPath);
-            if (reportData.isPresent()) {
-                LOGGER.info(String.format(REPORT_GENERATED_MSG, reportData.get()));
+            final Optional<String> reportPath = report.generateReport(runContext, reportOutputPath);
+            if (reportPath.isPresent()) {
+                LOGGER.info(String.format(REPORT_GENERATED_MSG, reportPath.get()));
             }
         } catch (final GenerateReportException e) {
             LOGGER.log(Level.ERROR, e.getMessage());
