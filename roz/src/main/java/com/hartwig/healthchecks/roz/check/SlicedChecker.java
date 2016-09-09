@@ -36,10 +36,10 @@ public class SlicedChecker implements HealthChecker {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), SLICED_VCF_EXTENSION);
         final long value = LineReader.build().readLines(vcfPath, new VCFDataLinePredicate()).stream().count();
 
-        HealthCheck sampleData = new HealthCheck(runContext.refSample(),
+        final HealthCheck check = new HealthCheck(runContext.tumorSample(),
                 SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), String.valueOf(value));
-        sampleData.log(LOGGER);
-        return new SingleValueResult(checkType(), sampleData);
+        check.log(LOGGER);
+        return new SingleValueResult(checkType(), check);
     }
 
     @NotNull
