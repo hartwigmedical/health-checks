@@ -18,12 +18,17 @@ import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.COPYNUMBER)
 public class CopynumberChecker implements HealthChecker {
 
+    private static final Logger LOGGER = LogManager.getLogger(CopynumberChecker.class);
+
+    // KODU: copynumber data is stored in {run}/copyNumber/{sampleR}_{sampleT}/freec/{sampleT}<>.bam_CNVs
     private static final String COPYNUMBER_BASE_DIRECTORY = "copyNumber";
     private static final String COPYNUMBER_SAMPLE_CONNECTOR = "_";
     private static final String COPYNUMBER_ALGO_DIRECTORY = "freec";
@@ -73,8 +78,9 @@ public class CopynumberChecker implements HealthChecker {
                 CopynumberCheck.COPYNUMBER_GENOME_GAIN.toString(), String.valueOf(totalGain));
         final HealthCheck lossCheck = new HealthCheck(runContext.tumorSample(),
                 CopynumberCheck.COPYNUMBER_GENOME_LOSS.toString(), String.valueOf(totalLoss));
-
-        return new MultiValueResult(checkType(), Lists.newArrayList(gainCheck, lossCheck));
+        List<HealthCheck> checks = Lists.newArrayList(gainCheck, lossCheck);
+        HealthCheck.log(LOGGER, checks);
+        return new MultiValueResult(checkType(), checks);
     }
 
     @NotNull

@@ -10,6 +10,7 @@ import java.util.Optional;
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
@@ -51,11 +52,11 @@ public class WGSMetricsCheckerTest {
     private static final String INCORRECT_SAMPLE = "sample4";
     private static final String NON_EXISTING_SAMPLE = "sample5";
 
+    private final HealthChecker checker = new WGSMetricsChecker();
+
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
         RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-
-        WGSMetricsChecker checker = new WGSMetricsChecker();
         final BaseResult result = checker.run(runContext);
         assertResult(result);
     }
@@ -63,8 +64,6 @@ public class WGSMetricsCheckerTest {
     @Test(expected = EmptyFileException.class)
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
-
-        WGSMetricsChecker checker = new WGSMetricsChecker();
         checker.run(runContext);
     }
 
@@ -72,32 +71,24 @@ public class WGSMetricsCheckerTest {
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
         RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
-
-        WGSMetricsChecker checker = new WGSMetricsChecker();
         checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
-
-        WGSMetricsChecker checker = new WGSMetricsChecker();
         checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
-
-        WGSMetricsChecker checker = new WGSMetricsChecker();
         checker.run(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
         RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
-
-        WGSMetricsChecker checker = new WGSMetricsChecker();
         checker.run(runContext);
     }
 
