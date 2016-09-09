@@ -71,7 +71,7 @@ public final class HealthChecksApplication {
      *
      * @param args - Arguments on how to run the health-checks should contain:
      *             -rundir [run-directory] -checktype [somatic - all] -reporttype
-     *             [json - stdout] -reportout /path/to/reports/
+     *             [json - stdout] -reportout /path/to/reports
      * @throws ParseException - In case commandline's arguments could not be parsed.
      */
     public static void main(final String... args) throws ParseException {
