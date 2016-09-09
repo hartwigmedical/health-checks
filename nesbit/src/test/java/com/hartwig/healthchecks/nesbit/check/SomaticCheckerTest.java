@@ -45,8 +45,8 @@ public class SomaticCheckerTest {
         assertEquals(CheckType.SOMATIC, result.getCheckType());
         assertEquals(26, checks.size());
 
-        assertCheck(checks, SomaticCheck.SOMATIC_COUNT.checkName(VCFType.INDELS.toString()), 67);
-        assertCheck(checks, SomaticCheck.SOMATIC_COUNT.checkName(VCFType.SNP.toString()), 987);
+        assertCheck(checks, SomaticCheck.COUNT.checkName(VCFType.INDELS.toString()), 67);
+        assertCheck(checks, SomaticCheck.COUNT.checkName(VCFType.SNP.toString()), 987);
 
         assertCheck(checks, SomaticCheck.SENSITIVITY_CHECK.checkName(SNP, MUTECT), 0.9137);
         assertCheck(checks, SomaticCheck.SENSITIVITY_CHECK.checkName(INDELS, MUTECT), 0.0);

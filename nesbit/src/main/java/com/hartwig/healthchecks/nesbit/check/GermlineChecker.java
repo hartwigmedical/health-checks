@@ -17,6 +17,7 @@ import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
+import com.hartwig.healthchecks.nesbit.model.VCFExtractorFunctions;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 import com.hartwig.healthchecks.nesbit.predicate.VCFGermlineVariantPredicate;
@@ -74,7 +75,7 @@ public class GermlineChecker implements HealthChecker {
     private static List<VCFGermlineData> getVCFDataForGermLine(@NotNull final List<String> lines) {
         return lines.stream().map(line -> {
             final String[] values = line.split(VCF_COLUMN_SEPARATOR);
-            final VCFType type = VCFExtractorFunctions.getVCFType(values);
+            final VCFType type = VCFExtractorFunctions.extractVCFType(values);
             final String refData = values[REF_SAMPLE_COLUMN];
             final String tumData = values[TUMOR_SAMPLE_COLUMN];
             return new VCFGermlineData(type, refData, tumData);

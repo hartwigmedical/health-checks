@@ -1,10 +1,8 @@
-package com.hartwig.healthchecks.nesbit.check;
-
-import com.hartwig.healthchecks.nesbit.model.VCFType;
+package com.hartwig.healthchecks.nesbit.model;
 
 import org.jetbrains.annotations.NotNull;
 
-final class VCFExtractorFunctions {
+public final class VCFExtractorFunctions {
 
     private static final int ALT_INDEX = 4;
     private static final int REF_INDEX = 3;
@@ -14,7 +12,7 @@ final class VCFExtractorFunctions {
     }
 
     @NotNull
-    static VCFType getVCFType(@NotNull final String[] values) {
+    public static VCFType extractVCFType(@NotNull final String[] values) {
         final String refValue = values[REF_INDEX];
         final String altValue = values[ALT_INDEX];
 

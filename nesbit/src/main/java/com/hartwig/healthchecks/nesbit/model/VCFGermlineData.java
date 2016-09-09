@@ -12,7 +12,6 @@ public class VCFGermlineData {
     private final VCFType type;
 
     public VCFGermlineData(@NotNull final VCFType type, @NotNull final String refData, @NotNull final String tumData) {
-        super();
         this.refData = refData;
         this.tumData = tumData;
         this.type = type;

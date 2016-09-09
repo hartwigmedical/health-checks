@@ -1,27 +1,38 @@
 package com.hartwig.healthchecks.nesbit.model;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 
 public class VCFSomaticData {
 
     @NotNull
-    private final String info;
-    @NotNull
     private final VCFType type;
+    @NotNull
+    private final List<String> callers;
+    private final double alleleFrequency;
 
-    public VCFSomaticData(@NotNull final VCFType type, @NotNull final String info) {
-        super();
+    VCFSomaticData(@NotNull final VCFType type, @NotNull final List<String> callers, final double alleleFrequency) {
         this.type = type;
-        this.info = info;
+        this.callers = callers;
+        this.alleleFrequency = alleleFrequency;
     }
 
     @NotNull
-    public VCFType getType() {
+    public VCFType type() {
         return type;
     }
 
     @NotNull
-    public String getInfo() {
-        return info;
+    public List<String> callers() {
+        return callers;
+    }
+
+    public long callerCount() {
+        return callers.size();
+    }
+
+    public double alleleFrequency() {
+        return alleleFrequency;
     }
 }
