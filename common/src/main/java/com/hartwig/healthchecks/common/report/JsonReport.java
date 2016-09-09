@@ -8,12 +8,13 @@ import java.util.Optional;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
+import com.hartwig.healthchecks.common.io.dir.RunContext;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public final class JsonReport extends AbstractJsonBaseReport {
+final class JsonReport extends AbstractJsonBaseReport {
 
     private static final JsonReport INSTANCE = new JsonReport();
 
@@ -31,11 +32,11 @@ public final class JsonReport extends AbstractJsonBaseReport {
 
     @NotNull
     @Override
-    public Optional<String> generateReport(@NotNull final String runDirectory, @NotNull final String outputPath)
+    public Optional<String> generateReport(@NotNull final RunContext runContext, @NotNull final String outputPath)
             throws GenerateReportException {
-        final JsonArray reportArray = computeElements(runDirectory);
+        final JsonArray reportArray = computeElements(runContext);
 
-        final String runName = toName(runDirectory);
+        final String runName = toName(runContext.runDirectory());
         final String fileName = String.format("%s/%s", outputPath,
                 String.format(REPORT_NAME, runName, System.currentTimeMillis()));
 
@@ -53,7 +54,7 @@ public final class JsonReport extends AbstractJsonBaseReport {
 
     @NotNull
     private static String toName(@NotNull final String runDirectory) {
-        final String[] parts = runDirectory.split("/");
+        final String[] parts = runDirectory.split(File.separator);
         return parts[parts.length - 1];
     }
 }

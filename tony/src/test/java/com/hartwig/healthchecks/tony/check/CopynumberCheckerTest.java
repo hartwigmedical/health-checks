@@ -34,14 +34,14 @@ public class CopynumberCheckerTest {
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
         final BaseResult result = checker.run(runContext);
         assertResult(result);
     }
 
     @Test(expected = MalformedFileException.class)
     public void noGainLossTagsYieldMalformedException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, MALFORMED_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, MALFORMED_SAMPLE);
         checker.run(runContext);
     }
 

@@ -30,7 +30,7 @@ public class KinshipCheckerTest {
 
     @Test
     public void extractDataFromKinship() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(CORRECT_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(CORRECT_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipChecker checker = new KinshipChecker();
 
@@ -43,7 +43,7 @@ public class KinshipCheckerTest {
 
     @Test(expected = MalformedFileException.class)
     public void cannotReadMalformedKinship() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(MALFORMED_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(MALFORMED_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipChecker checker = new KinshipChecker();
 
@@ -52,7 +52,7 @@ public class KinshipCheckerTest {
 
     @Test(expected = EmptyFileException.class)
     public void cannotReadFromEmptyKinship() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(EMPTY_RUN, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(EMPTY_RUN, REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipChecker checker = new KinshipChecker();
 
@@ -61,7 +61,7 @@ public class KinshipCheckerTest {
 
     @Test(expected = IOException.class)
     public void cannotReadFromNonExistingKinship() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext("Does not exist", REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest("Does not exist", REF_SAMPLE, TUMOR_SAMPLE);
 
         final KinshipChecker checker = new KinshipChecker();
 

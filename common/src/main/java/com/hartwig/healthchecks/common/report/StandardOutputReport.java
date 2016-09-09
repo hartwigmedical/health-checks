@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
+import com.hartwig.healthchecks.common.io.dir.RunContext;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +22,9 @@ final class StandardOutputReport extends AbstractJsonBaseReport {
 
     @NotNull
     @Override
-    public Optional<String> generateReport(@NotNull final String runDirectory, @NotNull final String outputPath)
+    public Optional<String> generateReport(@NotNull final RunContext runContext, @NotNull final String outputPath)
             throws GenerateReportException {
-        final JsonArray reportArray = computeElements(runDirectory);
+        final JsonArray reportArray = computeElements(runContext);
 
         final JsonObject reportJson = new JsonObject();
         reportJson.add("health_checks", reportArray);

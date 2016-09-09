@@ -23,7 +23,7 @@ public class SlicedCheckerTest {
 
     @Test
     public void canAnalyseTypicalSlicedVCF() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         final SlicedChecker checker = new SlicedChecker();
 
@@ -37,7 +37,7 @@ public class SlicedCheckerTest {
 
     @Test(expected = IOException.class)
     public void readingNonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
 
         final SlicedChecker checker = new SlicedChecker();
         checker.run(runContext);

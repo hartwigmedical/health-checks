@@ -13,8 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
-import com.hartwig.healthchecks.common.io.reader.LineReader;
+import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.report.metadata.MetadataExtractor;
 import com.hartwig.healthchecks.common.report.metadata.ReportMetadata;
 import com.hartwig.healthchecks.common.result.BaseResult;
@@ -44,10 +43,10 @@ abstract class AbstractJsonBaseReport implements Report {
     }
 
     @NotNull
-    JsonArray computeElements(@NotNull final String runDirectory) {
+    JsonArray computeElements(@NotNull final RunContext runContext) {
         final JsonArray reportArray = new JsonArray();
 
-        final JsonObject metadataElement = getMetadata(runDirectory);
+        final JsonObject metadataElement = getMetadata(runContext);
         if (metadataElement != null) {
             reportArray.add(metadataElement);
         }
@@ -65,13 +64,12 @@ abstract class AbstractJsonBaseReport implements Report {
     }
 
     @Nullable
-    private static JsonObject getMetadata(@NotNull final String runDirectory) {
+    private static JsonObject getMetadata(@NotNull final RunContext runContext) {
         JsonObject element = null;
 
         try {
-            final MetadataExtractor metadataExtractor = new MetadataExtractor(PathRegexFinder.build(),
-                    LineReader.build());
-            final ReportMetadata reportMetadata = metadataExtractor.extractMetadata(runDirectory);
+            final MetadataExtractor metadataExtractor = new MetadataExtractor();
+            final ReportMetadata reportMetadata = metadataExtractor.extractMetadata(runContext);
 
             final JsonParser parser = new JsonParser();
             element = new JsonObject();

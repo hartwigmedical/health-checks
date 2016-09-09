@@ -26,7 +26,7 @@ public class GermlineCheckerTest {
 
     @Test
     public void canCountSNPAndIndels() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         final GermlineChecker checker = new GermlineChecker();
         final BaseResult result = checker.run(runContext);

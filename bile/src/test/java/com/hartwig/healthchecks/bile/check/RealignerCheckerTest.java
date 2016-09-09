@@ -39,7 +39,7 @@ public class RealignerCheckerTest {
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         RealignerChecker checker = new RealignerChecker();
         final BaseResult report = checker.run(runContext);
@@ -48,7 +48,7 @@ public class RealignerCheckerTest {
 
     @Test(expected = EmptyFileException.class)
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
 
         RealignerChecker checker = new RealignerChecker();
         checker.run(runContext);
@@ -56,7 +56,7 @@ public class RealignerCheckerTest {
 
     @Test(expected = IOException.class)
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
 
         RealignerChecker checker = new RealignerChecker();
@@ -65,7 +65,7 @@ public class RealignerCheckerTest {
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
 
         RealignerChecker checker = new RealignerChecker();
         checker.run(runContext);
@@ -73,7 +73,7 @@ public class RealignerCheckerTest {
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
 
         RealignerChecker checker = new RealignerChecker();
         checker.run(runContext);
@@ -81,7 +81,7 @@ public class RealignerCheckerTest {
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
 
         RealignerChecker checker = new RealignerChecker();
         checker.run(runContext);
@@ -89,7 +89,7 @@ public class RealignerCheckerTest {
 
     @Test(expected = MalformedFileException.class)
     public void malformedLineYieldsMalformedFileException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.testContext(RUN_DIRECTORY, MALFORMED_SAMPLE, MALFORMED_SAMPLE);
+        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, MALFORMED_SAMPLE, MALFORMED_SAMPLE);
 
         RealignerChecker checker = new RealignerChecker();
         checker.run(runContext);
