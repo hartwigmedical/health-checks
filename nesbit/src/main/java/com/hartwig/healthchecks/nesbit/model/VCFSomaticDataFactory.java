@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,17 +24,6 @@ public final class VCFSomaticDataFactory {
     private static final String CALLER_ALGO_SEPARATOR = "-";
     private static final String CALLER_FILTERED_IDENTIFIER = "filterIn";
     private static final String CALLER_INTERSECTION_IDENTIFIER = "Intersection";
-
-    @VisibleForTesting
-    static final String MUTECT = "mutect";
-    @VisibleForTesting
-    static final String VARSCAN = "varscan";
-    @VisibleForTesting
-    static final String STRELKA = "strelka";
-    @VisibleForTesting
-    static final String FREEBAYES = "freebayes";
-
-    private static final List<String> ALL_CALLERS = Arrays.asList(MUTECT, VARSCAN, STRELKA, FREEBAYES);
 
     private VCFSomaticDataFactory() {
     }
@@ -61,7 +49,7 @@ public final class VCFSomaticDataFactory {
         final String[] allCallers = setValue.get().split(CALLER_ALGO_SEPARATOR);
         List<String> finalCallers = Lists.newArrayList();
         if (allCallers.length > 0 && allCallers[0].equals(CALLER_INTERSECTION_IDENTIFIER)) {
-            finalCallers.addAll(ALL_CALLERS);
+            finalCallers.addAll(VCFConstants.ALL_CALLERS);
         } else {
             finalCallers.addAll(
                     Arrays.stream(allCallers).filter(caller -> !caller.startsWith(CALLER_FILTERED_IDENTIFIER)).collect(

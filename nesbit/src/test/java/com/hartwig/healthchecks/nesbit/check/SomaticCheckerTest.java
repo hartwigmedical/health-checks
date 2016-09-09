@@ -15,6 +15,7 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
+import com.hartwig.healthchecks.nesbit.model.VCFConstants;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,10 +30,10 @@ public class SomaticCheckerTest {
 
     private static final String INDELS = VCFType.INDELS.toString();
     private static final String SNP = VCFType.SNP.toString();
-    private static final String MUTECT = SomaticChecker.MUTECT.toUpperCase();
-    private static final String FREEBAYES = SomaticChecker.FREEBAYES.toUpperCase();
-    private static final String STRELKA = SomaticChecker.STRELKA.toUpperCase();
-    private static final String VARSCAN = SomaticChecker.VARSCAN.toUpperCase();
+    private static final String MUTECT = VCFConstants.MUTECT.toUpperCase();
+    private static final String FREEBAYES = VCFConstants.FREEBAYES.toUpperCase();
+    private static final String STRELKA = VCFConstants.STRELKA.toUpperCase();
+    private static final String VARSCAN = VCFConstants.VARSCAN.toUpperCase();
 
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {

@@ -9,7 +9,6 @@ import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
@@ -22,6 +21,7 @@ import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
+import com.hartwig.healthchecks.nesbit.model.VCFConstants;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticData;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticDataFactory;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
@@ -37,17 +37,6 @@ public class SomaticChecker implements HealthChecker {
     private static final Logger LOGGER = LogManager.getLogger(SomaticChecker.class);
 
     private static final String MELTED_SOMATICS_EXTENSION = "_Cosmicv76_melted.vcf";
-
-    @VisibleForTesting
-    static final String MUTECT = "mutect";
-    @VisibleForTesting
-    static final String VARSCAN = "varscan";
-    @VisibleForTesting
-    static final String STRELKA = "strelka";
-    @VisibleForTesting
-    static final String FREEBAYES = "freebayes";
-
-    private static final List<String> ALL_CALLERS = Arrays.asList(MUTECT, VARSCAN, STRELKA, FREEBAYES);
     private static final List<Integer> CALLERS_COUNT = Arrays.asList(1, 2, 3, 4);
 
     public SomaticChecker() {
@@ -90,11 +79,11 @@ public class SomaticChecker implements HealthChecker {
         reports.add(countReport);
 
         final List<VCFSomaticData> filteredData = filterByVCFType(vcfData, vcfType);
-        final List<HealthCheck> precisionReports = ALL_CALLERS.stream().map(
+        final List<HealthCheck> precisionReports = VCFConstants.ALL_CALLERS.stream().map(
                 caller -> calculatePrecision(filteredData, sampleId, vcfType, caller)).collect(Collectors.toList());
         reports.addAll(precisionReports);
 
-        final List<HealthCheck> sensitivityReports = ALL_CALLERS.stream().map(
+        final List<HealthCheck> sensitivityReports = VCFConstants.ALL_CALLERS.stream().map(
                 caller -> calculateSensitivity(filteredData, sampleId, vcfType, caller)).collect(Collectors.toList());
         reports.addAll(sensitivityReports);
 
