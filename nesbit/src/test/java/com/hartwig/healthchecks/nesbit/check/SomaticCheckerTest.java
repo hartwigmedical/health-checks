@@ -25,8 +25,8 @@ public class SomaticCheckerTest {
 
     private static final double EPSILON = 1.0e-4;
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
-    private static final String REF_SAMPLE = "CPCT11111111R";
-    private static final String TUMOR_SAMPLE = "CPCT11111111T";
+    private static final String REF_SAMPLE = "sample1";
+    private static final String TUMOR_SAMPLE = "sample2";
 
     private static final String INDELS = VCFType.INDELS.toString();
     private static final String SNP = VCFType.SNP.toString();

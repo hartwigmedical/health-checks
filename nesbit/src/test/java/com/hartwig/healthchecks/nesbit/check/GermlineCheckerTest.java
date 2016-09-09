@@ -21,8 +21,8 @@ import org.junit.Test;
 public class GermlineCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
-    private static final String REF_SAMPLE = "CPCT11111111R";
-    private static final String TUMOR_SAMPLE = "CPCT11111111T";
+    private static final String REF_SAMPLE = "sample1";
+    private static final String TUMOR_SAMPLE = "sample2";
 
     @Test
     public void canCountSNPAndIndels() throws IOException, HealthChecksException {

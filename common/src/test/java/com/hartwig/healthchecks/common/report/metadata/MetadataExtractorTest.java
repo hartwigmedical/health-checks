@@ -28,9 +28,8 @@ public class MetadataExtractorTest {
     private static final String EXPECTED_DATE = "2016-Jul-09T15.41.42";
 
     private static final String PIPELINE_VERSION_V1_7 = "Pipeline version: v1.7";
-    private static final String DATA = "End Kinship\tSat Jul 9 15:41:42 CEST 2016\t"
-                    + "160704_HMFregCPCT_FR10301986_FR12244591_CPCT02020306.filtered_variants.vcf\t"
-                    + "hmfpcompute-foxtrot1-15";
+    private static final String DATA =
+            "End Kinship\tSat Jul 9 15:41:42 CEST 2016\t" + "run.filtered_variants.vcf\t" + "machine-foxtrot1-15";
 
     private static final String NON_EXISTING_DIRECTORY = "bla";
     private static final String RUN_DIRECTORY = "run";
