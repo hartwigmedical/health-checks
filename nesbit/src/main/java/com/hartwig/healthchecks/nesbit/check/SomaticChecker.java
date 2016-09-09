@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -39,6 +39,8 @@ public class SomaticChecker implements HealthChecker {
     private static final String MELTED_SOMATICS_EXTENSION = "_Cosmicv76_melted.vcf";
     private static final List<Integer> CALLERS_COUNT = Arrays.asList(1, 2, 3, 4);
 
+    private static final double AF_SD_DISTANCE = 0.16;
+
     public SomaticChecker() {
     }
 
@@ -48,12 +50,12 @@ public class SomaticChecker implements HealthChecker {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(),
                 MELTED_SOMATICS_EXTENSION);
         final List<String> lines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
-        final List<VCFSomaticData> vcfData = getVCFSomaticData(lines);
+        final List<VCFSomaticData> variants = toVCFSomaticData(lines);
 
         final List<HealthCheck> reports = new ArrayList<>();
-        reports.addAll(getTypeChecks(vcfData, runContext.tumorSample(), VCFType.SNP));
-        reports.addAll(getTypeChecks(vcfData, runContext.tumorSample(), VCFType.INDELS));
-        reports.addAll(getAFChecks(vcfData, runContext.tumorSample()));
+        reports.addAll(getTypeChecks(variants, runContext.tumorSample(), VCFType.SNP));
+        reports.addAll(getTypeChecks(variants, runContext.tumorSample(), VCFType.INDELS));
+        reports.addAll(getAFChecks(variants, runContext.tumorSample()));
 
         HealthCheck.log(LOGGER, reports);
         return new MultiValueResult(checkType(), reports);
@@ -66,38 +68,57 @@ public class SomaticChecker implements HealthChecker {
     }
 
     @NotNull
-    private static List<VCFSomaticData> getVCFSomaticData(@NotNull final List<String> lines) {
+    private static List<VCFSomaticData> toVCFSomaticData(@NotNull final List<String> lines) {
         return lines.stream().map(VCFSomaticDataFactory::fromVCFLine).collect(Collectors.toList());
     }
 
     @NotNull
-    private static List<HealthCheck> getTypeChecks(@NotNull final List<VCFSomaticData> vcfData,
+    private static List<HealthCheck> getTypeChecks(@NotNull final List<VCFSomaticData> variants,
             @NotNull final String sampleId, @NotNull final VCFType type) {
         final List<HealthCheck> checks = new ArrayList<>();
-        final List<VCFSomaticData> vcfForType = filter(vcfData, hasVCFType(type));
+        final List<VCFSomaticData> variantsForType = filter(variants, hasVCFType(type));
 
         final HealthCheck vcfCountCheck = new HealthCheck(sampleId, SomaticCheck.COUNT.checkName(type.name()),
-                String.valueOf(vcfForType.size()));
+                String.valueOf(variantsForType.size()));
         checks.add(vcfCountCheck);
 
         final List<HealthCheck> precisionChecks = VCFConstants.ALL_CALLERS.stream().map(
-                caller -> calculatePrecision(vcfForType, sampleId, type, caller)).collect(Collectors.toList());
+                caller -> calculatePrecision(variantsForType, sampleId, type, caller)).collect(Collectors.toList());
         checks.addAll(precisionChecks);
 
         final List<HealthCheck> sensitivityChecks = VCFConstants.ALL_CALLERS.stream().map(
-                caller -> calculateSensitivity(vcfForType, sampleId, type, caller)).collect(Collectors.toList());
+                caller -> calculateSensitivity(variantsForType, sampleId, type, caller)).collect(Collectors.toList());
         checks.addAll(sensitivityChecks);
 
         final List<HealthCheck> proportionChecks = CALLERS_COUNT.stream().map(
-                callerCount -> calculateProportion(vcfForType, sampleId, type, callerCount)).collect(
+                callerCount -> calculateProportion(variantsForType, sampleId, type, callerCount)).collect(
                 Collectors.toList());
         checks.addAll(proportionChecks);
         return checks;
     }
 
     @NotNull
-    private static List<HealthCheck> getAFChecks(final List<VCFSomaticData> vcfData, final String sampleId) {
-        return Lists.newArrayList();
+    private static List<HealthCheck> getAFChecks(final List<VCFSomaticData> variants, final String sampleId) {
+        final List<HealthCheck> checks = Lists.newArrayList();
+        for (String caller : VCFConstants.ALL_CALLERS) {
+            List<VCFSomaticData> filteredVariants = filter(variants, hasCaller(caller));
+
+            List<Double> alleleFreqs = filteredVariants.stream().map(VCFSomaticData::alleleFrequency).collect(
+                    Collectors.toList());
+            alleleFreqs.sort(Comparator.naturalOrder());
+
+            int lowerSDIndex = (int) Math.round(alleleFreqs.size() * AF_SD_DISTANCE);
+            int medianIndex = (int) Math.round(alleleFreqs.size() / 2D);
+            int upperSDIndex = (int) Math.round(alleleFreqs.size() * (1 - AF_SD_DISTANCE));
+
+            checks.add(new HealthCheck(sampleId, SomaticCheck.AF_LOWER_SD.checkName(caller),
+                    String.valueOf(alleleFreqs.get(lowerSDIndex))));
+            checks.add(new HealthCheck(sampleId, SomaticCheck.AF_MEDIAN.checkName(caller),
+                    String.valueOf(alleleFreqs.get(medianIndex))));
+            checks.add(new HealthCheck(sampleId, SomaticCheck.AF_UPPER_SD.checkName(caller),
+                    String.valueOf(alleleFreqs.get(upperSDIndex))));
+        }
+        return checks;
     }
 
     @NotNull
@@ -111,8 +132,7 @@ public class SomaticChecker implements HealthChecker {
         if (!variantsForCallerWithMoreThanOneCaller.isEmpty() && !variantsForCaller.isEmpty()) {
             precision = (double) variantsForCallerWithMoreThanOneCaller.size() / variantsForCaller.size();
         }
-        return new HealthCheck(sampleId,
-                SomaticCheck.PRECISION_CHECK.checkName(type.name(), caller.toUpperCase(Locale.ENGLISH)),
+        return new HealthCheck(sampleId, SomaticCheck.PRECISION_CHECK.checkName(type.name(), caller),
                 String.valueOf(precision));
     }
 
@@ -128,8 +148,7 @@ public class SomaticChecker implements HealthChecker {
             sensitivity =
                     (double) variantsForCallerWithMoreThanOneCaller.size() / variantsWithMoreThanOneCaller.size();
         }
-        return new HealthCheck(sampleId,
-                SomaticCheck.SENSITIVITY_CHECK.checkName(type.name(), caller.toUpperCase(Locale.ENGLISH)),
+        return new HealthCheck(sampleId, SomaticCheck.SENSITIVITY_CHECK.checkName(type.name(), caller),
                 String.valueOf(sensitivity));
     }
 

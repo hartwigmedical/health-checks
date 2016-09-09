@@ -37,15 +37,16 @@ public class SomaticCheckerTest {
     private static final String VARSCAN = VCFConstants.VARSCAN.toUpperCase();
 
     private final HealthChecker checker = new SomaticChecker();
+
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
         final BaseResult result = checker.run(runContext);
         final List<HealthCheck> checks = ((MultiValueResult) result).getChecks();
 
         assertEquals(CheckType.SOMATIC, result.getCheckType());
-        assertEquals(26, checks.size());
+        assertEquals(38, checks.size());
 
         assertCheck(checks, SomaticCheck.COUNT.checkName(VCFType.INDELS.toString()), 67);
         assertCheck(checks, SomaticCheck.COUNT.checkName(VCFType.SNP.toString()), 987);

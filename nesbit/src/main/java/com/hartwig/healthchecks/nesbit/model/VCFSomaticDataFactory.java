@@ -3,6 +3,7 @@ package com.hartwig.healthchecks.nesbit.model;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -33,7 +34,8 @@ public final class VCFSomaticDataFactory {
         final String[] values = line.split(VCF_COLUMN_SEPARATOR);
 
         // TODO (KODU) Implement calculation of AF.
-        return new VCFSomaticData(VCFExtractorFunctions.extractVCFType(values), extractCallers(values), 0D);
+        return new VCFSomaticData(VCFExtractorFunctions.extractVCFType(values), extractCallers(values),
+                new Random().nextDouble());
     }
 
     @NotNull
