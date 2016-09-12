@@ -28,6 +28,10 @@ public class SomaticCheckerTest {
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
 
+    private static final String MINIMAL_RUN_DIRECTORY = Resources.getResource("run2").getPath();
+    private static final String MINIMAL_REF_SAMPLE = "sample3";
+    private static final String MINIMAL_TUMOR_SAMPLE = "sample4";
+
     private static final String INDELS = VCFType.INDELS.toString();
     private static final String SNP = VCFType.SNP.toString();
 
@@ -93,6 +97,16 @@ public class SomaticCheckerTest {
         assertCheck(checks, SomaticCheck.AF_LOWER_SD.checkName(STRELKA), 0.1136);
         assertCheck(checks, SomaticCheck.AF_MEDIAN.checkName(STRELKA), 0.1627);
         assertCheck(checks, SomaticCheck.AF_UPPER_SD.checkName(STRELKA), 0.2381);
+    }
+
+    @Test
+    public void canAnalyseMinimalVCF() throws IOException, HealthChecksException {
+        final RunContext runContext = TestRunContextFactory.forTest(MINIMAL_RUN_DIRECTORY, MINIMAL_REF_SAMPLE,
+                MINIMAL_TUMOR_SAMPLE);
+
+        final BaseResult result = checker.run(runContext);
+        final List<HealthCheck> checks = ((MultiValueResult) result).getChecks();
+        assertEquals(38, checks.size());
     }
 
     private static void assertCheck(@NotNull final List<HealthCheck> checks, @NotNull final String checkName,

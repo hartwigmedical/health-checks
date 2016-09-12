@@ -109,8 +109,9 @@ public class SomaticChecker implements HealthChecker {
                 alleleFreqs.sort(Comparator.naturalOrder());
 
                 int lowerSDIndex = (int) Math.round(alleleFreqs.size() * AF_SD_DISTANCE);
-                int medianIndex = (int) Math.round(alleleFreqs.size() / 2D);
-                int upperSDIndex = (int) Math.round(alleleFreqs.size() * (1 - AF_SD_DISTANCE));
+                int medianIndex = Math.min(alleleFreqs.size() - 1, (int) Math.round(alleleFreqs.size() / 2D));
+                int upperSDIndex = Math.min(alleleFreqs.size() - 1,
+                        (int) Math.round(alleleFreqs.size() * (1 - AF_SD_DISTANCE)));
 
                 checks.add(new HealthCheck(sampleId, SomaticCheck.AF_LOWER_SD.checkName(caller),
                         String.valueOf(alleleFreqs.get(lowerSDIndex))));
