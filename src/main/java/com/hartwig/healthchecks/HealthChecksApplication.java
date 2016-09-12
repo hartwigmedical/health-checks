@@ -83,7 +83,7 @@ public final class HealthChecksApplication {
         final String reportType = cmd.getOptionValue(REPORT_TYPE);
         final String reportOutputPath = cmd.getOptionValue(REPORT_OUTPUT_PATH);
 
-        if (runDirectory == null || checkType == null || reportType == null) {
+        if (runDirectory == null || checkType == null || reportType == null || reportOutputPath == null) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Health-Checks", options);
             System.exit(1);
