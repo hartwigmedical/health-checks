@@ -103,20 +103,26 @@ public class SomaticChecker implements HealthChecker {
         for (String caller : VCFConstants.ALL_CALLERS) {
             List<VCFSomaticData> filteredVariants = filter(variants, hasCaller(caller));
 
-            List<Double> alleleFreqs = filteredVariants.stream().map(VCFSomaticData::alleleFrequency).collect(
-                    Collectors.toList());
-            alleleFreqs.sort(Comparator.naturalOrder());
+            if (filteredVariants.size() > 0) {
+                List<Double> alleleFreqs = filteredVariants.stream().map(VCFSomaticData::alleleFrequency).collect(
+                        Collectors.toList());
+                alleleFreqs.sort(Comparator.naturalOrder());
 
-            int lowerSDIndex = (int) Math.round(alleleFreqs.size() * AF_SD_DISTANCE);
-            int medianIndex = (int) Math.round(alleleFreqs.size() / 2D);
-            int upperSDIndex = (int) Math.round(alleleFreqs.size() * (1 - AF_SD_DISTANCE));
+                int lowerSDIndex = (int) Math.round(alleleFreqs.size() * AF_SD_DISTANCE);
+                int medianIndex = (int) Math.round(alleleFreqs.size() / 2D);
+                int upperSDIndex = (int) Math.round(alleleFreqs.size() * (1 - AF_SD_DISTANCE));
 
-            checks.add(new HealthCheck(sampleId, SomaticCheck.AF_LOWER_SD.checkName(caller),
-                    String.valueOf(alleleFreqs.get(lowerSDIndex))));
-            checks.add(new HealthCheck(sampleId, SomaticCheck.AF_MEDIAN.checkName(caller),
-                    String.valueOf(alleleFreqs.get(medianIndex))));
-            checks.add(new HealthCheck(sampleId, SomaticCheck.AF_UPPER_SD.checkName(caller),
-                    String.valueOf(alleleFreqs.get(upperSDIndex))));
+                checks.add(new HealthCheck(sampleId, SomaticCheck.AF_LOWER_SD.checkName(caller),
+                        String.valueOf(alleleFreqs.get(lowerSDIndex))));
+                checks.add(new HealthCheck(sampleId, SomaticCheck.AF_MEDIAN.checkName(caller),
+                        String.valueOf(alleleFreqs.get(medianIndex))));
+                checks.add(new HealthCheck(sampleId, SomaticCheck.AF_UPPER_SD.checkName(caller),
+                        String.valueOf(alleleFreqs.get(upperSDIndex))));
+            } else {
+                checks.add(new HealthCheck(sampleId, SomaticCheck.AF_LOWER_SD.checkName(caller), "-"));
+                checks.add(new HealthCheck(sampleId, SomaticCheck.AF_MEDIAN.checkName(caller), "-"));
+                checks.add(new HealthCheck(sampleId, SomaticCheck.AF_UPPER_SD.checkName(caller), "-"));
+            }
         }
         return checks;
     }
