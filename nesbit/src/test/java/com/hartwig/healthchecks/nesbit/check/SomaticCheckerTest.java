@@ -77,6 +77,22 @@ public class SomaticCheckerTest {
         assertCheck(checks, SomaticCheck.PROPORTION_CHECK.checkName(INDELS, "3"), 0.0597);
         assertCheck(checks, SomaticCheck.PROPORTION_CHECK.checkName(SNP, "4"), 0.08814);
         assertCheck(checks, SomaticCheck.PROPORTION_CHECK.checkName(INDELS, "4"), 0.0);
+
+        assertCheck(checks, SomaticCheck.AF_LOWER_SD.checkName(MUTECT), 0.1075);
+        assertCheck(checks, SomaticCheck.AF_MEDIAN.checkName(MUTECT), 0.1578);
+        assertCheck(checks, SomaticCheck.AF_UPPER_SD.checkName(MUTECT), 0.2253);
+
+        assertCheck(checks, SomaticCheck.AF_LOWER_SD.checkName(FREEBAYES), 0.2143);
+        assertCheck(checks, SomaticCheck.AF_MEDIAN.checkName(FREEBAYES), 0.2571);
+        assertCheck(checks, SomaticCheck.AF_UPPER_SD.checkName(FREEBAYES), 0.3333);
+
+        assertCheck(checks, SomaticCheck.AF_LOWER_SD.checkName(VARSCAN), 0.128);
+        assertCheck(checks, SomaticCheck.AF_MEDIAN.checkName(VARSCAN), 0.1651);
+        assertCheck(checks, SomaticCheck.AF_UPPER_SD.checkName(VARSCAN), 0.243);
+
+        assertCheck(checks, SomaticCheck.AF_LOWER_SD.checkName(STRELKA), 0.1136);
+        assertCheck(checks, SomaticCheck.AF_MEDIAN.checkName(STRELKA), 0.1627);
+        assertCheck(checks, SomaticCheck.AF_UPPER_SD.checkName(STRELKA), 0.2381);
     }
 
     private static void assertCheck(@NotNull final List<HealthCheck> checks, @NotNull final String checkName,
