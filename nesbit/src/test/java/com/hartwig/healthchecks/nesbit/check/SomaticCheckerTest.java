@@ -15,6 +15,7 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
+import com.hartwig.healthchecks.common.result.PatientResult;
 import com.hartwig.healthchecks.nesbit.model.VCFConstants;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 
@@ -97,6 +98,13 @@ public class SomaticCheckerTest {
         assertCheck(checks, SomaticCheck.AF_LOWER_SD.checkName(STRELKA), 0.1136);
         assertCheck(checks, SomaticCheck.AF_MEDIAN.checkName(STRELKA), 0.1627);
         assertCheck(checks, SomaticCheck.AF_UPPER_SD.checkName(STRELKA), 0.2381);
+    }
+
+    @Test
+    public void errorYieldsCorrectOutput() {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final MultiValueResult result = (MultiValueResult) checker.errorResult(runContext);
+        assertEquals(0, result.getChecks().size());
     }
 
     @Test

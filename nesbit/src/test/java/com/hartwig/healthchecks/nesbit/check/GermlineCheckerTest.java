@@ -13,6 +13,7 @@ import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,11 +25,11 @@ public class GermlineCheckerTest {
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
 
+    private final GermlineChecker checker = new GermlineChecker();
+
     @Test
     public void canCountSNPAndIndels() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-
-        final GermlineChecker checker = new GermlineChecker();
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
         final BaseResult result = checker.run(runContext);
 
         assertEquals(CheckType.GERMLINE, result.getCheckType());
@@ -37,6 +38,14 @@ public class GermlineCheckerTest {
 
         assertChecks(refData, 55, 4);
         assertChecks(tumData, 74, 4);
+    }
+
+    @Test
+    public void errorYieldsCorrectOutput() {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final PatientResult result = (PatientResult) checker.errorResult(runContext);
+        assertEquals(2, result.getRefSampleChecks().size());
+        assertEquals(2, result.getTumorSampleChecks().size());
     }
 
     private static void assertChecks(@NotNull final List<HealthCheck> checks, final long expectedCountSNP,

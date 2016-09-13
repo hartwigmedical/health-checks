@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.checks.HealthCheckerConstants;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
@@ -17,9 +18,7 @@ import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
-import com.hartwig.healthchecks.common.result.SingleValueResult;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineDataFactory;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
@@ -51,30 +50,47 @@ public class GermlineChecker implements HealthChecker {
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), GERMLINE_VCF_EXTENSION);
         final List<String> passFilterLines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
-        final List<VCFGermlineData> vcfData = getVCFDataForGermLine(passFilterLines);
+        final List<VCFGermlineData> variants = getVCFDataForGermLine(passFilterLines);
 
-        final List<HealthCheck> refData = getSampleData(vcfData, runContext.refSample(), true);
-        final List<HealthCheck> tumData = getSampleData(vcfData, runContext.tumorSample(), false);
+        final List<HealthCheck> refChecks = calcChecksForSample(variants, runContext.refSample(), true);
+        final List<HealthCheck> tumorChecks = calcChecksForSample(variants, runContext.tumorSample(), false);
 
-        return new PatientResult(checkType(), refData, tumData);
+        return toPatientResult(refChecks, tumorChecks);
     }
 
     @NotNull
     @Override
     public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+        final List<HealthCheck> refChecks = errorChecksForSample(runContext.refSample());
+        final List<HealthCheck> tumorChecks = errorChecksForSample(runContext.tumorSample());
+        return toPatientResult(refChecks, tumorChecks);
     }
 
     @NotNull
-    private static List<HealthCheck> getSampleData(@NotNull List<VCFGermlineData> vcfData,
+    private static List<HealthCheck> errorChecksForSample(@NotNull final String sampleId) {
+        List<HealthCheck> errorChecks = Lists.newArrayList();
+        for (GermlineCheck check : GermlineCheck.values()) {
+            errorChecks.add(new HealthCheck(sampleId, check.toString(), HealthCheckerConstants.ERROR_VALUE));
+        }
+        return errorChecks;
+    }
+
+    @NotNull
+    private PatientResult toPatientResult(@NotNull final List<HealthCheck> refChecks,
+            @NotNull final List<HealthCheck> tumorChecks) {
+        HealthCheck.log(LOGGER, refChecks);
+        HealthCheck.log(LOGGER, tumorChecks);
+        return new PatientResult(checkType(), refChecks, tumorChecks);
+    }
+
+    @NotNull
+    private static List<HealthCheck> calcChecksForSample(@NotNull List<VCFGermlineData> vcfData,
             @NotNull final String sampleId, final boolean isRefSample) {
         final HealthCheck snp = getGermlineVariantCount(sampleId, vcfData, VCFType.SNP,
                 GermlineCheck.VARIANTS_GERMLINE_SNP, isRefSample);
         final HealthCheck indels = getGermlineVariantCount(sampleId, vcfData, VCFType.INDELS,
                 GermlineCheck.VARIANTS_GERMLINE_INDELS, isRefSample);
-        final List<HealthCheck> reports = Arrays.asList(snp, indels);
-        HealthCheck.log(LOGGER, reports);
-        return reports;
+        return Arrays.asList(snp, indels);
     }
 
     @NotNull

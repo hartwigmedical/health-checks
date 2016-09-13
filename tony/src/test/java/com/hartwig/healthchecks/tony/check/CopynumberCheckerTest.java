@@ -39,23 +39,30 @@ public class CopynumberCheckerTest {
         assertResult(result);
     }
 
+    @Test
+    public void errorYieldsCorrectOutput() {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final MultiValueResult result = (MultiValueResult) checker.errorResult(runContext);
+        assertEquals(2, result.getChecks().size());
+    }
+
     @Test(expected = MalformedFileException.class)
     public void noGainLossTagsYieldMalformedException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, MALFORMED_SAMPLE);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, MALFORMED_SAMPLE);
         checker.run(runContext);
     }
 
     private static void assertResult(@NotNull final BaseResult baseResult) {
-        MultiValueResult result = (MultiValueResult) baseResult;
+        final MultiValueResult result = (MultiValueResult) baseResult;
         assertEquals(CheckType.COPYNUMBER, result.getCheckType());
         assertEquals(EXPECTED_NUM_CHECKS, result.getChecks().size());
 
-        HealthCheck gainCheck = extractHealthCheck(result.getChecks(), CopynumberCheck.COPYNUMBER_GENOME_GAIN);
+        final HealthCheck gainCheck = extractHealthCheck(result.getChecks(), CopynumberCheck.COPYNUMBER_GENOME_GAIN);
 
         assertEquals(TUMOR_SAMPLE, gainCheck.getSampleId());
         assertEquals(Long.toString(EXPECTED_GAIN_CHECK), gainCheck.getValue());
 
-        HealthCheck lossCheck = extractHealthCheck(result.getChecks(), CopynumberCheck.COPYNUMBER_GENOME_LOSS);
+        final HealthCheck lossCheck = extractHealthCheck(result.getChecks(), CopynumberCheck.COPYNUMBER_GENOME_LOSS);
 
         assertEquals(TUMOR_SAMPLE, gainCheck.getSampleId());
         assertEquals(Long.toString(EXPECTED_LOSS_CHECK), lossCheck.getValue());
@@ -64,7 +71,7 @@ public class CopynumberCheckerTest {
     @NotNull
     private static HealthCheck extractHealthCheck(@NotNull final List<HealthCheck> checks,
             @NotNull final CopynumberCheck checkName) {
-        Optional<HealthCheck> report = checks.stream().filter(
+        final Optional<HealthCheck> report = checks.stream().filter(
                 check -> check.getCheckName().equals(checkName.toString())).findFirst();
 
         assert report.isPresent();

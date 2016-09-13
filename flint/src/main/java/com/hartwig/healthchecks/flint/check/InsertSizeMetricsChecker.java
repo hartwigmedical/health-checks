@@ -59,7 +59,7 @@ public class InsertSizeMetricsChecker implements HealthChecker {
     @NotNull
     @Override
     public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+        return new PatientResult(checkType(), Lists.newArrayList(), Lists.newArrayList());
     }
 
     @NotNull
