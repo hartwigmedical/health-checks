@@ -13,7 +13,6 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthCheckFunctions;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
@@ -81,7 +80,7 @@ public class PrestatsChecker implements HealthChecker {
 
     @NotNull
     private List<HealthCheck> extractFastqcChecks(@NotNull final String basePath, @NotNull final String sampleId)
-            throws IOException, EmptyFileException {
+            throws IOException {
         final List<String> allLines = zipFileReader.readAllLinesFromZips(basePath, FASTQC_CHECKS_FILE_NAME);
         final Map<PrestatsCheck, List<PrestatsCheckValue>> data = getFastqcCheckData(allLines);
 
