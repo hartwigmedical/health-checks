@@ -15,4 +15,7 @@ public interface HealthChecker {
 
     @NotNull
     BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException;
+
+    @NotNull
+    BaseResult errorResult(@NotNull final RunContext runContext);
 }

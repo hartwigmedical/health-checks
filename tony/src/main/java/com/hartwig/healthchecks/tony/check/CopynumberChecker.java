@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.checks.HealthCheckerConstants;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -48,6 +49,12 @@ public class CopynumberChecker implements HealthChecker {
 
     @NotNull
     @Override
+    public CheckType checkType() {
+        return CheckType.COPYNUMBER;
+    }
+
+    @NotNull
+    @Override
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path copynumberPath = PathPrefixSuffixFinder.build().findPath(getBasePath(runContext),
                 runContext.tumorSample(), COPYNUMBER_SUFFIX);
@@ -74,19 +81,25 @@ public class CopynumberChecker implements HealthChecker {
             }
         }
 
-        final HealthCheck gainCheck = new HealthCheck(runContext.tumorSample(),
-                CopynumberCheck.COPYNUMBER_GENOME_GAIN.toString(), String.valueOf(totalGain));
-        final HealthCheck lossCheck = new HealthCheck(runContext.tumorSample(),
-                CopynumberCheck.COPYNUMBER_GENOME_LOSS.toString(), String.valueOf(totalLoss));
-        final List<HealthCheck> checks = Lists.newArrayList(gainCheck, lossCheck);
-        HealthCheck.log(LOGGER, checks);
-        return new MultiValueResult(checkType(), checks);
+        return toBaseResult(runContext, String.valueOf(totalGain), String.valueOf(totalLoss));
     }
 
     @NotNull
     @Override
-    public CheckType checkType() {
-        return CheckType.COPYNUMBER;
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return toBaseResult(runContext, HealthCheckerConstants.ERROR_VALUE, HealthCheckerConstants.ERROR_VALUE);
+    }
+
+    @NotNull
+    private BaseResult toBaseResult(@NotNull final RunContext runContext, @NotNull final String totalGain,
+            @NotNull final String totalLoss) {
+        final HealthCheck gainCheck = new HealthCheck(runContext.tumorSample(),
+                CopynumberCheck.COPYNUMBER_GENOME_GAIN.toString(), totalGain);
+        final HealthCheck lossCheck = new HealthCheck(runContext.tumorSample(),
+                CopynumberCheck.COPYNUMBER_GENOME_LOSS.toString(), totalLoss);
+        final List<HealthCheck> checks = Lists.newArrayList(gainCheck, lossCheck);
+        HealthCheck.log(LOGGER, checks);
+        return new MultiValueResult(checkType(), checks);
     }
 
     @NotNull

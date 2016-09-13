@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.ErrorResult;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +29,7 @@ class ErrorHandlingChecker {
             result = checker.run(runContext);
         } catch (IOException | HealthChecksException exception) {
             LOGGER.error(String.format(ERROR_MSG, exception.getMessage()));
-            result = new ErrorResult(checker.checkType(), exception.getClass().getName());
+            result = checker.errorResult(runContext);
         }
         return result;
     }

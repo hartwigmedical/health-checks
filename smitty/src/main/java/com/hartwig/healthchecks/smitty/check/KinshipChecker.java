@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -15,6 +16,7 @@ import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.SingleValueResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +37,12 @@ public class KinshipChecker implements HealthChecker {
     private static final int KINSHIP_COLUMN = 7;
 
     public KinshipChecker() {
+    }
+
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.KINSHIP;
     }
 
     @Override
@@ -61,7 +69,7 @@ public class KinshipChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public CheckType checkType() {
-        return CheckType.KINSHIP;
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return new MultiValueResult(checkType(), Lists.newArrayList());
     }
 }

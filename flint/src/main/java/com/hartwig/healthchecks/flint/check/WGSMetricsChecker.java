@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -18,6 +19,7 @@ import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +41,12 @@ public class WGSMetricsChecker implements HealthChecker {
     public WGSMetricsChecker() {
     }
 
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.WGS_METRICS;
+    }
+
     @Override
     @NotNull
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
@@ -49,8 +57,8 @@ public class WGSMetricsChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public CheckType checkType() {
-        return CheckType.WGS_METRICS;
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return new MultiValueResult(checkType(), Lists.newArrayList());
     }
 
     @NotNull

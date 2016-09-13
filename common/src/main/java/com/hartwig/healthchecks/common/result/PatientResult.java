@@ -7,7 +7,7 @@ import com.hartwig.healthchecks.common.checks.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 
-public class PatientResult extends BaseResult {
+public class PatientResult extends AbstractResult {
 
     private static final long serialVersionUID = -3227613309511119840L;
 

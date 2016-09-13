@@ -6,19 +6,10 @@ import com.hartwig.healthchecks.common.checks.CheckType;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseResult implements Serializable {
+public interface BaseResult extends Serializable {
 
-    private static final long serialVersionUID = -4752339157661751000L;
-
-    @NotNull
-    private final CheckType checkType;
-
-    public BaseResult(@NotNull final CheckType checkType) {
-        this.checkType = checkType;
-    }
+    long serialVersionUID = -4752339157661751000L;
 
     @NotNull
-    public CheckType getCheckType() {
-        return checkType;
-    }
+    CheckType getCheckType();
 }

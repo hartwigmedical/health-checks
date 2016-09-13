@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -17,6 +18,7 @@ import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +41,12 @@ public class SummaryMetricsChecker implements HealthChecker {
 
     @NotNull
     @Override
+    public CheckType checkType() {
+        return CheckType.SUMMARY_METRICS;
+    }
+
+    @NotNull
+    @Override
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
         final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
@@ -47,8 +55,8 @@ public class SummaryMetricsChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public CheckType checkType() {
-        return CheckType.SUMMARY_METRICS;
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return new MultiValueResult(checkType(), Lists.newArrayList());
     }
 
     @NotNull

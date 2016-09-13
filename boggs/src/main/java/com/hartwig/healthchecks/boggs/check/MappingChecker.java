@@ -19,6 +19,7 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,6 +45,12 @@ public class MappingChecker implements HealthChecker {
     public MappingChecker() {
     }
 
+    @NotNull
+    @Override
+    public CheckType checkType() {
+        return CheckType.MAPPING;
+    }
+
     @Override
     @NotNull
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
@@ -55,8 +62,8 @@ public class MappingChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public CheckType checkType() {
-        return CheckType.MAPPING;
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return new MultiValueResult(checkType(), Lists.newArrayList());
     }
 
     @NotNull

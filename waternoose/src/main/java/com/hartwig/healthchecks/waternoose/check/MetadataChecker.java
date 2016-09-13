@@ -19,6 +19,7 @@ import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,6 +51,12 @@ public class MetadataChecker implements HealthChecker {
 
     @NotNull
     @Override
+    public CheckType checkType() {
+        return CheckType.METADATA;
+    }
+
+    @NotNull
+    @Override
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final String runDate = extractRunDate(runContext.runDirectory());
         final String pipelineVersion = extractPipelineVersion(runContext.runDirectory());
@@ -64,8 +71,8 @@ public class MetadataChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public CheckType checkType() {
-        return CheckType.METADATA;
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return new MultiValueResult(checkType(), Lists.newArrayList());
     }
 
     @NotNull

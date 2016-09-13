@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -16,7 +17,9 @@ import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
+import com.hartwig.healthchecks.common.result.SingleValueResult;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineData;
 import com.hartwig.healthchecks.nesbit.model.VCFGermlineDataFactory;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
@@ -54,6 +57,12 @@ public class GermlineChecker implements HealthChecker {
         final List<HealthCheck> tumData = getSampleData(vcfData, runContext.tumorSample(), false);
 
         return new PatientResult(checkType(), refData, tumData);
+    }
+
+    @NotNull
+    @Override
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return new MultiValueResult(checkType(), Lists.newArrayList());
     }
 
     @NotNull

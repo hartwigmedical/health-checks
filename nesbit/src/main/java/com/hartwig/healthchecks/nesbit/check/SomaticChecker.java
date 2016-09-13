@@ -46,6 +46,12 @@ public class SomaticChecker implements HealthChecker {
 
     @NotNull
     @Override
+    public CheckType checkType() {
+        return CheckType.SOMATIC;
+    }
+
+    @NotNull
+    @Override
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(),
                 MELTED_SOMATICS_EXTENSION);
@@ -63,8 +69,8 @@ public class SomaticChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public CheckType checkType() {
-        return CheckType.SOMATIC;
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return new MultiValueResult(checkType(), Lists.newArrayList());
     }
 
     @NotNull

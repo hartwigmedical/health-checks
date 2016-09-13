@@ -3,6 +3,7 @@ package com.hartwig.healthchecks.roz.check;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
@@ -13,6 +14,7 @@ import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.predicate.VCFDataLinePredicate;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.SingleValueResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +34,12 @@ public class SlicedChecker implements HealthChecker {
 
     @NotNull
     @Override
+    public CheckType checkType() {
+        return CheckType.SLICED;
+    }
+
+    @NotNull
+    @Override
     public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), SLICED_VCF_EXTENSION);
         final long value = LineReader.build().readLines(vcfPath, new VCFDataLinePredicate()).stream().count();
@@ -44,7 +52,7 @@ public class SlicedChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public CheckType checkType() {
-        return CheckType.SLICED;
+    public BaseResult errorResult(@NotNull final RunContext runContext) {
+        return new MultiValueResult(checkType(), Lists.newArrayList());
     }
 }

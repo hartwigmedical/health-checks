@@ -7,7 +7,7 @@ import com.hartwig.healthchecks.common.checks.HealthCheck;
 
 import org.jetbrains.annotations.NotNull;
 
-public class MultiValueResult extends BaseResult {
+public class MultiValueResult extends AbstractResult {
 
     private static final long serialVersionUID = 7396913735152649393L;
 

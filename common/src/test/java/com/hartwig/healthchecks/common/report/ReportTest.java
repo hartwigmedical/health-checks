@@ -108,9 +108,18 @@ public class ReportTest {
         assertFalse(result.isPresent());
     }
 
-    private static class TestResult extends BaseResult {
+    private static class TestResult implements BaseResult {
+        @NotNull
+        private final CheckType checkType;
+
         TestResult(@NotNull final CheckType checkType) {
-            super(checkType);
+            this.checkType = checkType;
+        }
+
+        @NotNull
+        @Override
+        public CheckType getCheckType() {
+            return checkType;
         }
     }
 }
