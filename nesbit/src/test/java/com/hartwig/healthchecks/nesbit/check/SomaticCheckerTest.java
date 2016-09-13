@@ -15,7 +15,6 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
-import com.hartwig.healthchecks.common.result.PatientResult;
 import com.hartwig.healthchecks.nesbit.model.VCFConstants;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 

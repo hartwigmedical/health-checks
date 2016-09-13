@@ -21,7 +21,6 @@ import com.hartwig.healthchecks.common.predicate.VCFPassDataLinePredicate;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
-import com.hartwig.healthchecks.common.result.PatientResult;
 import com.hartwig.healthchecks.nesbit.model.VCFConstants;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticData;
 import com.hartwig.healthchecks.nesbit.model.VCFSomaticDataFactory;
