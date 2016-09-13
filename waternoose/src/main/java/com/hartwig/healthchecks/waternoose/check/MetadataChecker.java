@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.common.report.metadata;
+package com.hartwig.healthchecks.waternoose.check;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,14 +9,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
 
+import com.google.common.collect.Lists;
+import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
+import com.hartwig.healthchecks.common.resource.ResourceWrapper;
+import com.hartwig.healthchecks.common.result.BaseResult;
+import com.hartwig.healthchecks.common.result.PatientResult;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class MetadataExtractor {
+@SuppressWarnings("WeakerAccess")
+@ResourceWrapper(type = CheckType.METADATA)
+public class MetadataChecker implements HealthChecker {
+
+    private static final Logger LOGGER = LogManager.getLogger(MetadataChecker.class);
 
     private static final int FOLDER_NAME_START_INDEX = 1;
 
@@ -32,21 +45,34 @@ public class MetadataExtractor {
     private static final String PIPELINE_VERSION_LINE_SEPARATOR = ":";
     private static final int PIPELINE_VERSION_LINE_INDEX = 0;
 
-    public MetadataExtractor() {
+    public MetadataChecker() {
     }
 
     @NotNull
-    public ReportMetadata extractMetadata(@NotNull final RunContext runContext)
-            throws IOException, HealthChecksException {
-        String runDate = extractRunDate(runContext.runDirectory());
-        String pipelineVersion = extractPipelineVersion(runContext.runDirectory());
+    @Override
+    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+        final String runDate = extractRunDate(runContext.runDirectory());
+        final String pipelineVersion = extractPipelineVersion(runContext.runDirectory());
 
-        return new ReportMetadata(runDate, pipelineVersion);
+        List<HealthCheck> refMetaData = toHealthCheckList(runContext.refSample(), runDate, pipelineVersion);
+        List<HealthCheck> tumorMetaData = toHealthCheckList(runContext.tumorSample(), runDate, pipelineVersion);
+        HealthCheck.log(LOGGER, refMetaData);
+        HealthCheck.log(LOGGER, tumorMetaData);
+
+        return new PatientResult(checkType(), refMetaData, tumorMetaData);
     }
 
     @NotNull
-    private static Predicate<String> doesLineStartWith(@NotNull final String prefix) {
-        return line -> line.startsWith(prefix);
+    @Override
+    public CheckType checkType() {
+        return CheckType.METADATA;
+    }
+
+    @NotNull
+    private static List<HealthCheck> toHealthCheckList(@NotNull final String sampleId, @NotNull final String runDate,
+            @NotNull final String pipelineVersion) {
+        return Lists.newArrayList(new HealthCheck(sampleId, MetadataCheck.RUN_DATE.toString(), runDate),
+                new HealthCheck(sampleId, MetadataCheck.PIPELINE_VERSION.toString(), pipelineVersion));
     }
 
     @NotNull
@@ -83,5 +109,10 @@ public class MetadataExtractor {
                 doesLineStartWith(PIPELINE_VERSION));
         return versionsLines.get(PIPELINE_VERSION_LINE_INDEX).split(
                 PIPELINE_VERSION_LINE_SEPARATOR)[FOLDER_NAME_START_INDEX].trim();
+    }
+
+    @NotNull
+    private static Predicate<String> doesLineStartWith(@NotNull final String prefix) {
+        return line -> line.startsWith(prefix);
     }
 }

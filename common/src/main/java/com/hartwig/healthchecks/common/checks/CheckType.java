@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 public enum CheckType {
+    METADATA,
     MAPPING,
     PRESTATS,
     KINSHIP,

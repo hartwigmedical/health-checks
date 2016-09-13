@@ -34,7 +34,7 @@ final class JsonReport extends AbstractJsonBaseReport {
     @Override
     public Optional<String> generateReport(@NotNull final RunContext runContext, @NotNull final String outputPath)
             throws GenerateReportException {
-        final JsonArray reportArray = computeElements(runContext);
+        final JsonArray reportArray = computeElements();
 
         final String runName = toName(runContext.runDirectory());
         final String fileName = String.format("%s/%s", outputPath,

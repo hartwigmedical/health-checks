@@ -21,7 +21,8 @@ final class ReportsFlyweight {
     private ReportsFlyweight() {
     }
 
-    public static ReportsFlyweight getInstance() {
+    @NotNull
+    static ReportsFlyweight getInstance() {
         return INSTANCE;
     }
 

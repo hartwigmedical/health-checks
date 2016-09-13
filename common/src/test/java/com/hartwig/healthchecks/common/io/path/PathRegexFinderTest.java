@@ -18,7 +18,7 @@ public class PathRegexFinderTest {
     private static final String NON_EXISTING_DIRECTORY = "bla";
     private static final String EMPTY_DIRECTORY = "empty";
 
-    private static final String EXISTING_REGEX = "PipelineCheck.log";
+    private static final String EXISTING_REGEX = "something";
     private static final String NON_EXISTING_REGEX = "this does not exist";
 
     @Test

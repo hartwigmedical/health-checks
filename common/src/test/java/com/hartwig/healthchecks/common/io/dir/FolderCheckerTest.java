@@ -18,7 +18,7 @@ import org.junit.Test;
 public class FolderCheckerTest {
 
     private static final String RUN_FOLDER = "run";
-    private static final String NOT_A_FOLDER = "run/logs/run.log";
+    private static final String NOT_A_FOLDER = "run/something";
     private static final String NON_EXISTING_FOLDER = "bla";
     private static final String EMPTY_FOLDER = "empty";
 
