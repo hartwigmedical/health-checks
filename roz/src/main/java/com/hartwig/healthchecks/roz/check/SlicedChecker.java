@@ -25,7 +25,7 @@ public class SlicedChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(SlicedChecker.class);
 
-    private static final String SLICED_VCF_EXTENSION = "_Cosmicv76_GoNLv5_sliced.vcf";
+    private static final String SLICED_VCF_EXTENSION = "_GoNLv5_sliced.vcf";
 
     public SlicedChecker() {
     }

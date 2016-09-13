@@ -36,7 +36,7 @@ public class SomaticChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(SomaticChecker.class);
 
-    private static final String MELTED_SOMATICS_EXTENSION = "_Cosmicv76_melted.vcf";
+    private static final String MELTED_SOMATICS_EXTENSION = "_melted.vcf";
     private static final List<Integer> CALLERS_COUNT = Arrays.asList(1, 2, 3, 4);
 
     private static final double AF_SD_DISTANCE = 0.16;

@@ -32,7 +32,7 @@ public class GermlineChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(GermlineChecker.class);
 
-    private static final String GERMLINE_VCF_EXTENSION = "_Cosmicv76_GoNLv5.vcf";
+    private static final String GERMLINE_VCF_EXTENSION = "_GoNLv5.vcf";
 
     public GermlineChecker() {
     }
