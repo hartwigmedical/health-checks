@@ -40,6 +40,9 @@ public class SummaryMetricsChecker extends ErrorHandlingChecker implements Healt
     private static final String PICARD_CATEGORY_TO_READ = "PAIR";
     private static final String VALUE_SEPARATOR = "\t";
 
+    public SummaryMetricsChecker() {
+    }
+
     @NotNull
     @Override
     public CheckType checkType() {

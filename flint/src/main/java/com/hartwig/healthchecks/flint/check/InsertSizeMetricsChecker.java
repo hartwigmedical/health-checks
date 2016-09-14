@@ -91,9 +91,9 @@ public class InsertSizeMetricsChecker extends ErrorHandlingChecker implements He
                 INSERT_SIZE_METRICS_EXTENSION);
         final List<String> lines = FileReader.build().readLines(insertSizeMetricsPath);
 
-        final HealthCheck medianReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
+        final HealthCheck medianReport = getCheck(insertSizeMetricsPath.toString(), lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_MEDIAN_INSERT_SIZE);
-        final HealthCheck width70PerReport = getValue(insertSizeMetricsPath.toString(), lines, sampleId,
+        final HealthCheck width70PerReport = getCheck(insertSizeMetricsPath.toString(), lines, sampleId,
                 InsertSizeMetricsCheck.MAPPING_WIDTH_OF_70_PERCENT);
         return Arrays.asList(medianReport, width70PerReport);
     }
@@ -105,12 +105,10 @@ public class InsertSizeMetricsChecker extends ErrorHandlingChecker implements He
     }
 
     @NotNull
-    private static HealthCheck getValue(@NotNull final String filePath, @NotNull final List<String> lines,
+    private static HealthCheck getCheck(@NotNull final String filePath, @NotNull final List<String> lines,
             @NotNull final String sampleId, @NotNull final InsertSizeMetricsCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(filePath, lines, check.getFieldName(), check.getColumnIndex());
-        final HealthCheck healthCheck = new HealthCheck(sampleId, check.toString(), value);
-        healthCheck.log(LOGGER);
-        return healthCheck;
+        return new HealthCheck(sampleId, check.toString(), value);
     }
 
     @NotNull

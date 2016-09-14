@@ -13,17 +13,23 @@ import org.junit.Test;
 public class HealthChecksFlyweightTest {
 
     @Test
-    public void existingChecker() throws NotFoundException {
+    public void canGenerateExistingChecker() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
-        assertNotNull(healthChecksFlyweight);
         final HealthChecker mappingChecker = healthChecksFlyweight.getChecker(CheckType.MAPPING.toString());
         assertTrue(mappingChecker instanceof MappingChecker);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void nonExistingChecker() throws NotFoundException {
+    @Test
+    public void canCreateAllCheckers() throws NotFoundException {
         final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
-        assertNotNull(healthChecksFlyweight);
+        for (CheckType type : CheckType.values()) {
+            assertNotNull(healthChecksFlyweight.getChecker(type.toString()));
+        }
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void yieldExceptionOnUnknownChecker() throws NotFoundException {
+        final HealthChecksFlyweight healthChecksFlyweight = HealthChecksFlyweight.getInstance();
         healthChecksFlyweight.getChecker("bla");
     }
 }
