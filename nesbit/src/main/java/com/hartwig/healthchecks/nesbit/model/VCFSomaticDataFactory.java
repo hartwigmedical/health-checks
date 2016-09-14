@@ -7,11 +7,14 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public final class VCFSomaticDataFactory {
 
     private static final String VCF_COLUMN_SEPARATOR = "\t";
+    private static final Logger LOGGER = LogManager.getLogger(VCFSomaticDataFactory.class);
 
     private static final int INFO_COLUMN = 7;
     private static final String INFO_FIELD_SEPARATOR = ";";
@@ -65,7 +68,12 @@ public final class VCFSomaticDataFactory {
         final String[] sampleFields = values[SAMPLE_COLUMN].split(SAMPLE_FIELD_SEPARATOR);
         final String[] afFields = sampleFields[AF_COLUMN_INDEX].split(AF_FIELD_SEPARATOR);
 
-        int readCount = Integer.valueOf(afFields[1]);
+        if (afFields.length < 2) {
+            LOGGER.warn("Incorrectly formatted AF field found: " + sampleFields[AF_COLUMN_INDEX]);
+            return Double.NaN;
+        }
+
+        final int readCount = Integer.valueOf(afFields[1]);
         int totalReadCount = 0;
         for (String afField : afFields) {
             totalReadCount += Integer.valueOf(afField);
