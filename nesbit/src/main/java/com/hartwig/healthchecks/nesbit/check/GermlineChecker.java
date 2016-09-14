@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.checks.HealthCheckerConstants;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.GERMLINE)
-public class GermlineChecker implements HealthChecker {
+public class GermlineChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(GermlineChecker.class);
 
@@ -47,7 +48,7 @@ public class GermlineChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), GERMLINE_VCF_EXTENSION);
         final List<String> passFilterLines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
         final List<VCFGermlineData> variants = getVCFDataForGermLine(passFilterLines);
@@ -60,17 +61,16 @@ public class GermlineChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        final List<HealthCheck> refChecks = errorChecksForSample(runContext.refSample());
-        final List<HealthCheck> tumorChecks = errorChecksForSample(runContext.tumorSample());
-        return toPatientResult(refChecks, tumorChecks);
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toPatientResult(getErrorChecksForSample(runContext.refSample()),
+                getErrorChecksForSample(runContext.tumorSample()));
     }
 
     @NotNull
-    private static List<HealthCheck> errorChecksForSample(@NotNull final String sampleId) {
+    private static List<HealthCheck> getErrorChecksForSample(@NotNull final String sampleId) {
         List<HealthCheck> errorChecks = Lists.newArrayList();
         for (GermlineCheck check : GermlineCheck.values()) {
-            errorChecks.add(new HealthCheck(sampleId, check.toString(), HealthCheckerConstants.ERROR_VALUE));
+            errorChecks.add(new HealthCheck(sampleId, check.toString(), HealthCheckConstants.ERROR_VALUE));
         }
         return errorChecks;
     }
@@ -80,6 +80,7 @@ public class GermlineChecker implements HealthChecker {
             @NotNull final List<HealthCheck> tumorChecks) {
         HealthCheck.log(LOGGER, refChecks);
         HealthCheck.log(LOGGER, tumorChecks);
+
         return new PatientResult(checkType(), refChecks, tumorChecks);
     }
 

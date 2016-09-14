@@ -10,7 +10,9 @@ import java.util.stream.IntStream;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
@@ -19,7 +21,6 @@ import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.WGS_METRICS)
-public class WGSMetricsChecker implements HealthChecker {
+public class WGSMetricsChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(WGSMetricsChecker.class);
 
@@ -47,44 +48,66 @@ public class WGSMetricsChecker implements HealthChecker {
         return CheckType.WGS_METRICS;
     }
 
-    @Override
     @NotNull
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
-        return new PatientResult(checkType(), referenceSample, tumorSample);
+    @Override
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+        final List<HealthCheck> refChecks = extractChecksForSample(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorChecks = extractChecksForSample(runContext.runDirectory(),
+                runContext.tumorSample());
+
+        return toPatientResult(refChecks, tumorChecks);
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toPatientResult(getErrorChecksForSample(runContext.refSample()),
+                getErrorChecksForSample(runContext.tumorSample()));
     }
 
     @NotNull
-    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
+    private static List<HealthCheck> getErrorChecksForSample(@NotNull final String sampleId) {
+        final List<HealthCheck> checks = Lists.newArrayList();
+        for (WGSMetricsCheck check : WGSMetricsCheck.values()) {
+            checks.add(new HealthCheck(sampleId, check.toString(), HealthCheckConstants.ERROR_VALUE));
+        }
+        return checks;
+    }
+
+    @NotNull
+    private BaseResult toPatientResult(@NotNull final List<HealthCheck> refChecks,
+            @NotNull final List<HealthCheck> tumorChecks) {
+        HealthCheck.log(LOGGER, refChecks);
+        HealthCheck.log(LOGGER, tumorChecks);
+
+        return new PatientResult(checkType(), refChecks, tumorChecks);
+    }
+
+    @NotNull
+    private static List<HealthCheck> extractChecksForSample(@NotNull final String runDirectory,
+            @NotNull final String sampleId)
             throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
-        Path wgsMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
+        final Path wgsMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
         final List<String> lines = FileReader.build().readLines(wgsMetricsPath);
 
-        final HealthCheck coverageMean = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageMean = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_MEAN);
-        final HealthCheck coverageMedian = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageMedian = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_MEDIAN);
-        final HealthCheck coverageSD = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageSD = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_SD);
-        final HealthCheck coverageBaseQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageBaseQ = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ);
-        final HealthCheck coverageDupe = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageDupe = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_DUPE);
-        final HealthCheck coverageMapQ = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageMapQ = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_MAPQ);
-        final HealthCheck coverageOverlap = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageOverlap = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_OVERLAP);
-        final HealthCheck coverageTotal = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageTotal = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_TOTAL);
-        final HealthCheck coverageUnpaired = getValue(wgsMetricsPath.toString(), lines, sampleId,
+        final HealthCheck coverageUnpaired = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_UNPAIRED);
 
         return Arrays.asList(coverageMean, coverageMedian, coverageSD, coverageBaseQ, coverageDupe, coverageMapQ,
@@ -98,12 +121,10 @@ public class WGSMetricsChecker implements HealthChecker {
     }
 
     @NotNull
-    private static HealthCheck getValue(@NotNull final String filePath, @NotNull final List<String> lines,
+    private static HealthCheck getCheck(@NotNull final String filePath, @NotNull final List<String> lines,
             @NotNull final String sampleId, @NotNull final WGSMetricsCheck check) throws LineNotFoundException {
         final String value = getValueFromLine(filePath, lines, check.getFieldName(), check.getColumnIndex());
-        final HealthCheck healthCheck = new HealthCheck(sampleId, check.toString(), value);
-        healthCheck.log(LOGGER);
-        return healthCheck;
+        return new HealthCheck(sampleId, check.toString(), value);
     }
 
     @NotNull

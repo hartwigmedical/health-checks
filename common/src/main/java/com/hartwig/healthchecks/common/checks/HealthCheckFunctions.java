@@ -20,9 +20,9 @@ public final class HealthCheckFunctions {
     private HealthCheckFunctions() {
     }
 
-    public static long sumOfTotalSequencesFromFastQC(@NotNull final String basePath,
-            @NotNull final ZipFilesReader zipFileReader) throws IOException, HealthChecksException {
-        final List<String> allLines = zipFileReader.readFieldFromZipFiles(basePath, FASTQC_DATA_FILE_NAME,
+    public static long sumOfTotalSequencesFromFastQC(@NotNull final String basePath)
+            throws IOException, HealthChecksException {
+        final List<String> allLines = new ZipFilesReader().readFieldFromZipFiles(basePath, FASTQC_DATA_FILE_NAME,
                 TOTAL_SEQUENCES_PATTERN);
 
         final List<String> allValues = allLines.stream().map(line -> {

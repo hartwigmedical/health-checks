@@ -7,9 +7,10 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
-import com.hartwig.healthchecks.common.checks.HealthCheckerConstants;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.COPYNUMBER)
-public class CopynumberChecker implements HealthChecker {
+public class CopynumberChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(CopynumberChecker.class);
 
@@ -55,7 +56,7 @@ public class CopynumberChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path copynumberPath = PathPrefixSuffixFinder.build().findPath(getBasePath(runContext),
                 runContext.tumorSample(), COPYNUMBER_SUFFIX);
         final List<String> copynumberLines = FileReader.build().readLines(copynumberPath);
@@ -81,17 +82,17 @@ public class CopynumberChecker implements HealthChecker {
             }
         }
 
-        return toBaseResult(runContext, String.valueOf(totalGain), String.valueOf(totalLoss));
+        return toMultiValueResult(runContext, String.valueOf(totalGain), String.valueOf(totalLoss));
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return toBaseResult(runContext, HealthCheckerConstants.ERROR_VALUE, HealthCheckerConstants.ERROR_VALUE);
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toMultiValueResult(runContext, HealthCheckConstants.ERROR_VALUE, HealthCheckConstants.ERROR_VALUE);
     }
 
     @NotNull
-    private BaseResult toBaseResult(@NotNull final RunContext runContext, @NotNull final String totalGain,
+    private BaseResult toMultiValueResult(@NotNull final RunContext runContext, @NotNull final String totalGain,
             @NotNull final String totalLoss) {
         final HealthCheck gainCheck = new HealthCheck(runContext.tumorSample(),
                 CopynumberCheck.COPYNUMBER_GENOME_GAIN.toString(), totalGain);

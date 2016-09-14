@@ -30,32 +30,41 @@ public class MappingCheckerTest {
     private static final String NON_EXISTING_SAMPLE = "sample5";
 
     private final MappingChecker checker = new MappingChecker();
+
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final BaseResult result = checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final BaseResult result = checker.tryRun(runContext);
         assertResult(result);
+    }
+
+    @Test
+    public void errorRunYieldsCorrectNumberOfChecks() {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final PatientResult result = (PatientResult) checker.errorRun(runContext);
+        assertEquals(6, result.getRefSampleChecks().size());
+        assertEquals(6, result.getTumorSampleChecks().size());
     }
 
     @Test(expected = EmptyFileException.class)
     public void emptyFlagStatYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, EMPTY_FLAGSTAT_SAMPLE,
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, EMPTY_FLAGSTAT_SAMPLE,
                 EMPTY_FLAGSTAT_SAMPLE);
-        checker.run(runContext);
+        checker.tryRun(runContext);
     }
 
     @Test(expected = EmptyFileException.class)
     public void emptyTotalSequenceFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, EMPTY_FASTQC_SAMPLE,
                 EMPTY_FASTQC_SAMPLE);
-        checker.run(runContext);
+        checker.tryRun(runContext);
     }
 
     @Test(expected = IOException.class)
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
-        checker.run(runContext);
+        checker.tryRun(runContext);
     }
 
     private static void assertResult(@NotNull final BaseResult result) {
@@ -115,10 +124,10 @@ public class MappingCheckerTest {
     @NotNull
     private static HealthCheck extractHealthCheck(@NotNull final List<HealthCheck> checks,
             @NotNull final MappingCheck checkName) {
-        Optional<HealthCheck> report = checks.stream().filter(
+        final Optional<HealthCheck> optCheck = checks.stream().filter(
                 check -> check.getCheckName().equals(checkName.toString())).findFirst();
 
-        assert report.isPresent();
-        return report.get();
+        assert optCheck.isPresent();
+        return optCheck.get();
     }
 }

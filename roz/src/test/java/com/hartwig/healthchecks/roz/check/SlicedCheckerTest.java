@@ -1,6 +1,7 @@
 package com.hartwig.healthchecks.roz.check;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
@@ -21,24 +22,33 @@ public class SlicedCheckerTest {
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
 
+    private static final int EXPECTED_SLICED_COUNT = 4;
+
     private final SlicedChecker checker = new SlicedChecker();
 
     @Test
     public void canAnalyseTypicalSlicedVCF() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        final BaseResult result = checker.run(runContext);
+        final BaseResult result = checker.tryRun(runContext);
         assertEquals(CheckType.SLICED, result.getCheckType());
 
         final HealthCheck check = ((SingleValueResult) result).getCheck();
         assertEquals(SlicedCheck.SLICED_NUMBER_OF_VARIANTS.toString(), check.getCheckName());
         assertEquals(TUMOR_SAMPLE, check.getSampleId());
-        assertEquals("4", check.getValue());
+        assertEquals(Integer.toString(EXPECTED_SLICED_COUNT), check.getValue());
+    }
+
+    @Test
+    public void errorYieldsCorrectOutput() {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final SingleValueResult result = (SingleValueResult) checker.errorRun(runContext);
+        assertNotNull(result.getCheck());
     }
 
     @Test(expected = IOException.class)
     public void readingNonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
-        checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest("DoesNotExist", REF_SAMPLE, TUMOR_SAMPLE);
+        checker.tryRun(runContext);
     }
 }

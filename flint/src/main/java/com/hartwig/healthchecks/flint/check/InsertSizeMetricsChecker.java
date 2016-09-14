@@ -10,7 +10,9 @@ import java.util.stream.IntStream;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.INSERT_SIZE)
-public class InsertSizeMetricsChecker implements HealthChecker {
+public class InsertSizeMetricsChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(InsertSizeMetricsChecker.class);
 
@@ -48,22 +50,42 @@ public class InsertSizeMetricsChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+        final List<HealthCheck> refChecks = extractChecksForSample(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorChecks = extractChecksForSample(runContext.runDirectory(),
+                runContext.tumorSample());
 
-        return new PatientResult(checkType(), referenceSample, tumorSample);
+        return toPatientResult(refChecks, tumorChecks);
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new PatientResult(checkType(), Lists.newArrayList(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toPatientResult(getErrorChecksForSample(runContext.refSample()),
+                getErrorChecksForSample(runContext.tumorSample()));
     }
 
     @NotNull
-    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
-            throws IOException, HealthChecksException {
+    private static List<HealthCheck> getErrorChecksForSample(@NotNull final String sampleId) {
+        final List<HealthCheck> checks = Lists.newArrayList();
+        for (InsertSizeMetricsCheck check : InsertSizeMetricsCheck.values()) {
+            checks.add(new HealthCheck(sampleId, check.toString(), HealthCheckConstants.ERROR_VALUE));
+        }
+        return checks;
+    }
+
+    @NotNull
+    private BaseResult toPatientResult(@NotNull final List<HealthCheck> refChecks,
+            @NotNull final List<HealthCheck> tumorChecks) {
+        HealthCheck.log(LOGGER, refChecks);
+        HealthCheck.log(LOGGER, tumorChecks);
+
+        return new PatientResult(checkType(), refChecks, tumorChecks);
+    }
+
+    @NotNull
+    private static List<HealthCheck> extractChecksForSample(@NotNull final String runDirectory,
+            @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         final Path insertSizeMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId,
                 INSERT_SIZE_METRICS_EXTENSION);

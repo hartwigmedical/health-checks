@@ -9,7 +9,9 @@ import java.util.Optional;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
@@ -18,7 +20,6 @@ import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.SUMMARY_METRICS)
-public class SummaryMetricsChecker implements HealthChecker {
+public class SummaryMetricsChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(SummaryMetricsChecker.class);
 
@@ -47,21 +48,42 @@ public class SummaryMetricsChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final List<HealthCheck> referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<HealthCheck> tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
-        return new PatientResult(checkType(), referenceSample, tumorSample);
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+        final List<HealthCheck> refChecks = extractChecksForSample(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorChecks = extractChecksForSample(runContext.runDirectory(),
+                runContext.tumorSample());
+
+        return toPatientResult(refChecks, tumorChecks);
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toPatientResult(getErrorChecksForSample(runContext.refSample()),
+                getErrorChecksForSample(runContext.tumorSample()));
     }
 
     @NotNull
-    private static List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
-            throws IOException, HealthChecksException {
+    private static List<HealthCheck> getErrorChecksForSample(@NotNull final String sampleId) {
+        final List<HealthCheck> checks = Lists.newArrayList();
+        for (SummaryMetricsCheck check : SummaryMetricsCheck.values()) {
+            checks.add(new HealthCheck(sampleId, check.toString(), HealthCheckConstants.ERROR_VALUE));
+        }
+        return checks;
+    }
+
+    @NotNull
+    private BaseResult toPatientResult(@NotNull final List<HealthCheck> refChecks,
+            @NotNull final List<HealthCheck> tumorChecks) {
+        HealthCheck.log(LOGGER, refChecks);
+        HealthCheck.log(LOGGER, tumorChecks);
+
+        return new PatientResult(checkType(), refChecks, tumorChecks);
+    }
+
+    @NotNull
+    private static List<HealthCheck> extractChecksForSample(@NotNull final String runDirectory,
+            @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         Path alignmentSummaryMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId,
                 ALIGNMENT_SUMMARY_METRICS_EXTENSION);
@@ -73,14 +95,14 @@ public class SummaryMetricsChecker implements HealthChecker {
             throw new LineNotFoundException(alignmentSummaryMetricsPath.toString(), PICARD_CATEGORY_TO_READ);
         }
 
-        final HealthCheck pfIndelRate = getValue(searchedLine.get(), sampleId,
+        final HealthCheck pfIndelRate = getCheck(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_INDEL_RATE);
-        final HealthCheck pctAdapter = getValue(searchedLine.get(), sampleId, SummaryMetricsCheck.MAPPING_PCT_ADAPTER);
-        final HealthCheck pctChimeras = getValue(searchedLine.get(), sampleId,
+        final HealthCheck pctAdapter = getCheck(searchedLine.get(), sampleId, SummaryMetricsCheck.MAPPING_PCT_ADAPTER);
+        final HealthCheck pctChimeras = getCheck(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PCT_CHIMERA);
-        final HealthCheck pfMisMatch = getValue(searchedLine.get(), sampleId,
+        final HealthCheck pfMisMatch = getCheck(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_PF_MISMATCH_RATE);
-        final HealthCheck strandBalance = getValue(searchedLine.get(), sampleId,
+        final HealthCheck strandBalance = getCheck(searchedLine.get(), sampleId,
                 SummaryMetricsCheck.MAPPING_STRAND_BALANCE);
         return Arrays.asList(pfIndelRate, pctAdapter, pctChimeras, pfMisMatch, strandBalance);
     }
@@ -92,11 +114,9 @@ public class SummaryMetricsChecker implements HealthChecker {
     }
 
     @NotNull
-    private static HealthCheck getValue(@NotNull final String line, @NotNull final String sampleId,
+    private static HealthCheck getCheck(@NotNull final String line, @NotNull final String sampleId,
             @NotNull final SummaryMetricsCheck check) {
         final String value = line.split(VALUE_SEPARATOR)[check.getIndex()];
-        final HealthCheck healthCheck = new HealthCheck(sampleId, check.toString(), value);
-        healthCheck.log(LOGGER);
-        return healthCheck;
+        return new HealthCheck(sampleId, check.toString(), value);
     }
 }

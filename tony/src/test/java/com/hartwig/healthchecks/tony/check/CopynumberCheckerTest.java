@@ -9,7 +9,6 @@ import java.util.Optional;
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -30,26 +29,26 @@ public class CopynumberCheckerTest {
     private static final long EXPECTED_GAIN_CHECK = 252;
     private static final long EXPECTED_LOSS_CHECK = 11561;
 
-    private final HealthChecker checker = new CopynumberChecker();
+    private final CopynumberChecker checker = new CopynumberChecker();
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final BaseResult result = checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final BaseResult result = checker.tryRun(runContext);
         assertResult(result);
     }
 
     @Test
     public void errorYieldsCorrectOutput() {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final MultiValueResult result = (MultiValueResult) checker.errorResult(runContext);
-        assertEquals(2, result.getChecks().size());
+        final MultiValueResult result = (MultiValueResult) checker.errorRun(runContext);
+        assertEquals(EXPECTED_NUM_CHECKS, result.getChecks().size());
     }
 
     @Test(expected = MalformedFileException.class)
     public void noGainLossTagsYieldMalformedException() throws IOException, HealthChecksException {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, MALFORMED_SAMPLE);
-        checker.run(runContext);
+        checker.tryRun(runContext);
     }
 
     private static void assertResult(@NotNull final BaseResult baseResult) {
@@ -71,10 +70,10 @@ public class CopynumberCheckerTest {
     @NotNull
     private static HealthCheck extractHealthCheck(@NotNull final List<HealthCheck> checks,
             @NotNull final CopynumberCheck checkName) {
-        final Optional<HealthCheck> report = checks.stream().filter(
+        final Optional<HealthCheck> optCheck = checks.stream().filter(
                 check -> check.getCheckName().equals(checkName.toString())).findFirst();
 
-        assert report.isPresent();
-        return report.get();
+        assert optCheck.isPresent();
+        return optCheck.get();
     }
 }

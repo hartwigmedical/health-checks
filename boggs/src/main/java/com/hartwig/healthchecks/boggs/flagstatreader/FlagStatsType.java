@@ -1,4 +1,4 @@
-package com.hartwig.healthchecks.boggs.check;
+package com.hartwig.healthchecks.boggs.flagstatreader;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 public enum FlagStatsType {
-
     TOTAL_INDEX(0),
     SECONDARY_INDEX(1),
     SUPPLEMENTARY_INDEX(2),

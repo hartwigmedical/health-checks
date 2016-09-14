@@ -10,7 +10,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthCheckFunctions;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -18,7 +20,6 @@ import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.PRESTATS)
-public class PrestatsChecker implements HealthChecker {
+public class PrestatsChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(PrestatsChecker.class);
 
@@ -38,9 +39,6 @@ public class PrestatsChecker implements HealthChecker {
 
     private static final String PRESTATS_CHECK_FORMAT = "%s_%s";
 
-    @NotNull
-    private final ZipFilesReader zipFileReader = new ZipFilesReader();
-
     public PrestatsChecker() {
     }
 
@@ -50,38 +48,62 @@ public class PrestatsChecker implements HealthChecker {
         return CheckType.PRESTATS;
     }
 
-    @Override
     @NotNull
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(), runContext.tumorSample());
+    @Override
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+        final List<HealthCheck> refChecks = extractChecksForSample(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorChecks = extractChecksForSample(runContext.runDirectory(),
+                runContext.tumorSample());
 
-        return new PatientResult(checkType(), refSampleData, tumorSampleData);
+        return toPatientResult(refChecks, tumorChecks);
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toPatientResult(getErrorChecksForSample(runContext.refSample()),
+                getErrorChecksForSample(runContext.tumorSample()));
     }
 
     @NotNull
-    private List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
-            throws IOException, HealthChecksException {
+    private static List<HealthCheck> getErrorChecksForSample(@NotNull final String sampleId) {
+        List<HealthCheck> checks = Lists.newArrayList();
+        for (PrestatsCheck check : PrestatsCheck.valuesToIncludeInCount()) {
+            for (PrestatsCheckValue checkValue : PrestatsCheckValue.values()) {
+                checks.add(
+                        new HealthCheck(sampleId, toCheckName(check, checkValue), HealthCheckConstants.ERROR_VALUE));
+            }
+        }
+        checks.add(new HealthCheck(sampleId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.toString(),
+                HealthCheckConstants.ERROR_VALUE));
+        return checks;
+    }
+
+    @NotNull
+    private BaseResult toPatientResult(@NotNull final List<HealthCheck> refChecks,
+            @NotNull final List<HealthCheck> tumorChecks) {
+        HealthCheck.log(LOGGER, refChecks);
+        HealthCheck.log(LOGGER, tumorChecks);
+
+        return new PatientResult(checkType(), refChecks, tumorChecks);
+    }
+
+    @NotNull
+    private static List<HealthCheck> extractChecksForSample(@NotNull final String runDirectory,
+            @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
 
         final List<HealthCheck> fastqcChecks = extractFastqcChecks(basePath, sampleId);
         final HealthCheck totalSequenceCheck = extractTotalSequenceCheck(basePath, sampleId);
 
         fastqcChecks.add(totalSequenceCheck);
-        HealthCheck.log(LOGGER, fastqcChecks);
         return fastqcChecks;
     }
 
     @NotNull
-    private List<HealthCheck> extractFastqcChecks(@NotNull final String basePath, @NotNull final String sampleId)
-            throws IOException {
-        final List<String> allLines = zipFileReader.readAllLinesFromZips(basePath, FASTQC_CHECKS_FILE_NAME);
+    private static List<HealthCheck> extractFastqcChecks(@NotNull final String basePath,
+            @NotNull final String sampleId) throws IOException {
+        final List<String> allLines = new ZipFilesReader().readAllLinesFromZips(basePath, FASTQC_CHECKS_FILE_NAME);
         final Map<PrestatsCheck, List<PrestatsCheckValue>> data = getFastqcCheckData(allLines);
 
         final List<HealthCheck> finalList = Lists.newArrayList();
@@ -146,9 +168,9 @@ public class PrestatsChecker implements HealthChecker {
     }
 
     @NotNull
-    private HealthCheck extractTotalSequenceCheck(@NotNull final String basePath, @NotNull final String sampleId)
-            throws IOException, HealthChecksException {
-        final long totalSequences = HealthCheckFunctions.sumOfTotalSequencesFromFastQC(basePath, zipFileReader);
+    private static HealthCheck extractTotalSequenceCheck(@NotNull final String basePath,
+            @NotNull final String sampleId) throws IOException, HealthChecksException {
+        final long totalSequences = HealthCheckFunctions.sumOfTotalSequencesFromFastQC(basePath);
 
         return new HealthCheck(sampleId, PrestatsCheck.PRESTATS_NUMBER_OF_READS.toString(),
                 Long.toString(totalSequences));

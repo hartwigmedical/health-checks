@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.hartwig.healthchecks.boggs.check.FlagStatsType;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 import org.jetbrains.annotations.NotNull;

@@ -37,62 +37,58 @@ public class RealignerCheckerTest {
     private static final String NON_EXISTING_SAMPLE = "sample5";
     private static final String MALFORMED_SAMPLE = "sample6";
 
+    private final RealignerChecker checker = new RealignerChecker();
+
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-
-        RealignerChecker checker = new RealignerChecker();
-        final BaseResult report = checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final BaseResult report = checker.tryRun(runContext);
         assertReport(report);
+    }
+
+    @Test
+    public void errorRunYieldsCorrectNumberOfChecks() {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final PatientResult result = (PatientResult) checker.errorRun(runContext);
+        assertEquals(1, result.getRefSampleChecks().size());
+        assertEquals(1, result.getTumorSampleChecks().size());
     }
 
     @Test(expected = EmptyFileException.class)
     public void emptyFileYieldsEmptyFileException() throws IOException, HealthChecksException {
         RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, EMPTY_SAMPLE, EMPTY_SAMPLE);
-
-        RealignerChecker checker = new RealignerChecker();
-        checker.run(runContext);
+        checker.tryRun(runContext);
     }
 
     @Test(expected = IOException.class)
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
-
-        RealignerChecker checker = new RealignerChecker();
-        checker.run(runContext);
+        checker.tryRun(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectRefFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
-
-        RealignerChecker checker = new RealignerChecker();
-        checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, INCORRECT_SAMPLE, TUMOR_SAMPLE);
+        checker.tryRun(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectTumorFileYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
-
-        RealignerChecker checker = new RealignerChecker();
-        checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, INCORRECT_SAMPLE);
+        checker.tryRun(runContext);
     }
 
     @Test(expected = LineNotFoundException.class)
     public void incorrectFilesYieldsLineNotFoundException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
-
-        RealignerChecker checker = new RealignerChecker();
-        checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, INCORRECT_SAMPLE, INCORRECT_SAMPLE);
+        checker.tryRun(runContext);
     }
 
     @Test(expected = MalformedFileException.class)
     public void malformedLineYieldsMalformedFileException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, MALFORMED_SAMPLE, MALFORMED_SAMPLE);
-
-        RealignerChecker checker = new RealignerChecker();
-        checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, MALFORMED_SAMPLE, MALFORMED_SAMPLE);
+        checker.tryRun(runContext);
     }
 
     private static void assertReport(@NotNull final BaseResult result) {

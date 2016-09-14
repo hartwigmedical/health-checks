@@ -9,7 +9,6 @@ import java.util.Optional;
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -37,43 +36,53 @@ public class PrestatsCheckerTest {
     private static final String NON_EXISTING_SAMPLE = "sample5";
 
     @NotNull
-    private final HealthChecker checker = new PrestatsChecker();
+    private final PrestatsChecker checker = new PrestatsChecker();
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final BaseResult result = checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final BaseResult result = checker.tryRun(runContext);
 
         assertEquals(CheckType.PRESTATS, result.getCheckType());
-        assertRefSampleData(((PatientResult) result).getRefSampleChecks());
-        assertTumorSampleData(((PatientResult) result).getTumorSampleChecks());
+        assertRefChecks(((PatientResult) result).getRefSampleChecks());
+        assertTumorChecks(((PatientResult) result).getTumorSampleChecks());
     }
+
+    @Test
+    public void errorRunYieldsCorrectNumberOfChecks() {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final PatientResult result = (PatientResult) checker.errorRun(runContext);
+        assertEquals(EXPECTED_CHECKS_NUM, result.getRefSampleChecks().size());
+        assertEquals(EXPECTED_CHECKS_NUM, result.getTumorSampleChecks().size());
+    }
+
 
     @Test(expected = EmptyFileException.class)
     public void emptyTotalSequenceFileYieldsEmptyFileException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, EMPTY_TOTAL_SEQUENCE_SAMPLE,
                 EMPTY_TOTAL_SEQUENCE_SAMPLE);
-        checker.run(runContext);
+        checker.tryRun(runContext);
     }
 
     @Test
     public void incompleteInputYieldsIncompleteOutput() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, INCOMPLETE_SAMPLE, INCOMPLETE_SAMPLE);
-        final BaseResult result = checker.run(runContext);
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, INCOMPLETE_SAMPLE,
+                INCOMPLETE_SAMPLE);
+        final BaseResult result = checker.tryRun(runContext);
         final List<HealthCheck> refResults = ((PatientResult) result).getRefSampleChecks();
-        assertEquals(EXPECTED_CHECKS_NUM, refResults.size());
 
+        assertEquals(EXPECTED_CHECKS_NUM, refResults.size());
         assertResult(refResults, PrestatsCheck.PRESTATS_SEQUENCE_DUPLICATION_LEVELS, PrestatsCheckValue.FAIL, 0);
     }
 
     @Test(expected = IOException.class)
     public void nonExistingFileYieldsIOException() throws IOException, HealthChecksException {
-        RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, NON_EXISTING_SAMPLE,
                 NON_EXISTING_SAMPLE);
-        checker.run(runContext);
+        checker.tryRun(runContext);
     }
 
-    private static void assertRefSampleData(@NotNull final List<HealthCheck> checks) {
+    private static void assertRefChecks(@NotNull final List<HealthCheck> checks) {
         assertEquals(EXPECTED_CHECKS_NUM, checks.size());
         for (HealthCheck check : checks) {
             assertEquals(REF_SAMPLE, check.getSampleId());
@@ -114,7 +123,7 @@ public class PrestatsCheckerTest {
         assertResult(checks, PrestatsCheck.PRESTATS_KMER_CONTENT, PrestatsCheckValue.PASS, 2);
     }
 
-    private static void assertTumorSampleData(@NotNull final List<HealthCheck> checks) {
+    private static void assertTumorChecks(@NotNull final List<HealthCheck> checks) {
         assertEquals(EXPECTED_CHECKS_NUM, checks.size());
         for (HealthCheck check : checks) {
             assertEquals(TUMOR_SAMPLE, check.getSampleId());
@@ -157,17 +166,17 @@ public class PrestatsCheckerTest {
 
     private static void assertResult(@NotNull final List<HealthCheck> checks, @NotNull final PrestatsCheck check,
             @NotNull final PrestatsCheckValue value, final int expectedCount) {
-        String checkName = PrestatsChecker.toCheckName(check, value);
+        final String checkName = PrestatsChecker.toCheckName(check, value);
         assertResult(checks, checkName, expectedCount);
     }
 
     private static void assertResult(@NotNull final List<HealthCheck> checks, @NotNull final String checkName,
             final int expectedValue) {
-        Optional<HealthCheck> optCheckReport = checks.stream().filter(
+        Optional<HealthCheck> optCheck = checks.stream().filter(
                 p -> p.getCheckName().equals(checkName)).findFirst();
 
-        assert optCheckReport.isPresent();
-        final String actualValue = optCheckReport.get().getValue();
+        assert optCheck.isPresent();
+        final String actualValue = optCheck.get().getValue();
 
         assertEquals(Integer.toString(expectedValue), actualValue);
     }

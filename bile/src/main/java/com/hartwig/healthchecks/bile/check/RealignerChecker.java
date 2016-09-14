@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
@@ -21,7 +22,6 @@ import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.REALIGNER)
-public class RealignerChecker implements HealthChecker {
+public class RealignerChecker extends ErrorHandlingChecker implements HealthChecker {
 
     @VisibleForTesting
     static final String REALIGNER_CHECK_NAME = "MAPPING_REALIGNER_CHANGED_ALIGNMENTS";
@@ -60,22 +60,32 @@ public class RealignerChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final HealthCheck referenceSample = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final HealthCheck tumorSample = getSampleData(runContext.runDirectory(), runContext.tumorSample());
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+        final HealthCheck refCheck = extractCheckForSample(runContext.runDirectory(), runContext.refSample());
+        final HealthCheck tumorCheck = extractCheckForSample(runContext.runDirectory(), runContext.tumorSample());
 
-        return new PatientResult(checkType(), Collections.singletonList(referenceSample),
-                Collections.singletonList(tumorSample));
+        return toPatientResult(refCheck, tumorCheck);
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toPatientResult(
+                new HealthCheck(runContext.refSample(), REALIGNER_CHECK_NAME, HealthCheckConstants.ERROR_VALUE),
+                new HealthCheck(runContext.tumorSample(), REALIGNER_CHECK_NAME, HealthCheckConstants.ERROR_VALUE));
     }
 
     @NotNull
-    private static HealthCheck getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
+    private BaseResult toPatientResult(@NotNull final HealthCheck refCheck, @NotNull final HealthCheck tumorCheck) {
+        refCheck.log(LOGGER);
+        tumorCheck.log(LOGGER);
+        return new PatientResult(checkType(), Collections.singletonList(refCheck),
+                Collections.singletonList(tumorCheck));
+    }
+
+    @NotNull
+    private static HealthCheck extractCheckForSample(@NotNull final String runDirectory,
+            @NotNull final String sampleId)
             throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
 
@@ -86,9 +96,7 @@ public class RealignerChecker implements HealthChecker {
         final long mappedValue = readMappedFromFlagstat(flagStatPath);
 
         final String value = new DecimalFormat(REALIGNER_CHECK_PRECISION).format((double) diffCount / mappedValue);
-        final HealthCheck healthCheck = new HealthCheck(sampleId, REALIGNER_CHECK_NAME, value);
-        healthCheck.log(LOGGER);
-        return healthCheck;
+        return new HealthCheck(sampleId, REALIGNER_CHECK_NAME, value);
     }
 
     private static long readMappedFromFlagstat(@NotNull final Path flagStatPath)

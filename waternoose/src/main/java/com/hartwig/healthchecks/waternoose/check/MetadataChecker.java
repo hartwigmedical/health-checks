@@ -11,7 +11,9 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -19,7 +21,6 @@ import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.LineReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.METADATA)
-public class MetadataChecker implements HealthChecker {
+public class MetadataChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(MetadataChecker.class);
 
@@ -57,22 +58,29 @@ public class MetadataChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final String runDate = extractRunDate(runContext.runDirectory());
         final String pipelineVersion = extractPipelineVersion(runContext.runDirectory());
 
-        List<HealthCheck> refMetaData = toHealthCheckList(runContext.refSample(), runDate, pipelineVersion);
-        List<HealthCheck> tumorMetaData = toHealthCheckList(runContext.tumorSample(), runDate, pipelineVersion);
-        HealthCheck.log(LOGGER, refMetaData);
-        HealthCheck.log(LOGGER, tumorMetaData);
-
-        return new PatientResult(checkType(), refMetaData, tumorMetaData);
+        return toPatientResult(runContext, runDate, pipelineVersion);
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toPatientResult(runContext, HealthCheckConstants.ERROR_VALUE, HealthCheckConstants.ERROR_VALUE);
+    }
+
+    @NotNull
+    private BaseResult toPatientResult(@NotNull final RunContext runContext, @NotNull final String runDate,
+            @NotNull final String pipelineVersion) {
+        final List<HealthCheck> refMetaData = toHealthCheckList(runContext.refSample(), runDate, pipelineVersion);
+        final List<HealthCheck> tumorMetaData = toHealthCheckList(runContext.tumorSample(), runDate, pipelineVersion);
+
+        HealthCheck.log(LOGGER, refMetaData);
+        HealthCheck.log(LOGGER, tumorMetaData);
+
+        return new PatientResult(checkType(), refMetaData, tumorMetaData);
     }
 
     @NotNull

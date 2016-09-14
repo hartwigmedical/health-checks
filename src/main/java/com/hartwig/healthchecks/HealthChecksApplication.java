@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.hartwig.healthchecks.common.checks.HealthCheckRunner;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.GenerateReportException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -131,7 +130,7 @@ public final class HealthChecksApplication {
                 final HealthChecker checker = flyweight.getChecker(checkType);
 
                 final Report report = HealthCheckReportFactory.create(reportType);
-                report.addResult(HealthCheckRunner.run(runContext, checker));
+                report.addResult(checker.run(runContext));
             } catch (final NotFoundException e) {
                 LOGGER.error(e.getMessage());
             }
@@ -153,7 +152,7 @@ public final class HealthChecksApplication {
     private Action1<? super HealthChecker> createHealthCheckerAction() {
         return (Action1<HealthChecker>) healthChecker -> {
             final Report report = HealthCheckReportFactory.create(reportType);
-            report.addResult(HealthCheckRunner.run(runContext, healthChecker));
+            report.addResult(healthChecker.run(runContext));
         };
     }
 

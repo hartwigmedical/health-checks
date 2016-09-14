@@ -9,7 +9,6 @@ import java.util.Optional;
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
-import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
 import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
@@ -24,6 +23,8 @@ import org.junit.Test;
 public class SomaticCheckerTest {
 
     private static final double EPSILON = 1.0e-4;
+    private static final int EXPECTED_NUM_CHECKS = 38;
+
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
@@ -40,17 +41,17 @@ public class SomaticCheckerTest {
     private static final String STRELKA = VCFConstants.STRELKA.toUpperCase();
     private static final String VARSCAN = VCFConstants.VARSCAN.toUpperCase();
 
-    private final HealthChecker checker = new SomaticChecker();
+    private final SomaticChecker checker = new SomaticChecker();
 
     @Test
     public void canAnalyseTypicalMeltedVCF() throws IOException, HealthChecksException {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
 
-        final BaseResult result = checker.run(runContext);
+        final BaseResult result = checker.tryRun(runContext);
         final List<HealthCheck> checks = ((MultiValueResult) result).getChecks();
 
         assertEquals(CheckType.SOMATIC, result.getCheckType());
-        assertEquals(38, checks.size());
+        assertEquals(EXPECTED_NUM_CHECKS, checks.size());
 
         assertCheck(checks, SomaticCheck.COUNT.checkName(VCFType.INDELS.toString()), 67);
         assertCheck(checks, SomaticCheck.COUNT.checkName(VCFType.SNP.toString()), 987);
@@ -102,8 +103,8 @@ public class SomaticCheckerTest {
     @Test
     public void errorYieldsCorrectOutput() {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final MultiValueResult result = (MultiValueResult) checker.errorResult(runContext);
-        assertEquals(0, result.getChecks().size());
+        final MultiValueResult result = (MultiValueResult) checker.errorRun(runContext);
+        assertEquals(EXPECTED_NUM_CHECKS, result.getChecks().size());
     }
 
     @Test

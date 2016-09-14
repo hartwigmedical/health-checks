@@ -6,20 +6,20 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatData;
-import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatParser;
 import com.hartwig.healthchecks.boggs.flagstatreader.FlagStats;
+import com.hartwig.healthchecks.boggs.flagstatreader.FlagStatsType;
 import com.hartwig.healthchecks.boggs.flagstatreader.SambambaFlagStatParser;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthCheckFunctions;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.reader.ZipFilesReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.MAPPING)
-public class MappingChecker implements HealthChecker {
+public class MappingChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(MappingChecker.class);
 
@@ -36,11 +36,6 @@ public class MappingChecker implements HealthChecker {
     private static final String FLAGSTAT_BASE_DIRECTORY = "mapping";
 
     private static final String FLAGSTAT_FILE_FILTER = ".realign";
-
-    @NotNull
-    private final FlagStatParser flagstatParser = new SambambaFlagStatParser();
-    @NotNull
-    private final ZipFilesReader zipFileReader = new ZipFilesReader();
 
     public MappingChecker() {
     }
@@ -51,40 +46,54 @@ public class MappingChecker implements HealthChecker {
         return CheckType.MAPPING;
     }
 
-    @Override
     @NotNull
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final List<HealthCheck> refSampleData = getSampleData(runContext.runDirectory(), runContext.refSample());
-        final List<HealthCheck> tumorSampleData = getSampleData(runContext.runDirectory(), runContext.tumorSample());
+    @Override
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+        final List<HealthCheck> refChecks = getChecksForSample(runContext.runDirectory(), runContext.refSample());
+        final List<HealthCheck> tumorChecks = getChecksForSample(runContext.runDirectory(), runContext.tumorSample());
 
-        return new PatientResult(checkType(), refSampleData, tumorSampleData);
+        return toPatientResult(refChecks, tumorChecks);
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toPatientResult(getErrorChecksForSample(runContext.refSample()),
+                getErrorChecksForSample(runContext.tumorSample()));
     }
 
     @NotNull
-    private List<HealthCheck> getSampleData(@NotNull final String runDirectory, @NotNull final String sampleId)
-            throws IOException, HealthChecksException {
+    private static List<HealthCheck> getErrorChecksForSample(@NotNull final String sampleId) {
+        final List<HealthCheck> checks = Lists.newArrayList();
+        for (MappingCheck check : MappingCheck.values()) {
+            checks.add(new HealthCheck(sampleId, check.toString(), HealthCheckConstants.ERROR_VALUE));
+        }
+        return checks;
+    }
 
+    @NotNull
+    private BaseResult toPatientResult(@NotNull final List<HealthCheck> refChecks,
+            @NotNull final List<HealthCheck> tumorChecks) {
+        HealthCheck.log(LOGGER, refChecks);
+        HealthCheck.log(LOGGER, tumorChecks);
+
+        return new PatientResult(checkType(), refChecks, tumorChecks);
+    }
+
+    @NotNull
+    private static List<HealthCheck> getChecksForSample(@NotNull final String runDirectory,
+            @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePathForTotalSequences = getBasePathForTotalSequences(runDirectory, sampleId);
-        final long totalSequences = HealthCheckFunctions.sumOfTotalSequencesFromFastQC(basePathForTotalSequences,
-                zipFileReader);
+        final long totalSequences = HealthCheckFunctions.sumOfTotalSequencesFromFastQC(basePathForTotalSequences);
 
         final String basePathForFlagStat = getBasePathForFlagStat(runDirectory, sampleId);
-        final List<HealthCheck> mappingChecks = getFlagStatsData(basePathForFlagStat, sampleId, totalSequences);
-
-        HealthCheck.log(LOGGER, mappingChecks);
-        return mappingChecks;
+        return extractChecksFromFlagstats(basePathForFlagStat, sampleId, totalSequences);
     }
 
     @NotNull
-    private List<HealthCheck> getFlagStatsData(@NotNull final String basePath, @NotNull final String sampleId,
-            final long totalSequences) throws IOException, EmptyFileException {
-        final FlagStatData flagstatData = flagstatParser.parse(basePath, FLAGSTAT_FILE_FILTER);
+    private static List<HealthCheck> extractChecksFromFlagstats(@NotNull final String basePath,
+            @NotNull final String sampleId, final long totalSequences) throws IOException, EmptyFileException {
+        final FlagStatData flagstatData = new SambambaFlagStatParser().parse(basePath, FLAGSTAT_FILE_FILTER);
 
         final List<FlagStats> passed = flagstatData.getPassedStats();
 

@@ -24,41 +24,48 @@ public class GermlineCheckerTest {
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
 
+    private static final int EXPECTED_NUM_CHECKS = 2;
+    private static final int EXPECTED_REF_SNPS = 55;
+    private static final int EXPECTED_REF_INDELS = 4;
+    private static final int EXPECTED_TUMOR_SNPS = 74;
+    private static final int EXPECTED_TUMOR_INDELS = 4;
+
+
     private final GermlineChecker checker = new GermlineChecker();
 
     @Test
     public void canCountSNPAndIndels() throws IOException, HealthChecksException {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final BaseResult result = checker.run(runContext);
+        final BaseResult result = checker.tryRun(runContext);
 
         assertEquals(CheckType.GERMLINE, result.getCheckType());
-        final List<HealthCheck> refData = ((PatientResult) result).getRefSampleChecks();
-        final List<HealthCheck> tumData = ((PatientResult) result).getTumorSampleChecks();
+        final List<HealthCheck> refChecks = ((PatientResult) result).getRefSampleChecks();
+        final List<HealthCheck> tumorChecks = ((PatientResult) result).getTumorSampleChecks();
 
-        assertChecks(refData, 55, 4);
-        assertChecks(tumData, 74, 4);
+        assertChecks(refChecks, EXPECTED_REF_SNPS, EXPECTED_REF_INDELS);
+        assertChecks(tumorChecks, EXPECTED_TUMOR_SNPS, EXPECTED_TUMOR_INDELS);
     }
 
     @Test
     public void errorYieldsCorrectOutput() {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
-        final PatientResult result = (PatientResult) checker.errorResult(runContext);
-        assertEquals(2, result.getRefSampleChecks().size());
-        assertEquals(2, result.getTumorSampleChecks().size());
+        final PatientResult result = (PatientResult) checker.errorRun(runContext);
+        assertEquals(EXPECTED_NUM_CHECKS, result.getRefSampleChecks().size());
+        assertEquals(EXPECTED_NUM_CHECKS, result.getTumorSampleChecks().size());
     }
 
     private static void assertChecks(@NotNull final List<HealthCheck> checks, final long expectedCountSNP,
             final long expectedCountIndels) {
-        assertEquals(2, checks.size());
+        assertEquals(EXPECTED_NUM_CHECKS, checks.size());
 
-        final Optional<HealthCheck> snpReport = checks.stream().filter(
-                data -> data.getCheckName().equals(GermlineCheck.VARIANTS_GERMLINE_SNP.toString())).findFirst();
-        assert snpReport.isPresent();
-        assertEquals(Long.toString(expectedCountSNP), snpReport.get().getValue());
+        final Optional<HealthCheck> snpCheck = checks.stream().filter(
+                check -> check.getCheckName().equals(GermlineCheck.VARIANTS_GERMLINE_SNP.toString())).findFirst();
+        assert snpCheck.isPresent();
+        assertEquals(Long.toString(expectedCountSNP), snpCheck.get().getValue());
 
-        final Optional<HealthCheck> indelReport = checks.stream().filter(
-                data -> data.getCheckName().equals(GermlineCheck.VARIANTS_GERMLINE_INDELS.toString())).findFirst();
-        assert indelReport.isPresent();
-        assertEquals(Long.toString(expectedCountIndels), indelReport.get().getValue());
+        final Optional<HealthCheck> indelCheck = checks.stream().filter(
+                check -> check.getCheckName().equals(GermlineCheck.VARIANTS_GERMLINE_INDELS.toString())).findFirst();
+        assert indelCheck.isPresent();
+        assertEquals(Long.toString(expectedCountIndels), indelCheck.get().getValue());
     }
 }

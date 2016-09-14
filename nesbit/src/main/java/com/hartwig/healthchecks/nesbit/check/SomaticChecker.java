@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -32,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.SOMATIC)
-public class SomaticChecker implements HealthChecker {
+public class SomaticChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(SomaticChecker.class);
 
@@ -52,25 +54,53 @@ public class SomaticChecker implements HealthChecker {
 
     @NotNull
     @Override
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(),
                 MELTED_SOMATICS_EXTENSION);
         final List<String> lines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
         final List<VCFSomaticData> variants = toVCFSomaticData(lines);
 
-        final List<HealthCheck> reports = new ArrayList<>();
-        reports.addAll(getTypeChecks(variants, runContext.tumorSample(), VCFType.SNP));
-        reports.addAll(getTypeChecks(variants, runContext.tumorSample(), VCFType.INDELS));
-        reports.addAll(getAFChecks(variants, runContext.tumorSample()));
+        final List<HealthCheck> checks = Lists.newArrayList();
+        checks.addAll(getTypeChecks(variants, runContext.tumorSample(), VCFType.SNP));
+        checks.addAll(getTypeChecks(variants, runContext.tumorSample(), VCFType.INDELS));
+        checks.addAll(getAFChecks(variants, runContext.tumorSample()));
 
-        HealthCheck.log(LOGGER, reports);
-        return new MultiValueResult(checkType(), reports);
+        return toMultiValueResult(checks);
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        final List<HealthCheck> checks = Lists.newArrayList();
+        for (VCFType type : VCFType.values()) {
+            checks.add(new HealthCheck(runContext.tumorSample(), SomaticCheck.COUNT.checkName(type.name()),
+                    HealthCheckConstants.ERROR_VALUE));
+            checks.addAll(VCFConstants.ALL_CALLERS.stream().map(caller -> new HealthCheck(runContext.tumorSample(),
+                    SomaticCheck.PRECISION_CHECK.checkName(type.name(), caller),
+                    HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
+            checks.addAll(VCFConstants.ALL_CALLERS.stream().map(caller -> new HealthCheck(runContext.tumorSample(),
+                    SomaticCheck.SENSITIVITY_CHECK.checkName(type.name(), caller),
+                    HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
+            checks.addAll(VCFConstants.ALL_CALLERS.stream().map(caller -> new HealthCheck(runContext.tumorSample(),
+                    SomaticCheck.PROPORTION_CHECK.checkName(type.name(), caller),
+                    HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
+        }
+        checks.addAll(VCFConstants.ALL_CALLERS.stream().map(
+                caller -> new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_LOWER_SD.checkName(caller),
+                        HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
+        checks.addAll(VCFConstants.ALL_CALLERS.stream().map(
+                caller -> new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_MEDIAN.checkName(caller),
+                        HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
+        checks.addAll(VCFConstants.ALL_CALLERS.stream().map(
+                caller -> new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_UPPER_SD.checkName(caller),
+                        HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
+        return toMultiValueResult(checks);
+    }
+
+    @NotNull
+    private BaseResult toMultiValueResult(@NotNull final List<HealthCheck> checks) {
+        HealthCheck.log(LOGGER, checks);
+        return new MultiValueResult(checkType(), checks);
     }
 
     @NotNull

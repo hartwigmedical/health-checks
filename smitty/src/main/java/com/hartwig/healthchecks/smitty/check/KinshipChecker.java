@@ -5,9 +5,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.common.collect.Lists;
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
+import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
@@ -16,7 +17,6 @@ import com.hartwig.healthchecks.common.io.path.PathExtensionFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
-import com.hartwig.healthchecks.common.result.MultiValueResult;
 import com.hartwig.healthchecks.common.result.SingleValueResult;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.KINSHIP)
-public class KinshipChecker implements HealthChecker {
+public class KinshipChecker extends ErrorHandlingChecker implements HealthChecker {
 
     private static final Logger LOGGER = LogManager.getLogger(KinshipChecker.class);
 
@@ -45,9 +45,9 @@ public class KinshipChecker implements HealthChecker {
         return CheckType.KINSHIP;
     }
 
-    @Override
     @NotNull
-    public BaseResult run(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+    @Override
+    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         final Path kinshipPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), KINSHIP_EXTENSION);
         final List<String> kinshipLines = FileReader.build().readLines(kinshipPath);
         if (kinshipLines.size() != EXPECTED_NUM_LINES) {
@@ -63,13 +63,19 @@ public class KinshipChecker implements HealthChecker {
 
         assert optCheck.isPresent();
 
-        optCheck.get().log(LOGGER);
-        return new SingleValueResult(checkType(), optCheck.get());
+        return toSingleValueResult(optCheck.get());
     }
 
     @NotNull
     @Override
-    public BaseResult errorResult(@NotNull final RunContext runContext) {
-        return new MultiValueResult(checkType(), Lists.newArrayList());
+    public BaseResult errorRun(@NotNull final RunContext runContext) {
+        return toSingleValueResult(new HealthCheck(runContext.tumorSample(), KinshipCheck.KINSHIP_TEST.toString(),
+                HealthCheckConstants.ERROR_VALUE));
+    }
+
+    @NotNull
+    private BaseResult toSingleValueResult(@NotNull final HealthCheck check) {
+        check.log(LOGGER);
+        return new SingleValueResult(checkType(), check);
     }
 }
