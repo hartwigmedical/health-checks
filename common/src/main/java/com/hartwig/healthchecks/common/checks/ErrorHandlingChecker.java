@@ -29,8 +29,9 @@ public abstract class ErrorHandlingChecker implements HealthChecker {
     }
 
     @NotNull
-    public abstract BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException;
+    protected abstract BaseResult tryRun(@NotNull final RunContext runContext)
+            throws IOException, HealthChecksException;
 
     @NotNull
-    public abstract BaseResult errorRun(@NotNull final RunContext runContext);
+    protected abstract BaseResult errorRun(@NotNull final RunContext runContext);
 }
