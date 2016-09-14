@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.hartwig.healthchecks.common.checks.CheckType;
+import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
 import com.hartwig.healthchecks.common.exception.NotFoundException;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
@@ -24,7 +25,8 @@ final class HealthChecksFlyweight {
     private static final HealthChecksFlyweight INSTANCE = new HealthChecksFlyweight();
     private static final Reflections BASE = new Reflections("com.hartwig.healthchecks");
 
-    private static final Set<Class<? extends HealthChecker>> BASE_SET = BASE.getSubTypesOf(HealthChecker.class);
+    private static final Set<Class<? extends ErrorHandlingChecker>> BASE_SET = BASE.getSubTypesOf(
+            ErrorHandlingChecker.class);
 
     static {
         BASE_SET.forEach(checker -> {
