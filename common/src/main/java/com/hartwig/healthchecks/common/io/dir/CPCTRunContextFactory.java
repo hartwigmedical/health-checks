@@ -19,18 +19,17 @@ public final class CPCTRunContextFactory {
 
     @NotNull
     public static RunContext fromRunDirectory(@NotNull final String runDirectory) throws MalformedRunDirException {
-        int patientPosition = runDirectory.indexOf("_CPCT");
-        if (patientPosition == -1) {
-            throw new MalformedRunDirException(runDirectory);
-        }
-        String patient = runDirectory.substring(patientPosition + 1);
-        if (patient.length() != PATIENT_NAME_LENGTH) {
+        final int patientPosition = runDirectory.indexOf("_CPCT") + 1;
+        if ((patientPosition == 0) || (runDirectory.length() < (patientPosition + PATIENT_NAME_LENGTH))) {
             throw new MalformedRunDirException(runDirectory);
         }
 
-        String refSample = patient + REF_SAMPLE_SUFFIX;
-        String tumorSample = patient + TUMOR_SAMPLE_SUFFIX;
+        final String patient = runDirectory.substring(patientPosition, patientPosition + PATIENT_NAME_LENGTH);
 
-        return new RunContextImpl(runDirectory, refSample, tumorSample);
+        final String refSample = patient + REF_SAMPLE_SUFFIX;
+        final String tumorSample = patient + TUMOR_SAMPLE_SUFFIX;
+        final boolean hasPassedTests = runDirectory.length() <= (patientPosition + PATIENT_NAME_LENGTH);
+
+        return new RunContextImpl(runDirectory, refSample, tumorSample, hasPassedTests);
     }
 }

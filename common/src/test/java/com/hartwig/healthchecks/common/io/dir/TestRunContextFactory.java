@@ -16,6 +16,6 @@ public final class TestRunContextFactory {
     @NotNull
     public static RunContext forTest(@NotNull final String runDirectory, @NotNull final String refSample,
             @NotNull final String tumorSample) {
-        return new RunContextImpl(runDirectory, refSample, tumorSample);
+        return new RunContextImpl(runDirectory, refSample, tumorSample, false);
     }
 }

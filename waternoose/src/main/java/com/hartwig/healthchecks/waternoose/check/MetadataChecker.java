@@ -74,8 +74,10 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
     @NotNull
     private BaseResult toPatientResult(@NotNull final RunContext runContext, @NotNull final String runDate,
             @NotNull final String pipelineVersion) {
-        final List<HealthCheck> refMetaData = toHealthCheckList(runContext.refSample(), runDate, pipelineVersion);
-        final List<HealthCheck> tumorMetaData = toHealthCheckList(runContext.tumorSample(), runDate, pipelineVersion);
+        final List<HealthCheck> refMetaData = toHealthCheckList(runContext.refSample(), runContext.hasPassedTests(),
+                runDate, pipelineVersion);
+        final List<HealthCheck> tumorMetaData = toHealthCheckList(runContext.tumorSample(),
+                runContext.hasPassedTests(), runDate, pipelineVersion);
 
         HealthCheck.log(LOGGER, refMetaData);
         HealthCheck.log(LOGGER, tumorMetaData);
@@ -84,9 +86,11 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
     }
 
     @NotNull
-    private static List<HealthCheck> toHealthCheckList(@NotNull final String sampleId, @NotNull final String runDate,
-            @NotNull final String pipelineVersion) {
-        return Lists.newArrayList(new HealthCheck(sampleId, MetadataCheck.RUN_DATE.toString(), runDate),
+    private static List<HealthCheck> toHealthCheckList(@NotNull final String sampleId, final boolean hasPassedTests,
+            @NotNull final String runDate, @NotNull final String pipelineVersion) {
+        return Lists.newArrayList(
+                new HealthCheck(sampleId, MetadataCheck.HAS_PASSED_TESTS.toString(), Boolean.toString(hasPassedTests)),
+                new HealthCheck(sampleId, MetadataCheck.RUN_DATE.toString(), runDate),
                 new HealthCheck(sampleId, MetadataCheck.PIPELINE_VERSION.toString(), pipelineVersion));
     }
 
