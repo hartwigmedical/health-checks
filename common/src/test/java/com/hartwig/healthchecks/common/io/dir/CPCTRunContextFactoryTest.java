@@ -2,39 +2,55 @@ package com.hartwig.healthchecks.common.io.dir;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+
+import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.exception.MalformedRunDirException;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 public class CPCTRunContextFactoryTest {
 
-    private static final String VALID_PATIENT = "CPCT12345678";
-    private static final String VALID_RUNDIR = "160101_HMFregCPCT_FR10002000_FR20003000_" + VALID_PATIENT;
-    private static final String LOW_QUAL_RUNDIR =
-            "160101_HMFregCPCT_FR10002000_FR20003000_" + VALID_PATIENT + "_LowQual";
-    private static final String INVALID_RUNDIR = "RandomRunDir";
-    private static final String INVALID_PATIENT_NAME = "RunDir_CPCT123456";
+    private static final String VALID_RUNDIR = "160101_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
+    private static final String VALID_REF = "CPCT12345678R";
+    private static final String VALID_TUMOR = "CPCT12345678TII";
+
+    private static final String LOW_QUAL_RUNDIR = "160102_HMFregCPCT_FR10002000_FR20003000_CPCT12345678_LowQual";
+    private static final String LOW_QUAL_REF = "CPCT12345678R";
+    private static final String LOW_QUAL_TUMOR = "CPCT12345678T";
+
+    private static final String INVALID_PATIENT_RUNDIR = "160103_HMFregCPCT_FR10002000_FR20003000_CPCT1234";
+    private static final String MISSING_REF_RUNDIR = "160104_HMFregCPCT_FR10002000_FR20003000_CPCT12345678";
 
     @Test
-    public void resolveCorrectPaths() throws MalformedRunDirException {
-        final RunContext runContext = CPCTRunContextFactory.fromRunDirectory(VALID_RUNDIR);
-        assertEquals(VALID_PATIENT + CPCTRunContextFactory.REF_SAMPLE_SUFFIX, runContext.refSample());
-        assertEquals(VALID_PATIENT + CPCTRunContextFactory.TUMOR_SAMPLE_SUFFIX, runContext.tumorSample());
+    public void resolveCorrectlyForValidRunWithTII() throws MalformedRunDirException {
+        final RunContext runContext = CPCTRunContextFactory.fromRunDirectory(toPath(VALID_RUNDIR));
+        assertEquals(VALID_REF, runContext.refSample());
+        assertEquals(VALID_TUMOR, runContext.tumorSample());
         assertEquals(true, runContext.hasPassedTests());
+    }
 
-        final RunContext runContextLowQual = CPCTRunContextFactory.fromRunDirectory(LOW_QUAL_RUNDIR);
-        assertEquals(VALID_PATIENT + CPCTRunContextFactory.REF_SAMPLE_SUFFIX, runContextLowQual.refSample());
-        assertEquals(VALID_PATIENT + CPCTRunContextFactory.TUMOR_SAMPLE_SUFFIX, runContextLowQual.tumorSample());
+    @Test
+    public void resolveCorrectlyForLowQualRun() throws MalformedRunDirException {
+        final RunContext runContextLowQual = CPCTRunContextFactory.fromRunDirectory(toPath(LOW_QUAL_RUNDIR));
+        assertEquals(LOW_QUAL_REF, runContextLowQual.refSample());
+        assertEquals(LOW_QUAL_TUMOR, runContextLowQual.tumorSample());
         assertEquals(false, runContextLowQual.hasPassedTests());
     }
 
     @Test(expected = MalformedRunDirException.class)
-    public void exceptionOnRandomRunDir() throws MalformedRunDirException {
-        CPCTRunContextFactory.fromRunDirectory(INVALID_RUNDIR);
+    public void exceptionOnRunDirWithTooShortPatientName() throws MalformedRunDirException {
+        CPCTRunContextFactory.fromRunDirectory(toPath(INVALID_PATIENT_RUNDIR));
     }
 
     @Test(expected = MalformedRunDirException.class)
-    public void exceptionOnRunDirWithTooShortPatientName() throws MalformedRunDirException {
-        CPCTRunContextFactory.fromRunDirectory(INVALID_PATIENT_NAME);
+    public void exceptionOnRunDirWithMissingRef() throws MalformedRunDirException {
+        CPCTRunContextFactory.fromRunDirectory(toPath(MISSING_REF_RUNDIR));
+    }
+
+    @NotNull
+    private static String toPath(@NotNull final String runDirectory) {
+        return Resources.getResource("CPCTRunContextFactory" + File.separator + runDirectory).getPath();
     }
 }
