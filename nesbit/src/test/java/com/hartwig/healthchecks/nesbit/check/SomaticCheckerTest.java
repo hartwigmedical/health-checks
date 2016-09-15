@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
@@ -111,10 +112,29 @@ public class SomaticCheckerTest {
     public void canAnalyseMinimalVCF() throws IOException, HealthChecksException {
         final RunContext runContext = TestRunContextFactory.forTest(MINIMAL_RUN_DIRECTORY, MINIMAL_REF_SAMPLE,
                 MINIMAL_TUMOR_SAMPLE);
+        final MultiValueResult result = (MultiValueResult) checker.tryRun(runContext);
+        assertEquals(EXPECTED_NUM_CHECKS, result.getChecks().size());
+    }
 
-        final BaseResult result = checker.run(runContext);
-        final List<HealthCheck> checks = ((MultiValueResult) result).getChecks();
-        assertEquals(38, checks.size());
+    @NotNull
+    private static List<String> checkNames(@NotNull final List<HealthCheck> checks) {
+        List<String> checkNames = Lists.newArrayList();
+        for (HealthCheck check : checks) {
+            checkNames.add(check.getCheckName());
+        }
+        return checkNames;
+    }
+
+    @Test
+    public void errorGeneratesSameCheckNames() throws IOException, HealthChecksException {
+        final RunContext normalRun = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, TUMOR_SAMPLE);
+        final List<HealthCheck> normalChecks = ((MultiValueResult) checker.tryRun(normalRun)).getChecks();
+        final List<HealthCheck> errorChecks = ((MultiValueResult) checker.errorRun(normalRun)).getChecks();
+
+        final List<String> normalCheckNames = checkNames(normalChecks);
+        final List<String> errorCheckNames = checkNames(errorChecks);
+
+        assertEquals(normalCheckNames, errorCheckNames);
     }
 
     private static void assertCheck(@NotNull final List<HealthCheck> checks, @NotNull final String checkName,

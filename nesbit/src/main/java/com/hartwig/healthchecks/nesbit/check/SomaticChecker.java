@@ -81,19 +81,20 @@ public class SomaticChecker extends ErrorHandlingChecker implements HealthChecke
             checks.addAll(VCFConstants.ALL_CALLERS.stream().map(caller -> new HealthCheck(runContext.tumorSample(),
                     SomaticCheck.SENSITIVITY_CHECK.checkName(type.name(), caller),
                     HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
-            checks.addAll(VCFConstants.ALL_CALLERS.stream().map(caller -> new HealthCheck(runContext.tumorSample(),
-                    SomaticCheck.PROPORTION_CHECK.checkName(type.name(), caller),
+            checks.addAll(CALLERS_COUNT.stream().map(count -> new HealthCheck(runContext.tumorSample(),
+                    SomaticCheck.PROPORTION_CHECK.checkName(type.name(), String.valueOf(count)),
                     HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
         }
-        checks.addAll(VCFConstants.ALL_CALLERS.stream().map(
-                caller -> new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_LOWER_SD.checkName(caller),
-                        HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
-        checks.addAll(VCFConstants.ALL_CALLERS.stream().map(
-                caller -> new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_MEDIAN.checkName(caller),
-                        HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
-        checks.addAll(VCFConstants.ALL_CALLERS.stream().map(
-                caller -> new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_UPPER_SD.checkName(caller),
-                        HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
+
+        for (String caller : VCFConstants.ALL_CALLERS) {
+            checks.add(new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_LOWER_SD.checkName(caller),
+                    HealthCheckConstants.ERROR_VALUE));
+            checks.add(new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_MEDIAN.checkName(caller),
+                    HealthCheckConstants.ERROR_VALUE));
+            checks.add(new HealthCheck(runContext.tumorSample(), SomaticCheck.AF_UPPER_SD.checkName(caller),
+                    HealthCheckConstants.ERROR_VALUE));
+        }
+
         return toMultiValueResult(checks);
     }
 
