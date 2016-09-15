@@ -39,7 +39,7 @@ public final class VCFSomaticDataFactory {
         final VCFType type = VCFExtractorFunctions.extractVCFType(values);
         final List<String> callers = extractCallers(values);
         final double alleleFrequency = calcAlleleFrequency(values);
-        if (alleleFrequency == Double.NaN) {
+        if (Double.isNaN(alleleFrequency)) {
             LOGGER.warn("Could not parse alleleFrequency from " + line);
         }
         return new VCFSomaticData(type, callers, alleleFrequency);
