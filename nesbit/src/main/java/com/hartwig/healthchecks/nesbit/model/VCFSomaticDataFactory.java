@@ -39,6 +39,9 @@ public final class VCFSomaticDataFactory {
         final VCFType type = VCFExtractorFunctions.extractVCFType(values);
         final List<String> callers = extractCallers(values);
         final double alleleFrequency = calcAlleleFrequency(values);
+        if (alleleFrequency == Double.NaN) {
+            LOGGER.warn("Could not parse alleleFrequency from " + line);
+        }
         return new VCFSomaticData(type, callers, alleleFrequency);
     }
 
@@ -69,7 +72,6 @@ public final class VCFSomaticDataFactory {
         final String[] afFields = sampleFields[AF_COLUMN_INDEX].split(AF_FIELD_SEPARATOR);
 
         if (afFields.length < 2) {
-            LOGGER.warn("Incorrectly formatted AF field found: " + sampleFields[AF_COLUMN_INDEX]);
             return Double.NaN;
         }
 
