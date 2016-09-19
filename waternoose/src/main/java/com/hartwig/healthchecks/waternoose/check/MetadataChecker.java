@@ -65,7 +65,15 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
     @NotNull
     @Override
     public BaseResult errorRun(@NotNull final RunContext runContext) {
-        return toPatientResult(runContext, HealthCheckConstants.ERROR_VALUE, HealthCheckConstants.ERROR_VALUE);
+        String pipelineVersion = HealthCheckConstants.ERROR_VALUE;
+        try {
+            pipelineVersion = extractPipelineVersion(runContext.runDirectory());
+        } catch (IOException | HealthChecksException exception) {
+            // KODU: This is to work around the fact that pipeline version and run date are linked.
+            // If run date extraction fails, pipeline version wont be available.
+            // Should be two separate checkers...
+        }
+        return toPatientResult(runContext, HealthCheckConstants.ERROR_VALUE, pipelineVersion);
     }
 
     @NotNull
