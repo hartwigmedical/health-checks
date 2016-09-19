@@ -1,6 +1,5 @@
 package com.hartwig.healthchecks.waternoose.check;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -33,8 +32,6 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
 
     private static final Logger LOGGER = LogManager.getLogger(MetadataChecker.class);
 
-    private static final int FOLDER_NAME_START_INDEX = 1;
-
     private static final String LOG_FILENAME_FORMAT = "%s.log";
     private static final String DATE_OUT_FORMAT = "yyyy-MM-dd";
     private static final String DATE_IN_FORMAT = "EEE MMM d HH:mm:ss z yyyy";
@@ -59,7 +56,7 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
     @NotNull
     @Override
     public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final String runDate = extractRunDate(runContext.runDirectory());
+        final String runDate = extractRunDate(runContext);
         final String pipelineVersion = extractPipelineVersion(runContext.runDirectory());
 
         return toPatientResult(runContext, runDate, pipelineVersion);
@@ -74,10 +71,10 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
     @NotNull
     private BaseResult toPatientResult(@NotNull final RunContext runContext, @NotNull final String runDate,
             @NotNull final String pipelineVersion) {
-        final List<HealthCheck> refMetaData = toHealthCheckList(runContext.refSample(), runContext.hasPassedTests(),
-                runDate, pipelineVersion);
-        final List<HealthCheck> tumorMetaData = toHealthCheckList(runContext.tumorSample(),
-                runContext.hasPassedTests(), runDate, pipelineVersion);
+        final List<HealthCheck> refMetaData = toHealthCheckList(runContext.refSample(), runContext, runDate,
+                pipelineVersion);
+        final List<HealthCheck> tumorMetaData = toHealthCheckList(runContext.tumorSample(), runContext, runDate,
+                pipelineVersion);
 
         HealthCheck.log(LOGGER, refMetaData);
         HealthCheck.log(LOGGER, tumorMetaData);
@@ -86,38 +83,28 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
     }
 
     @NotNull
-    private static List<HealthCheck> toHealthCheckList(@NotNull final String sampleId, final boolean hasPassedTests,
-            @NotNull final String runDate, @NotNull final String pipelineVersion) {
-        return Lists.newArrayList(
-                new HealthCheck(sampleId, MetadataCheck.HAS_PASSED_TESTS.toString(), Boolean.toString(hasPassedTests)),
+    private static List<HealthCheck> toHealthCheckList(@NotNull final String sampleId,
+            @NotNull final RunContext runContext, @NotNull final String runDate,
+            @NotNull final String pipelineVersion) {
+        return Lists.newArrayList(new HealthCheck(sampleId, MetadataCheck.RUN_NAME.toString(), runContext.runName()),
+                new HealthCheck(sampleId, MetadataCheck.HAS_PASSED_TESTS.toString(),
+                        Boolean.toString(runContext.hasPassedTests())),
                 new HealthCheck(sampleId, MetadataCheck.RUN_DATE.toString(), runDate),
                 new HealthCheck(sampleId, MetadataCheck.PIPELINE_VERSION.toString(), pipelineVersion));
     }
 
     @NotNull
-    private static String extractRunDate(@NotNull final String runDirectory)
+    private static String extractRunDate(@NotNull final RunContext runContext)
             throws IOException, HealthChecksException {
-        final String runName = toRunName(runDirectory);
-
-        final Path dateTimeLogPath = PathRegexFinder.build().findPath(runDirectory,
-                String.format(LOG_FILENAME_FORMAT, runName));
+        final Path dateTimeLogPath = PathRegexFinder.build().findPath(runContext.runDirectory(),
+                String.format(LOG_FILENAME_FORMAT, runContext.runName()));
         final List<String> dateLines = LineReader.build().readLines(dateTimeLogPath,
                 doesLineStartWith(LINE_TO_GET_DATE_FROM));
-        final String date = dateLines.get(DATE_LINE_INDEX).split(REGEX_SPLIT)[FOLDER_NAME_START_INDEX].trim();
+        final String date = dateLines.get(DATE_LINE_INDEX).split(REGEX_SPLIT)[1].trim();
         final DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern(DATE_IN_FORMAT, Locale.ENGLISH);
         final LocalDateTime formattedDate = LocalDateTime.parse(date, inFormatter);
         final DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(DATE_OUT_FORMAT, Locale.ENGLISH);
         return outFormatter.format(formattedDate);
-    }
-
-    @NotNull
-    private static String toRunName(@NotNull final String runDirectory) {
-        String folderName = runDirectory;
-        if (runDirectory.contains(File.separator)) {
-            folderName = runDirectory.substring(runDirectory.lastIndexOf(File.separator) + FOLDER_NAME_START_INDEX,
-                    runDirectory.length());
-        }
-        return folderName;
     }
 
     @NotNull
@@ -126,8 +113,7 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
         final Path pipelineLog = PathRegexFinder.build().findPath(runDirectory, PIPELINE_LOG_REGEX);
         final List<String> versionsLines = LineReader.build().readLines(pipelineLog,
                 doesLineStartWith(PIPELINE_VERSION));
-        return versionsLines.get(PIPELINE_VERSION_LINE_INDEX).split(
-                PIPELINE_VERSION_LINE_SEPARATOR)[FOLDER_NAME_START_INDEX].trim();
+        return versionsLines.get(PIPELINE_VERSION_LINE_INDEX).split(PIPELINE_VERSION_LINE_SEPARATOR)[1].trim();
     }
 
     @NotNull

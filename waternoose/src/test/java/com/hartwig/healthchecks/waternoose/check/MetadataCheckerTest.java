@@ -23,7 +23,7 @@ public class MetadataCheckerTest {
 
     private static final String EXPECTED_VERSION = "v1.7";
     private static final String EXPECTED_DATE = "2016-07-09";
-    private static final int EXPECTED_NUM_CHECKS = 3;
+    private static final int EXPECTED_NUM_CHECKS = 4;
 
     private final MetadataChecker checker = new MetadataChecker();
 

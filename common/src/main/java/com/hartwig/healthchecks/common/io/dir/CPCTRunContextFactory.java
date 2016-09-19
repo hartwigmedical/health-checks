@@ -10,6 +10,7 @@ public final class CPCTRunContextFactory {
 
     private static final int CPCT_PATIENT_NAME_LENGTH = 12;
 
+    private static final String CPCT_PATIENT_IDENTIFIER = "_CPCT";
     private static final String REF_SAMPLE_SUFFIX = "R";
     private static final String TUMOR_SAMPLE_SUFFIX = "T";
 
@@ -18,14 +19,17 @@ public final class CPCTRunContextFactory {
 
     @NotNull
     public static RunContext fromRunDirectory(@NotNull final String runDirectory) throws MalformedRunDirException {
-        final int patientPosition = runDirectory.indexOf("_CPCT") + 1;
-        if ((patientPosition == 0) || (runDirectory.length() < (patientPosition + CPCT_PATIENT_NAME_LENGTH))) {
-            throw new MalformedRunDirException(runDirectory);
+        final String fullRunName = removePath(runDirectory);
+
+        final int patientPosition = fullRunName.indexOf(CPCT_PATIENT_IDENTIFIER) + 1;
+        if ((patientPosition == 0) || (fullRunName.length() < (patientPosition + CPCT_PATIENT_NAME_LENGTH))) {
+            throw new MalformedRunDirException(fullRunName);
         }
 
-        final String patient = runDirectory.substring(patientPosition, patientPosition + CPCT_PATIENT_NAME_LENGTH);
+        final String patient = fullRunName.substring(patientPosition, patientPosition + CPCT_PATIENT_NAME_LENGTH);
+        final String runName = fullRunName.substring(0, patientPosition + CPCT_PATIENT_NAME_LENGTH);
 
-        final boolean hasPassedTests = runDirectory.length() <= (patientPosition + CPCT_PATIENT_NAME_LENGTH);
+        final boolean hasPassedTests = fullRunName.length() == runName.length();
 
         final File[] runContents = new File(runDirectory).listFiles();
         assert runContents != null;
@@ -43,9 +47,18 @@ public final class CPCTRunContextFactory {
         }
 
         if (refSample == null || tumorSample == null) {
-            throw new MalformedRunDirException(runDirectory);
+            throw new MalformedRunDirException(fullRunName);
         }
 
-        return new RunContextImpl(runDirectory, refSample, tumorSample, hasPassedTests);
+        return new RunContextImpl(runDirectory, runName, refSample, tumorSample, hasPassedTests);
+    }
+
+    @NotNull
+    private static String removePath(@NotNull final String runDirectory) {
+        String folderName = runDirectory;
+        if (runDirectory.contains(File.separator)) {
+            folderName = runDirectory.substring(runDirectory.lastIndexOf(File.separator) + 1, runDirectory.length());
+        }
+        return folderName;
     }
 }

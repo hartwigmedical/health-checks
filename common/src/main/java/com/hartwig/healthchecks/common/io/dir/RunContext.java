@@ -8,6 +8,9 @@ public interface RunContext {
     String runDirectory();
 
     @NotNull
+    String runName();
+
+    @NotNull
     String refSample();
 
     @NotNull

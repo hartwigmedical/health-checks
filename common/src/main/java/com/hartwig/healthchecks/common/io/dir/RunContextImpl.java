@@ -7,14 +7,17 @@ class RunContextImpl implements RunContext {
     @NotNull
     private final String runDirectory;
     @NotNull
+    private final String runName;
+    @NotNull
     private final String refSample;
     @NotNull
     private final String tumorSample;
     private final boolean hasPassedTests;
 
-    RunContextImpl(@NotNull final String runDirectory, @NotNull final String refSample,
+    RunContextImpl(@NotNull final String runDirectory, @NotNull final String runName, @NotNull final String refSample,
             @NotNull final String tumorSample, final boolean hasPassedTests) {
         this.runDirectory = runDirectory;
+        this.runName = runName;
         this.refSample = refSample;
         this.tumorSample = tumorSample;
         this.hasPassedTests = hasPassedTests;
@@ -24,6 +27,12 @@ class RunContextImpl implements RunContext {
     @Override
     public String runDirectory() {
         return runDirectory;
+    }
+
+    @NotNull
+    @Override
+    public String runName() {
+        return runName;
     }
 
     @NotNull
