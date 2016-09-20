@@ -72,6 +72,7 @@ public class GermlineChecker extends ErrorHandlingChecker implements HealthCheck
         for (GermlineCheck check : GermlineCheck.values()) {
             errorChecks.add(new HealthCheck(sampleId, check.toString(), HealthCheckConstants.ERROR_VALUE));
         }
+
         return errorChecks;
     }
 
