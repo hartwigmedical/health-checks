@@ -24,7 +24,7 @@ import org.junit.Test;
 public class SomaticCheckerTest {
 
     private static final double EPSILON = 1.0e-4;
-    private static final int EXPECTED_NUM_CHECKS = 38;
+    private static final int EXPECTED_NUM_CHECKS = 46;
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
     private static final String REF_SAMPLE = "sample1";
@@ -54,8 +54,17 @@ public class SomaticCheckerTest {
         assertEquals(CheckType.SOMATIC, result.getCheckType());
         assertEquals(EXPECTED_NUM_CHECKS, checks.size());
 
-        assertCheck(checks, SomaticCheck.COUNT.checkName(VCFType.INDELS.toString()), 67);
-        assertCheck(checks, SomaticCheck.COUNT.checkName(VCFType.SNP.toString()), 987);
+        assertCheck(checks, SomaticCheck.COUNT_TOTAL.checkName(SNP), 987);
+        assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(SNP, MUTECT), 737);
+        assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(SNP, FREEBAYES), 205);
+        assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(SNP, VARSCAN), 655);
+        assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(SNP, STRELKA), 758);
+
+        assertCheck(checks, SomaticCheck.COUNT_TOTAL.checkName(INDELS), 67);
+        assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(INDELS, MUTECT), 0);
+        assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(INDELS, FREEBAYES), 11);
+        assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(INDELS, VARSCAN), 58);
+        assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(INDELS, STRELKA), 23);
 
         assertCheck(checks, SomaticCheck.SENSITIVITY_CHECK.checkName(SNP, MUTECT), 0.9137);
         assertCheck(checks, SomaticCheck.SENSITIVITY_CHECK.checkName(INDELS, MUTECT), 0.0);

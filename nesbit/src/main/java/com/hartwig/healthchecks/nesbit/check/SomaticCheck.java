@@ -3,7 +3,8 @@ package com.hartwig.healthchecks.nesbit.check;
 import org.jetbrains.annotations.NotNull;
 
 enum SomaticCheck {
-    COUNT("VARIANTS_SOMATIC_%s"),
+    COUNT_TOTAL("SOMATIC_%s_COUNT"),
+    COUNT_PER_CALLER("SOMATIC_%s_COUNT_%s"),
     AF_MEDIAN("SOMATIC_AF_%s_MEDIAN"),
     AF_LOWER_SD("SOMATIC_AF_%s_LOWER_SD"),
     AF_UPPER_SD("SOMATIC_AF_%s_UPPER_SD"),
