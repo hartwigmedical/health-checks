@@ -30,7 +30,6 @@ public class GermlineCheckerTest {
     private static final int EXPECTED_TUMOR_SNPS = 74;
     private static final int EXPECTED_TUMOR_INDELS = 4;
 
-
     private final GermlineChecker checker = new GermlineChecker();
 
     @Test

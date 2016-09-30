@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -97,7 +98,7 @@ public class GermlineChecker extends ErrorHandlingChecker implements HealthCheck
 
     @NotNull
     private static List<VCFGermlineData> getVCFDataForGermLine(@NotNull final List<String> lines) {
-        return lines.stream().map(VCFGermlineDataFactory::fromVCFLine).collect(Collectors.toList());
+        return lines.stream().map(VCFGermlineDataFactory::fromVCFLine).filter(notNull()).collect(Collectors.toList());
     }
 
     @NotNull
@@ -106,5 +107,10 @@ public class GermlineChecker extends ErrorHandlingChecker implements HealthCheck
             @NotNull final GermlineCheck check, final boolean isRefSample) {
         final long count = vcfData.stream().filter(new VCFGermlineVariantPredicate(vcfType, isRefSample)).count();
         return new HealthCheck(sampleId, check.toString(), String.valueOf(count));
+    }
+
+    @NotNull
+    private static Predicate<VCFGermlineData> notNull() {
+        return vcf -> vcf != null;
     }
 }
