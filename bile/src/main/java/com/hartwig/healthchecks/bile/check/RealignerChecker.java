@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
@@ -23,10 +27,6 @@ import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.REALIGNER)
@@ -120,8 +120,10 @@ public class RealignerChecker extends ErrorHandlingChecker implements HealthChec
     private static long readDiffCountFromBamDiff(@NotNull final Path bamDiffPath)
             throws IOException, HealthChecksException {
         final List<String> lines = FileReader.build().readLines(bamDiffPath);
-        return lines.stream().filter(line -> !(line.startsWith(IGNORE_FOR_DIFF_COUNT_PATTERN_1) || line.startsWith(
-                IGNORE_FOR_DIFF_COUNT_PATTERN_2))).count();
+        return lines.stream()
+                .filter(line -> !line.startsWith(IGNORE_FOR_DIFF_COUNT_PATTERN_1)
+                        && !line.startsWith(IGNORE_FOR_DIFF_COUNT_PATTERN_2))
+                .count();
     }
 
     @NotNull
