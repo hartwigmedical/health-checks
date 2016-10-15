@@ -8,16 +8,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.hartwig.healthchecks.common.exception.EmptyFileException;
-import com.hartwig.healthchecks.common.exception.HealthChecksException;
-
 import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 
 @FunctionalInterface
 public interface FileReader {
 
     @NotNull
-    List<String> readLines(@NotNull Path fileToRead) throws IOException, HealthChecksException;
+    List<String> readLines(@NotNull Path fileToRead) throws IOException, EmptyFileException;
 
     @NotNull
     static FileReader build() {

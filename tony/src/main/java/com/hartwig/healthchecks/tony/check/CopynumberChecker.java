@@ -3,14 +3,20 @@ package com.hartwig.healthchecks.tony.check;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.checks.HealthCheckConstants;
 import com.hartwig.healthchecks.common.checks.HealthChecker;
+import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
@@ -19,10 +25,6 @@ import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.COPYNUMBER)
@@ -35,6 +37,7 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     private static final String COPYNUMBER_SAMPLE_CONNECTOR = "_";
     private static final String COPYNUMBER_ALGO_DIRECTORY = "freec";
     private static final String COPYNUMBER_SUFFIX = ".bam_CNVs";
+    private static final String COPYNUMBER_RATIO_SUFFIX = ".bam_ratio.txt";
 
     private static final String FIELD_SEPARATOR = "\t";
     private static final int START_FIELD_INDEX = 1;
@@ -57,12 +60,9 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     @NotNull
     @Override
     public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final Path copynumberPath = PathPrefixSuffixFinder.build().findPath(getBasePath(runContext),
-                runContext.tumorSample(), COPYNUMBER_SUFFIX);
-        final List<String> copynumberLines = FileReader.build().readLines(copynumberPath);
         long totalGain = 0;
         long totalLoss = 0;
-        for (final String line : copynumberLines) {
+        for (final String line : copynumberLines(runContext)) {
             final String[] parts = line.split(FIELD_SEPARATOR);
 
             final long startIndex = Long.valueOf(parts[START_FIELD_INDEX].trim());
@@ -83,6 +83,21 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
         }
 
         return toMultiValueResult(runContext, String.valueOf(totalGain), String.valueOf(totalLoss));
+    }
+
+    @NotNull
+    private static List<String> copynumberLines(@NotNull final RunContext runContext) throws IOException, EmptyFileException {
+        final Path copynumberPath = PathPrefixSuffixFinder.build()
+                .findPath(getBasePath(runContext), runContext.tumorSample(), COPYNUMBER_SUFFIX);
+        try {
+            return FileReader.build().readLines(copynumberPath);
+        } catch (EmptyFileException e) {
+            // if the CNV is empty (but exists) and the ratio file exists, there is no problem (just no CNVs found)
+            final Path ratioPath = PathPrefixSuffixFinder.build()
+                    .findPath(getBasePath(runContext), runContext.tumorSample(), COPYNUMBER_RATIO_SUFFIX);
+            FileReader.build().readLines(ratioPath);
+            return Collections.emptyList();
+        }
     }
 
     @NotNull

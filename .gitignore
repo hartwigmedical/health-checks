@@ -44,14 +44,16 @@ classes/
 
 # Logs
 /logs/
-common/logs/
+bile/logs/
 boggs/logs/
-smitty/logs/
+boo/logs/
+common/logs/
 flint/logs/
 nesbit/logs/
 roz/logs/
-bile/logs/
-boo/logs/
+smitty/logs/
+tony/logs/
+waternoose/logs/
 
 _builds/
 _steps/

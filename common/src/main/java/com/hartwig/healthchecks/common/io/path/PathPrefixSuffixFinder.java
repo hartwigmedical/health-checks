@@ -34,9 +34,11 @@ public interface PathPrefixSuffixFinder {
     static Optional<Path> getPath(@NotNull final String path, @NotNull final String prefix,
             @NotNull final String suffix) throws IOException {
         try (Stream<Path> paths = Files.walk(new File(path).toPath())) {
-            return paths.filter(filePath -> filePath.getFileName().toString().startsWith(prefix)
-                    && filePath.getFileName().toString().endsWith(suffix) && filePath.toString().contains(
-                    path + File.separator + prefix)).findFirst();
+            return paths.filter(
+                    filePath -> filePath.getFileName().toString().startsWith(prefix)
+                            && filePath.getFileName().toString().endsWith(suffix)
+                            && filePath.toString().contains(path + File.separator + prefix))
+                    .findFirst();
         }
     }
 }
