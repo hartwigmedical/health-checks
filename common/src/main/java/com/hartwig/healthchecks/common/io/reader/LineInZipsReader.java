@@ -9,16 +9,16 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 interface LineInZipsReader {
 
     @NotNull
-    String readLines(@NotNull final String zipPath, @NotNull final String fileNameInZip, @NotNull final String filter)
+    String readLines(@NotNull String zipPath, @NotNull String fileNameInZip, @NotNull String filter)
             throws IOException, HealthChecksException;
 
     @NotNull
@@ -35,7 +35,7 @@ interface LineInZipsReader {
     @NotNull
     static Optional<String> read(@NotNull final String zipPath, @NotNull final String fileNameInZip,
             @NotNull final String filter) throws IOException {
-        try (final ZipFile zipFile = new ZipFile(zipPath)) {
+        try (ZipFile zipFile = new ZipFile(zipPath)) {
             final List<? extends ZipEntry> fileEntryInZip = FileInZipsFinder.build().findFileInZip(zipFile,
                     fileNameInZip);
             return fileEntryInZip.stream().map(

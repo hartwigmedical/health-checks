@@ -9,16 +9,16 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.LineNotFoundException;
-
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface LineReader {
 
     @NotNull
-    List<String> readLines(@NotNull final Path filePath, @NotNull Predicate<String> filter)
+    List<String> readLines(@NotNull Path filePath, @NotNull Predicate<String> filter)
             throws IOException, HealthChecksException;
 
     @NotNull

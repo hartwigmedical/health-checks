@@ -16,7 +16,7 @@ public interface PathRegexFinder {
     String FILE_S_NOT_FOUND_MSG = "No match for %s found in path %s";
 
     @NotNull
-    Path findPath(@NotNull final String path, @NotNull String regex) throws IOException;
+    Path findPath(@NotNull String path, @NotNull String regex) throws IOException;
 
     @NotNull
     static PathRegexFinder build() {

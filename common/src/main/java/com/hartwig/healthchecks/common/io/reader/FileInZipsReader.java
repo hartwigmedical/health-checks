@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
-
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 interface FileInZipsReader {
 
     @NotNull
-    List<String> readLines(@NotNull final String zipPath, @NotNull final String fileNameInZip)
+    List<String> readLines(@NotNull String zipPath, @NotNull String fileNameInZip)
             throws IOException, HealthChecksException;
 
     @NotNull
@@ -33,7 +33,7 @@ interface FileInZipsReader {
 
     @NotNull
     static List<String> read(@NotNull final String zipPath, @NotNull final String fileNameInZip) throws IOException {
-        try (final ZipFile zipFile = new ZipFile(zipPath)) {
+        try (ZipFile zipFile = new ZipFile(zipPath)) {
             final List<? extends ZipEntry> fileEntryInZip = FileInZipsFinder.build().findFileInZip(zipFile,
                     fileNameInZip);
             return fileEntryInZip.stream().map(

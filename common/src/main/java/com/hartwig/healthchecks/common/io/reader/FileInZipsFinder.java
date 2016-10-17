@@ -17,7 +17,7 @@ interface FileInZipsFinder {
     String FILE_NOT_FOUND = "File %s not found in %s";
 
     @NotNull
-    List<? extends ZipEntry> findFileInZip(@NotNull final ZipFile zipFile, @NotNull final String fileNameInZip)
+    List<? extends ZipEntry> findFileInZip(@NotNull ZipFile zipFile, @NotNull String fileNameInZip)
             throws IOException;
 
     @NotNull

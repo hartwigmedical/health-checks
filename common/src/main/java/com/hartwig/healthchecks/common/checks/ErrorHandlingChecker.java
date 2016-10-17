@@ -2,13 +2,13 @@ package com.hartwig.healthchecks.common.checks;
 
 import java.io.IOException;
 
-import com.hartwig.healthchecks.common.exception.HealthChecksException;
-import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.result.BaseResult;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import com.hartwig.healthchecks.common.exception.HealthChecksException;
+import com.hartwig.healthchecks.common.io.dir.RunContext;
+import com.hartwig.healthchecks.common.result.BaseResult;
 
 public abstract class ErrorHandlingChecker implements HealthChecker {
 
@@ -29,9 +29,9 @@ public abstract class ErrorHandlingChecker implements HealthChecker {
     }
 
     @NotNull
-    protected abstract BaseResult tryRun(@NotNull final RunContext runContext)
+    protected abstract BaseResult tryRun(@NotNull RunContext runContext)
             throws IOException, HealthChecksException;
 
     @NotNull
-    protected abstract BaseResult errorRun(@NotNull final RunContext runContext);
+    protected abstract BaseResult errorRun(@NotNull RunContext runContext);
 }

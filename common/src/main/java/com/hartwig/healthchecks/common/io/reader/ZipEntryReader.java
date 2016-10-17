@@ -20,7 +20,7 @@ interface ZipEntryReader {
     Logger LOGGER = LogManager.getLogger(ZipEntryReader.class);
 
     @NotNull
-    Stream<String> readZipElement(@NotNull final ZipFile zipFile, @NotNull final ZipEntry zipEntry);
+    Stream<String> readZipElement(@NotNull ZipFile zipFile, @NotNull ZipEntry zipEntry);
 
     @NotNull
     static ZipEntryReader build() {

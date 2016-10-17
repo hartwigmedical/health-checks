@@ -6,18 +6,18 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.exception.EmptyFolderException;
 import com.hartwig.healthchecks.common.exception.FolderDoesNotExistException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.NotFolderException;
 
-import org.jetbrains.annotations.NotNull;
-
 @FunctionalInterface
 public interface FolderChecker {
 
     @NotNull
-    String checkFolder(@NotNull final String directory) throws IOException, HealthChecksException;
+    String checkFolder(@NotNull String directory) throws IOException, HealthChecksException;
 
     @NotNull
     static FolderChecker build() {

@@ -16,7 +16,7 @@ public interface PathPrefixSuffixFinder {
     String FILE_S_NOT_FOUND_MSG = "File %s not found in path %s";
 
     @NotNull
-    Path findPath(@NotNull final String path, @NotNull final String prefix, @NotNull final String suffix)
+    Path findPath(@NotNull String path, @NotNull String prefix, @NotNull String suffix)
             throws IOException;
 
     @NotNull

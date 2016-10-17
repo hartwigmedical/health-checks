@@ -16,7 +16,7 @@ public interface PathExtensionFinder {
     String FILE_S_NOT_FOUND_MSG = "File %s not found in path %s";
 
     @NotNull
-    Path findPath(@NotNull final String path, @NotNull String extension) throws IOException;
+    Path findPath(@NotNull String path, @NotNull String extension) throws IOException;
 
     @NotNull
     static PathExtensionFinder build() {
