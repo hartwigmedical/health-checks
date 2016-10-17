@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +61,8 @@ public class RealignerChecker extends ErrorHandlingChecker implements HealthChec
 
     @NotNull
     @Override
-    public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
+    public BaseResult tryRun(@NotNull final RunContext runContext)
+            throws IOException, HealthChecksException {
         final HealthCheck refCheck = extractCheckForSample(runContext.runDirectory(), runContext.refSample());
         final HealthCheck tumorCheck = extractCheckForSample(runContext.runDirectory(), runContext.tumorSample());
 
@@ -70,22 +72,26 @@ public class RealignerChecker extends ErrorHandlingChecker implements HealthChec
     @NotNull
     @Override
     public BaseResult errorRun(@NotNull final RunContext runContext) {
-        return toPatientResult(
-                new HealthCheck(runContext.refSample(), REALIGNER_CHECK_NAME, HealthCheckConstants.ERROR_VALUE),
-                new HealthCheck(runContext.tumorSample(), REALIGNER_CHECK_NAME, HealthCheckConstants.ERROR_VALUE));
+        return toPatientResult(new HealthCheck(runContext.refSample(),
+                                               REALIGNER_CHECK_NAME,
+                                               HealthCheckConstants.ERROR_VALUE),
+                               new HealthCheck(runContext.tumorSample(),
+                                               REALIGNER_CHECK_NAME,
+                                               HealthCheckConstants.ERROR_VALUE));
     }
 
     @NotNull
     private BaseResult toPatientResult(@NotNull final HealthCheck refCheck, @NotNull final HealthCheck tumorCheck) {
         refCheck.log(LOGGER);
         tumorCheck.log(LOGGER);
-        return new PatientResult(checkType(), Collections.singletonList(refCheck),
-                Collections.singletonList(tumorCheck));
+        return new PatientResult(checkType(),
+                                 Collections.singletonList(refCheck),
+                                 Collections.singletonList(tumorCheck));
     }
 
     @NotNull
     private static HealthCheck extractCheckForSample(@NotNull final String runDirectory,
-            @NotNull final String sampleId)
+                                                     @NotNull final String sampleId)
             throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
 
@@ -103,15 +109,17 @@ public class RealignerChecker extends ErrorHandlingChecker implements HealthChec
             throws IOException, HealthChecksException {
         final List<String> lines = FileReader.build().readLines(flagStatPath);
 
-        final Optional<String> mappedLine = lines.stream().filter(
-                line -> line.contains(FLAGSTAT_MAPPED_PATTERN)).findFirst();
+        final Optional<String> mappedLine = lines.stream()
+                                                 .filter(line -> line.contains(FLAGSTAT_MAPPED_PATTERN))
+                                                 .findFirst();
         if (!mappedLine.isPresent()) {
             throw new LineNotFoundException(flagStatPath.toString(), FLAGSTAT_MAPPED_PATTERN);
         }
         final String mapped = mappedLine.get();
         if (!mapped.contains(FLAGSTAT_END_OF_MAPPED_VALUE_PATTERN)) {
-            throw new MalformedFileException(
-                    String.format(MALFORMED_FILE_MSG, flagStatPath.toString(), FLAGSTAT_END_OF_MAPPED_VALUE_PATTERN));
+            throw new MalformedFileException(String.format(MALFORMED_FILE_MSG,
+                                                           flagStatPath.toString(),
+                                                           FLAGSTAT_END_OF_MAPPED_VALUE_PATTERN));
         }
         final String mappedValue = mapped.substring(0, mapped.indexOf(FLAGSTAT_END_OF_MAPPED_VALUE_PATTERN));
         return Long.valueOf(mappedValue.trim());
@@ -121,9 +129,9 @@ public class RealignerChecker extends ErrorHandlingChecker implements HealthChec
             throws IOException, HealthChecksException {
         final List<String> lines = FileReader.build().readLines(bamDiffPath);
         return lines.stream()
-                .filter(line -> !line.startsWith(IGNORE_FOR_DIFF_COUNT_PATTERN_1)
-                        && !line.startsWith(IGNORE_FOR_DIFF_COUNT_PATTERN_2))
-                .count();
+                    .filter(line -> !line.startsWith(IGNORE_FOR_DIFF_COUNT_PATTERN_1)
+                                    && !line.startsWith(IGNORE_FOR_DIFF_COUNT_PATTERN_2))
+                    .count();
     }
 
     @NotNull
