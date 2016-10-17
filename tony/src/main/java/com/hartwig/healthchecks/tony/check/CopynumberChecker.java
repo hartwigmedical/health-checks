@@ -7,10 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
@@ -25,6 +21,10 @@ import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.COPYNUMBER)
@@ -86,15 +86,16 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     }
 
     @NotNull
-    private static List<String> copynumberLines(@NotNull final RunContext runContext) throws IOException, EmptyFileException {
-        final Path copynumberPath = PathPrefixSuffixFinder.build()
-                .findPath(getBasePath(runContext), runContext.tumorSample(), COPYNUMBER_SUFFIX);
+    private static List<String> copynumberLines(@NotNull final RunContext runContext)
+            throws IOException, EmptyFileException {
+        final Path copynumberPath = PathPrefixSuffixFinder.build().findPath(getBasePath(runContext),
+                runContext.tumorSample(), COPYNUMBER_SUFFIX);
         try {
             return FileReader.build().readLines(copynumberPath);
         } catch (EmptyFileException e) {
             // if the CNV is empty (but exists) and the ratio file exists, there is no problem (just no CNVs found)
-            final Path ratioPath = PathPrefixSuffixFinder.build()
-                    .findPath(getBasePath(runContext), runContext.tumorSample(), COPYNUMBER_RATIO_SUFFIX);
+            final Path ratioPath = PathPrefixSuffixFinder.build().findPath(getBasePath(runContext),
+                    runContext.tumorSample(), COPYNUMBER_RATIO_SUFFIX);
             FileReader.build().readLines(ratioPath);
             return Collections.emptyList();
         }
