@@ -123,8 +123,10 @@ public class SomaticChecker extends ErrorHandlingChecker implements HealthChecke
         final HealthCheck vcfCountCheck = new HealthCheck(sampleId, SomaticCheck.COUNT_TOTAL.checkName(type.name()),
                 String.valueOf(variantsForType.size()));
         checks.add(vcfCountCheck);
+
+        final List<VCFSomaticData> variantsWithDBSNPAndNotCOSMIC = filter(variantsForType, isDBSNPAndNotCOSMIC());
         final HealthCheck dbsnpCheck = new HealthCheck(sampleId, SomaticCheck.DBSNP_COUNT.checkName(type.name()),
-                String.valueOf(0));
+                String.valueOf(variantsWithDBSNPAndNotCOSMIC.size()));
         checks.add(dbsnpCheck);
 
         for (final String caller : VCFConstants.ALL_CALLERS) {
@@ -232,6 +234,11 @@ public class SomaticChecker extends ErrorHandlingChecker implements HealthChecke
     @NotNull
     private static Predicate<VCFSomaticData> hasVCFType(@NotNull final VCFType type) {
         return vcf -> vcf.type().equals(type);
+    }
+
+    @NotNull
+    private static Predicate<VCFSomaticData> isDBSNPAndNotCOSMIC() {
+        return vcf -> vcf.isDBSNP() && !vcf.isCOSMIC();
     }
 
     @NotNull

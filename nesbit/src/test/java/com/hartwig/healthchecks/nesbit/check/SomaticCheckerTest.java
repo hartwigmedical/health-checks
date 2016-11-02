@@ -55,14 +55,14 @@ public class SomaticCheckerTest {
         assertEquals(EXPECTED_NUM_CHECKS, checks.size());
 
         assertCheck(checks, SomaticCheck.COUNT_TOTAL.checkName(SNP), 987);
-        assertCheck(checks, SomaticCheck.DBSNP_COUNT.checkName(SNP), 0);
+        assertCheck(checks, SomaticCheck.DBSNP_COUNT.checkName(SNP), 819);
         assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(SNP, MUTECT), 737);
         assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(SNP, FREEBAYES), 205);
         assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(SNP, VARSCAN), 655);
         assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(SNP, STRELKA), 758);
 
         assertCheck(checks, SomaticCheck.COUNT_TOTAL.checkName(INDELS), 67);
-        assertCheck(checks, SomaticCheck.DBSNP_COUNT.checkName(INDELS), 0);
+        assertCheck(checks, SomaticCheck.DBSNP_COUNT.checkName(INDELS), 42);
         assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(INDELS, MUTECT), 0);
         assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(INDELS, FREEBAYES), 11);
         assertCheck(checks, SomaticCheck.COUNT_PER_CALLER.checkName(INDELS, VARSCAN), 58);

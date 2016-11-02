@@ -16,6 +16,10 @@ public final class VCFSomaticDataFactory {
     private static final String VCF_COLUMN_SEPARATOR = "\t";
     private static final Logger LOGGER = LogManager.getLogger(VCFSomaticDataFactory.class);
 
+    private static final int ID_COLUMN = 2;
+    private static final String DBSNP_IDENTIFIER = "rs";
+    private static final String COSMIC_IDENTIFIER = "COSM";
+
     private static final int INFO_COLUMN = 7;
     private static final String INFO_FIELD_SEPARATOR = ";";
     private static final String CALLER_ALGO_IDENTIFIER = "set=";
@@ -42,7 +46,11 @@ public final class VCFSomaticDataFactory {
         if (Double.isNaN(alleleFrequency)) {
             LOGGER.warn("Could not parse alleleFrequency from " + line);
         }
-        return new VCFSomaticData(type, callers, alleleFrequency);
+        String id = values[ID_COLUMN];
+        boolean isDBSNP = id.contains(DBSNP_IDENTIFIER);
+        boolean isCOSMIC = id.contains(COSMIC_IDENTIFIER);
+
+        return new VCFSomaticData(type, callers, alleleFrequency, isDBSNP, isCOSMIC);
     }
 
     @NotNull
