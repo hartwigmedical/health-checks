@@ -75,6 +75,8 @@ public class SomaticChecker extends ErrorHandlingChecker implements HealthChecke
         for (final VCFType type : VCFType.values()) {
             checks.add(new HealthCheck(runContext.tumorSample(), SomaticCheck.COUNT_TOTAL.checkName(type.name()),
                     HealthCheckConstants.ERROR_VALUE));
+            checks.add(new HealthCheck(runContext.tumorSample(), SomaticCheck.DBSNP_COUNT.checkName(type.name()),
+                    HealthCheckConstants.ERROR_VALUE));
             checks.addAll(VCFConstants.ALL_CALLERS.stream().map(caller -> new HealthCheck(runContext.tumorSample(),
                     SomaticCheck.COUNT_PER_CALLER.checkName(type.name(), caller),
                     HealthCheckConstants.ERROR_VALUE)).collect(Collectors.toList()));
@@ -121,6 +123,9 @@ public class SomaticChecker extends ErrorHandlingChecker implements HealthChecke
         final HealthCheck vcfCountCheck = new HealthCheck(sampleId, SomaticCheck.COUNT_TOTAL.checkName(type.name()),
                 String.valueOf(variantsForType.size()));
         checks.add(vcfCountCheck);
+        final HealthCheck dbsnpCheck = new HealthCheck(sampleId, SomaticCheck.DBSNP_COUNT.checkName(type.name()),
+                String.valueOf(0));
+        checks.add(dbsnpCheck);
 
         for (final String caller : VCFConstants.ALL_CALLERS) {
             List<VCFSomaticData> callsPerCaller = filter(variantsForType, hasCaller(caller));
