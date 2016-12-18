@@ -85,8 +85,7 @@ public class WGSMetricsChecker extends ErrorHandlingChecker implements HealthChe
 
     @NotNull
     private static List<HealthCheck> extractChecksForSample(@NotNull final String runDirectory,
-            @NotNull final String sampleId)
-            throws IOException, HealthChecksException {
+            @NotNull final String sampleId) throws IOException, HealthChecksException {
         final String basePath = getBasePathForSample(runDirectory, sampleId);
         final Path wgsMetricsPath = PathPrefixSuffixFinder.build().findPath(basePath, sampleId, WGS_METRICS_EXTENSION);
         final List<String> lines = FileReader.build().readLines(wgsMetricsPath);
@@ -97,6 +96,14 @@ public class WGSMetricsChecker extends ErrorHandlingChecker implements HealthChe
                 WGSMetricsCheck.COVERAGE_MEDIAN);
         final HealthCheck coverageSD = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_SD);
+        final HealthCheck coverage10X = getCheck(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_10X);
+        final HealthCheck coverage20X = getCheck(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_20X);
+        final HealthCheck coverage30X = getCheck(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_30X);
+        final HealthCheck coverage60X = getCheck(wgsMetricsPath.toString(), lines, sampleId,
+                WGSMetricsCheck.COVERAGE_60X);
         final HealthCheck coverageBaseQ = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_BASEQ);
         final HealthCheck coverageDupe = getCheck(wgsMetricsPath.toString(), lines, sampleId,
@@ -110,8 +117,9 @@ public class WGSMetricsChecker extends ErrorHandlingChecker implements HealthChe
         final HealthCheck coverageUnpaired = getCheck(wgsMetricsPath.toString(), lines, sampleId,
                 WGSMetricsCheck.COVERAGE_PCT_EXC_UNPAIRED);
 
-        return Arrays.asList(coverageMean, coverageMedian, coverageSD, coverageBaseQ, coverageDupe, coverageMapQ,
-                coverageOverlap, coverageTotal, coverageUnpaired);
+        return Arrays.asList(coverageMean, coverageMedian, coverageSD, coverage10X, coverage20X, coverage30X,
+                coverage60X, coverageBaseQ, coverageDupe, coverageMapQ, coverageOverlap, coverageTotal,
+                coverageUnpaired);
     }
 
     @NotNull
