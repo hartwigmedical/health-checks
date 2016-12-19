@@ -36,7 +36,7 @@ public class GermlineChecker extends ErrorHandlingChecker implements HealthCheck
 
     private static final Logger LOGGER = LogManager.getLogger(GermlineChecker.class);
 
-    private static final String GERMLINE_VCF_EXTENSION = "_GoNLv5.vcf";
+    private static final String GERMLINE_VCF_EXTENSION = ".filtered_variants.vcf";
 
     public GermlineChecker() {
     }
