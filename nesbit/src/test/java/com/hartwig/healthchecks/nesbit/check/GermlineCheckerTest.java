@@ -21,6 +21,7 @@ import org.junit.Test;
 public class GermlineCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
+    private static final String RUN_DIRECTORY_V1_9 = Resources.getResource("run_v1_9").getPath();
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
 
@@ -43,6 +44,14 @@ public class GermlineCheckerTest {
 
         assertChecks(refChecks, EXPECTED_REF_SNPS, EXPECTED_REF_INDELS);
         assertChecks(tumorChecks, EXPECTED_TUMOR_SNPS, EXPECTED_TUMOR_INDELS);
+    }
+
+    @Test
+    public void canCountSNPAndV1_9() throws IOException, HealthChecksException {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY_V1_9, REF_SAMPLE, TUMOR_SAMPLE);
+        final PatientResult result = (PatientResult) checker.tryRun(runContext);
+        assertEquals(EXPECTED_NUM_CHECKS, result.getRefSampleChecks().size());
+        assertEquals(EXPECTED_NUM_CHECKS, result.getTumorSampleChecks().size());
     }
 
     @Test

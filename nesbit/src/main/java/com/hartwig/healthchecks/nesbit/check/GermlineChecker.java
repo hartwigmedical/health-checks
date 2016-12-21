@@ -36,7 +36,8 @@ public class GermlineChecker extends ErrorHandlingChecker implements HealthCheck
 
     private static final Logger LOGGER = LogManager.getLogger(GermlineChecker.class);
 
-    private static final String GERMLINE_VCF_EXTENSION = ".filtered_variants.vcf";
+    private static final String GERMLINE_VCF_EXTENSION_V1_9 = "_GoNLv5.vcf";
+    private static final String GERMLINE_VCF_EXTENSION_V1_10 = ".filtered_variants.annotated.vcf";
 
     public GermlineChecker() {
     }
@@ -50,7 +51,13 @@ public class GermlineChecker extends ErrorHandlingChecker implements HealthCheck
     @NotNull
     @Override
     public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
-        final Path vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), GERMLINE_VCF_EXTENSION);
+        Path vcfPath;
+        try {
+            vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), GERMLINE_VCF_EXTENSION_V1_10);
+        } catch (IOException exception) {
+            vcfPath = PathExtensionFinder.build().findPath(runContext.runDirectory(), GERMLINE_VCF_EXTENSION_V1_9);
+        }
+
         final List<String> passFilterLines = LineReader.build().readLines(vcfPath, new VCFPassDataLinePredicate());
         final List<VCFGermlineData> variants = getVCFDataForGermLine(passFilterLines);
 
