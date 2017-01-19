@@ -36,6 +36,7 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
     private static final String LOG_FILENAME_FORMAT = "%s.log";
     private static final String DATE_OUT_FORMAT = "yyyy-MM-dd";
     private static final String DATE_IN_FORMAT = "[EEE MMM d HH:mm:ss z yyyy]"
+                                                 + "[EEE MMM ppd HH:mm:ss z yyyy]"
                                                  + "[EEE d MMM HH:mm:ss z yyyy]"
                                                  + "[EEE d MMM yyyy HH:mm:ss z]"
                                                  + "[EEE MMM d yyyy HH:mm:ss z]";
