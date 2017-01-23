@@ -7,6 +7,11 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
@@ -16,15 +21,11 @@ import com.hartwig.healthchecks.common.exception.EmptyFileException;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
 import com.hartwig.healthchecks.common.exception.MalformedFileException;
 import com.hartwig.healthchecks.common.io.dir.RunContext;
-import com.hartwig.healthchecks.common.io.path.PathPrefixSuffixFinder;
+import com.hartwig.healthchecks.common.io.path.PathRegexFinder;
 import com.hartwig.healthchecks.common.io.reader.FileReader;
 import com.hartwig.healthchecks.common.resource.ResourceWrapper;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.COPYNUMBER)
@@ -36,8 +37,8 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     private static final String COPYNUMBER_BASE_DIRECTORY = "copyNumber";
     private static final String COPYNUMBER_SAMPLE_CONNECTOR = "_";
     private static final String COPYNUMBER_ALGO_DIRECTORY = "freec";
-    private static final String COPYNUMBER_SUFFIX = ".bam_CNVs";
-    private static final String COPYNUMBER_RATIO_SUFFIX = ".bam_ratio.txt";
+    private static final String COPYNUMBER_REGEX = "%s_.*(?<!_normal)_CNVs$";
+    private static final String COPYNUMBER_RATIO_REGEX = "%s_.*(?<!_normal)_ratio.txt$";
 
     private static final String FIELD_SEPARATOR = "\t";
     private static final int START_FIELD_INDEX = 1;
@@ -46,6 +47,7 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
 
     private static final String GAIN_IDENTIFIER = "gain";
     private static final String LOSS_IDENTIFIER = "loss";
+    private static final String NEUTRAL_IDENTIFIER = "neutral";
     private static final String GAIN_LOSS_ERROR = "Could not parse gain/loss identifier: %s";
 
     public CopynumberChecker() {
@@ -77,6 +79,8 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
                 case LOSS_IDENTIFIER:
                     totalLoss += change;
                     break;
+                case NEUTRAL_IDENTIFIER:
+                    break;
                 default:
                     throw new MalformedFileException(String.format(GAIN_LOSS_ERROR, lossOrGain));
             }
@@ -88,14 +92,18 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     @NotNull
     private static List<String> copynumberLines(@NotNull final RunContext runContext)
             throws IOException, EmptyFileException {
-        final Path copynumberPath = PathPrefixSuffixFinder.build().findPath(getBasePath(runContext),
-                runContext.tumorSample(), COPYNUMBER_SUFFIX);
+        final Path copynumberPath = PathRegexFinder.build()
+                                                   .findPath(getBasePath(runContext),
+                                                             String.format(COPYNUMBER_REGEX,
+                                                                           runContext.tumorSample()));
         try {
             return FileReader.build().readLines(copynumberPath);
         } catch (EmptyFileException e) {
             // if the CNV is empty (but exists) and the ratio file exists, there is no problem (just no CNVs found)
-            final Path ratioPath = PathPrefixSuffixFinder.build().findPath(getBasePath(runContext),
-                    runContext.tumorSample(), COPYNUMBER_RATIO_SUFFIX);
+            final Path ratioPath = PathRegexFinder.build()
+                                                  .findPath(getBasePath(runContext),
+                                                            String.format(COPYNUMBER_RATIO_REGEX,
+                                                                          runContext.tumorSample()));
             FileReader.build().readLines(ratioPath);
             return Collections.emptyList();
         }

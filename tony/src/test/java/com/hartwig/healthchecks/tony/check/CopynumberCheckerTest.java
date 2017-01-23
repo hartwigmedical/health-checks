@@ -1,11 +1,14 @@
 package com.hartwig.healthchecks.tony.check;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import com.google.common.io.Resources;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -19,8 +22,6 @@ import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
 
-import static org.junit.Assert.assertEquals;
-
 public class CopynumberCheckerTest {
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
@@ -31,6 +32,9 @@ public class CopynumberCheckerTest {
     private static final String EMPTY_RATIOS_SAMPLE = "sample5";
     private static final String NO_RATIOS_SAMPLE = "sample6";
     private static final String MISSING_CNVS_SAMPLE = "sample7";
+    private static final String NEUTRAL_SAMPLE = "sample8";
+    private static final String PILEUP_SAMPLE = "sample9";
+    private static final String PILEUP_NORMAL_SAMPLE = "sample10";
     private static final int EXPECTED_NUM_CHECKS = 2;
     private static final long EXPECTED_GAIN = 252;
     private static final long EXPECTED_LOSS = 11561;
@@ -52,9 +56,16 @@ public class CopynumberCheckerTest {
     }
 
     @Test(expected = MalformedFileException.class)
-    public void noGainLossTagsYieldMalformedException() throws IOException, HealthChecksException {
+    public void malformedTagYieldsMalformedException() throws IOException, HealthChecksException {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, REF_SAMPLE, MALFORMED_SAMPLE);
         checker.tryRun(runContext);
+    }
+
+    @Test
+    public void neutralTagYieldsNoChange() throws IOException, HealthChecksException {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, NEUTRAL_SAMPLE, TUMOR_SAMPLE);
+        final BaseResult result = checker.tryRun(runContext);
+        assertResult(result, EXPECTED_GAIN, EXPECTED_LOSS);
     }
 
     @Test
@@ -79,6 +90,19 @@ public class CopynumberCheckerTest {
     @Test(expected = FileNotFoundException.class)
     public void missingCopyNumberVariantsNotAllowedEvenIfRatiosPresent() throws IOException, HealthChecksException {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, MISSING_CNVS_SAMPLE, TUMOR_SAMPLE);
+        checker.tryRun(runContext);
+    }
+
+    @Test
+    public void pileupSampleFound() throws IOException, HealthChecksException {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, PILEUP_SAMPLE, TUMOR_SAMPLE);
+        final BaseResult result = checker.tryRun(runContext);
+        assertResult(result, EXPECTED_GAIN, EXPECTED_LOSS);
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void pileupNormalCopyNumberVariantsNotFound() throws IOException, HealthChecksException {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY, PILEUP_NORMAL_SAMPLE, TUMOR_SAMPLE);
         checker.tryRun(runContext);
     }
 
