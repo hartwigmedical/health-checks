@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 public interface PathPrefixSuffixFinder {
 
-    String FILE_S_NOT_FOUND_MSG = "File %s not found in path %s";
+    String FILE_NOT_FOUND_MSG = "File %s not found in path %s";
 
     @NotNull
     Path findPath(@NotNull String path, @NotNull String prefix, @NotNull String suffix)
@@ -24,7 +24,7 @@ public interface PathPrefixSuffixFinder {
         return (path, prefix, suffix) -> {
             final Optional<Path> fileFound = getPath(path, prefix, suffix);
             if (!fileFound.isPresent()) {
-                throw new FileNotFoundException(String.format(FILE_S_NOT_FOUND_MSG, suffix, path));
+                throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MSG, suffix, path));
             }
             return fileFound.get();
         };

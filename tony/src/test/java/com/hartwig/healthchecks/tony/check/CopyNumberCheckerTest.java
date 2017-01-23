@@ -22,7 +22,7 @@ import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
 
-public class CopynumberCheckerTest {
+public class CopyNumberCheckerTest {
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
 
     private static final String REF_SAMPLE = "sample1";
@@ -39,7 +39,7 @@ public class CopynumberCheckerTest {
     private static final long EXPECTED_GAIN = 252;
     private static final long EXPECTED_LOSS = 11561;
 
-    private final CopynumberChecker checker = new CopynumberChecker();
+    private final CopyNumberChecker checker = new CopyNumberChecker();
 
     @Test
     public void correctInputYieldsCorrectOutput() throws IOException, HealthChecksException {
@@ -108,15 +108,15 @@ public class CopynumberCheckerTest {
 
     private static void assertResult(@NotNull final BaseResult baseResult, long expectedGain, long expectedLoss) {
         final MultiValueResult result = (MultiValueResult) baseResult;
-        assertEquals(CheckType.COPYNUMBER, result.getCheckType());
+        assertEquals(CheckType.COPY_NUMBER, result.getCheckType());
         assertEquals(EXPECTED_NUM_CHECKS, result.getChecks().size());
 
-        final HealthCheck gainCheck = extractHealthCheck(result.getChecks(), CopynumberCheck.COPYNUMBER_GENOME_GAIN);
+        final HealthCheck gainCheck = extractHealthCheck(result.getChecks(), CopyNumberCheck.COPY_NUMBER_GENOME_GAIN);
 
         assertEquals(TUMOR_SAMPLE, gainCheck.getSampleId());
         assertEquals(Long.toString(expectedGain), gainCheck.getValue());
 
-        final HealthCheck lossCheck = extractHealthCheck(result.getChecks(), CopynumberCheck.COPYNUMBER_GENOME_LOSS);
+        final HealthCheck lossCheck = extractHealthCheck(result.getChecks(), CopyNumberCheck.COPY_NUMBER_GENOME_LOSS);
 
         assertEquals(TUMOR_SAMPLE, lossCheck.getSampleId());
         assertEquals(Long.toString(expectedLoss), lossCheck.getValue());
@@ -124,7 +124,7 @@ public class CopynumberCheckerTest {
 
     @NotNull
     private static HealthCheck extractHealthCheck(@NotNull final List<HealthCheck> checks,
-            @NotNull final CopynumberCheck checkName) {
+            @NotNull final CopyNumberCheck checkName) {
         final Optional<HealthCheck> optCheck = checks.stream().filter(
                 check -> check.getCheckName().equals(checkName.toString())).findFirst();
 

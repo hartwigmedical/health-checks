@@ -28,17 +28,17 @@ import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.MultiValueResult;
 
 @SuppressWarnings("WeakerAccess")
-@ResourceWrapper(type = CheckType.COPYNUMBER)
-public class CopynumberChecker extends ErrorHandlingChecker implements HealthChecker {
+@ResourceWrapper(type = CheckType.COPY_NUMBER)
+public class CopyNumberChecker extends ErrorHandlingChecker implements HealthChecker {
 
-    private static final Logger LOGGER = LogManager.getLogger(CopynumberChecker.class);
+    private static final Logger LOGGER = LogManager.getLogger(CopyNumberChecker.class);
 
-    // KODU: copynumber data is stored in {run}/copyNumber/{sampleR}_{sampleT}/freec/{sampleT}<>.bam_CNVs
-    private static final String COPYNUMBER_BASE_DIRECTORY = "copyNumber";
-    private static final String COPYNUMBER_SAMPLE_CONNECTOR = "_";
-    private static final String COPYNUMBER_ALGO_DIRECTORY = "freec";
-    private static final String COPYNUMBER_REGEX = "%s_.*(?<!_normal)_CNVs$";
-    private static final String COPYNUMBER_RATIO_REGEX = "%s_.*(?<!_normal)_ratio.txt$";
+    // KODU: copy number data is stored in {run}/copyNumber/{sampleR}_{sampleT}/freec/{sampleT}<>.bam_CNVs
+    private static final String COPY_NUMBER_BASE_DIRECTORY = "copyNumber";
+    private static final String COPY_NUMBER_SAMPLE_CONNECTOR = "_";
+    private static final String COPY_NUMBER_ALGO_DIRECTORY = "freec";
+    private static final String COPY_NUMBER_REGEX = "%s_.*(?<!_normal)_CNVs$";
+    private static final String COPY_NUMBER_RATIO_REGEX = "%s_.*(?<!_normal)_ratio.txt$";
 
     private static final String FIELD_SEPARATOR = "\t";
     private static final int START_FIELD_INDEX = 1;
@@ -50,13 +50,13 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     private static final String NEUTRAL_IDENTIFIER = "neutral";
     private static final String GAIN_LOSS_ERROR = "Could not parse gain/loss identifier: %s";
 
-    public CopynumberChecker() {
+    public CopyNumberChecker() {
     }
 
     @NotNull
     @Override
     public CheckType checkType() {
-        return CheckType.COPYNUMBER;
+        return CheckType.COPY_NUMBER;
     }
 
     @NotNull
@@ -64,7 +64,7 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     public BaseResult tryRun(@NotNull final RunContext runContext) throws IOException, HealthChecksException {
         long totalGain = 0;
         long totalLoss = 0;
-        for (final String line : copynumberLines(runContext)) {
+        for (final String line : copyNumberLines(runContext)) {
             final String[] parts = line.split(FIELD_SEPARATOR);
 
             final long startIndex = Long.valueOf(parts[START_FIELD_INDEX].trim());
@@ -90,19 +90,19 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     }
 
     @NotNull
-    private static List<String> copynumberLines(@NotNull final RunContext runContext)
+    private static List<String> copyNumberLines(@NotNull final RunContext runContext)
             throws IOException, EmptyFileException {
-        final Path copynumberPath = PathRegexFinder.build()
+        final Path copyNumberPath = PathRegexFinder.build()
                                                    .findPath(getBasePath(runContext),
-                                                             String.format(COPYNUMBER_REGEX,
+                                                             String.format(COPY_NUMBER_REGEX,
                                                                            runContext.tumorSample()));
         try {
-            return FileReader.build().readLines(copynumberPath);
+            return FileReader.build().readLines(copyNumberPath);
         } catch (EmptyFileException e) {
             // if the CNV is empty (but exists) and the ratio file exists, there is no problem (just no CNVs found)
             final Path ratioPath = PathRegexFinder.build()
                                                   .findPath(getBasePath(runContext),
-                                                            String.format(COPYNUMBER_RATIO_REGEX,
+                                                            String.format(COPY_NUMBER_RATIO_REGEX,
                                                                           runContext.tumorSample()));
             FileReader.build().readLines(ratioPath);
             return Collections.emptyList();
@@ -119,9 +119,9 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
     private BaseResult toMultiValueResult(@NotNull final RunContext runContext, @NotNull final String totalGain,
             @NotNull final String totalLoss) {
         final HealthCheck gainCheck = new HealthCheck(runContext.tumorSample(),
-                CopynumberCheck.COPYNUMBER_GENOME_GAIN.toString(), totalGain);
+                                                      CopyNumberCheck.COPY_NUMBER_GENOME_GAIN.toString(), totalGain);
         final HealthCheck lossCheck = new HealthCheck(runContext.tumorSample(),
-                CopynumberCheck.COPYNUMBER_GENOME_LOSS.toString(), totalLoss);
+                                                      CopyNumberCheck.COPY_NUMBER_GENOME_LOSS.toString(), totalLoss);
         final List<HealthCheck> checks = Lists.newArrayList(gainCheck, lossCheck);
         HealthCheck.log(LOGGER, checks);
         return new MultiValueResult(checkType(), checks);
@@ -129,8 +129,8 @@ public class CopynumberChecker extends ErrorHandlingChecker implements HealthChe
 
     @NotNull
     private static String getBasePath(@NotNull final RunContext runContext) {
-        return runContext.runDirectory() + File.separator + COPYNUMBER_BASE_DIRECTORY + File.separator
-                + runContext.refSample() + COPYNUMBER_SAMPLE_CONNECTOR + runContext.tumorSample() + File.separator
-                + COPYNUMBER_ALGO_DIRECTORY;
+        return runContext.runDirectory() + File.separator + COPY_NUMBER_BASE_DIRECTORY + File.separator
+               + runContext.refSample() + COPY_NUMBER_SAMPLE_CONNECTOR + runContext.tumorSample() + File.separator
+               + COPY_NUMBER_ALGO_DIRECTORY;
     }
 }

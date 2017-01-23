@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 public interface PathExtensionFinder {
 
-    String FILE_S_NOT_FOUND_MSG = "File %s not found in path %s";
+    String FILE_NOT_FOUND_MSG = "File %s not found in path %s";
 
     @NotNull
     Path findPath(@NotNull String path, @NotNull String extension) throws IOException;
@@ -23,7 +23,7 @@ public interface PathExtensionFinder {
         return (path, extension) -> {
             final Optional<Path> searchedFile = getPath(path, extension);
             if (!searchedFile.isPresent()) {
-                throw new FileNotFoundException(String.format(FILE_S_NOT_FOUND_MSG, extension, path));
+                throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MSG, extension, path));
             }
             return searchedFile.get();
         };

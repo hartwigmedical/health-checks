@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 public interface PathRegexFinder {
 
-    String FILE_S_NOT_FOUND_MSG = "No match for %s found in path %s";
+    String FILE_NOT_FOUND_MSG = "No match for %s found in path %s";
 
     @NotNull
     Path findPath(@NotNull String path, @NotNull String regex) throws IOException;
@@ -23,7 +23,7 @@ public interface PathRegexFinder {
         return (path, regex) -> {
             final Optional<Path> searchedFile = getPath(path, regex);
             if (!searchedFile.isPresent()) {
-                throw new FileNotFoundException(String.format(FILE_S_NOT_FOUND_MSG, regex, path));
+                throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MSG, regex, path));
             }
             return searchedFile.get();
         };
