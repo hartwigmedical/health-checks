@@ -8,6 +8,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.ErrorHandlingChecker;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
@@ -26,10 +31,6 @@ import com.hartwig.healthchecks.nesbit.model.VCFGermlineDataFactory;
 import com.hartwig.healthchecks.nesbit.model.VCFType;
 import com.hartwig.healthchecks.nesbit.predicate.VCFGermlineVariantPredicate;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 @SuppressWarnings("WeakerAccess")
 @ResourceWrapper(type = CheckType.GERMLINE)
 public class GermlineChecker extends ErrorHandlingChecker implements HealthChecker {
@@ -37,7 +38,7 @@ public class GermlineChecker extends ErrorHandlingChecker implements HealthCheck
     private static final Logger LOGGER = LogManager.getLogger(GermlineChecker.class);
 
     private static final String GERMLINE_VCF_EXTENSION_V1_9 = "_GoNLv5.vcf";
-    private static final String GERMLINE_VCF_EXTENSION_V1_10 = ".filtered_variants.annotated.vcf";
+    private static final String GERMLINE_VCF_EXTENSION_V1_10 = ".annotated.vcf";
 
     public GermlineChecker() {
     }

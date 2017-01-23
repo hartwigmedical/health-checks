@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.io.Resources;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
+
 import com.hartwig.healthchecks.common.checks.CheckType;
 import com.hartwig.healthchecks.common.checks.HealthCheck;
 import com.hartwig.healthchecks.common.exception.HealthChecksException;
@@ -15,12 +19,10 @@ import com.hartwig.healthchecks.common.io.dir.TestRunContextFactory;
 import com.hartwig.healthchecks.common.result.BaseResult;
 import com.hartwig.healthchecks.common.result.PatientResult;
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
-
 public class GermlineCheckerTest {
 
     private static final String RUN_DIRECTORY = Resources.getResource("run").getPath();
+    private static final String RUN_DIRECTORY_V1_10 = Resources.getResource("run_v1_10").getPath();
     private static final String RUN_DIRECTORY_V1_9 = Resources.getResource("run_v1_9").getPath();
     private static final String REF_SAMPLE = "sample1";
     private static final String TUMOR_SAMPLE = "sample2";
@@ -47,7 +49,15 @@ public class GermlineCheckerTest {
     }
 
     @Test
-    public void canCountSNPAndV1_9() throws IOException, HealthChecksException {
+    public void canCountSNPAndIndels_V1_10() throws IOException, HealthChecksException {
+        final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY_V1_10, REF_SAMPLE, TUMOR_SAMPLE);
+        final PatientResult result = (PatientResult) checker.tryRun(runContext);
+        assertEquals(EXPECTED_NUM_CHECKS, result.getRefSampleChecks().size());
+        assertEquals(EXPECTED_NUM_CHECKS, result.getTumorSampleChecks().size());
+    }
+
+    @Test
+    public void canCountSNPAndIndels_V1_9() throws IOException, HealthChecksException {
         final RunContext runContext = TestRunContextFactory.forTest(RUN_DIRECTORY_V1_9, REF_SAMPLE, TUMOR_SAMPLE);
         final PatientResult result = (PatientResult) checker.tryRun(runContext);
         assertEquals(EXPECTED_NUM_CHECKS, result.getRefSampleChecks().size());
