@@ -7,3 +7,5 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7dbf5374790240bca110940a9319d6d0)](https://www.codacy.com/app/ekho/health-checks?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hartwigmedical/health-checks&amp;utm_campaign=Badge_Grade)
 
 This repository consists of a set of utilities that perform health checks against genomics data.
+
+This repo has become obsolete since jan 1 2017, code has been integrated with hmftools repo
