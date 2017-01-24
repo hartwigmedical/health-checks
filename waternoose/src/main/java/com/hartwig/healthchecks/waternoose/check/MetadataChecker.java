@@ -1,5 +1,7 @@
 package com.hartwig.healthchecks.waternoose.check;
 
+import static com.google.common.collect.Iterables.getLast;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -41,11 +43,10 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
                                                  + "[EEE d MMM yyyy HH:mm:ss z]"
                                                  + "[EEE MMM d yyyy HH:mm:ss z]";
     private static final String REGEX_SPLIT = "\t";
-    private static final String LINE_TO_GET_DATE_FROM = "End Kinship";
-    private static final int DATE_LINE_INDEX = 0;
+    private static final String LINE_TO_GET_DATE_FROM_REGEX = "End\\s+(Kinship|Finalize)";
 
     private static final String PIPELINE_LOG_REGEX = "PipelineCheck.log";
-    private static final String PIPELINE_VERSION = "Pipeline version:";
+    private static final String PIPELINE_VERSION_REGEX = "Pipeline version:";
     private static final String PIPELINE_VERSION_LINE_SEPARATOR = ":";
     private static final int PIPELINE_VERSION_LINE_INDEX = 0;
 
@@ -123,9 +124,10 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
                                                     .findPath(runContext.runDirectory(),
                                                               String.format(LOG_FILENAME_FORMAT,
                                                                             runContext.runName()));
-        final List<String> dateLine = LineReader.build()
-                                                .readLines(dateTimeLogPath, doesLineStartWith(LINE_TO_GET_DATE_FROM));
-        final String date = dateLine.get(DATE_LINE_INDEX).split(REGEX_SPLIT)[1].trim();
+        final List<String> dateLines = LineReader.build()
+                                                .readLines(dateTimeLogPath, doesLineStartWith(
+                                                        LINE_TO_GET_DATE_FROM_REGEX));
+        final String date = datePart(getLast(dateLines).split(REGEX_SPLIT));
         final DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern(DATE_IN_FORMAT, Locale.ENGLISH);
         final LocalDateTime formattedDate = LocalDateTime.parse(date, inFormatter);
         final DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(DATE_OUT_FORMAT, Locale.ENGLISH);
@@ -133,16 +135,26 @@ public class MetadataChecker extends ErrorHandlingChecker implements HealthCheck
     }
 
     @NotNull
+    private static String datePart(@NotNull String[] parts) {
+        if (parts[0].contains(" ")) {
+            return parts[1].trim();
+        } else {
+            return parts[2].trim();
+        }
+    }
+
+    @NotNull
     private static String extractPipelineVersion(@NotNull final String runDirectory)
             throws IOException, HealthChecksException {
         final Path pipelineLogPath = PathRegexFinder.build().findPath(runDirectory, PIPELINE_LOG_REGEX);
         final List<String> versionsLine = LineReader.build()
-                                                    .readLines(pipelineLogPath, doesLineStartWith(PIPELINE_VERSION));
+                                                    .readLines(pipelineLogPath,
+                                                               doesLineStartWith(PIPELINE_VERSION_REGEX));
         return versionsLine.get(PIPELINE_VERSION_LINE_INDEX).split(PIPELINE_VERSION_LINE_SEPARATOR)[1].trim();
     }
 
     @NotNull
-    private static Predicate<String> doesLineStartWith(@NotNull final String prefix) {
-        return line -> line.startsWith(prefix);
+    private static Predicate<String> doesLineStartWith(@NotNull final String regex) {
+        return line -> line.matches(String.format("%s.*", regex));
     }
 }
